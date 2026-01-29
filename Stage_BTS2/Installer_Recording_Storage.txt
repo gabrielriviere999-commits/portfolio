@@ -22,6 +22,16 @@ sudo systemctl restart tomcat9
 systemctl status guacd --no-pager
 systemctl status tomcat9 --no-pager
 
+Changer de propriétaire :
+sudo chown guacd:tomcat /var/lib/guacamole/recordings
+
+Donner les droits :
+sudo chmod 2750 /var/lib/guacamole/recordings
+
+Chemin de l'enregistrement: ${HISTORY_PATH}/${HISTORY_UUID}
+Nom de l'enregistrement:
+Cocher seulement Créer automatiquement le chemin d'enregistrement
+
 
 L’extension .jar est installée dans /etc/guacamole/extensions/.
 Les enregistrements seront stockés dans /var/lib/guacamole/recordings.
