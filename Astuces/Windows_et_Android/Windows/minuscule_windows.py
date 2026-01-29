@@ -1,40 +1,64 @@
 #!/usr/bin/env python3
-import subprocess
 import sys
 import platform
-import tempfile
-import os
+import ctypes
+import ctypes.wintypes as wt
 
-def get_clipboard():
-    vbs = """
-Set objHTML = CreateObject("htmlfile")
-WScript.StdOut.Write objHTML.ParentWindow.ClipboardData.GetData("text")
-"""
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".vbs") as f:
-        f.write(vbs.encode("utf-8"))
-        path = f.name
+# ==================== API WINDOWS (UNICODE) ==================== #
 
-    try:
-        return subprocess.check_output(["cscript", "//nologo", path], text=True)
-    except:
-        print("⚠️ Impossible de lire le presse-papier.")
-        sys.exit(1)
-    finally:
-        os.remove(path)
+user32 = ctypes.WinDLL("user32", use_last_error=True)
+kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
 
-def set_clipboard(text):
-    p = subprocess.Popen(["clip"], stdin=subprocess.PIPE, text=True)
-    p.communicate(text)
+CF_UNICODETEXT = 13
+
+def get_clipboard_unicode():
+    if not user32.OpenClipboard(None):
+        raise RuntimeError("Impossible d'ouvrir le presse-papier")
+
+    handle = user32.GetClipboardData(CF_UNICODETEXT)
+    if not handle:
+        user32.CloseClipboard()
+        return ""
+
+    ptr = kernel32.GlobalLock(handle)
+    if not ptr:
+        user32.CloseClipboard()
+        return ""
+
+    text = ctypes.wstring_at(ptr)
+
+    kernel32.GlobalUnlock(handle)
+    user32.CloseClipboard()
+
+    return text
+
+def set_clipboard_unicode(text):
+    data = text.encode("utf-16-le")
+    size = len(data) + 2
+
+    hMem = kernel32.GlobalAlloc(0x0002, size)
+    ptr = kernel32.GlobalLock(hMem)
+    ctypes.memmove(ptr, data, len(data))
+    kernel32.GlobalUnlock(hMem)
+
+    if not user32.OpenClipboard(None):
+        raise RuntimeError("Impossible d'ouvrir le presse-papier")
+
+    user32.EmptyClipboard()
+    user32.SetClipboardData(CF_UNICODETEXT, hMem)
+    user32.CloseClipboard()
+
+# ==================== MAIN ==================== #
 
 if platform.system() != "Windows":
     print("❌ Ce script est destiné à Windows.")
     sys.exit(1)
 
-texte = get_clipboard()
+texte = get_clipboard_unicode()
 
 if not texte.strip():
     print("⚠️ Presse-papier vide.")
     sys.exit(1)
 
-set_clipboard(texte.lower())
+set_clipboard_unicode(texte.lower())
 print("✅ Texte en minuscules.")

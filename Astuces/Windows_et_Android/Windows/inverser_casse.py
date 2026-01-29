@@ -60,5 +60,5 @@ if not texte.strip():
     print("⚠️ Presse-papier vide.")
     sys.exit(1)
 
-set_clipboard_unicode(texte.upper())
-print("✅ Texte en MAJUSCULES.")
+set_clipboard_unicode(texte.swapcase())
+print("✅ Casse inversée.")

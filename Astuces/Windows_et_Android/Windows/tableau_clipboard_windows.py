@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-import subprocess
 import csv
 import sys
 import textwrap
 import platform
-import tempfile
-import os
+import ctypes
+import ctypes.wintypes as wt
 
 # 🔧 Séparateur CSV
 sep = ";"
@@ -13,7 +12,51 @@ sep = ";"
 # 📐 LARGEUR MAXIMALE DU TABLEAU
 MAX_TABLE_WIDTH = 120
 
-# ================= Fonctions ================= #
+# ==================== API WINDOWS (UNICODE) ==================== #
+
+user32 = ctypes.WinDLL("user32", use_last_error=True)
+kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+
+CF_UNICODETEXT = 13
+
+def get_clipboard_unicode():
+    if not user32.OpenClipboard(None):
+        raise RuntimeError("Impossible d'ouvrir le presse-papier")
+
+    handle = user32.GetClipboardData(CF_UNICODETEXT)
+    if not handle:
+        user32.CloseClipboard()
+        return ""
+
+    ptr = kernel32.GlobalLock(handle)
+    if not ptr:
+        user32.CloseClipboard()
+        return ""
+
+    text = ctypes.wstring_at(ptr)
+
+    kernel32.GlobalUnlock(handle)
+    user32.CloseClipboard()
+
+    return text
+
+def set_clipboard_unicode(text):
+    data = text.encode("utf-16-le")
+    size = len(data) + 2  # +2 pour le \0 final
+
+    hMem = kernel32.GlobalAlloc(0x0002, size)
+    ptr = kernel32.GlobalLock(hMem)
+    ctypes.memmove(ptr, data, len(data))
+    kernel32.GlobalUnlock(hMem)
+
+    if not user32.OpenClipboard(None):
+        raise RuntimeError("Impossible d'ouvrir le presse-papier")
+
+    user32.EmptyClipboard()
+    user32.SetClipboardData(CF_UNICODETEXT, hMem)
+    user32.CloseClipboard()
+
+# ==================== TABLEAU ASCII ==================== #
 
 def lire_lignes_csv(texte, sep=","):
     reader = csv.reader(texte.splitlines(), delimiter=sep)
@@ -77,47 +120,20 @@ def generer_tableau(lignes, max_width):
         resultat.append(sep_line)
     return "\n".join(resultat)
 
-# ================= Presse-papier SANS POWERSHELL ================= #
-
-def get_clipboard():
-    # VBScript temporaire pour lire le presse-papier
-    vbs = """
-Set objHTML = CreateObject("htmlfile")
-WScript.StdOut.Write objHTML.ParentWindow.ClipboardData.GetData("text")
-"""
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".vbs") as f:
-        f.write(vbs.encode("utf-8"))
-        path = f.name
-
-    try:
-        output = subprocess.check_output(["cscript", "//nologo", path], text=True)
-        return output
-    except:
-        print("⚠️ Impossible de lire le presse-papier.")
-        sys.exit(1)
-    finally:
-        os.remove(path)
-
-def set_clipboard(texte):
-    try:
-        p = subprocess.Popen(["clip"], stdin=subprocess.PIPE, text=True)
-        p.communicate(texte)
-    except Exception as e:
-        print(f"❌ Impossible de copier dans le presse-papier : {e}")
-        sys.exit(1)
-
-# ================= Main ================= #
+# ==================== MAIN ==================== #
 
 if platform.system() != "Windows":
     print("❌ Ce script est destiné à Windows.")
     sys.exit(1)
 
-texte = get_clipboard()
+texte = get_clipboard_unicode()
 lignes = lire_lignes_csv(texte, sep=sep)
+
 if not lignes:
     print("⚠️ Presse-papier vide ou pas de CSV détecté.")
     sys.exit(1)
 
 tableau = generer_tableau(lignes, MAX_TABLE_WIDTH)
-set_clipboard(tableau)
-print("✅ Tableau généré et copié dans le presse-papier !")
+set_clipboard_unicode(tableau)
+
+print("✅ Tableau généré et copié dans le presse-papier (Unicode parfait, sans PowerShell) !")
