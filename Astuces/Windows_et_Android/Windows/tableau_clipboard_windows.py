@@ -7,7 +7,10 @@ import os
 import csv
 import textwrap
 
+# 🔧 Séparateur CSV
 SEP = ";"
+
+# 📐 LARGEUR MAXIMALE DU TABLEAU
 MAX_WIDTH = 120
 
 def get_clipboard():
