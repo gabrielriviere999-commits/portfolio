@@ -4,7 +4,7 @@ Installer xdotool
 Installer xclip ou xsel
 Créer un fichier coller_tapper_clipboard.sh
 Coller le contenu de ce script ou le télécharger :
-https://gabrielriviere999-commits.github.io/Portfolio-RiviereGabriel123456789/Astuces/coller_tapper_clipboard.sh
+https://gabrielriviere999-commits.github.io/portfolio/Astuces/coller_tapper_clipboard.sh
 
 Ouvrir un terminal :
 chmod +x coller_tapper_clipboard.sh
