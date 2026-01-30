@@ -36,5 +36,5 @@ Cocher seulement Créer automatiquement le chemin d'enregistrement
 L’extension .jar est installée dans /etc/guacamole/extensions/.
 Les enregistrements seront stockés dans /var/lib/guacamole/recordings.
 Guacamole redémarre et tu peux rejouer les sessions directement depuis l’historique.
-L’extension ne peut enregistrer que des flux graphiques (RDP, VNC, ou SSH).
+L’extension ne peut enregistrer que des flux graphiques (RDP, VNC).
 Il n'est pas possible d'enregistrer une session sans interface graphique.
