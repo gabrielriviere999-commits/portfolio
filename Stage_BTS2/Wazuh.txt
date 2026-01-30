@@ -1,0 +1,24 @@
+Wazuh est une plateforme SIEM Open Source.
+Elle permet de détecter des intrusions (HIDS) et de surveiller pour la sécurité et la conformité réglementaire.
+Wazuh s'applique aussi bien sur les postes de travails, serveurs et environnements cloud.
+- Le wazuh agent est installé sur chaque système à surveiller, il collecte des données
+de logs, analyse leur contenu selon des règles de sécurité.
+- Le Wazuh Server (Manager), analyse les données reçues des agents, applique les règles de corrélation et
+orchestre l'ensemble du processus de détection.
+- Le Wazuh indexer permet à la recherche des données d'être performante.
+L'interface de visualisation Wazuh Dashboards permet de gérer les alertes de façon intuitive.
+
+Comparaison rapide : Wazuh vs autres SIEM (Security Information and Event Management)
++---------------------------+-----------------------+---------------------+-------------------------------------+
+| Critère                   | Wazuh (Open Source)   | Splunk (Commercial) | Elastic SIEM (Open Source)          |
++---------------------------+-----------------------+---------------------+-------------------------------------+
+| Coût                      | Gratuit (open source) | Élevé (licences)    | Gratuit, mais support payant        |
++---------------------------+-----------------------+---------------------+-------------------------------------+
+| Flexibilité               | Très personnalisable  | Moins flexible      | Flexible mais orienté Elastic Stack |
++---------------------------+-----------------------+---------------------+-------------------------------------+
+| Fonctionnalités XDR       | Oui (intégré)         | Limité              | Partiel                             |
++---------------------------+-----------------------+---------------------+-------------------------------------+
+| Conformité réglementaire  | Oui                   | Oui                 | Oui                                 |
++---------------------------+-----------------------+---------------------+-------------------------------------+
+| Complexité d’installation | Moyenne               | Élevée              | Moyenne                             |
++---------------------------+-----------------------+---------------------+-------------------------------------+
