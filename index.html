@@ -270,7 +270,7 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
 }
 
 /* --- MODE MOBILE --- */
-@media screen and (max-device-width: 720px) {
+@media screen and (max-device-width: 1280px) and (orientation: portrait) {
     html, body {
         min-width: 950px;
     }
@@ -280,20 +280,19 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
     }
 
     .navbar .tab button {
-        font-size: 32px;
-        padding: 21px 25px;
-        border-width: 5px;
-        min-height: 70px;
+        font-size: 20px;
+        padding: 6px 12px;
+        border-width: 3px;
+        height: 60px;
         line-height: normal;
-        box-sizing: border-box;
     }
 
     .win98-select {
-        font-size: 32px;
-        width: 87px;
-        height: 87px;
+        font-size: 20px;
+        width: 60px;
+        height: 60px;
         line-height: normal;
-        border-width: 5px;
+        border-width: 3px;
         padding: 0;
         box-sizing: border-box;
     }
@@ -308,7 +307,7 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
     }
 
     .mySlide {
-        height: calc(100vh + 300px);
+        height: calc(75vh + 200px);
     }
 
     .prev,
@@ -330,7 +329,7 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
     }
 }
 
-@media screen and (max-device-width: 1024px) and (orientation: landscape) {
+@media screen and (max-device-width: 1280px) and (orientation: landscape) {
     html, body {
         min-width: 950px;
     }
@@ -339,6 +338,10 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
     .next,
     .openfullscreen {
         font-size: 28px;
+    }
+
+    .mySlide {
+        height: calc(50vh + 150px);
     }
 }
 
@@ -389,10 +392,10 @@ select {
 }
 
 /* mobile */
-@media screen and (max-device-width: 720px) {
+@media screen and (max-device-width: 1280px) {
   .donate-btn {
     font-size: 36px;
-    padding: 20px 30px;
+    padding: 10px 15px;
     border-width: 5px;
   }
 }
