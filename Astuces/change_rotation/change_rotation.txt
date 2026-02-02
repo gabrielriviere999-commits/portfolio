@@ -8,7 +8,22 @@ xrandr --query
 Vous verrez une ligne comme eDP-1 connected ...
 Quelques exemples : eDP-1, eDP-0, eDP, LVDS-1, LVDS
 
-Trouver le nom du tactile (TOUCH) :
+Trouver le nom du/des périphérique(s) tactile(s) (TOUCH) :
 xinput list
 Vous devez repérer votre écran tactile, parfois dans Virtual core pointer
 Exemple : ELAN9009:00 04F3:2EC1
+
+Pour exécuter les scripts :
+Ouvrir le terminal dans le dossier contenant les scripts
+chmod +x rotate_*.sh
+Vous pouvez ajouter les fichiers à votre barre d'outils.
+
+---
+
+Bonus : Rendre une fenetre transparente
+https://gabrielriviere999-commits.github.io/portfolio/Astuces/Transparence/transparence20.sh
+https://gabrielriviere999-commits.github.io/portfolio/Astuces/Transparence/opaque.sh
+Ouvrir le terminal dans le dossier contenant les scripts
+chmod +x transparence20.sh
+chmod +x opaque.sh
+Vous pouvez ajouter les fichiers à votre barre d'outils.
