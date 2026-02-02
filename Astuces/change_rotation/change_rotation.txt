@@ -1,5 +1,7 @@
 Pour changer la rotation d'écran tout en gardant les bonnes positions pour l'écran tactile :
 Vous pouvez exécuter un des scripts rotate_X.sh
+https://gabrielriviere999-commits.github.io/portfolio/Astuces/change_rotation/change_rotation.zip
+
 Avant de l'éxécuter, il faut trouver le nom du SCREEN et TOUCH.
 Trouver le nom de l’écran (SCREEN) :
 xrandr --query
