@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau ASCII</title>
+<style>
+body { background-color: #C0C0C0; }
+textarea { width: 100%; height: 120px; overflow-x: auto; white-space: nowrap; }
+pre { background: #eee; padding: 10px; white-space: pre; }
+button { margin-top: 10px; padding: 6px 10px }
+</style>
+</head>
+<body>			
+
+<h3>Tableau ASCII</h3>
+
+Séparateur : <input id="sep" value=";" size="1">
+&nbsp;&nbsp;
+Largeur max : <input id="maxwidth" value="120" size="4">
+
+<br><br>
+<textarea id="input"></textarea>
+
+<br>
+<button onclick="convertir()">Convertir en tableau ASCII</button>
+<button onclick="copier()">Copier</button>
+
+<h3>Résultat</h3>
+<pre id="output"></pre>
+
+<script>
+// ------------------------------
+// Compatibilité maximale (ES3)
+// ------------------------------
+
+function repeat(str, n) {
+  var out = "";
+  for (var i = 0; i < n; i++) out += str;
+  return out;
+}
+
+function padRight(str, len) {
+  while (str.length < len) str += " ";
+  return str;
+}
+
+function wrapText(str, max) {
+  var out = [];
+  for (var i = 0; i < str.length; i += max) {
+    out.push(str.substring(i, i + max));
+  }
+  return out;
+}
+
+function asciiTable(rows, MAX_TABLE_WIDTH) {
+  if (!rows || !rows.length) return "";
+
+  // 1) Nombre de colonnes
+  var colCount = 0;
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].length > colCount) colCount = rows[i].length;
+  }
+
+  // 2) Largeurs naturelles
+  var widths = [];
+  for (var c = 0; c < colCount; c++) widths[c] = 0;
+
+  for (var r = 0; r < rows.length; r++) {
+    for (var c = 0; c < colCount; c++) {
+      var cell = rows[r][c] || "";
+      if (cell.length > widths[c]) widths[c] = cell.length;
+    }
+  }
+
+  // 3) Largeur totale
+  var totalWidth = 1;
+  for (var c = 0; c < colCount; c++) {
+    totalWidth += widths[c] + 3;
+  }
+
+  // 4) Réduction proportionnelle si trop large
+  if (totalWidth > MAX_TABLE_WIDTH) {
+    var espace = MAX_TABLE_WIDTH - (3 * colCount + 1);
+    var sum = 0;
+    for (var i = 0; i < widths.length; i++) sum += widths[i];
+
+    for (var i = 0; i < widths.length; i++) {
+      widths[i] = Math.floor(widths[i] * espace / sum);
+      if (widths[i] < 1) widths[i] = 1;
+    }
+  }
+
+  // 5) Ligne de séparation
+  var sepLine = "+";
+  for (var c = 0; c < colCount; c++) {
+    sepLine += repeat("-", widths[c] + 2) + "+";
+  }
+
+  var out = sepLine + "\n";
+
+  // 6) Génération des lignes avec wrap
+  for (var r = 0; r < rows.length; r++) {
+    var wrappedCells = [];
+    var maxHeight = 1;
+
+    for (var c = 0; c < colCount; c++) {
+      var cell = rows[r][c] || "";
+      var wrapped = wrapText(cell, widths[c]);
+      wrappedCells[c] = wrapped;
+      if (wrapped.length > maxHeight) maxHeight = wrapped.length;
+    }
+
+    for (var h = 0; h < maxHeight; h++) {
+      var line = "| ";
+      for (var c = 0; c < colCount; c++) {
+        var txt = wrappedCells[c][h] || "";
+        line += padRight(txt, widths[c]) + " | ";
+      }
+      out += line + "\n";
+    }
+
+    out += sepLine + "\n";
+  }
+
+  return out;
+}
+
+// ------------------------------
+// Conversion CSV → ASCII
+// ------------------------------
+function convertir() {
+  var texte = document.getElementById("input").value;
+  var sep = document.getElementById("sep").value || ";";
+  var maxWidth = parseInt(document.getElementById("maxwidth").value, 10);
+
+  if (!texte) {
+    document.getElementById("output").textContent = "Aucune donnée.";
+    return;
+  }
+
+  var lignes = texte.split("\n");
+  var rows = [];
+  for (var i = 0; i < lignes.length; i++) {
+    rows.push(lignes[i].split(sep));
+  }
+
+  var table = asciiTable(rows, maxWidth);
+  document.getElementById("output").textContent = table;
+}
+
+// ------------------------------
+// Bouton Copier (compatible anciens navigateurs)
+// ------------------------------
+function copier() {
+  var texte = document.getElementById("output").textContent;
+
+  var temp = document.createElement("textarea");
+  temp.value = texte;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (e) {}
+
+  document.body.removeChild(temp);
+}
+</script>
+
+</body>
+</html>
