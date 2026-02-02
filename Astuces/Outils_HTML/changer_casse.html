@@ -65,6 +65,35 @@ function copier() {
 
   document.body.removeChild(temp);
 }
+
+// Bouton Effacer tout
+function effacerTout() {
+  document.getElementById("input").value = "";
+  document.getElementById("output").textContent = "";
+
+  localStorage.removeItem("casse_input");
+  localStorage.removeItem("casse_output");
+}
+
+// ------------------------------
+// Sauvegarde / Restauration
+// ------------------------------
+
+function saveState() {
+  localStorage.setItem("casse_input", document.getElementById("input").value);
+  localStorage.setItem("casse_output", document.getElementById("output").textContent);
+}
+
+document.getElementById("input").oninput = saveState;
+document.getElementById("output").oninput = saveState;
+
+window.onload = function() {
+  var savedInput = localStorage.getItem("casse_input");
+  var savedOutput = localStorage.getItem("casse_output");
+
+  if (savedInput !== null) document.getElementById("input").value = savedInput;
+  if (savedOutput !== null) document.getElementById("output").textContent = savedOutput;
+};
 </script>
 
 </body>

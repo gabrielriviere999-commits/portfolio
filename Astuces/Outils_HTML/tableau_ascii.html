@@ -18,6 +18,7 @@ button { margin-top: 10px; padding: 6px 10px }
 Séparateur : <input id="sep" value=";" size="1">
 &nbsp;&nbsp;
 Largeur max : <input id="maxwidth" value="120" size="4">
+<button onclick="resetParams()">Valeurs par défaut</button>
 
 <br><br>
 <textarea id="input"></textarea>
@@ -25,6 +26,8 @@ Largeur max : <input id="maxwidth" value="120" size="4">
 <br>
 <button onclick="convertir()">Convertir en tableau ASCII</button>
 <button onclick="copier()">Copier</button>
+<button onclick="effacerTout()">Effacer tout</button>
+<button onclick="effacerTout()">Effacer tout</button>
 
 <h3>Résultat</h3>
 <pre id="output" contenteditable="true"></pre>
@@ -149,9 +152,7 @@ function convertir() {
   document.getElementById("output").textContent = table;
 }
 
-// ------------------------------
-// Bouton Copier (compatible anciens navigateurs)
-// ------------------------------
+// Bouton copier compatible anciens navigateurs
 function copier() {
   var texte = document.getElementById("output").textContent;
 
@@ -164,6 +165,53 @@ function copier() {
 
   document.body.removeChild(temp);
 }
+
+// Bouton Effacer tout
+function effacerTout() {
+  document.getElementById("input").value = "";
+  document.getElementById("output").textContent = "";
+
+  // Efface la sauvegarde
+  localStorage.removeItem("input_text");
+  localStorage.removeItem("output_text");
+}
+
+function resetParams() {
+  document.getElementById("sep").value = ";";
+  document.getElementById("maxwidth").value = "120";
+
+  // Met à jour la sauvegarde
+  localStorage.setItem("sep", ";");
+  localStorage.setItem("maxwidth", "120");
+}
+
+// ------------------------------
+// Sauvegarde/Restauration
+// ------------------------------
+
+function saveState() {
+  localStorage.setItem("input_text", document.getElementById("input").value);
+  localStorage.setItem("output_text", document.getElementById("output").textContent);
+  localStorage.setItem("sep", document.getElementById("sep").value);
+  localStorage.setItem("maxwidth", document.getElementById("maxwidth").value);
+}
+
+document.getElementById("input").oninput = saveState;
+document.getElementById("output").oninput = saveState;
+document.getElementById("sep").oninput = saveState;
+document.getElementById("maxwidth").oninput = saveState;
+
+window.onload = function() {
+  var savedInput = localStorage.getItem("input_text");
+  var savedOutput = localStorage.getItem("output_text");
+  var savedSep = localStorage.getItem("sep");
+  var savedMax = localStorage.getItem("maxwidth");
+
+  if (savedInput !== null) document.getElementById("input").value = savedInput;
+  if (savedOutput !== null) document.getElementById("output").textContent = savedOutput;
+  if (savedSep !== null) document.getElementById("sep").value = savedSep;
+  if (savedMax !== null) document.getElementById("maxwidth").value = savedMax;
+};
 </script>
 
 </body>
