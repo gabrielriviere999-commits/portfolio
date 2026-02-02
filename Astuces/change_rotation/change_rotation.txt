@@ -22,7 +22,7 @@ Vous pouvez ajouter les fichiers à votre barre d'outils.
 ---
 
 Bonus : Rendre une fenetre transparente
-(Fonctionne aussi bien sur XFCE, GNOME, KDE ou autres...)
+(Fonctionne aussi bien sur XFCE, GNOME, KDE et la plupart des environnements X11)
 https://gabrielriviere999-commits.github.io/portfolio/Astuces/Transparence/transparence20.sh
 https://gabrielriviere999-commits.github.io/portfolio/Astuces/Transparence/opaque.sh
 Ouvrir le terminal dans le dossier contenant les scripts
