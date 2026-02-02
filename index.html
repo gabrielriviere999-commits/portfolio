@@ -391,6 +391,31 @@ select {
   border-color: #808000 #FFFFFF #FFFFFF #808000;
 }
 
+.outilshtml-btn {
+  font-family: monospace;
+  font-size: 22px;
+  padding: 4px 10px;
+  background: #3A6EA5; /* bleu Win98 */
+  border: 2px solid;
+  border-color: #FFFFFF #000080 #000080 #FFFFFF; /* relief 3D bleu */
+  cursor: pointer;
+  box-sizing: border-box;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* état hover : légèrement plus clair */
+.outilshtml-btn.hover {
+  background: #4A82C2; /* bleu clair Win98 */
+}
+
+/* état active : bouton enfoncé */
+.outilshtml-btn.active {
+  background: #2F5B8A; /* bleu foncé */
+  border-color: #000080 #FFFFFF #FFFFFF #000080; /* inversion du relief */
+}
+
 /* mobile */
 @media screen and (max-device-width: 1280px) {
   .donate-btn {
@@ -1481,6 +1506,18 @@ posent problème.
         --Tout télécharger--
     </option>
 </select>
+<p></p>
+<p style="text-align:left;">
+  <a href="Astuces/Outils_HTML/outils.html"
+     class="outilshtml-btn"
+     onmouseover="this.classList.add('hover');"
+     onmouseout="this.classList.remove('hover'); this.classList.remove('active');"
+     onmousedown="this.classList.add('active');"
+     onmouseup="this.classList.remove('active');"
+  >
+    Outils HTML
+  </a>
+</p>
 </div>
 <p style="font-size:150px;"></p>
 <!-- Scripts -->
