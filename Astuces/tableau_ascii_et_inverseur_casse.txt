@@ -14,7 +14,8 @@ c;d;e;f
 | c                                                     | d                                                    | e | f |
 +-------------------------------------------------------+------------------------------------------------------+---+---+
 
-Si vous utilisez une ancienne version de Python, cet autre script mais sans clipboard, utilise un fichier input.txt
-https://gabrielriviere999-commits.github.io/portfolio/Astuces/Windows_et_Android/Android4.4/tableau.py
+Si vous utilisez une ancienne version de Python, ces autres scripts sans clipboard utilisent un fichier input.txt
 Il faut créer un fichier input.txt, y mettre le texte à transformer, exécuter le script et le tableau s'affiche dans la
-console, il devrait fonctionner sur python 2.4 à 2.7 peu importe l'OS.
+console, vous devez le sélectionner puis faire clic droit et copier.
+Il devrait fonctionner sur python 2.4 à 2.7 peu importe l'OS, même chose pour les scripts de casse.
+Aller dans Télécharger -> Windows/Android -> Android4.4 Python2
