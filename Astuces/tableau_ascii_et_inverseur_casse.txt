@@ -1,0 +1,15 @@
+Scripts tableau clipboard ascii et inverseurs de casse.
+Ces scripts ont été testés sur Linux, Windows, Android, macOS.
+Seul sur Windows, les caractères tels que des accents et ç sont cassés.
+
+tableau clipboard :
+Vous pouvez modifier le séparateur ; et la largeur maximale du tableau en modifiant le script.
+Quand le tableau atteint la largeur maximale, le texte passe à la ligne :
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+c;d;e;f
++-------------------------------------------------------+------------------------------------------------------+---+---+
+| aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb |   |   |
+| aaaaaaaaaaaaa                                         | bbbbbbbbbbbbb                                        |   |   |
++-------------------------------------------------------+------------------------------------------------------+---+---+
+| c                                                     | d                                                    | e | f |
++-------------------------------------------------------+------------------------------------------------------+---+---+
