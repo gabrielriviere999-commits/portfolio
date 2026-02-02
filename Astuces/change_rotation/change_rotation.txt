@@ -18,7 +18,7 @@ Pour exécuter les scripts :
 Ouvrir le terminal dans le dossier contenant les scripts
 chmod +x rotate_*.sh
 Vous pouvez ajouter les fichiers à votre barre d'outils ou raccourcis clavier.
-Lors de la déconnexion/extinction/redémarrage, tout redevient à la normale.
+Lors de la déconnexion/arrêt/redémarrage, tout redevient à la normale.
 
 ---
 
