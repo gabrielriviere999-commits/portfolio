@@ -21,4 +21,4 @@ des caractères comme < et > peuvent poser problèmes, il faut les remplacer par
 voulus (< et >).
 
 xfce4-popup-clipman est la commande pour ouvrir le menu du presse papiers (clipman).
-Vous pouvez l'associer à un raccourcis clavier comme Win + V
+Vous pouvez l'associer à un raccourci clavier comme Win + V
