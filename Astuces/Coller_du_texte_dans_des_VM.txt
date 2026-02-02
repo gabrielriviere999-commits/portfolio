@@ -19,3 +19,6 @@ Note : vers certaines VM comme Windows ou des linux sans interface graphique, (n
 des caractères comme < et > peuvent poser problèmes, il faut les remplacer par d'autres caractères
 (ex : GGG et DDD) avant de copier, puis après avoir collé il faut les remplacer par les caractères
 voulus (< et >).
+
+xfce4-popup-clipman est la commande pour ouvrir le menu du presse papiers (clipman).
+Vous pouvez l'associer à un raccourcis clavier comme Win + V
