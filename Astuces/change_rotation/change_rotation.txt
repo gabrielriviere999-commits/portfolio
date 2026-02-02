@@ -1,0 +1,12 @@
+Pour changer la rotation d'écran tout en gardant les bonnes positions pour l'écran tactile :
+Vous pouvez exécuter un des scripts rotate_X.sh
+Avant de l'éxécuter, il faut trouver le nom du SCREEN et TOUCH.
+Trouver le nom de l’écran (SCREEN) :
+xrandr --query
+Vous verrez une ligne comme eDP-1 connected ...
+Quelques exemples : eDP-1, eDP-0, eDP, LVDS-1, LVDS
+
+Trouver le nom du tactile (TOUCH) :
+xinput list
+Vous devez repérer votre écran tactile, parfois dans Virtual core pointer
+Exemple : ELAN9009:00 04F3:2EC1
