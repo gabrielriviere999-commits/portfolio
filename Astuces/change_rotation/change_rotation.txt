@@ -1,4 +1,5 @@
-Pour changer la rotation d'écran tout en gardant les bonnes positions pour l'écran tactile :
+Pour changer la rotation d'écran tout en gardant les bonnes positions pour l'écran tactile sur XFCE :
+(GNOME ou KDE n'ont pas besoin de ces scripts, aller dans les paramètres suffit.)
 Vous pouvez exécuter un des scripts rotate_X.sh
 https://gabrielriviere999-commits.github.io/portfolio/Astuces/change_rotation/change_rotation.zip
 
@@ -21,6 +22,7 @@ Vous pouvez ajouter les fichiers à votre barre d'outils.
 ---
 
 Bonus : Rendre une fenetre transparente
+(Fonctionne aussi bien sur XFCE, GNOME, KDE ou autres...)
 https://gabrielriviere999-commits.github.io/portfolio/Astuces/Transparence/transparence20.sh
 https://gabrielriviere999-commits.github.io/portfolio/Astuces/Transparence/opaque.sh
 Ouvrir le terminal dans le dossier contenant les scripts
