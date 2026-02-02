@@ -17,7 +17,7 @@ Exemple : ELAN9009:00 04F3:2EC1
 Pour exécuter les scripts :
 Ouvrir le terminal dans le dossier contenant les scripts
 chmod +x rotate_*.sh
-Vous pouvez ajouter les fichiers à votre barre d'outils.
+Vous pouvez ajouter les fichiers à votre barre d'outils ou raccourcis claviers.
 Lors de la déconnexion/extinction/redémarrage, tout redevient à la normale.
 
 ---
@@ -29,4 +29,4 @@ https://gabrielriviere999-commits.github.io/portfolio/Astuces/Transparence/opaqu
 Ouvrir le terminal dans le dossier contenant les scripts
 chmod +x transparence20.sh
 chmod +x opaque.sh
-Vous pouvez ajouter les fichiers à votre barre d'outils.
+Vous pouvez ajouter les fichiers à votre barre d'outils ou raccourcis claviers.
