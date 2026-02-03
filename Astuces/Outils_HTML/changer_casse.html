@@ -31,14 +31,23 @@ button { margin-top: 10px; padding: 6px 10px; }
 // Compatibilité maximale (ES3)
 // ------------------------------
 
+function setText(el, txt) {
+    if (el.textContent !== undefined) el.textContent = txt;
+    else el.innerText = txt; // IE6/IE7
+}
+
+function getText(el) {
+    return (el.textContent !== undefined) ? el.textContent : el.innerText;
+}
+
 function minuscule() {
   var txt = document.getElementById("input").value;
-  document.getElementById("output").textContent = txt.toLowerCase();
+  setText(document.getElementById("output"), txt.toLowerCase());
 }
 
 function majuscule() {
   var txt = document.getElementById("input").value;
-  document.getElementById("output").textContent = txt.toUpperCase();
+  setText(document.getElementById("output"), txt.toUpperCase());
 }
 
 function inverser() {
@@ -50,7 +59,7 @@ function inverser() {
     var upper = c.toUpperCase();
     out += (c === lower) ? upper : lower;
   }
-  document.getElementById("output").textContent = out;
+  setText(document.getElementById("output"), out);
 }
 
 // Bouton copier compatible anciens navigateurs
@@ -70,7 +79,7 @@ function copier() {
 // Bouton Effacer tout
 function effacerTout() {
   document.getElementById("input").value = "";
-  document.getElementById("output").textContent = "";
+  setText(document.getElementById("output"), "");
 
   localStorage.removeItem("casse_input");
   localStorage.removeItem("casse_output");
@@ -82,7 +91,7 @@ function effacerTout() {
 
 function saveState() {
   localStorage.setItem("casse_input", document.getElementById("input").value);
-  localStorage.setItem("casse_output", document.getElementById("output").textContent);
+  localStorage.setItem("casse_output", getText(document.getElementById("output")));
 }
 
 document.getElementById("input").oninput = saveState;
@@ -93,7 +102,7 @@ window.onload = function() {
   var savedOutput = localStorage.getItem("casse_output");
 
   if (savedInput !== null) document.getElementById("input").value = savedInput;
-  if (savedOutput !== null) document.getElementById("output").textContent = savedOutput;
+  if (savedOutput !== null) setText(document.getElementById("output"), savedOutput);
 };
 </script>
 

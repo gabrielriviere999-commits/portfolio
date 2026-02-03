@@ -36,6 +36,15 @@ Largeur max : <input id="maxwidth" value="120" size="4">
 // Compatibilité maximale (ES3)
 // ------------------------------
 
+function setText(el, txt) {
+    if (el.textContent !== undefined) el.textContent = txt;
+    else el.innerText = txt; // IE6/IE7
+}
+
+function getText(el) {
+    return (el.textContent !== undefined) ? el.textContent : el.innerText;
+}
+
 function repeat(str, n) {
   var out = "";
   for (var i = 0; i < n; i++) out += str;
@@ -148,12 +157,12 @@ function convertir() {
   }
 
   var table = asciiTable(rows, maxWidth);
-  document.getElementById("output").textContent = table;
+  setText(document.getElementById("output"), table);
 }
 
 // Bouton copier compatible anciens navigateurs
 function copier() {
-  var texte = document.getElementById("output").textContent;
+  var texte = getText(document.getElementById("output"));
 
   var temp = document.createElement("textarea");
   temp.value = texte;
@@ -168,7 +177,7 @@ function copier() {
 // Bouton Effacer tout
 function effacerTout() {
   document.getElementById("input").value = "";
-  document.getElementById("output").textContent = "";
+  setText(document.getElementById("output"), "");
 
   // Efface la sauvegarde
   localStorage.removeItem("input_text");
@@ -190,7 +199,7 @@ function resetParams() {
 
 function saveState() {
   localStorage.setItem("input_text", document.getElementById("input").value);
-  localStorage.setItem("output_text", document.getElementById("output").textContent);
+  localStorage.setItem("output_text", getText(document.getElementById("output")));
   localStorage.setItem("sep", document.getElementById("sep").value);
   localStorage.setItem("maxwidth", document.getElementById("maxwidth").value);
 }
@@ -207,7 +216,7 @@ window.onload = function() {
   var savedMax = localStorage.getItem("maxwidth");
 
   if (savedInput !== null) document.getElementById("input").value = savedInput;
-  if (savedOutput !== null) document.getElementById("output").textContent = savedOutput;
+  if (savedOutput !== null) setText(document.getElementById("output"), savedOutput);
   if (savedSep !== null) document.getElementById("sep").value = savedSep;
   if (savedMax !== null) document.getElementById("maxwidth").value = savedMax;
 };
