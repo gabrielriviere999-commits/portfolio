@@ -128,6 +128,10 @@ function asciiTable(rows, MAX_TABLE_WIDTH) {
         var txt = wrappedCells[c][h] || "";
         line += padRight(txt, widths[c]) + " | ";
       }
+
+      // Ici : on enlève UNIQUEMENT le dernier espace
+      line = line.substring(0, line.length - 1);
+
       out += line + "\n";
     }
 
