@@ -5,7 +5,7 @@
 Mettre en place un cluster MariaDB Galera hautement disponible avec :
 
 * 2 nœuds MariaDB : web1, web2
-* 1 HAProxy pour l’accès applicatif
+* 1 HAProxy pour l'accès applicatif
 * Réplication synchrone des données
 * Bascule automatique en cas de panne
 
@@ -220,6 +220,5 @@ SHOW STATUS LIKE 'wsrep_%';
 
 MariaDB Galera est correctement installé
 Le cluster est fonctionnel et synchronisé
-L’architecture est prête pour HAProxy
+L'architecture est prête pour HAProxy
 ⚠️ Ajouter un 3ème nœud ou garbd pour la production
-
