@@ -28,11 +28,6 @@ label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical
 <label><input type="checkbox" id="chk_squo">Demi‑guillemets → '</label>
 <br>
 <button onclick="toutDecocher()" style="background-color:#ffaa00; color:black;">Tout décocher</button>
-<h4>Remplacements personnalisés</h4>
-<div id="repl_container"></div>
-<button onclick="ajouterRemplacement()" style="background-color:#dddddd;">
-  Ajouter un remplacement
-</button>
 <br><br>
 <button onclick="appliquerTransformations()" style="background-color:#ff8800; color:black;">Appliquer</button>
 <button onclick="copier()" style="background-color:#4CAF50; color:black;">Copier</button>
@@ -105,7 +100,6 @@ function appliquerTransformations() {
     txt = txt.replace(/[‘’‚‛`]/g, "'");
   }
 
-  txt = appliquerRemplacementsPersonnalises(txt);
   setText(document.getElementById("output"), txt);
 }
 
@@ -308,88 +302,7 @@ window.onload = function() {
   if (cspc !== null) document.getElementById("chk_spc").checked = (cspc === "1");
   if (cquo !== null) document.getElementById("chk_quo").checked = (cquo === "1");
   if (csquo !== null) document.getElementById("chk_squo").checked = (csquo === "1");
-
-  chargerReplacements();
 };
-
-/* ============================================================
-   Remplacements personnalisés — Bloc complet, autonome, ES3
-   ============================================================ */
-
-function ajouterRemplacement(from, to) {
-  var cont = document.getElementById("repl_container");
-
-  var div = document.createElement("div");
-
-  var inp1 = document.createElement("input");
-  inp1.type = "text";
-  inp1.value = from || "";
-  inp1.placeholder = "chercher";
-
-  var inp2 = document.createElement("input");
-  inp2.type = "text";
-  inp2.value = to || "";
-  inp2.placeholder = "remplacer";
-
-  var btn = document.createElement("button");
-  btn.textContent = "X";
-  btn.onclick = function() {
-    cont.removeChild(div);
-    saveReplacements();
-  };
-
-  div.appendChild(inp1);                         // children[0]
-  div.appendChild(document.createTextNode(" → "));
-  div.appendChild(inp2);                         // children[1]
-  div.appendChild(btn);                          // children[2]
-
-  cont.appendChild(div);
-
-  inp1.oninput = saveReplacements;
-  inp2.oninput = saveReplacements;
-
-  saveReplacements();
-}
-
-function saveReplacements() {
-  var cont = document.getElementById("repl_container");
-  var list = [];
-
-  for (var i = 0; i < cont.children.length; i++) {
-    var div = cont.children[i];
-    var from = div.children[0].value;
-    var to   = div.children[1].value;
-    list.push({from: from, to: to});
-  }
-
-  localStorage.setItem("repl_list", JSON.stringify(list));
-}
-
-function chargerReplacements() {
-  var saved = localStorage.getItem("repl_list");
-  if (saved) {
-    var arr = JSON.parse(saved);
-    for (var i = 0; i < arr.length; i++) {
-      ajouterRemplacement(arr[i].from, arr[i].to);
-    }
-  }
-}
-
-function appliquerRemplacementsPersonnalises(txt) {
-  var cont = document.getElementById("repl_container");
-
-  for (var i = 0; i < cont.children.length; i++) {
-    var div = cont.children[i];
-    var from = div.children[0].value;
-    var to   = div.children[1].value;
-
-    if (from !== "") {
-      txt = txt.split(from).join(to); // ES3 compatible
-    }
-  }
-
-  return txt;
-}
 </script>
 
 </body>
