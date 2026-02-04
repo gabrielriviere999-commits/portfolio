@@ -21,6 +21,7 @@ label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical
 <label><input type="checkbox" id="chk_min"> minuscule</label>
 <label><input type="checkbox" id="chk_maj"> MAJUSCULE</label>
 <label><input type="checkbox" id="chk_inv"> Inverser casse</label>
+<br>
 <label><input type="checkbox" id="chk_acc"> Sans accents</label>
 <label><input type="checkbox" id="chk_spc"> Nettoyer espaces</label>
 <br>
@@ -89,6 +90,22 @@ function appliquerTransformations() {
   }
 
   setText(document.getElementById("output"), txt);
+}
+
+function exclusiviteCasse(chk) {
+  if (chk === "min") {
+    document.getElementById("chk_maj").checked = false;
+    document.getElementById("chk_inv").checked = false;
+  }
+  if (chk === "maj") {
+    document.getElementById("chk_min").checked = false;
+    document.getElementById("chk_inv").checked = false;
+  }
+  if (chk === "inv") {
+    document.getElementById("chk_min").checked = false;
+    document.getElementById("chk_maj").checked = false;
+  }
+  saveChecks();
 }
 
 function toutDecocher() {
@@ -226,9 +243,20 @@ function saveChecks() {
   localStorage.setItem("chk_spc", document.getElementById("chk_spc").checked ? "1" : "0");
 }
 
-document.getElementById("chk_min").onchange = saveChecks;
-document.getElementById("chk_maj").onchange = saveChecks;
-document.getElementById("chk_inv").onchange = saveChecks;
+document.getElementById("chk_min").onchange = function() {
+  exclusiviteCasse("min");
+  saveChecks();
+};
+
+document.getElementById("chk_maj").onchange = function() {
+  exclusiviteCasse("maj");
+  saveChecks();
+};
+
+document.getElementById("chk_inv").onchange = function() {
+  exclusiviteCasse("inv");
+  saveChecks();
+};
 document.getElementById("chk_acc").onchange = saveChecks;
 document.getElementById("chk_spc").onchange = saveChecks;
 
