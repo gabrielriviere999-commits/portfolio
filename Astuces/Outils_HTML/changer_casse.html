@@ -24,6 +24,7 @@ label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical
 <br>
 <label><input type="checkbox" id="chk_acc">Sans accents</label>
 <label><input type="checkbox" id="chk_spc">Nettoyer espaces</label>
+<label><input type="checkbox" id="chk_quo">Guillemets → "</label>
 <br>
 <button onclick="toutDecocher()" style="background-color:#ffaa00; color:black;">Tout décocher</button>
 
@@ -89,6 +90,11 @@ function appliquerTransformations() {
     txt = txt.replace(/ /g, "_");
   }
 
+  // 6) convertir guillemets typographiques → "
+  if (document.getElementById("chk_quo").checked) {
+    txt = txt.replace(/[«»“”„‟❝❞⹂〝〞〟＂『』「」]/g, '"');
+  }
+
   setText(document.getElementById("output"), txt);
 }
 
@@ -114,6 +120,7 @@ function toutDecocher() {
   document.getElementById("chk_inv").checked = false;
   document.getElementById("chk_acc").checked = false;
   document.getElementById("chk_spc").checked = false;
+  document.getElementById("chk_quo").checked = false;
   saveChecks();
 }
 
@@ -241,6 +248,7 @@ function saveChecks() {
   localStorage.setItem("chk_inv", document.getElementById("chk_inv").checked ? "1" : "0");
   localStorage.setItem("chk_acc", document.getElementById("chk_acc").checked ? "1" : "0");
   localStorage.setItem("chk_spc", document.getElementById("chk_spc").checked ? "1" : "0");
+  localStorage.setItem("chk_quo", document.getElementById("chk_quo").checked ? "1" : "0");
 }
 
 document.getElementById("chk_min").onchange = function() {
@@ -259,6 +267,7 @@ document.getElementById("chk_inv").onchange = function() {
 };
 document.getElementById("chk_acc").onchange = saveChecks;
 document.getElementById("chk_spc").onchange = saveChecks;
+document.getElementById("chk_quo").onchange = saveChecks;
 
 document.getElementById("input").oninput = saveState;
 document.getElementById("output").oninput = saveState;
@@ -275,12 +284,14 @@ window.onload = function() {
   var cinv = localStorage.getItem("chk_inv");
   var cacc = localStorage.getItem("chk_acc");
   var cspc = localStorage.getItem("chk_spc");
+  var cquo = localStorage.getItem("chk_quo");
 
   if (cmin !== null) document.getElementById("chk_min").checked = (cmin === "1");
   if (cmaj !== null) document.getElementById("chk_maj").checked = (cmaj === "1");
   if (cinv !== null) document.getElementById("chk_inv").checked = (cinv === "1");
   if (cacc !== null) document.getElementById("chk_acc").checked = (cacc === "1");
   if (cspc !== null) document.getElementById("chk_spc").checked = (cspc === "1");
+  if (cquo !== null) document.getElementById("chk_quo").checked = (cquo === "1");
 };
 </script>
 
