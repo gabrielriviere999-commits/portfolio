@@ -17,7 +17,7 @@ mkdir -p ~/dicos/fr_dict
 ### b) Télécharger le dictionnaire
 
 * Va sur : [Reader-Dict Français](https://www.reader-dict.com/download/fr)
-* Télécharge “StarDict Full version” (dict-fr-fr.zip) dans ton dossier Téléchargements
+* Télécharge "StarDict Full version" (dict-fr-fr.zip) dans ton dossier Téléchargements
 
 ### c) Décompresser le dictionnaire
 
@@ -90,4 +90,4 @@ Résultat final :
 * Dictionnaire français moderne complet (~2 M mots)
 * Traduction français ↔ anglais hors ligne
 * Recherche 100 % locale
-* Pas besoin d’internet pour chercher des mots
+* Pas besoin d'internet pour chercher des mots
