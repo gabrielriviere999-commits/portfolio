@@ -17,11 +17,16 @@ button { margin-top: 10px; padding: 6px 10px; }
 <textarea id="input"></textarea>
 
 <br>
-<button onclick="minuscule()" style="background-color:#ff8800; color:black;">minuscule</button>
-<button onclick="majuscule()" style="background-color:#ff8800; color:black;">MAJUSCULE</button>
-<button onclick="inverser()" style="background-color:#ff8800; color:black;">Inverser Casse</button>
-<button onclick="sansAccentsBouton()" style="background-color:#ff8800; color:black;">Sans accents</button>
-<button onclick="nettoyerEspaces()" style="background-color:#ff8800; color:black;">Nettoyer espaces</button>
+<label><input type="checkbox" id="chk_min"> minuscule</label>
+<label><input type="checkbox" id="chk_maj"> MAJUSCULE</label>
+<label><input type="checkbox" id="chk_inv"> Inverser casse</label>
+<label><input type="checkbox" id="chk_acc"> Sans accents</label>
+<label><input type="checkbox" id="chk_spc"> Nettoyer espaces</label>
+<br>
+<button onclick="toutDecocher()" style="background-color:#ffaa00; color:black;">Tout décocher</button>
+
+<br><br>
+<button onclick="appliquerTransformations()" style="background-color:#ff8800; color:black;">Appliquer</button>
 <button onclick="copier()" style="background-color:#4CAF50; color:black;">Copier</button>
 <button onclick="effacerTout()" style="background-color:#ff4444; color:black;">Effacer tout</button>
 
@@ -42,26 +47,56 @@ function getText(el) {
     return (el.textContent !== undefined) ? el.textContent : el.innerText;
 }
 
-function minuscule() {
+function appliquerTransformations() {
   var txt = document.getElementById("input").value;
-  setText(document.getElementById("output"), txt.toLowerCase());
-}
 
-function majuscule() {
-  var txt = document.getElementById("input").value;
-  setText(document.getElementById("output"), txt.toUpperCase());
-}
-
-function inverser() {
-  var txt = document.getElementById("input").value;
-  var out = "";
-  for (var i = 0; i < txt.length; i++) {
-    var c = txt.charAt(i);
-    var lower = c.toLowerCase();
-    var upper = c.toUpperCase();
-    out += (c === lower) ? upper : lower;
+  // 1) minuscule
+  if (document.getElementById("chk_min").checked) {
+    txt = txt.toLowerCase();
   }
-  setText(document.getElementById("output"), out);
+
+  // 2) majuscule
+  if (document.getElementById("chk_maj").checked) {
+    txt = txt.toUpperCase();
+  }
+
+  // 3) inverser casse
+  if (document.getElementById("chk_inv").checked) {
+    var out = "";
+    for (var i = 0; i < txt.length; i++) {
+      var c = txt.charAt(i);
+      var lower = c.toLowerCase();
+      var upper = c.toUpperCase();
+      out += (c === lower) ? upper : lower;
+    }
+    txt = out;
+  }
+
+  // 4) sans accents
+  if (document.getElementById("chk_acc").checked) {
+    txt = sansAccents(txt);
+  }
+
+  // 5) nettoyer espaces
+  if (document.getElementById("chk_spc").checked) {
+    // tabulations → _
+    txt = txt.replace(/\t/g, "_");
+    // espaces multiples → un seul espace
+    txt = txt.replace(/ +/g, " ");
+    // espace simple → _
+    txt = txt.replace(/ /g, "_");
+  }
+
+  setText(document.getElementById("output"), txt);
+}
+
+function toutDecocher() {
+  document.getElementById("chk_min").checked = false;
+  document.getElementById("chk_maj").checked = false;
+  document.getElementById("chk_inv").checked = false;
+  document.getElementById("chk_acc").checked = false;
+  document.getElementById("chk_spc").checked = false;
+  saveChecks();
 }
 
 function sansAccents(str) {
@@ -150,25 +185,6 @@ function sansAccents(str) {
   return out;
 }
 
-function sansAccentsBouton() {
-  var txt = document.getElementById("input").value;
-  setText(document.getElementById("output"), sansAccents(txt));
-}
-
-function nettoyerEspaces() {
-  var txt = document.getElementById("input").value;
-
-  // 1) Tabulations → _
-  txt = txt.replace(/\t/g, "_");
-
-  // 2) Espaces multiples → un seul espace
-  txt = txt.replace(/ +/g, " ");
-
-  // 3) Espace simple → _
-  txt = txt.replace(/ /g, "_");
-
-  setText(document.getElementById("output"), txt);
-}
 // Bouton copier compatible anciens navigateurs
 function copier() {
   var texte = document.getElementById("output").textContent;
@@ -201,6 +217,20 @@ function saveState() {
   localStorage.setItem("casse_output", getText(document.getElementById("output")));
 }
 
+function saveChecks() {
+  localStorage.setItem("chk_min", document.getElementById("chk_min").checked ? "1" : "0");
+  localStorage.setItem("chk_maj", document.getElementById("chk_maj").checked ? "1" : "0");
+  localStorage.setItem("chk_inv", document.getElementById("chk_inv").checked ? "1" : "0");
+  localStorage.setItem("chk_acc", document.getElementById("chk_acc").checked ? "1" : "0");
+  localStorage.setItem("chk_spc", document.getElementById("chk_spc").checked ? "1" : "0");
+}
+
+document.getElementById("chk_min").onchange = saveChecks;
+document.getElementById("chk_maj").onchange = saveChecks;
+document.getElementById("chk_inv").onchange = saveChecks;
+document.getElementById("chk_acc").onchange = saveChecks;
+document.getElementById("chk_spc").onchange = saveChecks;
+
 document.getElementById("input").oninput = saveState;
 document.getElementById("output").oninput = saveState;
 
@@ -210,6 +240,18 @@ window.onload = function() {
 
   if (savedInput !== null) document.getElementById("input").value = savedInput;
   if (savedOutput !== null) setText(document.getElementById("output"), savedOutput);
+
+  var cmin = localStorage.getItem("chk_min");
+  var cmaj = localStorage.getItem("chk_maj");
+  var cinv = localStorage.getItem("chk_inv");
+  var cacc = localStorage.getItem("chk_acc");
+  var cspc = localStorage.getItem("chk_spc");
+
+  if (cmin !== null) document.getElementById("chk_min").checked = (cmin === "1");
+  if (cmaj !== null) document.getElementById("chk_maj").checked = (cmaj === "1");
+  if (cinv !== null) document.getElementById("chk_inv").checked = (cinv === "1");
+  if (cacc !== null) document.getElementById("chk_acc").checked = (cacc === "1");
+  if (cspc !== null) document.getElementById("chk_spc").checked = (cspc === "1");
 };
 </script>
 
