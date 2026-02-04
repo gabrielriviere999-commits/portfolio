@@ -107,7 +107,6 @@ var docs = [
   {title:"majuscule_macos.py", url:"Astuces/Autres_OS/macOS/majuscule_macos.py", content:"majuscule_macos.py "},
   {title:"tableau_clipboard_macos.py", url:"Astuces/Autres_OS/macOS/tableau_clipboard_macos.py", content:"tableau_clipboard_macos.py "},
   {title:"tableau_ascii.html", url:"Astuces/Outils_HTML/tableau_ascii.html", content:"tableau_ascii.html      Tableau ASCII   			  Tableau ASCII  Séparateur :  &nbsp;&nbsp; Largeur max :  Valeurs par défaut      Convertir en tableau ASCII Copier Effacer tout  Résultat       "},
-  {title:"Outils.html", url:"Astuces/Outils_HTML/Outils.html", content:"Outils.html    Outils   Outils  Tableau ASCII Remplacer texte   "},
-  {title:"outils.html", url:"Astuces/Outils_HTML/outils.html", content:"outils.html    Outils   Outils  Tableau ASCII Changer la casse   "},
+  {title:"outils.html", url:"Astuces/Outils_HTML/outils.html", content:"outils.html    Outils   Outils  Tableau ASCII Remplacer texte   "},
   {title:"remplacer_texte.html", url:"Astuces/Outils_HTML/remplacer_texte.html", content:"remplacer_texte.html      Remplacer texte     Remplacer le texte    minuscule MAJUSCULE iNVERSER CASSE  Sans accents Nettoyer espaces Guillemets → \" Demi‑guillemets → '  Tout décocher  Ajouter un remplacement  Appliquer Copier Effacer tout  Résultat       "}
 ];
