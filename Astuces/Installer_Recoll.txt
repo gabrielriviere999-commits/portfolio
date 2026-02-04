@@ -1,31 +1,31 @@
 Pour installer Recoll sur Linux (y compris MX Linux), vous pouvez suivre la documentation
 officielle ou les guides communautaires. Voici les ressources les plus utiles et fiables.
 Application de recherche de documents par leurs contenus.
-## Documentation officielle d’installation de Recoll
+## Documentation officielle d'installation de Recoll
 
 ### [Recoll Downloads & Installation Guide (site officiel)](https://www.recoll.org/pages/download.html)
-    • Contient les instructions pour :
-    •   - Télécharger les paquets .deb, .rpm, ou Flatpak
-    •   - Compiler Recoll depuis les sources si nécessaire
-    •   - Installer les dépendances pour les formats de fichiers spécifiques (PDF, DOC, etc.)
-    • - Mentionne les outils complémentaires comme aspell pour les suggestions orthographiques
+Contient les instructions pour :
+- Télécharger les paquets .deb, .rpm, ou Flatpak
+- Compiler Recoll depuis les sources si nécessaire
+- Installer les dépendances pour les formats de fichiers spécifiques (PDF, DOC, etc.)
+- Mentionne les outils complémentaires comme aspell pour les suggestions orthographiques
 
 ## Guide communautaire francophone
 
 ### [Wiki Ubuntu-fr : Recoll](https://doc.ubuntu-fr.org/recoll)
-    • Explication claire des fonctionnalités
-    • - Instructions pour l’installation via APT :
-    •   sudo apt update
-    •   sudo apt install recoll
-    • - Conseils pour configurer l’indexation et lancer la recherche
-    • - Comparaison avec d’autres outils comme Spotlight ou Copernic
+Explication claire des fonctionnalités
+- Instructions pour l'installation via APT :
+sudo apt update
+sudo apt install recoll
+- Conseils pour configurer l'indexation et lancer la recherche
+- Comparaison avec d'autres outils comme Spotlight ou Copernic
 
-## 🛠Installation via Flatpak (alternative)
+## Installation via Flatpak (alternative)
 
 ### [Recoll sur Flathub](https://flathub.org/fr/apps/org.recoll.recoll)
-    • Si vous utilisez Flatpak, vous pouvez installer Recoll avec :
-    •   flatpak install flathub org.recoll.recoll
-    • - Permet d’avoir une version plus récente que celle des dépôts Debian/MX
+Si vous utilisez Flatpak, vous pouvez installer Recoll avec :
+flatpak install flathub org.recoll.recoll
+- Permet d'avoir une version plus récente que celle des dépôts Debian/MX
     
 Formats déjà inclus : .txt	.html/.htm	.xml	.mail/.eml	.mbox
 +--------------------+---------------------+----------------------------------+
