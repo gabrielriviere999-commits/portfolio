@@ -23,7 +23,7 @@ Elle ne nécessite pas de logiciel client, tout se passe sur le navigateur avec 
 intuitive.
 Les protocoles supportés par Guacamole :
 +-------+--------------+---------------------------------------------+-------------------------------------------------+
-| Proto | Nom complet  | Utilité principale                          | Cas d’usage typique                             |
+| Proto | Nom complet  | Utilité principale                          | Cas d'usage typique                             |
 | cole  |              |                                             |                                                 |
 +-------+--------------+---------------------------------------------+-------------------------------------------------+
 | RDP   | Remote       | Permet de se connecter à un bureau Windows  | Administration de serveurs Windows, télétravail |
@@ -32,7 +32,7 @@ Les protocoles supportés par Guacamole :
 +-------+--------------+---------------------------------------------+-------------------------------------------------+
 | VNC   | Virtual      | Fournit un accès graphique générique à un   | Contrôle à distance de postes Linux, macOS ou   |
 |       | Network      | bureau distant, indépendant du système      | autres systèmes avec interface graphique.       |
-|       | Computing    | d’exploitation.                             |                                                 |
+|       | Computing    | d'exploitation.                             |                                                 |
 +-------+--------------+---------------------------------------------+-------------------------------------------------+
 | SSH   | Secure Shell | Connexion sécurisée en ligne de commande    | Administration de serveurs Linux/Unix,          |
 |       |              | (terminal) à un serveur ou poste distant.   | exécution de commandes, transfert sécurisé de   |
@@ -48,7 +48,7 @@ Les protocoles supportés par Guacamole :
 +-------+---------------------------------------------+---------------------------------------------+---------------------------------------------------+
 | VNC   | - Moins performant que RDP (transmet des    | - Sécurité limitée par défaut (souvent sans | - Très universel : fonctionne sur Windows, Linux, |
 |       | images brutes du bureau).                   | chiffrement).                               | macOS, et systèmes embarqués.                     |
-|       | - Peut être lent sur connexions faibles.    | - Peut être renforcé via tunnels SSH ou VPN.| - Large choix d’implémentations (RealVNC,         |
+|       | - Peut être lent sur connexions faibles.    | - Peut être renforcé via tunnels SSH ou VPN.| - Large choix d'implémentations (RealVNC,         |
 |       |                                             |                                             | TightVNC, TigerVNC).                              |
 +-------+---------------------------------------------+---------------------------------------------+---------------------------------------------------+
 | SSH   | - Très léger et rapide (texte uniquement).  | - Très sécurisé : chiffrement fort,         | - Compatible avec tous les systèmes Unix/Linux.   |
@@ -73,15 +73,15 @@ accéder aux ressources.
 Il protège un réseau ou serveur en complément d'une solution de sécurité informatique globale, incluant
 firewall, SOC, EDR/XDR et MFA informatique.
 +-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
-| Terme | Nom complet           | Définition                                           | Utilité principale             | Exemple d’usage                 |
+| Terme | Nom complet           | Définition                                           | Utilité principale             | Exemple d'usage                 |
 |       |                       |                                                      |                                |                                 |
 +-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
-| Fire  | Pare-feu              | Système de sécurité réseau qui filtre le trafic      | Empêche les connexions non     | Bloquer l’accès d’une adresse   |
+| Fire  | Pare-feu              | Système de sécurité réseau qui filtre le trafic      | Empêche les connexions non     | Bloquer l'accès d'une adresse   |
 | wall  |                       | entrant et sortant selon des règles prédéfinies.     | autorisées et protège contre   | IP suspecte à un serveur.       |
 |       |                       |                                                      | les attaques externes.         |                                 |
 +-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
 | SOC   | Security Operations   | Équipe et infrastructure dédiées à la surveillance,  | Supervision continue de la     | Une banque surveille en temps   |
-|       | Center                | détection et réponse aux incidents de sécurité.      | sécurité informatique d’une    | réel ses systèmes pour détecter |
+|       | Center                | détection et réponse aux incidents de sécurité.      | sécurité informatique d'une    | réel ses systèmes pour détecter |
 |       |                       |                                                      | organisation.                  |  des intrusions.                |
 +-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
 | EDR/  | Endpoint Detection &  | Outils de sécurité qui analysent et répondent aux    | Détection avancée des          | Bloquer un ransomware détecté   |
@@ -89,7 +89,7 @@ firewall, SOC, EDR/XDR et MFA informatique.
 |       | Detection & Response  | élargie sur plusieurs vecteurs (XDR).                | réponse automatisée aux        | analyser sa propagation.        |
 |       |                       |                                                      | attaques.                      |                                 |
 +-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
-| MFA   | Multi-Factor          | Méthode d’authentification qui combine plusieurs     | Renforce la sécurité des accès | Connexion à une messagerie      |
+| MFA   | Multi-Factor          | Méthode d'authentification qui combine plusieurs     | Renforce la sécurité des accès | Connexion à une messagerie      |
 |       | Authentication        | facteurs (mot de passe, SMS, biométrie, etc.).       | en réduisant le risque lié au  | nécessitant un mot de passe +   |
 |       |                       |                                                      | vol de mots de passe.          | code SMS.                       |
 +-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
@@ -102,7 +102,7 @@ firewall, SOC, EDR/XDR et MFA informatique.
 +-------+--------------------------------------------------+-----------------------------------------------------------------------+
 | SOC   | - Surveillance continue 24/7                     | - Coût élevé (infrastructure + personnel)                             |
 |       | - Détection rapide des incidents                 | - Complexité organisationnelle                                        |
-|       | - Expertise humaine et outils avancés combinés   | - Peut générer trop d’alertes (fatigue des analystes)                 |
+|       | - Expertise humaine et outils avancés combinés   | - Peut générer trop d'alertes (fatigue des analystes)                 |
 +-------+--------------------------------------------------+-----------------------------------------------------------------------+
 | EDR/  | - Détection comportementale avancée              | - Nécessite une bonne intégration avec les autres outils              |
 | XDR   | - Détection comportementale avancée              | - Risque de faux positifs qui perturbent les utilisateurs             |
