@@ -55,10 +55,10 @@ Activez la configuration :
 sudo ln -s /etc/nginx/sites-available/glpi /etc/nginx/sites-enabled/
 sudo systemctl restart nginx
 
-6. Finalisation via l’interface web
+6. Finalisation via l'interface web
 	1. Ouvrez http://glpi.mon_domaine.com/install.php
 	2. Suivez les instructions pour configurer GLPI
 	3. Connectez-vous avec glpi/glpi (identifiants par défaut)
 
-Une fois installé, pensez à supprimer le dossier install pour sécuriser l’application :
+Une fois installé, pensez à supprimer le dossier install pour sécuriser l'application :
 sudo rm -rf /var/www/glpi/install
