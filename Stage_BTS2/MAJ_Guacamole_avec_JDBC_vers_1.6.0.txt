@@ -20,7 +20,7 @@ cd /tmp
 wget https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-1.6.0.war
 sudo mv guacamole-1.6.0.war /opt/tomcat9/webapps/guacamole.war
 
-# 4. Mettre à jour l’extension JDBC
+# 4. Mettre à jour l'extension JDBC
 cd /tmp
 wget https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-auth-jdbc-1.6.0.tar.gz
 tar -xvzf guacamole-auth-jdbc-1.6.0.tar.gz
