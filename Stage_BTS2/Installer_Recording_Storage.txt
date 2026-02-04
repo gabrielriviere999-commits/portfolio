@@ -1,4 +1,4 @@
-# 1. Télécharger et installer l’extension Recording Storage
+# 1. Télécharger et installer l'extension Recording Storage
 cd /tmp
 wget https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-history-recording-storage-1.6.0.tar.gz
 tar -xvzf guacamole-history-recording-storage-1.6.0.tar.gz
@@ -33,8 +33,8 @@ Nom de l'enregistrement:
 Cocher seulement Créer automatiquement le chemin d'enregistrement
 
 
-L’extension .jar est installée dans /etc/guacamole/extensions/.
+L'extension .jar est installée dans /etc/guacamole/extensions/.
 Les enregistrements seront stockés dans /var/lib/guacamole/recordings.
-Guacamole redémarre et tu peux rejouer les sessions directement depuis l’historique.
-L’extension ne peut enregistrer que des flux graphiques (RDP, VNC).
+Guacamole redémarre et tu peux rejouer les sessions directement depuis l'historique.
+L'extension ne peut enregistrer que des flux graphiques (RDP, VNC).
 Il n'est pas possible d'enregistrer une session sans interface graphique.
