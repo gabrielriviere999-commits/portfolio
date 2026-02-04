@@ -1,4 +1,4 @@
-# 📘 Documentation : Installation et Configuration d’Apache Guacamole sans JDBC sur Ubuntu 24.04 LTS
+# 📘 Documentation : Installation et Configuration d'Apache Guacamole sans JDBC sur Ubuntu 24.04 LTS
 
 ## 0. Nettoyage
 [1] Arrêter les services
@@ -42,7 +42,7 @@ sudo apt autoremove -y
 [7] Nettoyer caches
 sudo apt clean
 
-[8] Vérifier qu’il ne reste rien
+[8] Vérifier qu'il ne reste rien
 dpkg -l | grep tomcat
 dpkg -l | grep guacamole
 dpkg -l | grep mysql
@@ -192,7 +192,7 @@ sudo nano /etc/guacamole/guacamole.properties
 guacd-hostname: localhost
 guacd-port: 4822
 
-Définir la variable d’environnement :
+Définir la variable d'environnement :
 sudo mkdir -p /etc/systemd/system/tomcat9.service.d
 sudo nano /etc/systemd/system/tomcat9.service.d/guacamole.conf
 
@@ -262,7 +262,7 @@ puis le mot de passe de la machine Debian.
 ---
 
 ## ✅ Résumé corrigé
-- Guacamole 1.6.0 n’est pas compatible avec Tomcat10 → utiliser Tomcat9.  
+- Guacamole 1.6.0 n'est pas compatible avec Tomcat10 → utiliser Tomcat9.  
 - Ton erreur 404 venait du fait que Tomcat utilisait encore '/opt/tomcat3'.  
 - Corrige le service systemd pour pointer vers '/opt/tomcat9'.  
 - Vérifie que 'ps aux | grep tomcat' montre bien '-Dcatalina.base=/opt/tomcat9'.  
