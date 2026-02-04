@@ -2,7 +2,7 @@
     1. Installer Termux
         ◦ Télécharge Termux
     2. Installer Termux:API
-        ◦ Ce paquet permet d’accéder au presse‑papier Android. 
+        ◦ Ce paquet permet d'accéder au presse‑papier Android. 
        pkg install termux-api
     3. Installer Python
         ◦ Nécessaire pour exécuter ton script. 
@@ -26,5 +26,5 @@ Widget Android (Termux:Widget)
        mkdir -p ~/.shortcuts
     3. Copie ton script dedans : 
        cp ~/script.py ~/.shortcuts/
-    4. Sur Android, ajoute le widget Termux:Widget sur ton écran d’accueil.
+    4. Sur Android, ajoute le widget Termux:Widget sur ton écran d'accueil.
 Tu verras ton script apparaitre comme un bouton : un simple tap lance la conversion.
