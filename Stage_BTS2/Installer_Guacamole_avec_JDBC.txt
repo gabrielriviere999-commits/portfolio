@@ -1,4 +1,4 @@
-# 📘 Documentation : Installation et Configuration d’Apache Guacamole avec JDBC sur Ubuntu 24.04 LTS
+# 📘 Documentation : Installation et Configuration d'Apache Guacamole avec JDBC sur Ubuntu 24.04 LTS
 
 ## 0. Nettoyage
 [1] Arrêter les services
@@ -42,7 +42,7 @@ sudo apt autoremove -y
 [7] Nettoyer caches
 sudo apt clean
 
-[8] Vérifier qu’il ne reste rien
+[8] Vérifier qu'il ne reste rien
 dpkg -l | grep tomcat
 dpkg -l | grep guacamole
 dpkg -l | grep mysql
@@ -144,7 +144,7 @@ Group=guacd
 WantedBy=multi-user.target
 
 ### Activer le service :
-sudo useradd -r -s /bin/false guacd   # si l’utilisateur n’existe pas
+sudo useradd -r -s /bin/false guacd   # si l'utilisateur n'existe pas
 sudo systemctl daemon-reexec
 sudo systemctl enable guacd
 sudo systemctl start guacd
@@ -165,7 +165,7 @@ sudo cp /tmp/guacamole-1.5.5.war /opt/tomcat9/webapps/guacamole.war
 4. Redémarrer Tomcat :
 sudo systemctl restart tomcat9
 
-👉 Vérifier que le dossier /opt/tomcat9/webapps/guacamole/ est créé et que l’interface est accessible via :
+👉 Vérifier que le dossier /opt/tomcat9/webapps/guacamole/ est créé et que l'interface est accessible via :
 http://<IP_SERVEUR>:8080/guacamole/
 
 ---
@@ -175,7 +175,7 @@ sudo apt install mariadb-server
 sudo systemctl enable --now mariadb
 sudo mysql_secure_installation
 
-### Création de la base et de l’utilisateur
+### Création de la base et de l'utilisateur
 CREATE DATABASE guacadb;
 CREATE USER 'guaca_nachos'@'localhost' IDENTIFIED BY 'TonMotDePasse';
 GRANT SELECT,INSERT,UPDATE,DELETE ON guacadb.* TO 'guaca_nachos'@'localhost';
@@ -188,7 +188,7 @@ FLUSH PRIVILEGES;
 sudo mkdir -p /etc/guacamole/extensions
 sudo mkdir -p /etc/guacamole/lib
 
-### Télécharger et installer l’extension JDBC :
+### Télécharger et installer l'extension JDBC :
 cd /tmp
 wget https://downloads.apache.org/guacamole/1.5.5/binary/guacamole-auth-jdbc-1.5.5.tar.gz
 tar -xzf guacamole-auth-jdbc-1.5.5.tar.gz
@@ -250,7 +250,6 @@ Identifiants initiaux :
 
 ## 11. Étapes post-installation
 - Créer tes propres utilisateurs.
-- Ajouter des connexions RDP/SSH/VNC via l’interface web.
+- Ajouter des connexions RDP/SSH/VNC via l'interface web.
 - (Optionnel) Configurer un reverse proxy Nginx/Apache pour HTTPS.
-
 
