@@ -5,7 +5,7 @@ Prérequis
 Assurez-vous que les outils suivants sont installés :
 sudo apt update
 sudo apt install ocrmypdf tesseract-ocr tesseract-ocr-fra
-    • ocrmypdf : outil principal pour appliquer l’OCR
+    • ocrmypdf : outil principal pour appliquer l'OCR
     • tesseract-ocr : moteur de reconnaissance optique
     • tesseract-ocr-fra : langue française pour Tesseract
 
@@ -44,9 +44,9 @@ echo "Tous les fichiers PDF ont été convertis avec OCR."
 Fonctionnement
 1. Le script vérifie et crée les dossiers nécessaires.
 2. Il parcourt tous les fichiers .pdf dans pdf_input.
-3. Pour chaque fichier, il applique l’OCR avec les options suivantes :
-◦ --force-ocr : force l’OCR même si le PDF contient déjà du texte
-◦ --rotate-pages : corrige l’orientation des pages
+3. Pour chaque fichier, il applique l'OCR avec les options suivantes :
+◦ --force-ocr : force l'OCR même si le PDF contient déjà du texte
+◦ --rotate-pages : corrige l'orientation des pages
 ◦ --deskew : redresse les pages inclinées
 ◦ -l fra : utilise la langue française
 4. Les fichiers convertis sont enregistrés dans pdf_output
@@ -61,7 +61,7 @@ chmod +x ocr_batch.sh
 
 Résultat
 Tu obtiendras dans pdf_output des fichiers PDF avec une couche texte OCR, consultables et
-sélectionnables dans n’importe quel lecteur PDF.
+sélectionnables dans n'importe quel lecteur PDF.
 
 Tu peux ajouter ton script ocr_batch.sh au menu des applications de MX Linux en créant un fichier .desktop
 
@@ -88,9 +88,9 @@ chmod +x /chemin/vers/ocr_batch.sh
 3. Vérifie dans le menu
 - Ouvre le menu MX Linux
 - Cherche OCR Batch PDF
-- Clique dessus → ton script devrait s’exécuter dans un terminal
+- Clique dessus → ton script devrait s'exécuter dans un terminal
 
-Astuce : changer l’icône
+Astuce : changer l'icône
 Tu peux remplacer Icon=accessories-text-editor par une autre icône disponible dans ton système, comme :
 Icon=utilities-terminal
 Icon=document-send
