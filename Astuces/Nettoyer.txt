@@ -1,19 +1,19 @@
 # Guide complet de nettoyage MX Linux
 *(Flatpak, APT, Steam, caches, noyaux)*
 
-## 1. Vérifier l’espace utilisé dans /var
+## 1. Vérifier l'espace utilisé dans /var
 Pour comprendre ce qui prend de la place :
 sudo du -sh /var/* | sort -h
 
 Le plus souvent, le dossier lourd est :
 /var/lib
-C’est normal : Flatpak stocke tout ici.
+C'est normal : Flatpak stocke tout ici.
 
 ---
 
 # 2. Nettoyage Flatpak
 ## 2.1. Supprimer les runtimes inutilisés
-Flatpak garde des dépendances même après désinstallation d’applis (ex : Steam).
+Flatpak garde des dépendances même après désinstallation d'applis (ex : Steam).
 
 Nettoyer :
 flatpak uninstall --unused
@@ -21,7 +21,7 @@ flatpak uninstall --unused
 ---
 
 ## 2.2. Nettoyer le dépôt OSTree (repo)
-C’est là que Steam laisse le plus de traces.
+C'est là que Steam laisse le plus de traces.
 sudo flatpak repair
 
 Cela supprime les objets inutiles dans :
@@ -41,7 +41,7 @@ Certaines applis laissent des dossiers dans ton home.
 Lister :
 du -sh ~/.var/app/*
 
-Supprimer un dossier d’une appli désinstallée :
+Supprimer un dossier d'une appli désinstallée :
 rm -rf ~/.var/app/ID_DE_L_APPLI
 
 ---
@@ -120,7 +120,7 @@ Lister :
 dpkg --list | grep linux-image
 
 MX Linux garde parfois plusieurs noyaux.  
-Tu peux supprimer les anciens, mais jamais le noyau en cours d’utilisation.
+Tu peux supprimer les anciens, mais jamais le noyau en cours d'utilisation.
 
 ---
 
@@ -130,4 +130,4 @@ Permet de repérer :
 
 - vidéos lourdes
 - dossiers oubliés
-- caches d’applications
+- caches d'applications
