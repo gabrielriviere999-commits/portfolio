@@ -1,5 +1,5 @@
-Configuration d’un partage Samba sur MX Linux
-1. Installer Samba (si ce n’est pas déjà fait)
+Configuration d'un partage Samba sur MX Linux
+1. Installer Samba (si ce n'est pas déjà fait)
 sudo apt update
 sudo apt install samba
 
@@ -45,7 +45,7 @@ sudo ufw allow 139,445/tcp
 Créer un utilisateur Samba (optionnel mais recommandé)
 Si tu veux un accès sécurisé avec identifiants :
 sudo smbpasswd -a mxlinux
-→ Tu définis un mot de passe Samba pour l’utilisateur mxlinux.
+→ Tu définis un mot de passe Samba pour l'utilisateur mxlinux.
 
 Accéder au partage depuis MiXplorer (Android)
 Paramètres à entrer :
