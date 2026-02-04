@@ -1,6 +1,6 @@
 SSH + SFTP + RDP avec Apache Guacamole
 
-1) Préparer le serveur (installation d’OpenSSH)
+1) Préparer le serveur (installation d'OpenSSH)
 sudo apt update
 sudo apt install openssh-server -y
 
@@ -9,17 +9,17 @@ sudo apt install openssh-server -y
 ---
 
 2) Configurer la connexion SSH dans Guacamole
-Dans l’interface web Guacamole :
+Dans l'interface web Guacamole :
 - Aller dans : Paramètres → Connexions → Nouvelle connexion
 - Protocole : SSH
 - Hôte : IP du serveur distant
 - Port : 22
-- Nom d’utilisateur / mot de passe : identifiants du serveur
+- Nom d'utilisateur / mot de passe : identifiants du serveur
 
 ---
 
 3) Activer SFTP
-Dans l’onglet Fichiers de la connexion SSH :
+Dans l'onglet Fichiers de la connexion SSH :
 - Activer le transfert de fichiers
 
 ---
@@ -53,14 +53,14 @@ Le service doit être en état : active (running)
 sudo ufw allow 3389/tcp
 
    5. Installer un environnement graphique léger (XFCE)
-Si votre système n’a pas d’environnement graphique ou si vous souhaitez un bureau plus léger :
+Si votre système n'a pas d'environnement graphique ou si vous souhaitez un bureau plus léger :
 sudo apt install xfce4 -y
 
-   6. Dans l’interface web Guacamole :
+   6. Dans l'interface web Guacamole :
 - Protocole : RDP
 - Hôte : IP du serveur Debian/Ubuntu
 - Port : 3389
-- Nom d’utilisateur / mot de passe : identifiants du système
+- Nom d'utilisateur / mot de passe : identifiants du système
 
 Onglet Enregistrement :
 - Chemin : /var/lib/guacamole/recordings
