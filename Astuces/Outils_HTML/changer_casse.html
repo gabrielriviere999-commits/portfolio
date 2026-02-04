@@ -20,6 +20,7 @@ button { margin-top: 10px; padding: 6px 10px; }
 <button onclick="minuscule()" style="background-color:#ff8800; color:black;">minuscule</button>
 <button onclick="majuscule()" style="background-color:#ff8800; color:black;">MAJUSCULE</button>
 <button onclick="inverser()" style="background-color:#ff8800; color:black;">Inverser Casse</button>
+<button onclick="sansAccentsBouton()" style="background-color:#ff8800; color:black;">Sans accents</button>
 <button onclick="copier()" style="background-color:#4CAF50; color:black;">Copier</button>
 <button onclick="effacerTout()" style="background-color:#ff4444; color:black;">Effacer tout</button>
 
@@ -60,6 +61,97 @@ function inverser() {
     out += (c === lower) ? upper : lower;
   }
   setText(document.getElementById("output"), out);
+}
+
+function sansAccents(str) {
+  // Table complète pan‑européenne
+  var map = {
+    // Français
+    'à':'a','á':'a','â':'a','ã':'a','ä':'a','å':'a',
+    'ç':'c',
+    'è':'e','é':'e','ê':'e','ë':'e',
+    'ì':'i','í':'i','î':'i','ï':'i',
+    'ò':'o','ó':'o','ô':'o','õ':'o','ö':'o',
+    'ù':'u','ú':'u','û':'u','ü':'u',
+    'ÿ':'y','ý':'y',
+    'À':'A','Á':'A','Â':'A','Ã':'A','Ä':'A','Å':'A',
+    'Ç':'C',
+    'È':'E','É':'E','Ê':'E','Ë':'E',
+    'Ì':'I','Í':'I','Î':'I','Ï':'I',
+    'Ò':'O','Ó':'O','Ô':'O','Õ':'O','Ö':'O',
+    'Ù':'U','Ú':'U','Û':'U','Ü':'U',
+    'Ý':'Y',
+    'œ':'oe','Œ':'OE',
+
+    // Scandinave
+    'ø':'o','Ø':'O',
+    'æ':'ae','Æ':'AE',
+
+    // Allemand
+    'ß':'ss',
+
+    // Turc
+    'ğ':'g','Ğ':'G',
+    'ş':'s','Ş':'S',
+    'ı':'i','İ':'I',
+
+    // Roumain
+    'ă':'a','Ă':'A',
+    'ș':'s','Ș':'S',
+    'ț':'t','Ț':'T',
+
+    // Polonais
+    'ą':'a','Ą':'A',
+    'ć':'c','Ć':'C',
+    'ę':'e','Ę':'E',
+    'ł':'l','Ł':'L',
+    'ń':'n','Ń':'N',
+    'ś':'s','Ś':'S',
+    'ź':'z','Ź':'Z',
+    'ż':'z','Ż':'Z',
+
+    // Tchèque / Slovaque
+    'č':'c','Č':'C',
+    'ď':'d','Ď':'D',
+    'ě':'e','Ě':'E',
+    'ň':'n','Ň':'N',
+    'ř':'r','Ř':'R',
+    'š':'s','Š':'S',
+    'ť':'t','Ť':'T',
+    'ž':'z','Ž':'Z',
+
+    // Croate / Slovène / Serbe latin
+    'đ':'d','Đ':'D',
+
+    // Hongrois
+    'ő':'o','Ő':'O',
+    'ű':'u','Ű':'U',
+
+    // Baltes
+    'ū':'u','Ū':'U',
+    'ī':'i','Ī':'I',
+    'ļ':'l','Ļ':'L',
+    'ķ':'k','Ķ':'K',
+    'ģ':'g','Ģ':'G'
+  };
+
+  // 1) Remplacer les lettres précomposées
+  var out = "";
+  for (var i = 0; i < str.length; i++) {
+    var ch = str.charAt(i);
+    out += map[ch] || ch;
+  }
+
+  // 2) Supprimer les accents combinés (compatibilité totale)
+  // couvre : Ő, Š, Ž, Ț, Ğ, etc. même en version combinée
+  out = out.replace(/[\u0300-\u036f]/g, "");
+
+  return out;
+}
+
+function sansAccentsBouton() {
+  var txt = document.getElementById("input").value;
+  setText(document.getElementById("output"), sansAccents(txt));
 }
 
 // Bouton copier compatible anciens navigateurs
