@@ -8,7 +8,7 @@ deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmwar
 deb http://security.debian.org/debian-security bookworm-security main contrib non-free
 deb http://deb.debian.org/debian bookworm-updates main contrib non-free
 
-Activer l’architecture 32 bits
+Activer l'architecture 32 bits
 Steam nécessite des bibliothèques 32 bits :
 sudo dpkg --add-architecture i386
 sudo apt update
@@ -51,7 +51,7 @@ Résumé
 +-------+-------------------------------------------+
 | Étape | Action                                    |
 +-------+-------------------------------------------+
-| 1     | Activer les dépôts et l’architecture i386 |
+| 1     | Activer les dépôts et l'architecture i386 |
 +-------+-------------------------------------------+
 | 2     | Nettoyer les paquets cassés               |
 +-------+-------------------------------------------+
