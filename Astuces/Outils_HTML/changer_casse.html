@@ -21,6 +21,7 @@ button { margin-top: 10px; padding: 6px 10px; }
 <button onclick="majuscule()" style="background-color:#ff8800; color:black;">MAJUSCULE</button>
 <button onclick="inverser()" style="background-color:#ff8800; color:black;">Inverser Casse</button>
 <button onclick="sansAccentsBouton()" style="background-color:#ff8800; color:black;">Sans accents</button>
+<button onclick="nettoyerEspaces()" style="background-color:#ff8800; color:black;">Nettoyer espaces</button>
 <button onclick="copier()" style="background-color:#4CAF50; color:black;">Copier</button>
 <button onclick="effacerTout()" style="background-color:#ff4444; color:black;">Effacer tout</button>
 
@@ -154,6 +155,20 @@ function sansAccentsBouton() {
   setText(document.getElementById("output"), sansAccents(txt));
 }
 
+function nettoyerEspaces() {
+  var txt = document.getElementById("input").value;
+
+  // 1) Tabulations → _
+  txt = txt.replace(/\t/g, "_");
+
+  // 2) Espaces multiples → un seul espace
+  txt = txt.replace(/ +/g, " ");
+
+  // 3) Espace simple → _
+  txt = txt.replace(/ /g, "_");
+
+  setText(document.getElementById("output"), txt);
+}
 // Bouton copier compatible anciens navigateurs
 function copier() {
   var texte = document.getElementById("output").textContent;
