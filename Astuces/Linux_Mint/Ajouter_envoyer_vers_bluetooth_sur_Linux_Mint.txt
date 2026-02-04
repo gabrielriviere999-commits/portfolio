@@ -1,4 +1,4 @@
-Le paquet nemo-actions n’est plus fourni via les dépôts Mint/Ubuntu 22.04.
+Le paquet nemo-actions n'est plus fourni via les dépôts Mint/Ubuntu 22.04.
 Mais les actions personnalisées Nemo existent toujours — il faut simplement les créer manuellement.
 
 ---
@@ -6,7 +6,7 @@ Mais les actions personnalisées Nemo existent toujours — il faut simplement l
 ## Solution garantie (sans paquet à installer)
 
 Nous allons créer une action Nemo à la main.
-C’est propre, officiel, et 100 % compatible avec Nemo sur Linux Mint 21.3.
+C'est propre, officiel, et 100 % compatible avec Nemo sur Linux Mint 21.3.
 
 ---
 
@@ -16,7 +16,7 @@ mkdir -p ~/.local/share/nemo/actions
 
 ---
 
-## 2.  Créer l’action “Envoyer par Bluetooth”
+## 2.  Créer l'action "Envoyer par Bluetooth"
 
 Ouvre un éditeur de texte :
 nano ~/.local/share/nemo/actions/envoyer-bluetooth.nemo_action
@@ -41,19 +41,19 @@ Entrée
 ## 3. Redémarrer Nemo
 
 nemo -q
-Puis rouvre l’explorateur de fichiers.
+Puis rouvre l'explorateur de fichiers.
 
 ---
 
 ## Résultat
 
 - Sélectionne un ou plusieurs fichiers
-- Clic droit → “Envoyer par Bluetooth”
-- La fenêtre Blueman s’ouvre
+- Clic droit → "Envoyer par Bluetooth"
+- La fenêtre Blueman s'ouvre
 
 Note importante
-Cette méthode ajoute l’action au menu contextuel,
-mais pas dans la barre d’outils (limitation actuelle de Nemo sans extensions C).
+Cette méthode ajoute l'action au menu contextuel,
+mais pas dans la barre d'outils (limitation actuelle de Nemo sans extensions C).
 
 ---
 
@@ -62,12 +62,12 @@ mais pas dans la barre d’outils (limitation actuelle de Nemo sans extensions C
 Assure-toi que Blueman est bien installé :
 which blueman-sendto
 
-Si rien ne s’affiche :
+Si rien ne s'affiche :
 sudo apt install blueman
 
 ---
 
-## Bonus : bouton “presque comme un vrai”
+## Bonus : bouton "presque comme un vrai"
 
 Si tu veux un accès encore plus rapide :
 ajoute un raccourci clavier vers :
