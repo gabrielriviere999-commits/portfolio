@@ -29,6 +29,8 @@ label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical
 <br>
 <button onclick="toutDecocher()" style="background-color:#ffaa00; color:black;">Tout décocher</button>
 <div id="repl_container"></div>
+<label><input type="checkbox" id="repl_ignore_case">Ignorer la casse</label>
+<br>
 <button onclick="ajouterRemplacement()" style="background-color:#dddddd;">Ajouter un remplacement</button>
 <br><br>
 <button onclick="appliquerTransformations()" style="background-color:#ff8800; color:black;">Appliquer</button>
@@ -243,6 +245,9 @@ function effacerTout() {
   
   document.getElementById("repl_container").innerHTML = "";
   localStorage.removeItem("repl_list");
+
+  document.getElementById("repl_ignore_case").checked = false;
+  localStorage.removeItem("repl_ignore_case");
 }
 
 // ------------------------------
@@ -310,6 +315,8 @@ window.onload = function() {
   if (csquo !== null) document.getElementById("chk_squo").checked = (csquo === "1");
 
   chargerReplacements();
+
+  document.getElementById("repl_ignore_case").onchange = saveReplacements;
 };
 
 /* ============================================================
@@ -402,10 +409,21 @@ function saveReplacements() {
     list.push({from: from, to: to});
   }
 
+  // Sauvegarde des règles
   localStorage.setItem("repl_list", JSON.stringify(list));
+
+  // Sauvegarde de la case "ignorer la casse"
+  var ignore = document.getElementById("repl_ignore_case").checked;
+  localStorage.setItem("repl_ignore_case", ignore ? "1" : "0");
 }
 
 function chargerReplacements() {
+
+  // 1) Restaurer la case AVANT tout
+  var ic = localStorage.getItem("repl_ignore_case");
+  if (ic === "1") document.getElementById("repl_ignore_case").checked = true;
+
+  // 2) Charger les règles APRÈS
   var saved = localStorage.getItem("repl_list");
   if (saved) {
     var arr = JSON.parse(saved);
@@ -417,6 +435,7 @@ function chargerReplacements() {
 
 function appliquerRemplacementsPersonnalises(txt) {
   var cont = document.getElementById("repl_container");
+  var ignore = document.getElementById("repl_ignore_case").checked;
 
   for (var i = 0; i < cont.children.length; i++) {
     var div = cont.children[i];
@@ -431,8 +450,29 @@ function appliquerRemplacementsPersonnalises(txt) {
       if (t === "to")   to   = inputs[j].value;
     }
 
-    if (from !== "") {
+    if (from === "") continue;
+
+    if (!ignore) {
+      // Mode normal
       txt = txt.split(from).join(to);
+    } else {
+      // Mode insensible à la casse (ES3 compatible)
+      var lowerTxt = txt.toLowerCase();
+      var lowerFrom = from.toLowerCase();
+      var pos = 0;
+      var out = "";
+
+      while (true) {
+        var idx = lowerTxt.indexOf(lowerFrom, pos);
+        if (idx === -1) {
+          out += txt.substring(pos);
+          break;
+        }
+        out += txt.substring(pos, idx) + to;
+        pos = idx + from.length;
+      }
+
+      txt = out;
     }
   }
 
