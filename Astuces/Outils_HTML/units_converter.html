@@ -161,7 +161,7 @@ function updateUnits() {
   }
 
   // ===============================
-  // TRI INTELLIGENT PAR FAMILLES
+  // TRI PAR TYPE — VERSION PARFAITE
   // ===============================
 
   var keys = [];
@@ -169,25 +169,137 @@ function updateUnits() {
     keys.push(u2);
   }
 
-  // Détection du groupe
   function getGroup(unit) {
-    // Groupe SI
-    if (unit === "mm" || unit === "cm" || unit === "dm" || unit === "m" || unit === "km") {
-      return 1;
+
+    var catName = categorySelect.value;
+
+    // ----------- DISTANCE -----------
+    if (catName === "distance") {
+      if (unit === "mm" || unit === "cm" || unit === "dm" || unit === "m" || unit === "km") return 1; // SI
+      if (unit === "in" || unit === "ft" || unit === "yd") return 2; // Impérial
+      if (unit === "mi") return 3; // Autre
+      if (unit === "nmi") return 4; // Nautique
+      return 5;
     }
 
-    // Groupe impérial
-    if (unit === "in" || unit === "ft" || unit === "yd") {
-      return 2;
-    }
-
-    // Groupe “spécial”
-    if (unit === "mi" || unit === "nmi") {
+    // ----------- MASSE -----------
+    if (catName === "masse") {
+      if (unit === "mg" || unit === "g" || unit === "kg" || unit === "t") return 1; // SI
+      if (unit === "oz" || unit === "lb" || unit === "stone") return 2; // Impérial
       return 3;
     }
 
-    // Par défaut
-    return 4;
+    // ----------- SURFACE -----------
+    if (catName === "surface") {
+      if (unit === "mm²" || unit === "cm²" || unit === "m²" || unit === "km²" || unit === "ha") return 1; // SI
+      if (unit === "in²" || unit === "ft²") return 2; // Impérial
+      if (unit === "acre") return 3; // US/UK
+      return 4;
+    }
+
+    // ----------- VOLUME -----------
+    if (catName === "volume") {
+      if (unit === "mL" || unit === "L" || unit === "m³") return 1; // SI
+      if (unit === "cup_US" || unit === "pt_US" || unit === "qt_US" || unit === "gal_US") return 2; // US liquide
+      if (unit === "ft³") return 3; // Impérial
+      return 4;
+    }
+
+    // ----------- VOLUME SEC -----------
+    if (catName === "volume_sec") {
+      if (unit === "L") return 1; // SI
+      if (unit === "cup_dry_US" || unit === "pt_dry_US" || unit === "qt_dry_US" || unit === "gal_dry_US" || unit === "bushel_US") return 2; // US sec
+      return 3;
+    }
+
+    // ----------- VITESSE -----------
+    if (catName === "vitesse") {
+      if (unit === "m/s" || unit === "km/h") return 1; // SI
+      if (unit === "ft/s" || unit === "mph") return 2; // Impérial
+      if (unit === "kn") return 3; // Nautique
+      return 4;
+    }
+
+    // ----------- PRESSION -----------
+    if (catName === "pression") {
+      if (unit === "Pa" || unit === "kPa" || unit === "bar" || unit === "mbar") return 1; // SI
+      if (unit === "psi") return 2; // Impérial
+      if (unit === "mmHg") return 3; // Divers
+      return 4;
+    }
+
+    // ----------- FORCE -----------
+    if (catName === "force") {
+      if (unit === "dyn" || unit === "N" || unit === "kN") return 1; // SI
+      if (unit === "lbf") return 2; // Impérial
+      if (unit === "kgf") return 3; // Technique
+      return 4;
+    }
+
+    // ----------- ENERGIE -----------
+    if (catName === "energie") {
+      if (unit === "J" || unit === "kJ") return 1; // SI
+      if (unit === "Wh" || unit === "kWh") return 2; // Électrique
+      if (unit === "cal" || unit === "kcal") return 3; // Alimentaire
+      if (unit === "BTU") return 4; // Impérial
+      return 5;
+    }
+
+    // ----------- PUISSANCE -----------
+    if (catName === "puissance") {
+      if (unit === "W" || unit === "kW" || unit === "MW") return 1; // SI
+      if (unit === "hp_met" || unit === "hp_mec") return 2; // Chevaux
+      return 3;
+    }
+
+    // ----------- TEMPS -----------
+    if (catName === "temps") {
+      if (unit === "ms" || unit === "s" || unit === "min" || unit === "h") return 1;
+      if (unit === "jour" || unit === "semaine" || unit === "an") return 2;
+      return 3;
+    }
+
+    // ----------- DENSITE -----------
+    if (catName === "densite") {
+      if (unit === "kg/m³" || unit === "g/cm³") return 1; // SI
+      if (unit === "g/L") return 2; // SI dérivé
+      if (unit === "lb/ft³") return 3; // Impérial
+      return 4;
+    }
+
+    // ----------- DEBIT -----------
+    if (catName === "debit") {
+      if (unit === "L/h" || unit === "L/min" || unit === "L/s" || unit === "m³/h" || unit === "m³/s") return 1; // SI
+      if (unit === "gal_US/min") return 2; // US
+      return 3;
+    }
+
+    // ----------- ANGLE -----------
+    if (catName === "angle") {
+      if (unit === "rad") return 1;
+      if (unit === "deg") return 2;
+      if (unit === "grad") return 3;
+      if (unit === "tour") return 4;
+      return 5;
+    }
+
+    // ----------- LUMIERE -----------
+    if (catName === "lumiere") {
+      if (unit === "lx") return 1; // SI
+      if (unit === "foot-candle") return 2; // Impérial
+      return 3;
+    }
+
+    // ----------- ACCELERATION -----------
+    if (catName === "acceleration") {
+      if (unit === "cm/s²" || unit === "m/s²") return 1; // SI
+      if (unit === "in/s²" || unit === "ft/s²") return 2; // Impérial
+      if (unit === "km/h·s" || unit === "mi/h·s" || unit === "mi/h·min") return 3; // Vitesse dérivée
+      if (unit === "g") return 4; // Gravité
+      return 5;
+    }
+
+    return 10;
   }
 
   // Tri par groupe puis par valeur
@@ -197,7 +309,6 @@ function updateUnits() {
 
     if (ga !== gb) return ga - gb;
 
-    // même groupe → tri par valeur croissante
     return cat.units[a] - cat.units[b];
   });
 
