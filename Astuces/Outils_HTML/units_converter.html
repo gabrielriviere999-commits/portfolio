@@ -798,12 +798,23 @@ function searchUnits(text, box, targetSelectId) {
 
 document.getElementById("copyBtn").addEventListener("click", function () {
   var text = document.getElementById("result").textContent;
+});
 
-  navigator.clipboard.writeText(text).then(function () {
-    // Petit feedback visuel
-    copyBtn.textContent = "Copié !";
-    setTimeout(() => copyBtn.textContent = "Copier", 800);
-  });
+document.getElementById("copyBtn").addEventListener("click", function () {
+  var texte = document.getElementById("result").textContent;
+
+  var temp = document.createElement("textarea");
+  temp.value = texte;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (e) {}
+
+  document.body.removeChild(temp);
+
+  // Feedback visuel
+  copyBtn.textContent = "Copié !";
+  setTimeout(() => copyBtn.textContent = "Copier", 800);
 });
   </script>
 
