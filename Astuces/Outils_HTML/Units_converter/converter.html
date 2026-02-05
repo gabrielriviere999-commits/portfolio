@@ -9,6 +9,16 @@
     input, select { width: 100%; padding: 6px; margin-top: 5px; }
     h1 { margin-bottom: 5px; }
     #customBox { border:1px solid #ccc; padding:10px; margin-top:15px; }
+
+/* Couleur pour la zone "De" */
+.de-block {
+  color: #000E80;
+}
+
+/* Couleur pour la zone "Vers" */
+.vers-block {
+  color: #0C8D45;
+}
   </style>
 </head>
 <body>
@@ -43,15 +53,29 @@
     </label>
   </div>
 
+<div class="de-block">
+  <label>
+    Rechercher "De" :
+    <input type="text" id="searchFrom" placeholder="ex: km, kg, litre...">
+  </label>
+
   <label>
     De :
     <select id="fromUnit"></select>
+  </label>
+</div>
+
+<div class="vers-block">
+  <label>
+    Rechercher "Vers" :
+    <input type="text" id="searchTo" placeholder="ex: m, lb, gallon...">
   </label>
 
   <label>
     Vers :
     <select id="toUnit"></select>
   </label>
+</div>
 
   <p>Résultat : <strong id="result">—</strong></p>
 

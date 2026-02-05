@@ -241,49 +241,40 @@ var customB = document.getElementById("customB");
 var customFactor = document.getElementById("customFactor");
 
 // ===============================
-// LISTENERS
+// LISTENERS (ES5)
 // ===============================
 
-customA.addEventListener("input", updateCustomUnits);
-customB.addEventListener("input", updateCustomUnits);
-customFactor.addEventListener("input", updateCustomUnits);
-
-categorySelect.addEventListener("change", updateUnits);
-fromSelect.addEventListener("change", convert);
-toSelect.addEventListener("change", convert);
-valueInput.addEventListener("input", convert);
-
-categorySelect.addEventListener("change", function() {
+categorySelect.addEventListener("change", function () {
   updateUnits();
   saveState();
 });
 
-fromSelect.addEventListener("change", function() {
+fromSelect.addEventListener("change", function () {
   convert();
   saveState();
 });
 
-toSelect.addEventListener("change", function() {
+toSelect.addEventListener("change", function () {
   convert();
   saveState();
 });
 
-valueInput.addEventListener("input", function() {
+valueInput.addEventListener("input", function () {
   convert();
   saveState();
 });
 
-customA.addEventListener("input", function() {
+customA.addEventListener("input", function () {
   updateCustomUnits();
   saveState();
 });
 
-customB.addEventListener("input", function() {
+customB.addEventListener("input", function () {
   updateCustomUnits();
   saveState();
 });
 
-customFactor.addEventListener("input", function() {
+customFactor.addEventListener("input", function () {
   updateCustomUnits();
   saveState();
 });
@@ -299,7 +290,7 @@ for (var cat in categories) {
 loadState();
 
 // ===============================
-// FONCTIONS
+// FONCTIONS (ES5)
 // ===============================
 
 function updateUnits() {
@@ -358,6 +349,8 @@ function convert() {
   var from = fromSelect.value;
   var to = toSelect.value;
 
+  if (!from || !to) return;
+
   var result;
 
   if (cat.special === true) {
@@ -370,6 +363,10 @@ function convert() {
   resultSpan.innerHTML = result + " " + to;
 }
 
+// ===============================
+// SAUVEGARDE / RESTAURATION (ES5)
+// ===============================
+
 function saveState() {
   var state = {
     category: categorySelect.value,
@@ -381,31 +378,120 @@ function saveState() {
     customFactor: customFactor.value
   };
 
-  try {
-    localStorage.setItem("converterState", JSON.stringify(state));
-  } catch (e) {}
+  localStorage.setItem("converterState", JSON.stringify(state));
 }
 
 function loadState() {
-  try {
-    var saved = localStorage.getItem("converterState");
-    if (!saved) return;
+  var saved = localStorage.getItem("converterState");
+  if (!saved) return;
 
-    var state = JSON.parse(saved);
+  var state = JSON.parse(saved);
 
-    if (state.category) categorySelect.value = state.category;
-    updateUnits(); // recharge les unités de la catégorie
+  if (state.category) categorySelect.value = state.category;
 
-    if (state.customA) customA.value = state.customA;
-    if (state.customB) customB.value = state.customB;
-    if (state.customFactor) customFactor.value = state.customFactor;
+  updateUnits();
 
-    if (state.category === "custom") updateCustomUnits();
+  customA.value = state.customA || "";
+  customB.value = state.customB || "";
+  customFactor.value = state.customFactor || 1;
 
-    if (state.from) fromSelect.value = state.from;
-    if (state.to) toSelect.value = state.to;
-    if (state.value) valueInput.value = state.value;
+  if (state.category === "custom") updateCustomUnits();
 
-    convert();
-  } catch (e) {}
+  if (state.from) fromSelect.value = state.from;
+  if (state.to) toSelect.value = state.to;
+  if (state.value) valueInput.value = state.value;
+
+  convert();
 }
+
+// ===============================
+// RECHERCHE — VERSION ES5
+// ===============================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  function createResultsBox(inputId) {
+    var input = document.getElementById(inputId);
+    var box = document.createElement("div");
+
+    box.style.background = "white";
+    box.style.border = "1px solid #999";
+    box.style.maxHeight = "150px";
+    box.style.overflowY = "auto";
+    box.style.display = "none";
+    box.style.marginTop = "4px";
+
+    input.parentNode.appendChild(box);
+    return box;
+  }
+
+  var fromBox = createResultsBox("searchFrom");
+  var toBox = createResultsBox("searchTo");
+
+  function searchUnits(text, box, targetSelectId) {
+    var val = text.toLowerCase().trim();
+    box.innerHTML = "";
+
+    if (!val) {
+      box.style.display = "none";
+      return;
+    }
+
+    for (var catName in categories) {
+
+      if (catName === "custom") continue;
+
+      var cat = categories[catName];
+      var list = cat.special === true ? cat.units : Object.keys(cat.units);
+
+      for (var i = 0; i < list.length; i++) {
+        var unit = list[i];
+
+        if (unit.toLowerCase().indexOf(val) !== -1) {
+
+          var item = document.createElement("div");
+          item.textContent = unit + " (" + catName + ")";
+          item.style.padding = "4px";
+          item.style.cursor = "pointer";
+
+          item.onclick = (function (catName, unit) {
+            return function () {
+
+              if (categorySelect.value !== catName) {
+                categorySelect.value = catName;
+                updateUnits();
+              }
+
+              document.getElementById(targetSelectId).value = unit;
+              convert();
+              saveState();
+              box.style.display = "none";
+            };
+          })(catName, unit);
+
+          box.appendChild(item);
+        }
+      }
+    }
+
+    box.style.display = box.children.length ? "block" : "none";
+  }
+
+  document.getElementById("searchFrom").addEventListener("input", function (e) {
+    searchUnits(e.target.value, fromBox, "fromUnit");
+  });
+
+  document.getElementById("searchTo").addEventListener("input", function (e) {
+    searchUnits(e.target.value, toBox, "toUnit");
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!e.target || !e.target.id || e.target.id !== "searchFrom") {
+      fromBox.style.display = "none";
+    }
+    if (!e.target || !e.target.id || e.target.id !== "searchTo") {
+      toBox.style.display = "none";
+    }
+  });
+
+});
