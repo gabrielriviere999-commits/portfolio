@@ -101,6 +101,47 @@
     };
 
     // ===============================
+    // TABLE DES NOMS
+    // ===============================
+
+var unitNames = {
+    "mm": "millimètre",
+    "cm": "centimètre",
+    "m": "mètre",
+    "km": "kilomètre",
+    "in": "pouce",
+    "ft": "pied",
+    "yd": "yard",
+    "mi": "mile",
+    "nmi": "mile nautique",
+    "mg": "milligramme",
+    "g": "gramme",
+    "kg": "kilogramme",
+    "t": "tonne",
+    "oz": "once",
+    "lb": "livre",
+    "stone": "stone",
+    "L": "litre",
+    "mL": "millilitre",
+    "gal_US": "gallon US",
+    "qt_US": "quart US",
+    "pt_US": "pinte US",
+    "cup_US": "tasse US",
+    "W": "watt",
+    "kW": "kilowatt",
+    "MW": "mégawatt",
+    "hp_met": "cheval vapeur (métrique)",
+    "hp_mec": "cheval vapeur (mécanique)",
+    "J": "joule",
+    "kJ": "kilojoule",
+    "Wh": "watt-heure",
+    "kWh": "kilowatt-heure",
+    "cal": "calorie",
+    "kcal": "kilocalorie",
+    "BTU": "BTU"
+};
+
+    // ===============================
     // DOM
     // ===============================
 
@@ -490,54 +531,60 @@ function updateUnits() {
     var fromBox = createResultsBox("searchFrom");
     var toBox = createResultsBox("searchTo");
 
-    function searchUnits(text, box, targetSelectId) {
-      var val = text.toLowerCase().trim();
-      box.innerHTML = "";
+function searchUnits(text, box, targetSelectId) {
+  var val = text.toLowerCase().trim();
+  box.innerHTML = "";
 
-      if (!val) {
-        box.style.display = "none";
-        return;
+  if (!val) {
+    box.style.display = "none";
+    return;
+  }
+
+  for (var catName in categories) {
+
+    if (catName === "custom") continue;
+
+    var cat = categories[catName];
+    var list = cat.special === true ? cat.units : Object.keys(cat.units);
+
+    for (var i = 0; i < list.length; i++) {
+      var unit = list[i];
+
+      var name = unitNames[unit] || ""; // nom complet si existe
+
+      // match sur abréviation OU nom complet
+      if (unit.toLowerCase().indexOf(val) !== -1 ||
+          name.toLowerCase().indexOf(val) !== -1) {
+
+        var item = document.createElement("div");
+        item.style.padding = "4px";
+        item.style.cursor = "pointer";
+
+        // affichage : abréviation + nom complet
+        item.textContent = unit + (name ? " — " + name : "") + " (" + catName + ")";
+
+        item.onclick = (function (catName, unit) {
+          return function () {
+
+            if (categorySelect.value !== catName) {
+              categorySelect.value = catName;
+              updateUnits();
+            }
+
+            document.getElementById(targetSelectId).value = unit;
+            convert();
+            saveState();
+            box.style.display = "none";
+          };
+        })(catName, unit);
+
+        box.appendChild(item);
       }
-
-      for (var catName in categories) {
-
-        if (catName === "custom") continue;
-
-        var cat = categories[catName];
-        var list = cat.special === true ? cat.units : Object.keys(cat.units);
-
-        for (var i = 0; i < list.length; i++) {
-          var unit = list[i];
-
-          if (unit.toLowerCase().indexOf(val) !== -1) {
-
-            var item = document.createElement("div");
-            item.textContent = unit + " (" + catName + ")";
-            item.style.padding = "4px";
-            item.style.cursor = "pointer";
-
-            item.onclick = (function (catName, unit) {
-              return function () {
-
-                if (categorySelect.value !== catName) {
-                  categorySelect.value = catName;
-                  updateUnits();
-                }
-
-                document.getElementById(targetSelectId).value = unit;
-                convert();
-                saveState();
-                box.style.display = "none";
-              };
-            })(catName, unit);
-
-            box.appendChild(item);
-          }
-        }
-      }
-
-      box.style.display = box.children.length ? "block" : "none";
     }
+  }
+
+  box.style.display = box.children.length ? "block" : "none";
+}
 
     // ===============================
     // NAVIGATION CLAVIER
