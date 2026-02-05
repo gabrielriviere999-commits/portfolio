@@ -70,7 +70,10 @@
     </label>
   </div>
 
-  <p>Résultat : <strong id="result">—</strong></p>
+<p>
+  Résultat : <strong id="result">—</strong>
+  <button id="copyBtn" style="margin-left:10px;">Copier</button>
+</p>
 
   <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -792,6 +795,16 @@ function searchUnits(text, box, targetSelectId) {
     });
 
   });
+
+document.getElementById("copyBtn").addEventListener("click", function () {
+  var text = document.getElementById("result").textContent;
+
+  navigator.clipboard.writeText(text).then(function () {
+    // Petit feedback visuel
+    copyBtn.textContent = "Copié !";
+    setTimeout(() => copyBtn.textContent = "Copier", 800);
+  });
+});
   </script>
 
 </body>
