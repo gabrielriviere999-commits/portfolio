@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Convertisseur d'unités</title>
   <style>
-    body { margin: 20px; background: #C0C0C0; }
+    body { margin: 20px ; background: #C0C0C0; }
     label { display: block; margin-top: 10px; }
     input, select { width: 100%; padding: 6px; margin-top: 5px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
     h1 { margin-bottom: 5px; }
@@ -134,34 +134,82 @@
     // FONCTIONS
     // ===============================
 
-    function updateUnits() {
-      var cat = categories[categorySelect.value];
+function updateUnits() {
+  var cat = categories[categorySelect.value];
 
-      fromSelect.innerHTML = "";
-      toSelect.innerHTML = "";
+  fromSelect.innerHTML = "";
+  toSelect.innerHTML = "";
 
-      if (cat.special === "custom") {
-        customBox.style.display = "block";
-        updateCustomUnits();
-      } else {
-        customBox.style.display = "none";
+  // Cas spécial : unités custom
+  if (cat.special === "custom") {
+    customBox.style.display = "block";
+    updateCustomUnits();
+    return;
+  }
 
-        if (cat.special === true) {
-          for (var i = 0; i < cat.units.length; i++) {
-            var u = cat.units[i];
-            fromSelect.add(new Option(u, u));
-            toSelect.add(new Option(u, u));
-          }
-        } else {
-          for (var u2 in cat.units) {
-            fromSelect.add(new Option(u2, u2));
-            toSelect.add(new Option(u2, u2));
-          }
-        }
-      }
+  customBox.style.display = "none";
 
-      convert();
+  // Cas spécial : température (C, F, K)
+  if (cat.special === true) {
+    for (var i = 0; i < cat.units.length; i++) {
+      var u = cat.units[i];
+      fromSelect.add(new Option(u, u));
+      toSelect.add(new Option(u, u));
     }
+    convert();
+    return;
+  }
+
+  // ===============================
+  // TRI INTELLIGENT PAR FAMILLES
+  // ===============================
+
+  var keys = [];
+  for (var u2 in cat.units) {
+    keys.push(u2);
+  }
+
+  // Détection du groupe
+  function getGroup(unit) {
+    // Groupe SI
+    if (unit === "mm" || unit === "cm" || unit === "dm" || unit === "m" || unit === "km") {
+      return 1;
+    }
+
+    // Groupe impérial
+    if (unit === "in" || unit === "ft" || unit === "yd") {
+      return 2;
+    }
+
+    // Groupe “spécial”
+    if (unit === "mi" || unit === "nmi") {
+      return 3;
+    }
+
+    // Par défaut
+    return 4;
+  }
+
+  // Tri par groupe puis par valeur
+  keys.sort(function(a, b) {
+    var ga = getGroup(a);
+    var gb = getGroup(b);
+
+    if (ga !== gb) return ga - gb;
+
+    // même groupe → tri par valeur croissante
+    return cat.units[a] - cat.units[b];
+  });
+
+  // Ajout dans l’ordre trié
+  for (var i = 0; i < keys.length; i++) {
+    var unitName = keys[i];
+    fromSelect.add(new Option(unitName, unitName));
+    toSelect.add(new Option(unitName, unitName));
+  }
+
+  convert();
+}
 
     function updateCustomUnits() {
       var nameA = customA.value || "A";
