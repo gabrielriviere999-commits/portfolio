@@ -59,6 +59,11 @@
   </div>
 </div>
 
+<div class="block">
+  <label for="inputValue">Valeur à convertir :</label>
+  <input type="text" id="inputValue" value="1">
+</div>
+
 <!-- DE -->
 <div class="block">
   <label>Rechercher "De" :</label>
@@ -616,11 +621,17 @@ function convert() {
 
   var cat = categories[selectedCategory];
 
+  // Récupérer la valeur entrée
+  var val = parseFloat(document.getElementById("inputValue").value);
+  if (isNaN(val)) {
+    document.getElementById("result").innerHTML = "—";
+    return;
+  }
+
   // ============================
   // CAS SPÉCIAL : TEMPÉRATURE
   // ============================
   if (cat.special === true) {
-    var val = 1; // valeur fictive pour test
     var res = null;
 
     if (selectedFrom === "C" && selectedTo === "F") res = val * 9/5 + 32;
@@ -632,7 +643,7 @@ function convert() {
     else res = val;
 
     document.getElementById("result").innerHTML =
-      "1 " + selectedFrom + " = " + res + " " + selectedTo;
+      val + " " + selectedFrom + " = " + res + " " + selectedTo;
     return;
   }
 
@@ -646,9 +657,10 @@ function convert() {
     if (!uFrom || !uTo) return;
 
     var ratio = uFrom / uTo;
+    var res = val * ratio;
 
     document.getElementById("result").innerHTML =
-      "1 " + selectedFrom + " = " + ratio + " " + selectedTo;
+      val + " " + selectedFrom + " = " + res + " " + selectedTo;
     return;
   }
 
@@ -662,10 +674,13 @@ function convert() {
   if (!baseFrom || !baseTo) return;
 
   var ratio = baseFrom / baseTo;
+  var res = val * ratio;
 
   document.getElementById("result").innerHTML =
-    "1 " + selectedFrom + " = " + ratio + " " + selectedTo;
+    val + " " + selectedFrom + " = " + res + " " + selectedTo;
 }
+
+document.getElementById("inputValue").oninput = convert;
 
 // ===============================
 // 9. Initialisation
@@ -713,6 +728,9 @@ document.getElementById("copyBtn").onclick = function () {
     fb.style.display = "none";
   }, 1000);
 };
+
+document.getElementById("inputValue").value = "1";
+convert();
 </script>
 
 </body>
