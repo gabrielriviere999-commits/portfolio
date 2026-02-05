@@ -48,13 +48,13 @@
 </head>
 <body>
 
-<h1>Convertisseur — PALIER 3</h1>
+<h1>Convertisseur</h1>
 
 <!-- CATEGORIE -->
 <div class="block">
   <label>Catégorie :</label>
   <div class="dropdown" id="catDrop">
-    <div class="dropdown-selected" id="catSelected">—</div>
+    <div class="dropdown-selected" id="catSelected" tabindex="0">—</div>
     <div class="dropdown-list" id="catList"></div>
   </div>
 </div>
@@ -69,7 +69,7 @@
 
   <label>De :</label>
   <div class="dropdown" id="fromDrop">
-    <div class="dropdown-selected" id="fromSelected">—</div>
+    <div class="dropdown-selected" id="fromSelected" tabindex="0">—</div>
     <div class="dropdown-list" id="fromList"></div>
   </div>
 </div>
@@ -84,7 +84,7 @@
 
   <label>Vers :</label>
   <div class="dropdown" id="toDrop">
-    <div class="dropdown-selected" id="toSelected">—</div>
+    <div class="dropdown-selected" id="toSelected" tabindex="0">—</div>
     <div class="dropdown-list" id="toList"></div>
   </div>
 </div>
@@ -97,7 +97,7 @@
 
 <script>
 // ===============================
-// 1. Catégories (version réduite)
+// 1. Catégories
 // ===============================
 var categories = {
     distance:{base:"m",units:{m:1,km:1000,cm:0.01,mm:0.001,mi:1609.344,yd:0.9144,ft:0.3048,in:0.0254,nmi:1852}},
@@ -124,6 +124,30 @@ var categories = {
         "KiB":8192,"MiB":8388608,"GiB":8589934592,"TiB":8796093022208,
         "PiB":9007199254740992,"EiB":9223372036854775808
     }}
+};
+
+// ===============================
+// 1.2 Dictionnaire
+// ===============================
+var unitNames = {
+  "km": "kilomètre",
+  "m": "mètre",
+  "cm": "centimètre",
+  "mm": "millimètre",
+  "mi": "mile",
+  "yd": "yard",
+  "ft": "pied",
+  "in": "pouce",
+  "kg": "kilogramme",
+  "g": "gramme",
+  "mg": "milligramme",
+  "lb": "livre",
+  "oz": "once",
+  "L": "litre",
+  "mL": "millilitre",
+  "°C": "celsius",
+  "°F": "fahrenheit",
+  "K": "kelvin"
 };
 
 // ===============================
@@ -167,33 +191,103 @@ function createDropdown(selectedId, listId, onSelect) {
   var selected = document.getElementById(selectedId);
   var list = document.getElementById(listId);
   var isOpen = false;
+  var options = [];
+  var activeIndex = -1;
 
   list.style.display = "none";
+
+function highlight() {
+  var i;
+  for (i = 0; i < options.length; i++) {
+    options[i].style.background = (i === activeIndex) ? "#ddd" : "";
+  }
+
+  // scroll automatique
+  if (activeIndex >= 0 && activeIndex < options.length) {
+    options[activeIndex].scrollIntoView({
+      block: "nearest"
+    });
+  }
+}
 
   selected.onclick = function () {
     if (isOpen) {
       list.style.display = "none";
       isOpen = false;
+      activeIndex = -1;
+      highlight();
     } else {
       list.style.display = "block";
       isOpen = true;
+      activeIndex = (options.length > 0) ? 0 : -1;
+      highlight();
     }
   };
 
-  function fill(options) {
+  selected.onkeydown = function (e) {
+    var code = e.keyCode || e.which;
+
+    // Entrée ou Espace : ouvrir / valider
+    if (code === 13 || code === 32) {
+      if (!isOpen) {
+        selected.onclick(); // ouvre le menu
+      } else {
+        if (activeIndex >= 0 && activeIndex < options.length) {
+          options[activeIndex].onclick(); // sélectionne l’option
+        }
+      }
+      if (e.preventDefault) e.preventDefault();
+      return false;
+    }
+
+    if (!isOpen) return;
+
+    if (code === 40) { // ↓
+      activeIndex++;
+      if (activeIndex >= options.length) activeIndex = 0;
+      highlight();
+      if (e.preventDefault) e.preventDefault();
+      return false;
+    }
+
+    if (code === 38) { // ↑
+      activeIndex--;
+      if (activeIndex < 0) activeIndex = options.length - 1;
+      highlight();
+      if (e.preventDefault) e.preventDefault();
+      return false;
+    }
+  };
+
+  function fill(arr) {
     list.innerHTML = "";
-    for (var i = 0; i < options.length; i++) {
-      (function(opt){
+    options = [];
+    activeIndex = -1;
+
+    var i;
+    for (i = 0; i < arr.length; i++) {
+      (function (opt) {
         var div = document.createElement("div");
-        div.appendChild(document.createTextNode(opt));
+
+        var label = opt;
+        if (unitNames[opt]) {
+          label = opt + " — " + unitNames[opt];
+        }
+
+        div.appendChild(document.createTextNode(label));
+
         div.onclick = function () {
-          selected.innerHTML = opt;
+          selected.innerHTML = label;
           list.style.display = "none";
           isOpen = false;
+          activeIndex = -1;
+          highlight();
           onSelect(opt);
         };
+
         list.appendChild(div);
-      })(options[i]);
+        options.push(div);
+      })(arr[i]);
     }
   }
 
@@ -273,6 +367,7 @@ function updateUnits() {
 // ===============================
 // 7. Recherche globale (De + Vers)
 // ===============================
+// --- Recherche "De" avec noms + clavier + scroll ---
 document.getElementById("searchFrom").oninput = function () {
   var q = this.value.toLowerCase();
   var list = document.getElementById("fromSearchList");
@@ -285,39 +380,40 @@ document.getElementById("searchFrom").oninput = function () {
     return;
   }
 
-  // Recherche globale dans allUnits
   var filtered = [];
   for (i = 0; i < allUnits.length; i++) {
-    if (allUnits[i].toLowerCase().indexOf(q) !== -1) {
-      filtered.push(allUnits[i]);
+    var u = allUnits[i];
+    var name = unitNames[u] ? unitNames[u].toLowerCase() : "";
+
+    if (u.toLowerCase().indexOf(q) !== -1 || name.indexOf(q) !== -1) {
+      filtered.push(u);
     }
   }
 
-  // Afficher les résultats
   for (i = 0; i < filtered.length; i++) {
     (function(unit){
       var div = document.createElement("div");
-      div.appendChild(document.createTextNode(unit));
+
+      var label = unit;
+      if (unitNames[unit]) {
+        label = unit + " — " + unitNames[unit];
+      }
+
+      div.appendChild(document.createTextNode(label));
 
       div.onclick = function () {
-
-        // Trouver la catégorie de cette unité
         var catName = unitToCategory[unit];
 
-        // Mettre à jour la catégorie
-        selectedCategory = catName;
-        document.getElementById("catSelected").innerHTML = catName;
+        if (selectedCategory !== catName) {
+          selectedCategory = catName;
+          document.getElementById("catSelected").innerHTML = catName;
+          updateUnits();
+        }
 
-        // Mettre à jour les menus De/Vers
-        updateUnits();
-
-        // Sélectionner automatiquement dans "De"
         selectedFrom = unit;
-        document.getElementById("fromSelected").innerHTML = unit;
+        document.getElementById("fromSelected").innerHTML = label;
 
-        // Fermer la liste de recherche
         list.style.display = "none";
-
         convert();
       };
 
@@ -328,6 +424,71 @@ document.getElementById("searchFrom").oninput = function () {
   list.style.display = filtered.length ? "block" : "none";
 };
 
+
+// --- Navigation clavier pour la recherche "De" ---
+(function(){
+  var input = document.getElementById("searchFrom");
+  var list  = document.getElementById("fromSearchList");
+  var searchOptions = [];
+  var activeIndex = -1;
+
+  function highlight() {
+    var i;
+    for (i = 0; i < searchOptions.length; i++) {
+      searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
+    }
+    if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+      searchOptions[activeIndex].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  var oldInput = input.oninput;
+  input.oninput = function(){
+    oldInput.call(this);
+
+    searchOptions = [];
+    var children = list.children;
+    var i;
+    for (i = 0; i < children.length; i++) {
+      searchOptions.push(children[i]);
+    }
+
+    activeIndex = (searchOptions.length > 0) ? 0 : -1;
+    highlight();
+  };
+
+  input.onkeydown = function(e){
+    var code = e.keyCode || e.which;
+
+    if (list.style.display !== "block") return;
+
+    if (code === 40) { // ↓
+      activeIndex++;
+      if (activeIndex >= searchOptions.length) activeIndex = 0;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 38) { // ↑
+      activeIndex--;
+      if (activeIndex < 0) activeIndex = searchOptions.length - 1;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 13) { // Entrée
+      if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+        searchOptions[activeIndex].onclick();
+      }
+      e.preventDefault();
+      return false;
+    }
+  };
+})();
+
+// --- Recherche "Vers" avec noms + clavier + scroll ---
 document.getElementById("searchTo").oninput = function () {
   var q = this.value.toLowerCase();
   var list = document.getElementById("toSearchList");
@@ -340,39 +501,40 @@ document.getElementById("searchTo").oninput = function () {
     return;
   }
 
-  // Recherche globale dans allUnits
   var filtered = [];
   for (i = 0; i < allUnits.length; i++) {
-    if (allUnits[i].toLowerCase().indexOf(q) !== -1) {
-      filtered.push(allUnits[i]);
+    var u = allUnits[i];
+    var name = unitNames[u] ? unitNames[u].toLowerCase() : "";
+
+    if (u.toLowerCase().indexOf(q) !== -1 || name.indexOf(q) !== -1) {
+      filtered.push(u);
     }
   }
 
-  // Afficher les résultats
   for (i = 0; i < filtered.length; i++) {
     (function(unit){
       var div = document.createElement("div");
-      div.appendChild(document.createTextNode(unit));
+
+      var label = unit;
+      if (unitNames[unit]) {
+        label = unit + " — " + unitNames[unit];
+      }
+
+      div.appendChild(document.createTextNode(label));
 
       div.onclick = function () {
-
-        // Trouver la catégorie de cette unité
         var catName = unitToCategory[unit];
 
-        // Mettre à jour la catégorie
-        selectedCategory = catName;
-        document.getElementById("catSelected").innerHTML = catName;
+        if (selectedCategory !== catName) {
+          selectedCategory = catName;
+          document.getElementById("catSelected").innerHTML = catName;
+          updateUnits();
+        }
 
-        // Mettre à jour les menus De/Vers
-        updateUnits();
-
-        // Sélectionner automatiquement dans "Vers"
         selectedTo = unit;
-        document.getElementById("toSelected").innerHTML = unit;
+        document.getElementById("toSelected").innerHTML = label;
 
-        // Fermer la liste de recherche
         list.style.display = "none";
-
         convert();
       };
 
@@ -382,6 +544,69 @@ document.getElementById("searchTo").oninput = function () {
 
   list.style.display = filtered.length ? "block" : "none";
 };
+
+// --- Navigation clavier pour la recherche "Vers" ---
+(function(){
+  var input = document.getElementById("searchTo");
+  var list  = document.getElementById("toSearchList");
+  var searchOptions = [];
+  var activeIndex = -1;
+
+  function highlight() {
+    var i;
+    for (i = 0; i < searchOptions.length; i++) {
+      searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
+    }
+    if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+      searchOptions[activeIndex].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  var oldInput = input.oninput;
+  input.oninput = function(){
+    oldInput.call(this);
+
+    searchOptions = [];
+    var children = list.children;
+    var i;
+    for (i = 0; i < children.length; i++) {
+      searchOptions.push(children[i]);
+    }
+
+    activeIndex = (searchOptions.length > 0) ? 0 : -1;
+    highlight();
+  };
+
+  input.onkeydown = function(e){
+    var code = e.keyCode || e.which;
+
+    if (list.style.display !== "block") return;
+
+    if (code === 40) { // ↓
+      activeIndex++;
+      if (activeIndex >= searchOptions.length) activeIndex = 0;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 38) { // ↑
+      activeIndex--;
+      if (activeIndex < 0) activeIndex = searchOptions.length - 1;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 13) { // Entrée
+      if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+        searchOptions[activeIndex].onclick();
+      }
+      e.preventDefault();
+      return false;
+    }
+  };
+})();
 
 // ===============================
 // 8. Conversion
