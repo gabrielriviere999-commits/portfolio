@@ -1,821 +1,494 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Convertisseur d'unités</title>
-  <style>
-    body { margin: 20px ; background: #C0C0C0; }
-    label { display: block; margin-top: 10px; }
-    input, select { width: 100%; padding: 6px; margin-top: 5px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
-    h1 { margin-bottom: 5px; }
-    #customBox { border:1px solid #ccc; padding:10px; margin-top:15px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertisseur d'unités</title>
 
-    .de-block { background:#d0e4ff; padding:8px; border-radius:4px; margin-top:15px; }
-    .vers-block { background:#d9ffd0; padding:8px; border-radius:4px; margin-top:15px; }
-  </style>
+<style>
+  body { margin:20px; background:#C0C0C0; font-family:sans-serif; }
+
+  .dropdown {
+    border:1px solid #444;
+    background:#fff;
+    padding:6px;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .dropdown-selected {
+    font-weight:bold;
+  }
+
+  .dropdown-list {
+    border:1px solid #444;
+    background:#fff;
+    margin-top:4px;
+    max-height:200px;
+    overflow-y:auto;
+    display:none;
+  }
+
+  .dropdown-list div {
+    padding:6px;
+    border-bottom:1px solid #ccc;
+  }
+
+  .dropdown-list div:hover {
+    background:#e0e0e0;
+  }
+
+  .block {
+    background:#e8e8e8;
+    padding:10px;
+    margin-top:15px;
+    border-radius:5px;
+  }
+</style>
 </head>
 <body>
 
-  <h1>Convertisseur d'unités</h1>
+<h1>Convertisseur — PALIER 3</h1>
 
-  <label>
-    Catégorie :
-    <select id="category"></select>
-  </label>
-
-  <label>
-    Valeur :
-    <input type="number" id="value" value="1" step="any">
-  </label>
-
-  <div id="customBox" style="display:none;">
-    <h3>Définir unités Custom</h3>
-
-    <label>Nom unité A :
-      <input type="text" id="customA" placeholder="ex: foo">
-    </label>
-
-    <label>Nom unité B :
-      <input type="text" id="customB" placeholder="ex: bar">
-    </label>
-
-    <label>1 unité A =
-      <input type="number" id="customFactor" step="any" value="1">
-      unité(s) B
-    </label>
+<!-- CATEGORIE -->
+<div class="block">
+  <label>Catégorie :</label>
+  <div class="dropdown" id="catDrop">
+    <div class="dropdown-selected" id="catSelected">—</div>
+    <div class="dropdown-list" id="catList"></div>
   </div>
+</div>
 
-  <div class="de-block">
-    <label>
-      Rechercher "De" :
-      <input type="text" id="searchFrom" placeholder="ex: km, kg, litre...">
-    </label>
+<!-- DE -->
+<div class="block">
+  <label>Rechercher "De" :</label>
+  <input type="text" id="searchFrom">
 
-    <label>
-      De :
-      <select id="fromUnit"></select>
-    </label>
+  <!-- MENU DE RECHERCHE SÉPARÉ -->
+  <div class="dropdown-list" id="fromSearchList" style="display:none;"></div>
+
+  <label>De :</label>
+  <div class="dropdown" id="fromDrop">
+    <div class="dropdown-selected" id="fromSelected">—</div>
+    <div class="dropdown-list" id="fromList"></div>
   </div>
+</div>
 
-  <div class="vers-block">
-    <label>
-      Rechercher "Vers" :
-      <input type="text" id="searchTo" placeholder="ex: m, lb, gallon...">
-    </label>
+<!-- VERS -->
+<div class="block">
+  <label>Rechercher "Vers" :</label>
+  <input type="text" id="searchTo">
 
-    <label>
-      Vers :
-      <select id="toUnit"></select>
-    </label>
+  <!-- MENU DE RECHERCHE SÉPARÉ POUR VERS -->
+  <div class="dropdown-list" id="toSearchList" style="display:none;"></div>
+
+  <label>Vers :</label>
+  <div class="dropdown" id="toDrop">
+    <div class="dropdown-selected" id="toSelected">—</div>
+    <div class="dropdown-list" id="toList"></div>
   </div>
+</div>
 
 <p>
   Résultat : <strong id="result">—</strong>
-  <button id="copyBtn" style="margin-left:10px;">Copier</button>
+  <button id="copyBtn">Copier</button>
+  <span id="copyFeedback" style="margin-left:10px; color:green; display:none;">Copié !</span>
 </p>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {
-
-    // ===============================
-    // TABLES D’UNITÉS
-    // ===============================
-
-    var categories = {
-      distance:{base:"m",units:{m:1,km:1000,cm:0.01,mm:0.001,mi:1609.344,yd:0.9144,ft:0.3048,in:0.0254,nmi:1852}},
-      acceleration:{base:"m/s²",units:{"m/s²":1,"cm/s²":0.01,"ft/s²":0.3048,"in/s²":0.0254,"km/h·s":1000/3600,"mi/h·s":1609.344/3600,"mi/h·min":1609.344/(3600*60),g:9.80665}},
-      masse:{base:"kg",units:{kg:1,g:0.001,mg:0.000001,t:1000,lb:0.45359237,oz:0.0283495231,stone:6.35029318}},
-      volume:{base:"L",units:{L:1,mL:0.001,m3:1000,"ft3":28.316846592,gal_US:3.785411784,qt_US:0.946352946,pt_US:0.473176473,cup_US:0.2365882365}},
-      volume_sec:{base:"L",units:{L:1,cup_dry_US:0.2365882365,pt_dry_US:0.550610471,qt_dry_US:1.101220942,gal_dry_US:4.40488377,bushel_US:35.23907017}},
-      surface:{base:"m²",units:{"m²":1,"cm²":0.0001,"mm²":0.000001,"km²":1000000,ha:10000,"ft²":0.09290304,"in²":0.00064516,acre:4046.8564224}},
-      vitesse:{base:"m/s",units:{"m/s":1,"km/h":1000/3600,"mph":1609.344/3600,"kn":1852/3600,"ft/s":0.3048}},
-      temps:{base:"s",units:{s:1,ms:0.001,min:60,h:3600,jour:86400,semaine:604800,an:31557600}},
-      energie:{base:"J",units:{J:1,kJ:1000,Wh:3600,kWh:3600000,cal:4.184,kcal:4184,BTU:1055.05585}},
-      puissance:{base:"W",units:{W:1,kW:1000,MW:1000000,hp_mec:745.699872,hp_met:735.49875}},
-      force:{base:"N",units:{N:1,kN:1000,dyn:0.00001,lbf:4.4482216152605,kgf:9.80665}},
-      pression:{base:"Pa",units:{Pa:1,kPa:1000,bar:100000,mbar:100,psi:6894.757293168,atm:101325,mmHg:133.3223684211}},
-      densite:{base:"kg/m³",units:{"kg/m³":1,"g/cm³":1000,"g/L":1,"lb/ft³":16.01846337}},
-      debit:{base:"m³/s",units:{"m³/s":1,"m³/h":1/3600,"L/s":0.001,"L/min":0.001/60,"L/h":0.001/3600,"gal_US/min":3.785411784/60}},
-      angle:{base:"rad",units:{rad:1,deg:Math.PI/180,grad:Math.PI/200,tour:2*Math.PI}},
-      lumiere:{base:"lx",units:{lx:1,"foot-candle":10.76391041671}},
-      temperature:{special:true,units:["C","F","K"]},
-      custom:{special:"custom",units:{}},
-      donnees: {
-        units: {
-          // Base
-          "b": 1,                     // bit
-          "B": 8,                     // octet
-
-          // Décimal (10^3)
-          "kB": 8000,                 // 10^3 octets
-          "MB": 8000000,              // 10^6 octets
-          "GB": 8000000000,           // 10^9 octets
-          "TB": 8000000000000,        // 10^12 octets
-          "PB": 8000000000000000,     // 10^15 octets
-          "EB": 8000000000000000000,  // 10^18 octets
-
-          // Binaire (2^10)
-          "KiB": 8192,                // 2^10 octets
-          "MiB": 8388608,             // 2^20 octets
-          "GiB": 8589934592,          // 2^30 octets
-          "TiB": 8796093022208,       // 2^40 octets
-          "PiB": 9007199254740992,    // 2^50 octets
-          "EiB": 9223372036854775808  // 2^60 octets
-        }
-      },
-}
-    // ===============================
-    // TABLE DES NOMS
-    // ===============================
-
-var unitNames = {
-    "mm": "millimètre",
-    "cm": "centimètre",
-    "m": "mètre",
-    "km": "kilomètre",
-    "in": "pouce",
-    "ft": "pied",
-    "yd": "yard",
-    "mi": "mile",
-    "nmi": "mile nautique",
-    "mg": "milligramme",
-    "g": "gramme",
-    "kg": "kilogramme",
-    "t": "tonne",
-    "oz": "once",
-    "lb": "livre",
-    "stone": "stone",
-    "L": "litre",
-    "mL": "millilitre",
-    "gal_US": "gallon US",
-    "qt_US": "quart US",
-    "pt_US": "pinte US",
-    "cup_US": "tasse US",
-    "W": "watt",
-    "kW": "kilowatt",
-    "MW": "mégawatt",
-    "hp_met": "cheval vapeur (métrique)",
-    "hp_mec": "cheval vapeur (mécanique)",
-    "J": "joule",
-    "kJ": "kilojoule",
-    "Wh": "watt-heure",
-    "kWh": "kilowatt-heure",
-    "cal": "calorie",
-    "kcal": "kilocalorie",
-    "BTU": "BTU",
-    
-    // Base
-    "b": "bit",
-    "B": "octet",
-
-    // Décimal (10^3)
-    "kB": "kilooctet (10³)",
-    "MB": "mégaoctet (10⁶)",
-    "GB": "gigaoctet (10⁹)",
-    "TB": "téraoctet (10¹²)",
-    "PB": "pétaoctet (10¹⁵)",
-    "EB": "exa-octet (10¹⁸)",
-
-    // Binaire (2^10)
-    "KiB": "kibioctet (2¹⁰)",
-    "MiB": "mébioctet (2²⁰)",
-    "GiB": "gibioctet (2³⁰)",
-    "TiB": "tébioctet (2⁴⁰)",
-    "PiB": "pébioctet (2⁵⁰)",
-    "EiB": "exbioctet (2⁶⁰)",
+<script>
+// ===============================
+// 1. Catégories (version réduite)
+// ===============================
+var categories = {
+    distance:{base:"m",units:{m:1,km:1000,cm:0.01,mm:0.001,mi:1609.344,yd:0.9144,ft:0.3048,in:0.0254,nmi:1852}},
+    acceleration:{base:"m/s²",units:{"m/s²":1,"cm/s²":0.01,"ft/s²":0.3048,"in/s²":0.0254,"km/h·s":1000/3600,"mi/h·s":1609.344/3600,"mi/h·min":1609.344/(3600*60),g:9.80665}},
+    masse:{base:"kg",units:{kg:1,g:0.001,mg:0.000001,t:1000,lb:0.45359237,oz:0.0283495231,stone:6.35029318}},
+    volume:{base:"L",units:{L:1,mL:0.001,m3:1000,"ft3":28.316846592,gal_US:3.785411784,qt_US:0.946352946,pt_US:0.473176473,cup_US:0.2365882365}},
+    volume_sec:{base:"L",units:{L:1,cup_dry_US:0.2365882365,pt_dry_US:0.550610471,qt_dry_US:1.101220942,gal_dry_US:4.40488377,bushel_US:35.23907017}},
+    surface:{base:"m²",units:{"m²":1,"cm²":0.0001,"mm²":0.000001,"km²":1000000,ha:10000,"ft²":0.09290304,"in²":0.00064516,acre:4046.8564224}},
+    vitesse:{base:"m/s",units:{"m/s":1,"km/h":1000/3600,"mph":1609.344/3600,"kn":1852/3600,"ft/s":0.3048}},
+    temps:{base:"s",units:{s:1,ms:0.001,min:60,h:3600,jour:86400,semaine:604800,an:31557600}},
+    energie:{base:"J",units:{J:1,kJ:1000,Wh:3600,kWh:3600000,cal:4.184,kcal:4184,BTU:1055.05585}},
+    puissance:{base:"W",units:{W:1,kW:1000,MW:1000000,hp_mec:745.699872,hp_met:735.49875}},
+    force:{base:"N",units:{N:1,kN:1000,dyn:0.00001,lbf:4.4482216152605,kgf:9.80665}},
+    pression:{base:"Pa",units:{Pa:1,kPa:1000,bar:100000,mbar:100,psi:6894.757293168,atm:101325,mmHg:133.3223684211}},
+    densite:{base:"kg/m³",units:{"kg/m³":1,"g/cm³":1000,"g/L":1,"lb/ft³":16.01846337}},
+    debit:{base:"m³/s",units:{"m³/s":1,"m³/h":1/3600,"L/s":0.001,"L/min":0.001/60,"L/h":0.001/3600,"gal_US/min":3.785411784/60}},
+    angle:{base:"rad",units:{rad:1,deg:Math.PI/180,grad:Math.PI/200,tour:2*Math.PI}},
+    lumiere:{base:"lx",units:{lx:1,"foot-candle":10.76391041671}},
+    temperature:{special:true,units:["C","F","K"]},
+    custom:{special:"custom",units:{}},
+    donnees:{units:{
+        "b":1,"B":8,"kB":8000,"MB":8000000,"GB":8000000000,"TB":8000000000000,
+        "PB":8000000000000000,"EB":8000000000000000000,
+        "KiB":8192,"MiB":8388608,"GiB":8589934592,"TiB":8796093022208,
+        "PiB":9007199254740992,"EiB":9223372036854775808
+    }}
 };
 
-    // ===============================
-    // DOM
-    // ===============================
+// ===============================
+// 2. Extraire les unités
+// ===============================
+function getUnitList(cat) {
+  if (!cat) return [];
+  if (cat.special === true) return cat.units;
 
-    var categorySelect = document.getElementById("category");
-    var fromSelect = document.getElementById("fromUnit");
-    var toSelect = document.getElementById("toUnit");
-    var valueInput = document.getElementById("value");
-    var resultSpan = document.getElementById("result");
+  var arr = [];
+  for (var k in cat.units) arr.push(k);
+  return arr;
+}
 
-    var customBox = document.getElementById("customBox");
-    var customA = document.getElementById("customA");
-    var customB = document.getElementById("customB");
-    var customFactor = document.getElementById("customFactor");
+// ===============================
+// 3. Liste globale des unités + map unité → catégorie
+// ===============================
 
-    // ===============================
-    // TEMPÉRATURE
-    // ===============================
+var allUnits = [];
+var unitToCategory = {};
 
-    function convertTemperature(value, from, to) {
-      var c;
-      if (from === "C") c = value;
-      if (from === "F") c = (value - 32) * 5 / 9;
-      if (from === "K") c = value - 273.15;
+function buildGlobalUnitList() {
+  var catName, cat, units, i;
 
-      if (to === "C") return c;
-      if (to === "F") return c * 9 / 5 + 32;
-      if (to === "K") return c + 273.15;
+  for (catName in categories) {
+    cat = categories[catName];
+    units = getUnitList(cat);
+
+    for (i = 0; i < units.length; i++) {
+      var u = units[i];
+      allUnits.push(u);
+      unitToCategory[u] = catName;
     }
+  }
+}
 
-    // ===============================
-    // FONCTIONS
-    // ===============================
+// ===============================
+// 4. Dropdown générique
+// ===============================
+function createDropdown(selectedId, listId, onSelect) {
+  var selected = document.getElementById(selectedId);
+  var list = document.getElementById(listId);
+  var isOpen = false;
 
-function updateUnits() {
-  var cat = categories[categorySelect.value];
+  list.style.display = "none";
 
-  fromSelect.innerHTML = "";
-  toSelect.innerHTML = "";
+  selected.onclick = function () {
+    if (isOpen) {
+      list.style.display = "none";
+      isOpen = false;
+    } else {
+      list.style.display = "block";
+      isOpen = true;
+    }
+  };
 
-  // Cas spécial : unités custom
-  if (cat.special === "custom") {
-    customBox.style.display = "block";
-    updateCustomUnits();
-    return;
+  function fill(options) {
+    list.innerHTML = "";
+    for (var i = 0; i < options.length; i++) {
+      (function(opt){
+        var div = document.createElement("div");
+        div.appendChild(document.createTextNode(opt));
+        div.onclick = function () {
+          selected.innerHTML = opt;
+          list.style.display = "none";
+          isOpen = false;
+          onSelect(opt);
+        };
+        list.appendChild(div);
+      })(options[i]);
+    }
   }
 
-  customBox.style.display = "none";
+  return fill;
+}
 
-  // Cas spécial : température (C, F, K)
-  if (cat.special === true) {
-    for (var i = 0; i < cat.units.length; i++) {
-      var u = cat.units[i];
-      fromSelect.add(new Option(u, u));
-      toSelect.add(new Option(u, u));
-    }
-    convert();
-    return;
-  }
+// ===============================
+// 5. Variables global + création des 3 menus
+// ===============================
+var selectedCategory = null;
+var selectedFrom = null;
+var selectedTo = null;
 
-  // ===============================
-  // TRI PAR TYPE — VERSION PARFAITE
-  // ===============================
+var fillCategory = createDropdown("catSelected", "catList", function(opt){
+  selectedCategory = opt;
+  updateUnits();
+});
 
-  var keys = [];
-  for (var u2 in cat.units) {
-    keys.push(u2);
-  }
+var fillFrom = createDropdown("fromSelected", "fromList", function(opt){
+  selectedFrom = opt;
 
-  function getGroup(unit) {
+  // Trouver la catégorie de cette unité
+  var catName = unitToCategory[opt];
 
-    var catName = categorySelect.value;
+  // Si la catégorie change
+  if (catName && selectedCategory !== catName) {
+    selectedCategory = catName;
+    document.getElementById("catSelected").innerHTML = catName;
 
-    // ----------- DISTANCE -----------
-    if (catName === "distance") {
-      if (unit === "mm" || unit === "cm" || unit === "dm" || unit === "m" || unit === "km") return 1; // SI
-      if (unit === "in" || unit === "ft" || unit === "yd") return 2; // Impérial
-      if (unit === "mi") return 3; // Autre
-      if (unit === "nmi") return 4; // Nautique
-      return 5;
-    }
+    // Mettre à jour les unités
+    updateUnits();
 
-    // ----------- MASSE -----------
-    if (catName === "masse") {
-      if (unit === "mg" || unit === "g" || unit === "kg" || unit === "t") return 1; // SI
-      if (unit === "oz" || unit === "lb" || unit === "stone") return 2; // Impérial
-      return 3;
-    }
-
-    // ----------- SURFACE -----------
-    if (catName === "surface") {
-      if (unit === "mm²" || unit === "cm²" || unit === "m²" || unit === "km²" || unit === "ha") return 1; // SI
-      if (unit === "in²" || unit === "ft²") return 2; // Impérial
-      if (unit === "acre") return 3; // US/UK
-      return 4;
-    }
-
-    // ----------- VOLUME -----------
-    if (catName === "volume") {
-      if (unit === "mL" || unit === "L" || unit === "m³") return 1; // SI
-      if (unit === "cup_US" || unit === "pt_US" || unit === "qt_US" || unit === "gal_US") return 2; // US liquide
-      if (unit === "ft³") return 3; // Impérial
-      return 4;
-    }
-
-    // ----------- VOLUME SEC -----------
-    if (catName === "volume_sec") {
-      if (unit === "L") return 1; // SI
-      if (unit === "cup_dry_US" || unit === "pt_dry_US" || unit === "qt_dry_US" || unit === "gal_dry_US" || unit === "bushel_US") return 2; // US sec
-      return 3;
-    }
-
-    // ----------- VITESSE -----------
-    if (catName === "vitesse") {
-      if (unit === "m/s" || unit === "km/h") return 1; // SI
-      if (unit === "ft/s" || unit === "mph") return 2; // Impérial
-      if (unit === "kn") return 3; // Nautique
-      return 4;
-    }
-
-    // ----------- PRESSION -----------
-    if (catName === "pression") {
-      if (unit === "Pa" || unit === "kPa" || unit === "bar" || unit === "mbar") return 1; // SI
-      if (unit === "psi") return 2; // Impérial
-      if (unit === "mmHg") return 3; // Divers
-      return 4;
-    }
-
-    // ----------- FORCE -----------
-    if (catName === "force") {
-      if (unit === "dyn" || unit === "N" || unit === "kN") return 1; // SI
-      if (unit === "lbf") return 2; // Impérial
-      if (unit === "kgf") return 3; // Technique
-      return 4;
-    }
-
-    // ----------- ENERGIE -----------
-    if (catName === "energie") {
-      if (unit === "J" || unit === "kJ") return 1; // SI
-      if (unit === "Wh" || unit === "kWh") return 2; // Électrique
-      if (unit === "cal" || unit === "kcal") return 3; // Alimentaire
-      if (unit === "BTU") return 4; // Impérial
-      return 5;
-    }
-
-    // ----------- PUISSANCE -----------
-    if (catName === "puissance") {
-      if (unit === "W" || unit === "kW" || unit === "MW") return 1; // SI
-      if (unit === "hp_met" || unit === "hp_mec") return 2; // Chevaux
-      return 3;
-    }
-
-    // ----------- TEMPS -----------
-    if (catName === "temps") {
-      if (unit === "ms" || unit === "s" || unit === "min" || unit === "h") return 1;
-      if (unit === "jour" || unit === "semaine" || unit === "an") return 2;
-      return 3;
-    }
-
-    // ----------- DENSITE -----------
-    if (catName === "densite") {
-      if (unit === "kg/m³" || unit === "g/cm³") return 1; // SI
-      if (unit === "g/L") return 2; // SI dérivé
-      if (unit === "lb/ft³") return 3; // Impérial
-      return 4;
-    }
-
-    // ----------- DEBIT -----------
-    if (catName === "debit") {
-      if (unit === "L/h" || unit === "L/min" || unit === "L/s" || unit === "m³/h" || unit === "m³/s") return 1; // SI
-      if (unit === "gal_US/min") return 2; // US
-      return 3;
-    }
-
-    // ----------- ANGLE -----------
-    if (catName === "angle") {
-      if (unit === "rad") return 1;
-      if (unit === "deg") return 2;
-      if (unit === "grad") return 3;
-      if (unit === "tour") return 4;
-      return 5;
-    }
-
-    // ----------- LUMIERE -----------
-    if (catName === "lumiere") {
-      if (unit === "lx") return 1; // SI
-      if (unit === "foot-candle") return 2; // Impérial
-      return 3;
-    }
-
-    // ----------- ACCELERATION -----------
-    if (catName === "acceleration") {
-      if (unit === "cm/s²" || unit === "m/s²") return 1; // SI
-      if (unit === "in/s²" || unit === "ft/s²") return 2; // Impérial
-      if (unit === "km/h·s" || unit === "mi/h·s" || unit === "mi/h·min") return 3; // Vitesse dérivée
-      if (unit === "g") return 4; // Gravité
-      return 5;
-    }
-
-    // ----------- DONNÉES -----------
-    if (catName === "donnees") {
-      if (unit === "b" || unit === "B") return 1; // base
-      if (unit === "kB" || unit === "MB" || unit === "GB" || unit === "TB" ||
-          unit === "PB" || unit === "EB") return 2; // décimal
-      if (unit === "KiB" || unit === "MiB" || unit === "GiB" || unit === "TiB" ||
-          unit === "PiB" || unit === "EiB") return 3; // binaire
-      return 4;
-    }
-
-    return 10;
-  }
-
-  // Tri par groupe puis par valeur
-  keys.sort(function(a, b) {
-    var ga = getGroup(a);
-    var gb = getGroup(b);
-
-    if (ga !== gb) return ga - gb;
-
-    return cat.units[a] - cat.units[b];
-  });
-
-  // Ajout dans l’ordre trié
-  for (var i = 0; i < keys.length; i++) {
-    var unitName = keys[i];
-    fromSelect.add(new Option(unitName, unitName));
-    toSelect.add(new Option(unitName, unitName));
+    // Réappliquer la sélection automatiquement
+    document.getElementById("fromSelected").innerHTML = opt;
+    selectedFrom = opt;
   }
 
   convert();
-}
-
-    function updateCustomUnits() {
-      var nameA = customA.value || "A";
-      var nameB = customB.value || "B";
-      var factor = parseFloat(customFactor.value) || 1;
-
-      categories.custom.units = {};
-      categories.custom.units[nameA] = 1;
-      categories.custom.units[nameB] = factor;
-
-      fromSelect.innerHTML = "";
-      toSelect.innerHTML = "";
-
-      fromSelect.add(new Option(nameA, nameA));
-      fromSelect.add(new Option(nameB, nameB));
-
-      toSelect.add(new Option(nameA, nameA));
-      toSelect.add(new Option(nameB, nameB));
-
-      convert();
-    }
-
-    function convert() {
-      var cat = categories[categorySelect.value];
-      var val = parseFloat(valueInput.value) || 0;
-      var from = fromSelect.value;
-      var to = toSelect.value;
-
-      if (!from || !to) return;
-
-      var result;
-
-      if (cat.special === true) {
-        result = convertTemperature(val, from, to);
-      } else {
-        var base = val * cat.units[from];
-        result = base / cat.units[to];
-      }
-
-      resultSpan.innerHTML = result + " " + to;
-    }
-
-    // ===============================
-    // SAUVEGARDE
-    // ===============================
-
-    function saveState() {
-      var state = {
-        category: categorySelect.value,
-        from: fromSelect.value,
-        to: toSelect.value,
-        value: valueInput.value,
-        customA: customA.value,
-        customB: customB.value,
-        customFactor: customFactor.value
-      };
-
-      localStorage.setItem("converterState", JSON.stringify(state));
-    }
-
-    function loadState() {
-      var saved = localStorage.getItem("converterState");
-      if (!saved) return;
-
-      var state = JSON.parse(saved);
-
-      if (state.category) categorySelect.value = state.category;
-
-      updateUnits();
-
-      customA.value = state.customA || "";
-      customB.value = state.customB || "";
-      customFactor.value = state.customFactor || 1;
-
-      if (state.category === "custom") updateCustomUnits();
-
-      if (state.from) fromSelect.value = state.from;
-      if (state.to) toSelect.value = state.to;
-      if (state.value) valueInput.value = state.value;
-
-      convert();
-    }
-
-    // ===============================
-    // LISTENERS
-    // ===============================
-
-    categorySelect.addEventListener("change", function () {
-      updateUnits();
-      saveState();
-    });
-
-    fromSelect.addEventListener("change", function () {
-      convert();
-      saveState();
-    });
-
-    toSelect.addEventListener("change", function () {
-      convert();
-      saveState();
-    });
-
-    valueInput.addEventListener("input", function () {
-      convert();
-      saveState();
-    });
-
-    customA.addEventListener("input", function () {
-      updateCustomUnits();
-      saveState();
-    });
-
-    customB.addEventListener("input", function () {
-      updateCustomUnits();
-      saveState();
-    });
-
-    customFactor.addEventListener("input", function () {
-      updateCustomUnits();
-      saveState();
-    });
-
-    // ===============================
-    // INITIALISATION
-    // ===============================
-
-window.addEventListener("load", function () {
-  setTimeout(function () {
-
-    // Remplir les catégories
-    for (var cat in categories) {
-      categorySelect.add(new Option(cat, cat));
-    }
-
-    // Charger l'état
-    var saved = localStorage.getItem("converterState");
-    if (saved) {
-      var state = JSON.parse(saved);
-
-      // Restaurer la catégorie
-      if (state.category) categorySelect.value = state.category;
-
-      // Remplir les unités de cette catégorie
-      updateUnits();
-
-      // Restaurer les champs custom
-      customA.value = state.customA || "";
-      customB.value = state.customB || "";
-      customFactor.value = state.customFactor || 1;
-
-      if (state.category === "custom") updateCustomUnits();
-
-      // Restaurer les unités sélectionnées
-      if (state.from) fromSelect.value = state.from;
-      if (state.to) toSelect.value = state.to;
-
-      // Restaurer la valeur
-      if (state.value) valueInput.value = state.value;
-
-      convert();
-    } else {
-      // Aucun état → initialisation normale
-      updateUnits();
-      convert();
-    }
-
-  }, 100);
 });
 
-    // ===============================
-    // RECHERCHE + NAVIGATION CLAVIER
-    // ===============================
+var fillTo = createDropdown("toSelected", "toList", function(opt){
+  selectedTo = opt;
 
-    function createResultsBox(inputId) {
-      var input = document.getElementById(inputId);
-      var box = document.createElement("div");
+  var catName = unitToCategory[opt];
 
-      box.style.position = "absolute";
-      box.style.background = "white";
-      box.style.border = "1px solid #999";
-      box.style.maxHeight = "150px";
-      box.style.overflowY = "auto";
-      box.style.display = "none";
-     box.style.zIndex = 9999;
+  if (catName && selectedCategory !== catName) {
+    selectedCategory = catName;
+    document.getElementById("catSelected").innerHTML = catName;
 
-      document.body.appendChild(box);
+    updateUnits();
 
-      // repositionner le menu sous l’input
-      function positionBox() {
-        var rect = input.getBoundingClientRect();
-        box.style.left = rect.left + "px";
-        box.style.top = (rect.bottom + window.scrollY) + "px";
-        box.style.width = rect.width + "px";
-      }
+    document.getElementById("toSelected").innerHTML = opt;
+    selectedTo = opt;
+  }
 
-      input.addEventListener("focus", positionBox);
-      input.addEventListener("input", positionBox);
-      window.addEventListener("resize", positionBox);
-      window.addEventListener("scroll", positionBox);
+  convert();
+});
 
-      return box;
-    }
+// ===============================
+// 6. Mise à jour des unités
+// ===============================
+function updateUnits() {
+  var cat = categories[selectedCategory];
+  var units = getUnitList(cat);
 
-    var fromBox = createResultsBox("searchFrom");
-    var toBox = createResultsBox("searchTo");
+  fillFrom(units);
+  fillTo(units);
 
-function searchUnits(text, box, targetSelectId) {
-  var val = text.toLowerCase().trim();
-  box.innerHTML = "";
+  selectedFrom = null;
+  selectedTo = null;
 
-  if (!val) {
-    box.style.display = "none";
+  document.getElementById("fromSelected").innerHTML = "—";
+  document.getElementById("toSelected").innerHTML = "—";
+  document.getElementById("result").innerHTML = "—";
+}
+
+// ===============================
+// 7. Recherche globale (De + Vers)
+// ===============================
+document.getElementById("searchFrom").oninput = function () {
+  var q = this.value.toLowerCase();
+  var list = document.getElementById("fromSearchList");
+  var i;
+
+  list.innerHTML = "";
+
+  if (q === "") {
+    list.style.display = "none";
     return;
   }
 
-  for (var catName in categories) {
-
-    if (catName === "custom") continue;
-
-    var cat = categories[catName];
-    var list = cat.special === true ? cat.units : Object.keys(cat.units);
-
-    for (var i = 0; i < list.length; i++) {
-      var unit = list[i];
-
-      var name = unitNames[unit] || ""; // nom complet si existe
-
-      // match sur abréviation OU nom complet
-      if (unit.toLowerCase().indexOf(val) !== -1 ||
-          name.toLowerCase().indexOf(val) !== -1) {
-
-        var item = document.createElement("div");
-        item.style.padding = "4px";
-        item.style.cursor = "pointer";
-
-        item.textContent = unit + (name ? " — " + name : "") + " (" + catName + ")";
-
-        item.onclick = (function (catName, unit) {
-          return function () {
-
-            if (category.value !== catName) {
-              category.value = catName;
-              updateUnits();
-            }
-
-            document.getElementById(targetSelectId).value = unit;
-            convert();
-            saveState();
-            box.style.display = "none";
-          };
-        })(catName, unit);
-
-        box.appendChild(item);
-      }
+  // Recherche globale dans allUnits
+  var filtered = [];
+  for (i = 0; i < allUnits.length; i++) {
+    if (allUnits[i].toLowerCase().indexOf(q) !== -1) {
+      filtered.push(allUnits[i]);
     }
   }
 
-  box.style.display = box.children.length ? "block" : "none";
+  // Afficher les résultats
+  for (i = 0; i < filtered.length; i++) {
+    (function(unit){
+      var div = document.createElement("div");
+      div.appendChild(document.createTextNode(unit));
+
+      div.onclick = function () {
+
+        // Trouver la catégorie de cette unité
+        var catName = unitToCategory[unit];
+
+        // Mettre à jour la catégorie
+        selectedCategory = catName;
+        document.getElementById("catSelected").innerHTML = catName;
+
+        // Mettre à jour les menus De/Vers
+        updateUnits();
+
+        // Sélectionner automatiquement dans "De"
+        selectedFrom = unit;
+        document.getElementById("fromSelected").innerHTML = unit;
+
+        // Fermer la liste de recherche
+        list.style.display = "none";
+
+        convert();
+      };
+
+      list.appendChild(div);
+    })(filtered[i]);
+  }
+
+  list.style.display = filtered.length ? "block" : "none";
+};
+
+document.getElementById("searchTo").oninput = function () {
+  var q = this.value.toLowerCase();
+  var list = document.getElementById("toSearchList");
+  var i;
+
+  list.innerHTML = "";
+
+  if (q === "") {
+    list.style.display = "none";
+    return;
+  }
+
+  // Recherche globale dans allUnits
+  var filtered = [];
+  for (i = 0; i < allUnits.length; i++) {
+    if (allUnits[i].toLowerCase().indexOf(q) !== -1) {
+      filtered.push(allUnits[i]);
+    }
+  }
+
+  // Afficher les résultats
+  for (i = 0; i < filtered.length; i++) {
+    (function(unit){
+      var div = document.createElement("div");
+      div.appendChild(document.createTextNode(unit));
+
+      div.onclick = function () {
+
+        // Trouver la catégorie de cette unité
+        var catName = unitToCategory[unit];
+
+        // Mettre à jour la catégorie
+        selectedCategory = catName;
+        document.getElementById("catSelected").innerHTML = catName;
+
+        // Mettre à jour les menus De/Vers
+        updateUnits();
+
+        // Sélectionner automatiquement dans "Vers"
+        selectedTo = unit;
+        document.getElementById("toSelected").innerHTML = unit;
+
+        // Fermer la liste de recherche
+        list.style.display = "none";
+
+        convert();
+      };
+
+      list.appendChild(div);
+    })(filtered[i]);
+  }
+
+  list.style.display = filtered.length ? "block" : "none";
+};
+
+// ===============================
+// 8. Conversion
+// ===============================
+function convert() {
+  if (!selectedCategory || !selectedFrom || !selectedTo) return;
+
+  var cat = categories[selectedCategory];
+
+  // ============================
+  // CAS SPÉCIAL : TEMPÉRATURE
+  // ============================
+  if (cat.special === true) {
+    var val = 1; // valeur fictive pour test
+    var res = null;
+
+    if (selectedFrom === "C" && selectedTo === "F") res = val * 9/5 + 32;
+    else if (selectedFrom === "F" && selectedTo === "C") res = (val - 32) * 5/9;
+    else if (selectedFrom === "C" && selectedTo === "K") res = val + 273.15;
+    else if (selectedFrom === "K" && selectedTo === "C") res = val - 273.15;
+    else if (selectedFrom === "F" && selectedTo === "K") res = (val - 32) * 5/9 + 273.15;
+    else if (selectedFrom === "K" && selectedTo === "F") res = (val - 273.15) * 9/5 + 32;
+    else res = val;
+
+    document.getElementById("result").innerHTML =
+      "1 " + selectedFrom + " = " + res + " " + selectedTo;
+    return;
+  }
+
+  // ============================
+  // CAS SPÉCIAL : CUSTOM
+  // ============================
+  if (cat.special === "custom") {
+    var uFrom = cat.units[selectedFrom];
+    var uTo = cat.units[selectedTo];
+
+    if (!uFrom || !uTo) return;
+
+    var ratio = uFrom / uTo;
+
+    document.getElementById("result").innerHTML =
+      "1 " + selectedFrom + " = " + ratio + " " + selectedTo;
+    return;
+  }
+
+  // ============================
+  // CAS NORMAL : BASE MULTIPLICATIVE
+  // ============================
+  var units = cat.units;
+  var baseFrom = units[selectedFrom];
+  var baseTo = units[selectedTo];
+
+  if (!baseFrom || !baseTo) return;
+
+  var ratio = baseFrom / baseTo;
+
+  document.getElementById("result").innerHTML =
+    "1 " + selectedFrom + " = " + ratio + " " + selectedTo;
 }
 
-    // ===============================
-    // NAVIGATION CLAVIER
-    // ===============================
+// ===============================
+// 9. Initialisation
+// ===============================
+(function init() {
+  buildGlobalUnitList();
 
-    var fromIndex = -1;
-    var toIndex = -1;
+  var catNames = [];
+  for (var k in categories) catNames.push(k);
 
-    function highlightItem(box, index) {
-      var children = box.children;
-      var i;
-      for (i = 0; i < children.length; i++) {
-        children[i].style.background = (i === index) ? "#cce0ff" : "white";
-      }
-    }
+  fillCategory(catNames);
+})();
 
-    function scrollToItem(box, index) {
-      var children = box.children;
-      if (!children || index < 0 || index >= children.length) return;
+// ===============================
+// 10. COPIE + FEEDBACK
+// ===============================
+document.getElementById("copyBtn").onclick = function () {
+  var text = document.getElementById("result").innerHTML;
 
-      var el = children[index];
-
-      if (el.scrollIntoView) {
-        el.scrollIntoView(false);
-      }
-    }
-
-    document.getElementById("searchFrom").addEventListener("input", function (e) {
-      fromIndex = -1;
-      searchUnits(e.target.value, fromBox, "fromUnit");
-    });
-
-    document.getElementById("searchTo").addEventListener("input", function (e) {
-      toIndex = -1;
-      searchUnits(e.target.value, toBox, "toUnit");
-    });
-
-    document.getElementById("searchFrom").addEventListener("keydown", function (e) {
-      var key = e.keyCode;
-      var items = fromBox.children;
-      var len = items.length;
-
-      if (!len) return;
-
-      if (key === 40) {
-        e.preventDefault();
-        fromIndex++;
-        if (fromIndex >= len) fromIndex = 0;
-        highlightItem(fromBox, fromIndex);
-        scrollToItem(fromBox, fromIndex);
-      }
-
-      if (key === 38) {
-        e.preventDefault();
-        fromIndex--;
-        if (fromIndex < 0) fromIndex = len - 1;
-        highlightItem(fromBox, fromIndex);
-        scrollToItem(fromBox, fromIndex);
-      }
-
-      if (key === 13 && fromIndex >= 0) {
-        e.preventDefault();
-        items[fromIndex].onclick();
-        fromIndex = -1;
-      }
-
-      if (key === 27) {
-        fromBox.style.display = "none";
-        fromIndex = -1;
-      }
-    });
-
-    document.getElementById("searchTo").addEventListener("keydown", function (e) {
-      var key = e.keyCode;
-      var items = toBox.children;
-      var len = items.length;
-
-      if (!len) return;
-
-      if (key === 40) {
-        e.preventDefault();
-        toIndex++;
-        if (toIndex >= len) toIndex = 0;
-        highlightItem(toBox, toIndex);
-        scrollToItem(toBox, toIndex);
-      }
-
-      if (key === 38) {
-        e.preventDefault();
-        toIndex--;
-        if (toIndex < 0) toIndex = len - 1;
-        highlightItem(toBox, toIndex);
-        scrollToItem(toBox, toIndex);
-      }
-
-      if (key === 13 && toIndex >= 0) {
-        e.preventDefault();
-        items[toIndex].onclick();
-        toIndex = -1;
-      }
-
-      if (key === 27) {
-        toBox.style.display = "none";
-        toIndex = -1;
-      }
-    });
-
-    document.addEventListener("click", function (e) {
-      if (!e.target || e.target.id !== "searchFrom") {
-        fromBox.style.display = "none";
-        fromIndex = -1;
-      }
-      if (!e.target || e.target.id !== "searchTo") {
-        toBox.style.display = "none";
-        toIndex = -1;
-      }
-    });
-
-  });
-
-document.getElementById("copyBtn").addEventListener("click", function () {
-  var text = document.getElementById("result").textContent;
-});
-
-document.getElementById("copyBtn").addEventListener("click", function () {
-  var texte = document.getElementById("result").textContent;
-
+  // Créer un textarea caché
   var temp = document.createElement("textarea");
-  temp.value = texte;
+  temp.value = text;
+  temp.style.position = "absolute";
+  temp.style.left = "-9999px";
   document.body.appendChild(temp);
+
+  // Sélectionner + copier
   temp.select();
+  try {
+    document.execCommand("copy");
+  } catch (e) {
+    // La 3DS ne supporte pas toujours execCommand,
+    // mais au moins ça ne plante pas.
+  }
 
-  try { document.execCommand("copy"); } catch (e) {}
-
+  // Supprimer le textarea
   document.body.removeChild(temp);
 
   // Feedback visuel
-  copyBtn.textContent = "Copié !";
-  setTimeout(() => copyBtn.textContent = "Copier", 800);
-});
-  </script>
+  var fb = document.getElementById("copyFeedback");
+  fb.style.display = "inline";
+
+  // Disparition après 1 seconde
+  setTimeout(function () {
+    fb.style.display = "none";
+  }, 1000);
+};
+</script>
 
 </body>
+</html>
