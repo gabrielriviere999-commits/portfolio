@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Convertisseur d'unités</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 20px auto; background: #C0C0C0; }
+    label { display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 6px; margin-top: 5px; }
+    h1 { margin-bottom: 5px; }
+    #customBox { border:1px solid #ccc; padding:10px; margin-top:15px; }
+  </style>
+</head>
+<body>
+
+  <h1>Convertisseur d'unités</h1>
+
+  <label>
+    Catégorie :
+    <select id="category"></select>
+  </label>
+
+  <label>
+    Valeur :
+    <input type="number" id="value" value="1" step="any">
+  </label>
+
+  <!-- Bloc Custom -->
+  <div id="customBox" style="display:none;">
+    <h3>Définir unités Custom</h3>
+
+    <label>Nom unité A :
+      <input type="text" id="customA" placeholder="ex: foo">
+    </label>
+
+    <label>Nom unité B :
+      <input type="text" id="customB" placeholder="ex: bar">
+    </label>
+
+    <label>1 unité A =
+      <input type="number" id="customFactor" step="any" value="1">
+      unité(s) B
+    </label>
+  </div>
+
+  <label>
+    De :
+    <select id="fromUnit"></select>
+  </label>
+
+  <label>
+    Vers :
+    <select id="toUnit"></select>
+  </label>
+
+  <p>Résultat : <strong id="result">—</strong></p>
+
+  <script src="converter.js"></script>
+</body>
+</html>
