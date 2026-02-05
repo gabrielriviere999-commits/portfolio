@@ -540,19 +540,48 @@ function updateUnits() {
     // INITIALISATION
     // ===============================
 
-    window.addEventListener("load", function () {
-      setTimeout(function () {
+window.addEventListener("load", function () {
+  setTimeout(function () {
 
-        for (var cat in categories) {
-          categorySelect.add(new Option(cat, cat));
-        }
+    // Remplir les catégories
+    for (var cat in categories) {
+      categorySelect.add(new Option(cat, cat));
+    }
 
-        loadState();
-        updateUnits();
-        convert();
+    // Charger l'état
+    var saved = localStorage.getItem("converterState");
+    if (saved) {
+      var state = JSON.parse(saved);
 
-      }, 100);
-    });
+      // Restaurer la catégorie
+      if (state.category) categorySelect.value = state.category;
+
+      // Remplir les unités de cette catégorie
+      updateUnits();
+
+      // Restaurer les champs custom
+      customA.value = state.customA || "";
+      customB.value = state.customB || "";
+      customFactor.value = state.customFactor || 1;
+
+      if (state.category === "custom") updateCustomUnits();
+
+      // Restaurer les unités sélectionnées
+      if (state.from) fromSelect.value = state.from;
+      if (state.to) toSelect.value = state.to;
+
+      // Restaurer la valeur
+      if (state.value) valueInput.value = state.value;
+
+      convert();
+    } else {
+      // Aucun état → initialisation normale
+      updateUnits();
+      convert();
+    }
+
+  }, 100);
+});
 
     // ===============================
     // RECHERCHE + NAVIGATION CLAVIER
