@@ -97,9 +97,31 @@
       angle:{base:"rad",units:{rad:1,deg:Math.PI/180,grad:Math.PI/200,tour:2*Math.PI}},
       lumiere:{base:"lx",units:{lx:1,"foot-candle":10.76391041671}},
       temperature:{special:true,units:["C","F","K"]},
-      custom:{special:"custom",units:{}}
-    };
+      custom:{special:"custom",units:{}},
+      donnees: {
+        units: {
+          // Base
+          "b": 1,                     // bit
+          "B": 8,                     // octet
 
+          // Décimal (10^3)
+          "kB": 8000,                 // 10^3 octets
+          "MB": 8000000,              // 10^6 octets
+          "GB": 8000000000,           // 10^9 octets
+          "TB": 8000000000000,        // 10^12 octets
+          "PB": 8000000000000000,     // 10^15 octets
+          "EB": 8000000000000000000,  // 10^18 octets
+
+          // Binaire (2^10)
+          "KiB": 8192,                // 2^10 octets
+          "MiB": 8388608,             // 2^20 octets
+          "GiB": 8589934592,          // 2^30 octets
+          "TiB": 8796093022208,       // 2^40 octets
+          "PiB": 9007199254740992,    // 2^50 octets
+          "EiB": 9223372036854775808  // 2^60 octets
+        }
+      },
+}
     // ===============================
     // TABLE DES NOMS
     // ===============================
@@ -138,7 +160,27 @@ var unitNames = {
     "kWh": "kilowatt-heure",
     "cal": "calorie",
     "kcal": "kilocalorie",
-    "BTU": "BTU"
+    "BTU": "BTU",
+    
+    // Base
+    "b": "bit",
+    "B": "octet",
+
+    // Décimal (10^3)
+    "kB": "kilooctet (10³)",
+    "MB": "mégaoctet (10⁶)",
+    "GB": "gigaoctet (10⁹)",
+    "TB": "téraoctet (10¹²)",
+    "PB": "pétaoctet (10¹⁵)",
+    "EB": "exa-octet (10¹⁸)",
+
+    // Binaire (2^10)
+    "KiB": "kibioctet (2¹⁰)",
+    "MiB": "mébioctet (2²⁰)",
+    "GiB": "gibioctet (2³⁰)",
+    "TiB": "tébioctet (2⁴⁰)",
+    "PiB": "pébioctet (2⁵⁰)",
+    "EiB": "exbioctet (2⁶⁰)",
 };
 
     // ===============================
@@ -340,6 +382,16 @@ function updateUnits() {
       return 5;
     }
 
+    // ----------- DONNÉES -----------
+    if (catName === "donnees") {
+      if (unit === "b" || unit === "B") return 1; // base
+      if (unit === "kB" || unit === "MB" || unit === "GB" || unit === "TB" ||
+          unit === "PB" || unit === "EB") return 2; // décimal
+      if (unit === "KiB" || unit === "MiB" || unit === "GiB" || unit === "TiB" ||
+          unit === "PiB" || unit === "EiB") return 3; // binaire
+      return 4;
+    }
+
     return 10;
   }
 
@@ -488,11 +540,19 @@ function updateUnits() {
     // INITIALISATION
     // ===============================
 
-    for (var cat in categories) {
-      categorySelect.add(new Option(cat, cat));
-    }
+    window.addEventListener("load", function () {
+      setTimeout(function () {
 
-    loadState();
+        for (var cat in categories) {
+          categorySelect.add(new Option(cat, cat));
+        }
+
+        loadState();
+        updateUnits();
+        convert();
+
+      }, 100);
+    });
 
     // ===============================
     // RECHERCHE + NAVIGATION CLAVIER
@@ -560,14 +620,13 @@ function searchUnits(text, box, targetSelectId) {
         item.style.padding = "4px";
         item.style.cursor = "pointer";
 
-        // affichage : abréviation + nom complet
         item.textContent = unit + (name ? " — " + name : "") + " (" + catName + ")";
 
         item.onclick = (function (catName, unit) {
           return function () {
 
-            if (categorySelect.value !== catName) {
-              categorySelect.value = catName;
+            if (category.value !== catName) {
+              category.value = catName;
               updateUnits();
             }
 
