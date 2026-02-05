@@ -279,6 +279,14 @@ customFactor.addEventListener("input", function () {
   saveState();
 });
 
+document.getElementById("searchFrom").addEventListener("input", function () {
+  fromIndex = -1;
+});
+
+document.getElementById("searchTo").addEventListener("input", function () {
+  toIndex = -1;
+});
+
 // ===============================
 // INITIALISATION
 // ===============================
@@ -494,4 +502,108 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+// ===============================
+// NAVIGATION CLAVIER — VERSION STABLE ES5
+// ===============================
+
+var fromIndex = -1;
+var toIndex = -1;
+
+function highlightItem(box, index) {
+  var children = box.children;
+  var i;
+  for (i = 0; i < children.length; i++) {
+    children[i].style.background = (i === index) ? "#cce0ff" : "white";
+  }
+}
+
+function scrollToItem(box, index) {
+  var children = box.children;
+  if (!children || index < 0 || index >= children.length) return;
+
+  var el = children[index];
+
+  // scrollIntoView est ancien et fiable
+  if (el.scrollIntoView) {
+    el.scrollIntoView(false); // false = aligner en bas si possible
+  }
+}
+
+document.getElementById("searchFrom").addEventListener("keydown", function (e) {
+  var key = e.keyCode;
+  var items = fromBox.children;
+  var len = items.length;
+
+  if (!len) return;
+
+  // ↓
+  if (key === 40) {
+    e.preventDefault();
+    fromIndex++;
+    if (fromIndex >= len) fromIndex = 0;
+    highlightItem(fromBox, fromIndex);
+    scrollToItem(fromBox, fromIndex);
+  }
+
+  // ↑
+  if (key === 38) {
+    e.preventDefault();
+    fromIndex--;
+    if (fromIndex < 0) fromIndex = len - 1;
+    highlightItem(fromBox, fromIndex);
+    scrollToItem(fromBox, fromIndex);
+  }
+
+  // Entrée
+  if (key === 13 && fromIndex >= 0) {
+    e.preventDefault();
+    items[fromIndex].onclick();
+    fromIndex = -1;
+  }
+
+  // Échap
+  if (key === 27) {
+    fromBox.style.display = "none";
+    fromIndex = -1;
+  }
+});
+
+document.getElementById("searchTo").addEventListener("keydown", function (e) {
+  var key = e.keyCode;
+  var items = toBox.children;
+  var len = items.length;
+
+  if (!len) return;
+
+  // ↓
+  if (key === 40) {
+    e.preventDefault();
+    toIndex++;
+    if (toIndex >= len) toIndex = 0;
+    highlightItem(toBox, toIndex);
+    scrollToItem(toBox, toIndex);
+  }
+
+  // ↑
+  if (key === 38) {
+    e.preventDefault();
+    toIndex--;
+    if (toIndex < 0) toIndex = len - 1;
+    highlightItem(toBox, toIndex);
+    scrollToItem(toBox, toIndex);
+  }
+
+  // Entrée
+  if (key === 13 && toIndex >= 0) {
+    e.preventDefault();
+    items[toIndex].onclick();
+    toIndex = -1;
+  }
+
+  // Échap
+  if (key === 27) {
+    toBox.style.display = "none";
+    toIndex = -1;
+  }
+});
 });
