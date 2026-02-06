@@ -441,8 +441,16 @@ var categories = {
   // ============================
   donnees:{
     units:{
-      // SI (base 10)
+      // --- SI (base 10) : bits ---
       b:1,
+      kb:1000,
+      Mb:1000000,
+      Gb:1000000000,
+      Tb:1000000000000,
+      Pb:1000000000000000,
+      Eb:1000000000000000000,
+
+      // --- SI (base 10) : octets ---
       B:8,
       kB:8000,
       MB:8000000,
@@ -451,7 +459,15 @@ var categories = {
       PB:8000000000000000,
       EB:8000000000000000000,
 
-      // IEC (base 2)
+      // --- IEC (base 2) : bits ---
+      Kib:1024,
+      Mib:1048576,
+      Gib:1073741824,
+      Tib:1099511627776,
+      Pib:1125899906842624,
+      Eib:1152921504606846976,
+
+      // --- IEC (base 2) : octets ---
       KiB:8192,
       MiB:8388608,
       GiB:8589934592,
@@ -614,23 +630,39 @@ var unitNames = {
   "F": "fahrenheit",
   "K": "kelvin",
 
-  // --- Données (SI) ---
-  "b": "bit",
-  "B": "octet",
-  "kB": "kilooctet",
-  "MB": "mégaoctet",
-  "GB": "gigaoctet",
-  "TB": "téraoctet",
-  "PB": "pétaoctet",
-  "EB": "exa-octet",
+  // Bits SI
+  "b":"bit",
+  "kb":"kilobit",
+  "Mb":"mégabit",
+  "Gb":"gigabit",
+  "Tb":"térabit",
+  "Pb":"pétabit",
+  "Eb":"exabit",
 
-  // --- Données (IEC) ---
-  "KiB": "kibioctet",
-  "MiB": "mébioctet",
-  "GiB": "gibioctet",
-  "TiB": "tébioctet",
-  "PiB": "pébioctet",
-  "EiB": "exbioctet"
+  // Octets SI
+  "B":"octet",
+  "kB":"kilooctet",
+  "MB":"mégaoctet",
+  "GB":"gigaoctet",
+  "TB":"téraoctet",
+  "PB":"pétaoctet",
+  "EB":"exa-octet",
+
+  // Bits IEC
+  "Kib":"kibibit",
+  "Mib":"mébibit",
+  "Gib":"gibibit",
+  "Tib":"tébibit",
+  "Pib":"pébibit",
+  "Eib":"exbibit",
+
+  // Octets IEC
+  "KiB":"kibioctet",
+  "MiB":"mébioctet",
+  "GiB":"gibioctet",
+  "TiB":"tébioctet",
+  "PiB":"pébioctet",
+  "EiB":"exbioctet",
 };
 
 // ===============================
