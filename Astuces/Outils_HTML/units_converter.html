@@ -94,6 +94,10 @@
   </div>
 </div>
 
+<div class="block" style="text-align:center; margin:10px 0;">
+  <button id="swapBtn">Inverser De ↔ Vers</button>
+</div>
+
 <p>
   Résultat : <strong id="result">—</strong>
   <button id="copyBtn">Copier</button>
@@ -731,6 +735,39 @@ document.getElementById("copyBtn").onclick = function () {
 
 document.getElementById("inputValue").value = "1";
 convert();
+
+// ===============================
+// 11. bouton Inverser De ↔ Vers
+// ===============================
+document.getElementById("swapBtn").onclick = function () {
+
+  // On échange les unités sélectionnées
+  var oldFrom = selectedFrom;
+  var oldTo   = selectedTo;
+
+  if (!oldFrom || !oldTo) return;
+
+  // On met à jour les variables internes
+  selectedFrom = oldTo;
+  selectedTo   = oldFrom;
+
+  // On met à jour l'affichage (avec noms si disponibles)
+  var labelFrom = selectedFrom;
+  if (unitNames[selectedFrom]) {
+    labelFrom = selectedFrom + " — " + unitNames[selectedFrom];
+  }
+
+  var labelTo = selectedTo;
+  if (unitNames[selectedTo]) {
+    labelTo = selectedTo + " — " + unitNames[selectedTo];
+  }
+
+  document.getElementById("fromSelected").innerHTML = labelFrom;
+  document.getElementById("toSelected").innerHTML   = labelTo;
+
+  // On recalcule
+  convert();
+};
 </script>
 
 </body>
