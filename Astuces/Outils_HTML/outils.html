@@ -16,26 +16,6 @@ ul { margin:0; padding-left:1.2em; list-style-position:outside; }
 li { margin:4px 0; font-size:18px; }
 li.folder::before { content:'[Dossier] '; color:#555; }
 h1 { font-size:22px; }
-
-/* ASCII compact + affichage ligne par ligne */
-pre.ascii {
-  font-family: monospace;
-  white-space: pre-wrap; /* ignore les espaces du code */
-  margin: 0;
-  padding: 0;
-  line-height: 1 !important;
-}
-
-pre.ascii span {
-  display: block; /* force un retour à la ligne visuel */
-  line-height: 1;
-  margin: 0;
-  padding: 0;
-}
-/* Couleurs */
-.l1 { color: #FF8000; }
-.l2 { color: #FF6000; }
-.l3 { color: #FF0000; }
 </style>
 </head><body>
 <h1>Outils</h1>
@@ -44,10 +24,4 @@ pre.ascii span {
 <li><a href="remplacer_texte.html">Remplacer texte</a></li>
 <li><a href="units_converter.html">Convertisseur d'unités</a></li>
 </ul>
-
-<br>
-<pre class="ascii">
-<span class="l1">+---+---+---+---+---+</span><span class="l1">| ★ | ★ | ★ | ★ | ★ |</span><span class="l2">+---+---+---+---+---+</span><span class="l2">| ★ |   |   |   |   |</span><span class="l3">+---+---+---+---+---+</span><span class="l3">| ★ |   | ★ | ★ | ★ |</span><span class="l3">+---+---+---+---+---+</span><span class="l2">| ★ |   |   |   | ★ |</span><span class="l2">+---+---+---+---+---+</span><span class="l1">| ★ | ★ | ★ | ★ | ★ |</span><span class="l1">+---+---+---+---+---+</span>
-</pre>
-
 </body></html>
