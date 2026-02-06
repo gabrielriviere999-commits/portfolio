@@ -44,6 +44,22 @@
     margin-top:15px;
     border-radius:5px;
   }
+
+.block-cat {
+  background:#ffd9d9; /* rouge très clair */
+}
+
+.block-value {
+  background:#fff2cc; /* jaune clair */
+}
+
+.block-from {
+  background:#d9ead3; /* vert clair */
+}
+
+.block-to {
+  background:#d0e0e3; /* bleu clair */
+}
 </style>
 </head>
 <body>
@@ -51,7 +67,7 @@
 <h1>Convertisseur</h1>
 
 <!-- CATEGORIE -->
-<div class="block">
+<div class="block block-cat">
   <label>Catégorie :</label>
   <div class="dropdown" id="catDrop">
     <div class="dropdown-selected" id="catSelected" tabindex="0">—</div>
@@ -59,20 +75,19 @@
   </div>
 </div>
 
-<div class="block">
+<div class="block block-value">
   <label for="inputValue">Valeur à convertir :</label>
   <input type="text" id="inputValue" value="1">
 </div>
 
 <!-- DE -->
-<div class="block">
+<div class="block block-from">
   <label>Rechercher "De" :</label>
   <input type="text" id="searchFrom">
 
   <!-- MENU DE RECHERCHE SÉPARÉ -->
   <div class="dropdown-list" id="fromSearchList" style="display:none;"></div>
 
-  <label>De :</label>
   <div class="dropdown" id="fromDrop">
     <div class="dropdown-selected" id="fromSelected" tabindex="0">—</div>
     <div class="dropdown-list" id="fromList"></div>
@@ -80,14 +95,13 @@
 </div>
 
 <!-- VERS -->
-<div class="block">
+<div class="block block-to">
   <label>Rechercher "Vers" :</label>
   <input type="text" id="searchTo">
 
   <!-- MENU DE RECHERCHE SÉPARÉ POUR VERS -->
   <div class="dropdown-list" id="toSearchList" style="display:none;"></div>
 
-  <label>Vers :</label>
   <div class="dropdown" id="toDrop">
     <div class="dropdown-selected" id="toSelected" tabindex="0">—</div>
     <div class="dropdown-list" id="toList"></div>
@@ -198,7 +212,7 @@ var categories = {
   // VOLUME (sec)
   // ============================
   volume_sec:{
-    base:"L",
+    base:"L_dry",
     units:{
       // US (sec)
       cup_dry_US:0.2365882365,
@@ -423,14 +437,6 @@ var categories = {
   },
 
   // ============================
-  // CUSTOM
-  // ============================
-  custom:{
-    special:"custom",
-    units:{}
-  },
-
-  // ============================
   // DONNÉES (SI / IEC)
   // ============================
   donnees:{
@@ -453,12 +459,12 @@ var categories = {
       PiB:9007199254740992,
       EiB:9223372036854775808
     }
-  }
+  },
 
 };
 
 // ===============================
-// 1.2 Dictionnaire
+// 2. Dictionnaire
 // ===============================
 var unitNames = {
 
@@ -628,7 +634,7 @@ var unitNames = {
 };
 
 // ===============================
-// 2. Extraire les unités
+// 3. Extraire les unités
 // ===============================
 function getUnitList(cat) {
   if (!cat) return [];
@@ -640,7 +646,7 @@ function getUnitList(cat) {
 }
 
 // ===============================
-// 3. Liste globale des unités + map unité → catégorie
+// 4. Liste globale des unités + map unité → catégorie
 // ===============================
 
 var allUnits = [];
@@ -662,7 +668,7 @@ function buildGlobalUnitList() {
 }
 
 // ===============================
-// 4. Dropdown générique
+// 5. Dropdown
 // ===============================
 function createDropdown(selectedId, listId, onSelect) {
   var selected = document.getElementById(selectedId);
@@ -772,7 +778,7 @@ function highlight() {
 }
 
 // ===============================
-// 5. Variables global + création des 3 menus
+// 6. Variables global + création des 3 menus
 // ===============================
 var selectedCategory = null;
 var selectedFrom = null;
@@ -824,7 +830,7 @@ var fillTo = createDropdown("toSelected", "toList", function(opt){
 });
 
 // ===============================
-// 6. Mise à jour des unités
+// 7. Mise à jour des unités
 // ===============================
 function updateUnits() {
   var cat = categories[selectedCategory];
@@ -842,7 +848,7 @@ function updateUnits() {
 }
 
 // ===============================
-// 7. Recherche globale (De + Vers)
+// 8. Recherche globale (De + Vers)
 // ===============================
 // --- Recherche "De" avec noms + clavier + scroll ---
 document.getElementById("searchFrom").oninput = function () {
@@ -1086,7 +1092,7 @@ document.getElementById("searchTo").oninput = function () {
 })();
 
 // ===============================
-// 8. Conversion
+// 9. Conversion
 // ===============================
 function convert() {
   if (!selectedCategory || !selectedFrom || !selectedTo) return;
@@ -1126,23 +1132,6 @@ function convert() {
   }
 
   // ============================
-  // CAS SPÉCIAL : CUSTOM
-  // ============================
-  if (cat.special === "custom") {
-    var uFrom = cat.units[selectedFrom];
-    var uTo = cat.units[selectedTo];
-
-    if (!uFrom || !uTo) return;
-
-    var ratio = uFrom / uTo;
-    var res = val * ratio;
-
-    document.getElementById("result").innerHTML =
-      val + " " + selectedFrom + " = " + res + " " + selectedTo;
-    return;
-  }
-
-  // ============================
   // CAS NORMAL : BASE MULTIPLICATIVE
   // ============================
   var units = cat.units;
@@ -1161,7 +1150,7 @@ function convert() {
 document.getElementById("inputValue").oninput = convert;
 
 // ===============================
-// 9. Initialisation
+// 10. Initialisation
 // ===============================
 (function init() {
   buildGlobalUnitList();
@@ -1173,7 +1162,7 @@ document.getElementById("inputValue").oninput = convert;
 })();
 
 // ===============================
-// 10. COPIE + FEEDBACK
+// 11. COPIE + FEEDBACK
 // ===============================
 document.getElementById("copyBtn").onclick = function () {
   var text = document.getElementById("result").innerHTML;
@@ -1211,7 +1200,7 @@ document.getElementById("inputValue").value = "1";
 convert();
 
 // ===============================
-// 11. bouton Inverser De ↔ Vers
+// 12. bouton Inverser De ↔ Vers
 // ===============================
 document.getElementById("swapBtn").onclick = function () {
 
