@@ -1094,7 +1094,13 @@ function convert() {
   var cat = categories[selectedCategory];
 
   // Récupérer la valeur entrée
-  var val = parseFloat(document.getElementById("inputValue").value);
+  var raw = document.getElementById("inputValue").value;
+
+  // Remplace la virgule par un point
+  raw = raw.replace(",", ".");
+
+  var val = parseFloat(raw);
+
   if (isNaN(val)) {
     document.getElementById("result").innerHTML = "—";
     return;
