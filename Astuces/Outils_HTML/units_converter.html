@@ -1206,6 +1206,10 @@ function highlight() {
 // ===============================
 // 9. Conversion
 // ===============================
+function cleanNumber(n) {
+  return Number(n.toFixed(12));
+}
+
 function convert() {
   if (!selectedCategory || !selectedFrom || !selectedTo) return;
 
@@ -1238,6 +1242,8 @@ function convert() {
     else if (selectedFrom === "K" && selectedTo === "F") res = (val - 273.15) * 9/5 + 32;
     else res = val;
 
+    res = cleanNumber(res);
+
     document.getElementById("result").innerHTML =
       val + " " + selectedFrom + " = " + res + " " + selectedTo;
     return;
@@ -1253,7 +1259,7 @@ function convert() {
   if (!baseFrom || !baseTo) return;
 
   var ratio = baseFrom / baseTo;
-  var res = val * ratio;
+  var res = cleanNumber(val * ratio);
 
   document.getElementById("result").innerHTML =
     val + " " + selectedFrom + " = " + res + " " + selectedTo;
