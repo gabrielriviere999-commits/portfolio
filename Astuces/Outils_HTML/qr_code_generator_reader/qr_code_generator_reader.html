@@ -225,12 +225,14 @@ function generateQR() {
   var encoded = value;
 
   new QRCode(qrDiv, {
-    text: encoded,
-    width: 256,
-    height: 256,
-    colorDark: document.getElementById("qrColor").value,
-    colorLight: document.getElementById("bgColor").value
-  });
+  text: encoded,
+  width: 256,
+  height: 256,
+  colorDark: document.getElementById("qrColor").value,
+  colorLight: document.getElementById("bgColor").value,
+  correctLevel: QRCode.CorrectLevel.M,
+  version: 2
+});
 }
 
 btnGen.onclick = generateQR;
