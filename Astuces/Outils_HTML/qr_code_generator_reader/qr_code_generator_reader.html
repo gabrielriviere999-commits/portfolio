@@ -131,6 +131,16 @@ button:active {
   <label for="text">Texte / Numéro</label>
   <textarea id="text"></textarea>
 
+<div class="block">
+  <h2>Couleurs du QR</h2>
+
+  <label>Couleur du QR :</label>
+  <input type="color" id="qrColor" value="#000000"><br><br>
+
+  <label>Couleur du fond :</label>
+  <input type="color" id="bgColor" value="#ffffff">
+</div>
+
   <button id="btn-generate">Générer</button>
 
   <div id="qrcode"></div>
@@ -203,14 +213,28 @@ var text = document.getElementById("text");
 var btnGen = document.getElementById("btn-generate");
 var qrDiv = document.getElementById("qrcode");
 
-btnGen.onclick = function () {
+function generateQR() {
   var value = text.value.trim();
+  var qrDiv = document.getElementById("qrcode");
 
-  // Génération QR
-  qrDiv.innerHTML = "";
+  qrDiv.innerHTML = ""; // efface l'ancien QR
+
   var encoded = encodeBase64(value);
-  new QRCode(qrDiv, { text: encoded, width: 256, height: 256 });
-};
+
+  new QRCode(qrDiv, {
+    text: encoded,
+    width: 256,
+    height: 256,
+    colorDark: document.getElementById("qrColor").value,
+    colorLight: document.getElementById("bgColor").value
+  });
+}
+
+btnGen.onclick = generateQR;
+document.getElementById("qrColor").oninput = generateQR;
+document.getElementById("bgColor").oninput = generateQR;
+// Optionnel : regénérer en tapant
+// text.oninput = generateQR;
 
 /* ============================
    DÉCODAGE FICHIER
