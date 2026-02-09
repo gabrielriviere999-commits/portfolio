@@ -1232,7 +1232,7 @@ function convert() {
   // CAS SPÉCIAL : TEMPÉRATURE
   // ============================
   if (cat.special === true) {
-    var res = null;
+    var res;
 
     if (selectedFrom === "C" && selectedTo === "F") res = val * 9/5 + 32;
     else if (selectedFrom === "F" && selectedTo === "C") res = (val - 32) * 5/9;
