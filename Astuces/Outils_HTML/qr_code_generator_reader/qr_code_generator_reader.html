@@ -190,9 +190,12 @@ button:active {
 </div>
 
 <script>
+/* ============================
+   UTF‑8 / Base64 (optionnel)
+============================ */
 function encodeBase64(str) {
   try {
-    return btoa(unescape(encodeURIComponent(str)));
+    return btoa(unescape(encodeURIComponent(str))); // UTF‑8 → Base64
   } catch(e) {
     return btoa(str); // fallback XP
   }
@@ -200,7 +203,7 @@ function encodeBase64(str) {
 
 function decodeBase64(str) {
   try {
-    return decodeURIComponent(escape(atob(str)));
+    return decodeURIComponent(escape(atob(str))); // Base64 → UTF‑8
   } catch(e) {
     return atob(str); // fallback XP
   }
@@ -215,11 +218,11 @@ var qrDiv = document.getElementById("qrcode");
 
 function generateQR() {
   var value = text.value.trim();
-  var qrDiv = document.getElementById("qrcode");
-
   qrDiv.innerHTML = ""; // efface l'ancien QR
 
-  var encoded = encodeBase64(value);
+  // ⚠️ IMPORTANT : on n’encode plus en Base64 par défaut
+  // QRCode.js gère UTF‑8 tout seul
+  var encoded = value;
 
   new QRCode(qrDiv, {
     text: encoded,
@@ -233,8 +236,7 @@ function generateQR() {
 btnGen.onclick = generateQR;
 document.getElementById("qrColor").oninput = generateQR;
 document.getElementById("bgColor").oninput = generateQR;
-// Optionnel : regénérer en tapant
-// text.oninput = generateQR;
+// text.oninput = generateQR; // si tu veux regénérer en tapant
 
 /* ============================
    DÉCODAGE FICHIER
@@ -255,16 +257,22 @@ fileInput.onchange = function (e) {
       canvasFile.width = img.width;
       canvasFile.height = img.height;
       ctxFile.drawImage(img, 0, 0);
+
       var data = ctxFile.getImageData(0, 0, canvasFile.width, canvasFile.height);
       var code = jsQR(data.data, data.width, data.height);
 
       if (code) {
         var raw = code.data;
+
+        // Décodage intelligent :
+        // si c’est du Base64 → on décode
+        // sinon → on affiche tel quel
         try {
           decodeFile.innerText = decodeBase64(raw);
         } catch (e) {
           decodeFile.innerText = raw;
         }
+
       } else {
         decodeFile.innerText = "Aucun QR détecté.";
       }
