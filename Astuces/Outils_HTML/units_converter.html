@@ -9,57 +9,107 @@
   body { margin:20px; background:#C0C0C0; font-family:sans-serif; }
 
   .dropdown {
-    border:1px solid #444;
-    background:#fff;
-    padding:6px;
+    background: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-left-color: #404040;
+    border-top-color: #404040;
+    padding: 4px;
     cursor:pointer;
     user-select:none;
   }
 
-  .dropdown-selected {
-    font-weight:bold;
+  .dropdown:hover {
+    background: #FFFFE0;
   }
 
   .dropdown-list {
-    border:1px solid #444;
-    background:#fff;
-    margin-top:4px;
+    background: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-left-color: #404040;
+    border-top-color: #404040;
+    margin-top: 2px;
     max-height:200px;
     overflow-y:auto;
     display:none;
   }
 
   .dropdown-list div {
-    padding:6px;
-    border-bottom:1px solid #ccc;
+    padding:4px;
+    border-bottom:1px solid #C0C0C0;
   }
 
   .dropdown-list div:hover {
-    background:#e0e0e0;
+    background: #000080;
+    color: white;
+  }
+
+  .dropdown-selected {
+    font-weight:bold;
+  }
+
+  .block-cat {
+    background:#e35f5f;
+  }
+
+  .block-value {
+    background:#ffd700;
+  }
+
+  .block-from {
+    background:#8ec582;
+  }
+
+  .block-to {
+    background:#7dc343;
   }
 
   .block {
-    background:#e8e8e8;
-    padding:10px;
-    margin-top:15px;
-    border-radius:5px;
+    border: 2px solid #FFFFFF;
+    border-right-color: #404040;
+    border-bottom-color: #404040;
+    padding: 10px;
+    margin-top: 15px;
   }
 
-.block-cat {
-  background:#ffd9d9; /* rouge très clair */
-}
+  button {
+    background: #C0C0C0;
+    border: 2px solid #FFFFFF;
+    border-right-color: #404040;
+    border-bottom-color: #404040;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
 
-.block-value {
-  background:#fff2cc; /* jaune clair */
-}
+  .block h2 {
+    background: #000080;
+    color: white;
+    padding: 4px;
+    margin: -10px -10px 10px -10px;
+    font-size: 14px;
+    font-weight: bold;
+  }
 
-.block-from {
-  background:#d9ead3; /* vert clair */
-}
+  button:hover {
+    background: #E0E0E0;
+  }
 
-.block-to {
-  background:#d0e0e3; /* bleu clair */
-}
+  button:active {
+    border: 2px solid #404040;
+    border-right-color: #FFFFFF;
+    border-bottom-color: #FFFFFF;
+  }
+
+  input, textarea {
+    background: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-left-color: #404040;
+    border-top-color: #404040;
+    padding: 4px;
+  }
+
+  input:hover, textarea:hover {
+    background: #FFFFE0;
+  }
 </style>
 </head>
 <body>
