@@ -181,11 +181,19 @@ button:active {
 
 <script>
 function encodeBase64(str) {
-  return btoa(unescape(encodeURIComponent(str)));
+  try {
+    return btoa(unescape(encodeURIComponent(str)));
+  } catch(e) {
+    return btoa(str); // fallback XP
+  }
 }
 
 function decodeBase64(str) {
-  return decodeURIComponent(escape(atob(str)));
+  try {
+    return decodeURIComponent(escape(atob(str)));
+  } catch(e) {
+    return atob(str); // fallback XP
+  }
 }
 
 /* ============================
@@ -230,7 +238,7 @@ fileInput.onchange = function (e) {
         var raw = code.data;
         try {
           decodeFile.innerText = decodeBase64(raw);
-        } catch {
+        } catch (e) {
           decodeFile.innerText = raw;
         }
       } else {
@@ -289,7 +297,9 @@ document.getElementById("copy-btn").onclick = function () {
   if (ok) {
     var fb = document.getElementById("copy-feedback");
     fb.style.display = "inline";
-    setTimeout(() => fb.style.display = "none", 1000);
+    setTimeout(function () {
+      fb.style.display = "none";
+    }, 1000);
   }
 };
 
