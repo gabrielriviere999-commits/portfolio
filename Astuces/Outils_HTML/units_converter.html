@@ -110,6 +110,12 @@
   input:hover, textarea:hover {
     background: #FFFFE0;
   }
+
+#fromSearchList,
+#toSearchList {
+  max-height: 150px;   /* ou autre valeur fixe */
+  overflow-y: auto;
+}
 </style>
 </head>
 <body>
@@ -790,11 +796,8 @@ function highlight() {
     options[i].style.background = (i === activeIndex) ? "#ddd" : "";
   }
 
-  // scroll automatique
   if (activeIndex >= 0 && activeIndex < options.length) {
-    options[activeIndex].scrollIntoView({
-      block: "nearest"
-    });
+    options[activeIndex].scrollIntoView();
   }
 }
 
@@ -1020,15 +1023,17 @@ document.getElementById("searchFrom").oninput = function () {
   var searchOptions = [];
   var activeIndex = -1;
 
-  function highlight() {
-    var i;
-    for (i = 0; i < searchOptions.length; i++) {
-      searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
-    }
-    if (activeIndex >= 0 && activeIndex < searchOptions.length) {
-      searchOptions[activeIndex].scrollIntoView({ block: "nearest" });
-    }
+function highlight() {
+  var i;
+  for (i = 0; i < searchOptions.length; i++) {
+    searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
   }
+
+  if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+    var item = searchOptions[activeIndex];
+    item.scrollIntoView();
+  }
+}
 
   var oldInput = input.oninput;
   input.oninput = function(){
@@ -1140,15 +1145,17 @@ document.getElementById("searchTo").oninput = function () {
   var searchOptions = [];
   var activeIndex = -1;
 
-  function highlight() {
-    var i;
-    for (i = 0; i < searchOptions.length; i++) {
-      searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
-    }
-    if (activeIndex >= 0 && activeIndex < searchOptions.length) {
-      searchOptions[activeIndex].scrollIntoView({ block: "nearest" });
-    }
+function highlight() {
+  var i;
+  for (i = 0; i < searchOptions.length; i++) {
+    searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
   }
+
+  if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+    var item = searchOptions[activeIndex];
+    item.scrollIntoView();
+  }
+}
 
   var oldInput = input.oninput;
   input.oninput = function(){
