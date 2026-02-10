@@ -69,7 +69,6 @@ body {
   border: 2px solid #404040;
   border-right-color: #fff;
   border-bottom-color: #fff;
-  padding: 0;
   line-height: 13px;
 }
 
@@ -78,32 +77,44 @@ body {
 }
 
 /* ================================
-   BOUTONS GÉNÉRIQUES WIN98
+   STYLE UNIQUE POUR TOUS LES BOUTONS WIN98
+   (button, <a class="btn">, input[type=file])
 ================================ */
 
-button, .btn, input[type="file"] {
-  font-family: inherit;
-  background: #c0c0c0;
-  border: 2px solid #fff;
+.win98-btn,
+button,
+a.btn,
+input[type="file"] {
+  display: inline-block;
+  padding: 4px 10px;
+  margin-top: 4px;
+  cursor: pointer;
+  background: #C0C0C0;
+  border: 2px solid #FFFFFF;
   border-right-color: #404040;
   border-bottom-color: #404040;
-  padding: 4px 8px;
-  cursor: pointer;
+  font-family: monospace;
+  color: black;
+  text-decoration: none;
 }
 
-button:hover, .btn:hover, input[type="file"]:hover {
-  background: #dcdcdc;
+.win98-btn:hover,
+button:hover,
+a.btn:hover,
+input[type="file"]:hover {
+  background: #E0E0E0;
   border-right-color: #202020;
   border-bottom-color: #202020;
 }
 
-button:active, .btn:active, input[type="file"]:active {
-  background: #c0c0c0;
+.win98-btn:active,
+button:active,
+a.btn:active,
+input[type="file"]:active {
+  background: #C0C0C0;
   border: 2px solid #404040;
-  border-right-color: #fff;
-  border-bottom-color: #fff;
-  padding-top: 5px;
-  padding-left: 9px;
+  border-right-color: #FFFFFF;
+  border-bottom-color: #FFFFFF;
 }
 
 /* ================================
@@ -167,9 +178,9 @@ button:active, .btn:active, input[type="file"]:active {
   <ul id="fileList"></ul>
 
   <button id="convertBtn">Convertir</button>
-
-<button id="about-btn">À propos des libraries / Crédits</button>
-<button id="compat-btn">Compatibilité</button>
+<br>
+<a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
+<a href="compatibilite.txt" class="btn">Compatibilité</a>
 
   <!-- OCR -->
   <script src="tesseract.min.js"></script>
@@ -443,17 +454,6 @@ button:active, .btn:active, input[type="file"]:active {
 
       doc.setGState(new doc.GState({ opacity: 1 }));
     }
-
-/* ============================
-   Infos
-============================ */
-document.getElementById("about-btn").onclick = function () {
-  window.location.href = "credits.txt";
-};
-
-document.getElementById("compat-btn").onclick = function () {
-  window.location.href = "compatibilite.txt";
-};
   </script>
 </body>
 </html>
