@@ -4,82 +4,39 @@
   <meta charset="UTF-8">
   <title>OCR Multi-fichiers → PDF texte invisible</title>
 
-  <style>
-    #dropZone {
-      border: 2px dashed #888;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 10px;
-      background: #f8f8f8;
-    }
-    #dropZone.dragover {
-      background: #d0f0ff;
-      border-color: #00aaff;
-    }
+<style>
+body {
+  font-family: sans-serif;
+  background: #008080;
+  margin: 0;
+  padding: 20px;
+  color: black;
+}
 
-    #fileList {
-      list-style: none;
-      padding: 0;
-      margin-top: 10px;
-    }
-    #fileList li {
-      padding: 8px;
-      margin: 4px 0;
-      background: #eee;
-      border: 1px solid #ccc;
-      cursor: grab;
-      user-select: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #fileList li.dragging {
-      opacity: 0.5;
-    }
-
-    .btn {
-      border: none;
-      padding: 4px 6px;
-      margin-left: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .upBtn { background: #cce5ff; }
-    .downBtn { background: #cce5ff; }
-    .deleteBtn { background: #ff4444; color: white; }
-
-  body {
-    font-family: sans-serif;
-    background: #008080;
-    margin: 0;
-    padding: 20px;
-  }
-
-  .win98-window {
-    background: #c0c0c0;
-    border: 2px solid #fff;
-    border-right-color: #404040;
-    border-bottom-color: #404040;
-    padding: 0;
-    width: 700px;
-    margin: auto;
-  }
-
-  .win98-titlebar {
-    background: #000080;
-    color: white;
-    padding: 4px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-.win98-titlebar button {
+/* Fenêtre Win98 */
+.win98-window {
   background: #c0c0c0;
   border: 2px solid #fff;
   border-right-color: #404040;
   border-bottom-color: #404040;
+  padding: 0;
+  width: 700px;
+  margin: auto;
+}
+
+/* Barre de titre Win98 */
+.win98-titlebar {
+  background: #000080;
+  color: white;
+  padding: 4px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Bouton X Win98 */
+.win98-titlebar button {
   width: 18px;
   height: 18px;
   padding: 0;
@@ -87,41 +44,122 @@
   font-size: 12px;
   line-height: 14px;
   text-align: center;
+  background: #c0c0c0;
+  border: 2px solid #fff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
   cursor: pointer;
 }
 
-  .win98-content {
-    padding: 10px;
-  }
+/* Hover bouton X */
+.win98-titlebar button:hover {
+  background: #e0e0e0;
+  border-right-color: #202020;
+  border-bottom-color: #202020;
+}
 
-  button, input[type="file"] {
-    font-family: inherit;
-    background: #c0c0c0;
-    border: 2px solid #fff;
-    border-right-color: #404040;
-    border-bottom-color: #404040;
-    padding: 4px 8px;
-    cursor: pointer;
-  }
+/* Pressed bouton X */
+.win98-titlebar button:active {
+  background: #c0c0c0;
+  border: 2px solid #404040;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  line-height: 13px;
+}
 
-  button:active {
-    border: 2px solid #404040;
-    border-right-color: #fff;
-    border-bottom-color: #fff;
-  }
+/* Contenu fenêtre */
+.win98-content {
+  padding: 10px;
+}
 
-  /* Zone de dépôt */
-  #dropZone {
-    border: 2px dashed #000;
-    background: #e0e0e0;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 10px;
-  }
+/* ================================
+   BOUTONS WIN98 (génériques)
+================================ */
 
-  #dropZone.dragover {
-    background: #ffffcc;
-  }
+button, .btn, input[type="file"] {
+  font-family: inherit;
+  background: #c0c0c0;
+  border: 2px solid #fff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+/* Hover Win98 */
+button:hover, .btn:hover, input[type="file"]:hover {
+  background: #dcdcdc;
+  border-right-color: #202020;
+  border-bottom-color: #202020;
+}
+
+/* Pressed Win98 (général) */
+button:active, .btn:active, input[type="file"]:active {
+  background: #c0c0c0;
+  border: 2px solid #404040;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  padding-top: 5px;
+  padding-left: 9px;
+}
+
+/* EXCEPTION : le bouton X NE DOIT PAS avoir ce padding */
+.win98-titlebar button:active {
+  padding: 0;        /* empêche le décalage */
+  line-height: 13px; /* léger effet enfoncé sans casser l’alignement */
+}
+
+/* ================================
+   LISTE DE FICHIERS
+================================ */
+
+#fileList {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+#fileList li {
+  padding: 8px;
+  margin: 4px 0;
+  background: #fff;
+  border: 1px solid #000;
+  cursor: grab;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#fileList li.dragging {
+  opacity: 0.5;
+}
+
+/* Boutons internes (↑ ↓ ❌) */
+.upBtn, .downBtn {
+  background: #cce5ff;
+}
+
+.deleteBtn {
+  background: #ff4444;
+  color: white;
+}
+
+/* ================================
+   ZONE DE DÉPÔT (drag & drop)
+================================ */
+
+#dropZone {
+  border: 2px dashed #000;
+  background: #e0e0e0;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#dropZone.dragover {
+  background: #ffffcc;
+}
 
   /* Liste Win98 */
   #fileList li {
@@ -154,7 +192,7 @@
   padding: 4px;
   font-size: 14px;
 }
-  </style>
+</style>
 </head>
 <body>
   <h1>OCR Multi-fichiers → PDF texte invisible</h1>
