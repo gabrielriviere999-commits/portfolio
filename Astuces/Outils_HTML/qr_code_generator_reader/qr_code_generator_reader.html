@@ -105,6 +105,10 @@ button:active {
   display: none;
   z-index: 9999;
   font-family: monospace;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
 #about-popup h3 {
@@ -113,6 +117,11 @@ button:active {
   color: white;
   padding: 4px;
   font-size: 14px;
+}
+
+#about-popup pre {
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 #qrcode:hover,
