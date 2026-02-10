@@ -1,0 +1,42 @@
+=== Compatibilité minimale OS ===
+
+Windows :
+- Windows XP ............. ❌ Pas de WebAssembly
+- Windows Vista .......... ❌ Pas de WebAssembly
+- Windows 7 .............. ✔️ Minimum supporté
+- Windows 8 / 8.1 ........ ✔️
+- Windows 10 / 11 ........ ✔️
+
+Android :
+- Android 4.x ............ ❌ Pas de WebAssembly
+- Android 5.0 ............ ✔️ Minimum supporté
+- Android 6+ ............. ✔️
+
+iOS :
+- iOS 9 / 10 ............. ❌ Pas de WebAssembly
+- iOS 11 ................. ✔️ Minimum supporté
+- iOS 12+ ................ ✔️
+
+macOS :
+- macOS 10.10 / 10.11 .... ❌ Safari trop ancien
+- macOS 10.12 Sierra ..... ✔️ Minimum supporté
+- macOS 10.13+ ........... ✔️
+
+Linux :
+- Dépend du navigateur ... ✔️ Chrome 57+ / Firefox 52+
+
+
+=== Compatibilité minimale navigateurs ===
+
+Chrome .......... 57+ (WebAssembly OK)
+Firefox ......... 52+ (WebAssembly OK)
+Edge ............ 16+ (WebAssembly OK)
+Safari .......... 11+ (WebAssembly OK)
+Opera ........... 44+ (WebAssembly OK)
+
+Navigateurs non supportés :
+- Chrome 49 (Windows XP)
+- Firefox 52 ESR sur XP (WASM désactivé)
+- WebView Android 4.x
+- Safari < 11
+- IE / Edge Legacy
