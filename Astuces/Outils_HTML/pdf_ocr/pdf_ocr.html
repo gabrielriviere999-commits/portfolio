@@ -284,24 +284,24 @@ btn.onclick = async () => {
     firstPage = false;
   }
 
-// -----------------------------
-// Téléchargement automatique + bouton manuel
-// -----------------------------
+  // -----------------------------
+  // Téléchargement automatique + bouton manuel
+  // -----------------------------
 
-// Génération du PDF en blob
-const blob = finalPDF.output("blob");
-const url = URL.createObjectURL(blob);
+  // Génération du PDF en blob
+  const blob = finalPDF.output("blob");
+  const url = URL.createObjectURL(blob);
 
-// 1) Téléchargement automatique (navigateurs compatibles)
-finalPDF.save("resultat_ocr.pdf");
+  // 1) Téléchargement automatique (navigateurs compatibles)
+  finalPDF.save("resultat_ocr.pdf");
 
-// 2) Affichage d’un bouton manuel (TOUJOURS)
-statusEl.innerHTML = `
-  PDF généré.<br><br>
-  <a href="${url}" download="resultat_ocr.pdf" class="btn">
-      Télécharger le PDF manuellement
-  </a>
-`;
+  // 2) Affichage d’un bouton manuel (TOUJOURS)
+  statusEl.innerHTML = `
+    PDF généré.<br><br>
+    <a href="${url}" download="resultat_ocr.pdf" class="btn">
+        Télécharger le PDF manuellement
+    </a>
+  `;
 };
 
 // -----------------------------
