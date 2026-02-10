@@ -284,20 +284,24 @@ btn.onclick = async () => {
     firstPage = false;
   }
 
-  finalPDF.save("resultat_ocr.pdf");
+// -----------------------------
+// Téléchargement automatique + bouton manuel
+// -----------------------------
 
-  const isSamsung = navigator.userAgent.includes("SamsungBrowser");
+// Génération du PDF en blob
+const blob = finalPDF.output("blob");
+const url = URL.createObjectURL(blob);
 
-  if (isSamsung) {
-      const blob = finalPDF.output("blob");
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
-      return;
-  }
+// 1) Téléchargement automatique (navigateurs compatibles)
+finalPDF.save("resultat_ocr.pdf");
 
-  finalPDF.save("resultat_ocr.pdf");
-
-  statusEl.textContent = "PDF généré.";
+// 2) Affichage d’un bouton manuel (TOUJOURS)
+statusEl.innerHTML = `
+  PDF généré.<br><br>
+  <a href="${url}" download="resultat_ocr.pdf" class="btn">
+      Télécharger le PDF manuellement
+  </a>
+`;
 };
 
 // -----------------------------
