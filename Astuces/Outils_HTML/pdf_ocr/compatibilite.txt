@@ -1,29 +1,29 @@
 === Compatibilité minimale OS ===
 
 Windows :
-- Windows XP ............. ❌ Pas de WebAssembly
-- Windows Vista .......... ❌ Pas de WebAssembly
-- Windows 7 .............. ✔️ Minimum supporté
-- Windows 8 / 8.1 ........ ✔️
-- Windows 10 / 11 ........ ✔️
+- Windows XP ............. X Pas de WebAssembly
+- Windows Vista .......... X Pas de WebAssembly
+- Windows 7 .............. V️ Minimum supporté
+- Windows 8 / 8.1 ........ V️
+- Windows 10 / 11 ........ V️
 
 Android :
-- Android 4.x ............ ❌ Pas de WebAssembly
-- Android 5.0 ............ ✔️ Minimum supporté
-- Android 6+ ............. ✔️
+- Android 4.x ............ X Pas de WebAssembly
+- Android 5.0 ............ V️ Minimum supporté
+- Android 6+ ............. V️
 
 iOS :
-- iOS 9 / 10 ............. ❌ Pas de WebAssembly
-- iOS 11 ................. ✔️ Minimum supporté
-- iOS 12+ ................ ✔️
+- iOS 9 / 10 ............. X Pas de WebAssembly
+- iOS 11 ................. V️ Minimum supporté
+- iOS 12+ ................ V️
 
 macOS :
-- macOS 10.10 / 10.11 .... ❌ Safari trop ancien
-- macOS 10.12 Sierra ..... ✔️ Minimum supporté
-- macOS 10.13+ ........... ✔️
+- macOS 10.10 / 10.11 .... X Safari trop ancien
+- macOS 10.12 Sierra ..... V️ Minimum supporté
+- macOS 10.13+ ........... V️
 
 Linux :
-- Dépend du navigateur ... ✔️ Chrome 57+ / Firefox 52+
+- Dépend du navigateur ... V️ Chrome 57+ / Firefox 52+
 
 
 === Compatibilité minimale navigateurs ===
