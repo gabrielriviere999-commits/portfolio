@@ -45,6 +45,31 @@
     padding: 2px 0;
     line-height: 1;
   }
+
+.win98-btn {
+  padding: 2px 6px;
+  background: #C0C0C0;
+  border: 2px solid #fff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  font-family: monospace;
+  font-size: 12px;
+  text-decoration: none;
+  display: inline-block;
+  color: black !important; /* empêche le bleu */
+}
+
+/* Hover Win98 */
+.win98-btn:hover {
+  background: #E0E0E0;
+}
+
+/* Enfoncé Win98 */
+.win98-btn:active {
+  border: 2px solid #404040;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+}
 </style>
 </head>
 <body>
@@ -69,8 +94,7 @@ function doSearch() {
     if (docs[i].content.toLowerCase().indexOf(q) !== -1) {
       out += "<li>"
           + "<a href='" + docs[i].url + "' target='_self'>" + docs[i].title + "</a>"
-          + " <a href='" + docs[i].url + "' download"
-          + " style=\"padding:2px 6px; background:#C0C0C0; border:2px solid #fff; border-right-color:#000; border-bottom-color:#000; text-decoration:none; color:black; font-family:'MS Sans Serif'; font-size:12px;\">Télécharger</a>"
+          + " <a href='" + docs[i].url + "' download class='win98-btn'>Télécharger</a>"
           + "</li>";
       found = true;
     }
