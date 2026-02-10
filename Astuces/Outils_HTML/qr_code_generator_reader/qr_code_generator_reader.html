@@ -64,6 +64,30 @@ button:hover {
   background: #E0E0E0;
 }
 
+a.btn {
+  display: inline-block;
+  padding: 4px 10px;
+  margin-top: 4px;
+  cursor: pointer;
+  background: #C0C0C0;
+  border: 2px solid #FFFFFF;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  font-family: monospace;
+  color: black;
+  text-decoration: none;
+}
+
+a.btn:hover {
+  background: #E0E0E0;
+}
+
+a.btn:active {
+  border: 2px solid #404040;
+  border-right-color: #FFFFFF;
+  border-bottom-color: #FFFFFF;
+}
+
 textarea:hover,
 input:hover {
   background: #FFFFE0;
@@ -139,7 +163,7 @@ button:active {
     Copié
   </span>
 
-  <button id="about-btn">À propos des libraries / Crédits</button>
+  <a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
 </div>
 
 <!-- Librairies nécessaires -->
@@ -349,14 +373,6 @@ if (typeof ZXing === "undefined" || !ZXing.BrowserQRCodeReader) {
     img.src = URL.createObjectURL(file);
   };
 }
-
-/* ============================
-   Infos
-============================ */
-document.getElementById("about-btn").onclick = function () {
-  window.location.href = "credits.txt";
-};
-
 </script>
 </body>
 </html>
