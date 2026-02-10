@@ -6,11 +6,16 @@
 <title>Générateur & Lecteur de QR Code</title>
 
 <style>
+/* ================================
+   GLOBAL
+================================ */
+
 body {
   font-family: monospace;
   background: #008080;
   padding: 1rem;
   margin: 0;
+  color: black;
 }
 
 .section {
@@ -24,13 +29,16 @@ body {
 
 h1, h2 {
   font-weight: bold;
-  color: #000000;
   margin-top: 0;
 }
 
 label {
   font-weight: bold;
 }
+
+/* ================================
+   INPUTS & TEXTAREAS
+================================ */
 
 textarea, input {
   width: 100%;
@@ -49,22 +57,20 @@ textarea {
   height: 150px;
 }
 
-button {
-  padding: 4px 10px;
-  margin-top: 4px;
-  cursor: pointer;
-  background: #C0C0C0;
-  border: 2px solid #FFFFFF;
-  border-right-color: #404040;
-  border-bottom-color: #404040;
-  font-family: monospace;
+textarea:hover,
+input:hover {
+  background: #FFFFE0;
 }
 
-button:hover {
-  background: #E0E0E0;
-}
+/* ================================
+   STYLE UNIQUE POUR TOUS LES BOUTONS WIN98
+   (button, <a class="btn">, input[type=file])
+================================ */
 
-a.btn {
+.win98-btn,
+button,
+a.btn,
+input[type="file"] {
   display: inline-block;
   padding: 4px 10px;
   margin-top: 4px;
@@ -78,26 +84,25 @@ a.btn {
   text-decoration: none;
 }
 
-a.btn:hover {
+.win98-btn:hover,
+button:hover,
+a.btn:hover,
+input[type="file"]:hover {
   background: #E0E0E0;
 }
 
-a.btn:active {
+.win98-btn:active,
+button:active,
+a.btn:active,
+input[type="file"]:active {
   border: 2px solid #404040;
   border-right-color: #FFFFFF;
   border-bottom-color: #FFFFFF;
 }
 
-textarea:hover,
-input:hover {
-  background: #FFFFE0;
-}
-
-button:active {
-  border: 2px solid #404040;
-  border-right-color: #FFFFFF;
-  border-bottom-color: #FFFFFF;
-}
+/* ================================
+   QR CODE & VIDEO
+================================ */
 
 #qrcode {
   margin-top: 1rem;
@@ -157,7 +162,7 @@ button:active {
     margin-top:10px;
   "></pre>
 
-  <button id="copy-btn">Copier</button>
+  <button id="copy-btn" class="win98-btn">Copier</button>
   <span id="copy-feedback"
         style="margin-left:8px;color:green;font-weight:bold;display:none;font-family:monospace;">
     Copié
@@ -373,6 +378,29 @@ if (typeof ZXing === "undefined" || !ZXing.BrowserQRCodeReader) {
     img.src = URL.createObjectURL(file);
   };
 }
+
+/* ============================
+   COPIER
+============================ */
+document.getElementById("copy-btn").onclick = function () {
+  var text = document.getElementById("decode-file").innerText;
+
+  var temp = document.createElement("textarea");
+  temp.value = text;
+  temp.style.position = "fixed";
+  temp.style.opacity = "0";
+  document.body.appendChild(temp);
+
+  temp.select();
+  document.execCommand("copy");
+  document.body.removeChild(temp);
+
+  var fb = document.getElementById("copy-feedback");
+  fb.style.display = "inline";
+  setTimeout(function () {
+    fb.style.display = "none";
+  }, 1000);
+};
 </script>
 </body>
 </html>
