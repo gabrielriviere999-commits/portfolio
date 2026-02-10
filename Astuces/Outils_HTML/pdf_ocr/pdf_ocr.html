@@ -6,6 +6,10 @@
   <title>OCR Multi-fichiers → PDF texte invisible</title>
 
 <style>
+/* ================================
+   GLOBAL
+================================ */
+
 body {
   font-family: sans-serif;
   background: #008080;
@@ -14,7 +18,10 @@ body {
   color: black;
 }
 
-/* Fenêtre Win98 */
+/* ================================
+   FENÊTRE WIN98
+================================ */
+
 .win98-window {
   background: #c0c0c0;
   border: 2px solid #fff;
@@ -25,7 +32,6 @@ body {
   margin: auto;
 }
 
-/* Barre de titre Win98 */
 .win98-titlebar {
   background: #000080;
   color: white;
@@ -36,7 +42,7 @@ body {
   align-items: center;
 }
 
-/* Bouton X Win98 */
+/* Bouton X */
 .win98-titlebar button {
   width: 18px;
   height: 18px;
@@ -52,29 +58,27 @@ body {
   cursor: pointer;
 }
 
-/* Hover bouton X */
 .win98-titlebar button:hover {
   background: #e0e0e0;
   border-right-color: #202020;
   border-bottom-color: #202020;
 }
 
-/* Pressed bouton X */
 .win98-titlebar button:active {
   background: #c0c0c0;
   border: 2px solid #404040;
   border-right-color: #fff;
   border-bottom-color: #fff;
+  padding: 0;
   line-height: 13px;
 }
 
-/* Contenu fenêtre */
 .win98-content {
   padding: 10px;
 }
 
 /* ================================
-   BOUTONS WIN98 (génériques)
+   BOUTONS GÉNÉRIQUES WIN98
 ================================ */
 
 button, .btn, input[type="file"] {
@@ -87,14 +91,12 @@ button, .btn, input[type="file"] {
   cursor: pointer;
 }
 
-/* Hover Win98 */
 button:hover, .btn:hover, input[type="file"]:hover {
   background: #dcdcdc;
   border-right-color: #202020;
   border-bottom-color: #202020;
 }
 
-/* Pressed Win98 (général) */
 button:active, .btn:active, input[type="file"]:active {
   background: #c0c0c0;
   border: 2px solid #404040;
@@ -102,12 +104,6 @@ button:active, .btn:active, input[type="file"]:active {
   border-bottom-color: #fff;
   padding-top: 5px;
   padding-left: 9px;
-}
-
-/* EXCEPTION : le bouton X NE DOIT PAS avoir ce padding */
-.win98-titlebar button:active {
-  padding: 0;        /* empêche le décalage */
-  line-height: 13px; /* léger effet enfoncé sans casser l’alignement */
 }
 
 /* ================================
@@ -136,7 +132,6 @@ button:active, .btn:active, input[type="file"]:active {
   opacity: 0.5;
 }
 
-/* Boutons internes (↑ ↓ ❌) */
 .upBtn, .downBtn {
   background: #cce5ff;
 }
@@ -147,7 +142,7 @@ button:active, .btn:active, input[type="file"]:active {
 }
 
 /* ================================
-   ZONE DE DÉPÔT (drag & drop)
+   ZONE DE DÉPÔT
 ================================ */
 
 #dropZone {
@@ -161,54 +156,6 @@ button:active, .btn:active, input[type="file"]:active {
 #dropZone.dragover {
   background: #ffffcc;
 }
-
-  /* Liste Win98 */
-  #fileList li {
-    background: #fff;
-    border: 1px solid #000;
-  }
-
-/* Popup Win98 */
-#about-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #C0C0C0;
-  border: 2px solid #FFFFFF;
-  border-right-color: #404040;
-  border-bottom-color: #404040;
-  padding: 15px;
-  width: 350px;
-  max-width: 90%;
-  display: none;
-  z-index: 9999;
-  font-family: monospace;
-}
-
-#about-popup h3 {
-  margin-top: 0;
-  background: #000080;
-  color: white;
-  padding: 4px;
-  font-size: 14px;
-}
-
-#about-popup,
-#compatPopup {
-  max-width: 90vw;   /* jamais plus large que l’écran */
-  max-height: 90vh;  /* jamais plus haut que l’écran */
-  overflow: auto;    /* scroll interne si nécessaire */
-  box-sizing: border-box;
-  font-size: 10px;
-}
-
-#about-popup pre,
-#compatPopup pre {
-  max-height: 70vh;  /* limite la hauteur du texte */
-  overflow-y: auto;  /* scroll vertical si besoin */
-  font-size: 8px;
-}
 </style>
 </head>
 <body>
@@ -221,88 +168,8 @@ button:active, .btn:active, input[type="file"]:active {
 
   <button id="convertBtn">Convertir</button>
 
-  <pre id="status"></pre>
-
 <button id="about-btn">À propos des libraries / Crédits</button>
-
-<!-- POPUP licences-->
-<div id="about-popup">
-  <h3>À propos des libraries / Crédits</h3>
-  <p>Script OCR</p>
-  <ul>
-    <li>Tesseract.js — Apache 2.0<br>https://github.com/naptha/tesseract.js</li>
-    <li>jsPDF — MIT License<br>https://github.com/parallax/jsPDF</li>
-    <li>PDF-Lib — MIT License<br>https://github.com/Hopding/pdf-lib</li>
-  </ul>
-  <button id="about-close">Fermer</button>
-</div>
-
-<!-- POPUP compatibilité-->
-<button onclick="showCompat()">Compatibilité</button>
-
-<div id="compatPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:600px; background:#c0c0c0; border:2px solid #fff; border-right-color:#404040; border-bottom-color:#404040; z-index:9999;">
-  <div class="win98-titlebar">
-    <span>Compatibilité minimale</span>
-    <button onclick="hideCompat()">X</button>
-  </div>
-  <div class="win98-content">
-    <pre style="background:#fff; border:1px solid #000; padding:10px; height:350px; overflow-y:auto; white-space:pre-wrap;">
-
-=== Compatibilité minimale OS ===
-
-Windows :
-- Windows XP ............. ❌ Pas de WebAssembly
-- Windows Vista .......... ❌ Pas de WebAssembly
-- Windows 7 .............. ✔️ Minimum supporté
-- Windows 8 / 8.1 ........ ✔️
-- Windows 10 / 11 ........ ✔️
-
-Android :
-- Android 4.x ............ ❌ Pas de WebAssembly
-- Android 5.0 ............ ✔️ Minimum supporté
-- Android 6+ ............. ✔️
-
-iOS :
-- iOS 9 / 10 ............. ❌ Pas de WebAssembly
-- iOS 11 ................. ✔️ Minimum supporté
-- iOS 12+ ................ ✔️
-
-macOS :
-- macOS 10.10 / 10.11 .... ❌ Safari trop ancien
-- macOS 10.12 Sierra ..... ✔️ Minimum supporté
-- macOS 10.13+ ........... ✔️
-
-Linux :
-- Dépend du navigateur ... ✔️ Chrome 57+ / Firefox 52+
-
-
-=== Compatibilité minimale navigateurs ===
-
-Chrome .......... 57+ (WebAssembly OK)
-Firefox ......... 52+ (WebAssembly OK)
-Edge ............ 16+ (WebAssembly OK)
-Safari .......... 11+ (WebAssembly OK)
-Opera ........... 44+ (WebAssembly OK)
-
-Navigateurs non supportés :
-- Chrome 49 (Windows XP)
-- Firefox 52 ESR sur XP (WASM désactivé)
-- WebView Android 4.x
-- Safari < 11
-- IE / Edge Legacy
-
-    </pre>
-  </div>
-</div>
-
-<script>
-  function showCompat() {
-    document.getElementById("compatPopup").style.display = "block";
-  }
-  function hideCompat() {
-    document.getElementById("compatPopup").style.display = "none";
-  }
-</script>
+<button id="compat-btn">Compatibilité</button>
 
   <!-- OCR -->
   <script src="tesseract.min.js"></script>
@@ -578,14 +445,14 @@ Navigateurs non supportés :
     }
 
 /* ============================
-   POPUP
+   Infos
 ============================ */
 document.getElementById("about-btn").onclick = function () {
-  document.getElementById("about-popup").style.display = "block";
+  window.location.href = "credits.txt";
 };
 
-document.getElementById("about-close").onclick = function () {
-  document.getElementById("about-popup").style.display = "none";
+document.getElementById("compat-btn").onclick = function () {
+  window.location.href = "compatibilite.txt";
 };
   </script>
 </body>
