@@ -88,41 +88,6 @@ button:active {
   background: #000000;
   border: 2px inset #808080;
 }
-
-/* Popup Win98 */
-#about-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #C0C0C0;
-  border: 2px solid #FFFFFF;
-  border-right-color: #404040;
-  border-bottom-color: #404040;
-  padding: 15px;
-  width: 300px;
-  display: none;
-  z-index: 9999;
-  font-family: monospace;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow: auto;
-  box-sizing: border-box;
-  font-size: 10px;
-}
-
-#about-popup h3 {
-  margin-top: 0;
-  background: #000080;
-  color: white;
-  padding: 4px;
-  font-size: 14px;
-}
-
-#qrcode:hover,
-#video:hover {
-  border-color: #000000;
-}
 </style>
 </head>
 <body>
@@ -180,17 +145,6 @@ button:active {
 <!-- Librairies nécessaires -->
 <script src="zxing-es5.min.js"></script>
 <script src="qrcode.js"></script>
-
-<!-- POPUP -->
-<div id="about-popup">
-  <h3>À propos des libraries / Crédits</h3>
-  <p>Générateur & Lecteur de QR Code</p>
-  <ul>
-    <li>qrcode.js — MIT — Kazuhiko Arase</li>
-    <li>ZXing ES5 (compatibilité Windows XP) — Apache 2.0 — ZXing Team</li>
-  </ul>
-  <button id="about-close">Fermer</button>
-</div>
 
 <script>
 /* ============================
@@ -397,36 +351,12 @@ if (typeof ZXing === "undefined" || !ZXing.BrowserQRCodeReader) {
 }
 
 /* ============================
-   COPIER
-============================ */
-document.getElementById("copy-btn").onclick = function () {
-  var text = decodeFile.innerText;
-
-  var temp = document.createElement("textarea");
-  temp.value = text;
-  temp.style.position = "fixed";
-  temp.style.opacity = "0";
-  document.body.appendChild(temp);
-
-  temp.select();
-  document.execCommand("copy");
-  document.body.removeChild(temp);
-
-  var fb = document.getElementById("copy-feedback");
-  fb.style.display = "inline";
-  setTimeout(function(){ fb.style.display = "none"; }, 1000);
-};
-
-/* ============================
-   POPUP
+   Infos
 ============================ */
 document.getElementById("about-btn").onclick = function () {
-  document.getElementById("about-popup").style.display = "block";
+  window.location.href = "credits.txt";
 };
 
-document.getElementById("about-close").onclick = function () {
-  document.getElementById("about-popup").style.display = "none";
-};
 </script>
 </body>
 </html>
