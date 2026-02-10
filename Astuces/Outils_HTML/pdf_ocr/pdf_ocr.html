@@ -285,6 +285,18 @@ btn.onclick = async () => {
   }
 
   finalPDF.save("resultat_ocr.pdf");
+
+  const isSamsung = navigator.userAgent.includes("SamsungBrowser");
+
+  if (isSamsung) {
+      const blob = finalPDF.output("blob");
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      return;
+  }
+
+  finalPDF.save("resultat_ocr.pdf");
+
   statusEl.textContent = "PDF généré.";
 };
 
