@@ -1,0 +1,271 @@
+Doc d'installation de Wazuh Indexer + Manager + Dashboard (Ubuntu 24.04)
+Créer un Wazuh
+Créer des machines Windows et Linux à administrer.
+Postgree SQL, un serveur Apache ou autres...
+Regarder les caractéristiques pour la cration de la machine Wazuh.
+
+https://community-scripts.github.io/ProxmoxVE/scripts?id=wazuh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/wazuh.sh)"
+
+---
+
+Prérequis Wazuh (CPU / RAM / Stockage / OS)
+
+Composant : Wazuh Server (Manager)
+----------------------------------
+CPU minimum        : 2 coeurs
+RAM minimum        : 4 Go
+CPU recommandé     : 4 coeurs
+RAM recommandée    : 8 Go
+Stockage           : 20 à 50 Go
+OS supportés       : Debian, Ubuntu, RHEL, Rocky, Alma, Amazon Linux, SLES
+
+
+Composant : Wazuh Indexer (OpenSearch)
+--------------------------------------
+CPU minimum        : 2 coeurs
+RAM minimum        : 4 Go
+CPU recommandé     : 8 coeurs
+RAM recommandée    : 16 Go
+Stockage           : 50 à 200 Go SSD (plus si beaucoup d'agents)
+OS supportés       : Linux 64-bit uniquement
+
+
+Composant : Wazuh Dashboard
+---------------------------
+CPU minimum        : 2 coeurs
+RAM minimum        : 4 Go
+CPU recommandé     : 4 coeurs
+RAM recommandée    : 8 Go
+Stockage           : 5 à 10 Go
+OS supportés       : Linux 64-bit
+
+
+Composant : Wazuh Agents
+------------------------
+CPU minimum        : 1 coeur
+RAM minimum        : 512 Mo à 1 Go
+CPU recommandé     : 1 coeur
+RAM recommandée    : 1 Go
+Stockage           : 200 à 500 Mo
+OS supportés       : Linux, Windows, macOS, BSD, Solaris, AIX
+
+
+Déploiement All-in-One (≈ 25 agents)
+------------------------------------
+CPU minimum        : 4 coeurs
+RAM minimum        : 8 Go
+CPU recommandé     : 8 coeurs
+RAM recommandée    : 16 Go
+Stockage           : 50 à 200 Go SSD
+OS supportés       : Linux 64-bit
+
+
+- L'Indexer est le composant le plus gourmand (IOPS + RAM).
+- Le stockage doit être en SSD pour de bonnes performances.
+- Debian 13 n'est pas encore officiellement supporté mais fonctionne.
+- Pour 50+ agents, privilégier un cluster Indexer (3 noeuds).
+
+---
+
+Machine Wazuh
+lsb_release -a
+Ubuntu 24.04
+WAZUH ALL‑IN‑ONE
+INDEXER + MANAGER + DASHBOARD (UBUNTU 24.04)
+# 1) PRÉREQUIS
+apt update && apt upgrade -y
+apt install curl gnupg apt-transport-https lsb-release -y
+
+curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH \
+| gpg --dearmor | tee /usr/share/keyrings/wazuh.gpg > /dev/null
+
+echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] \
+https://packages.wazuh.com/4.x/apt/ stable main" \
+| tee /etc/apt/sources.list.d/wazuh.list
+
+apt update
+
+---
+
+# 2) INSTALLATION - INDEXER (OPENSEARCH)
+# Nettoyage (optionnel)
+sudo systemctl stop wazuh-indexer
+sudo apt remove --purge wazuh-indexer -y
+sudo rm -rf /etc/wazuh-indexer /var/lib/wazuh-indexer /usr/share/wazuh-indexer
+
+# Installation
+sudo apt install wazuh-indexer -y
+
+# Certificats
+sudo mkdir -p /etc/wazuh-indexer/certs
+
+openssl req -x509 -nodes -days 3650 \
+  -newkey rsa:4096 \
+  -keyout /etc/wazuh-indexer/certs/ca-key.pem \
+  -out /etc/wazuh-indexer/certs/ca.pem \
+  -subj "/CN=wazuh-indexer-CA"
+
+openssl genrsa -out /etc/wazuh-indexer/certs/node-key.pem 2048
+openssl req -new \
+  -key /etc/wazuh-indexer/certs/node-key.pem \
+  -out /etc/wazuh-indexer/certs/node.csr \
+  -subj "/CN=wazuh-indexer"
+
+openssl x509 -req -days 365 \
+  -in /etc/wazuh-indexer/certs/node.csr \
+  -CA /etc/wazuh-indexer/certs/ca.pem \
+  -CAkey /etc/wazuh-indexer/certs/ca-key.pem \
+  -CAcreateserial \
+  -out /etc/wazuh-indexer/certs/node.pem
+
+sudo chown -R wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs
+sudo chmod 600 /etc/wazuh-indexer/certs/*-key.pem
+sudo chmod 644 /etc/wazuh-indexer/certs/*.pem
+
+# Configuration
+sudo nano /etc/wazuh-indexer/opensearch.yml
+cluster.name: wazuh-cluster
+node.name: node-1
+network.host: 0.0.0.0
+
+path.data: /var/lib/wazuh-indexer
+path.logs: /var/log/wazuh-indexer
+bootstrap.memory_lock: false
+
+plugins.security.ssl.transport.pemcert_filepath: certs/node.pem
+plugins.security.ssl.transport.pemkey_filepath: certs/node-key.pem
+plugins.security.ssl.transport.pemtrustedcas_filepath: certs/ca.pem
+
+plugins.security.ssl.http.enabled: true
+plugins.security.ssl.http.pemcert_filepath: certs/node.pem
+plugins.security.ssl.http.pemkey_filepath: certs/node-key.pem
+plugins.security.ssl.http.pemtrustedcas_filepath: certs/ca.pem
+
+plugins.security.allow_default_init_securityindex: true
+discovery.type: single-node
+
+
+sudo chown -R wazuh-indexer:wazuh-indexer /var/lib/wazuh-indexer
+sudo chown -R wazuh-indexer:wazuh-indexer /var/log/wazuh-indexer
+
+sudo systemctl enable wazuh-indexer
+sudo systemctl daemon-reload
+sudo systemctl restart wazuh-indexer
+
+---
+
+# 3) INSTALLATION - MANAGER
+sudo apt install wazuh-manager -y
+sudo systemctl enable wazuh-manager
+sudo systemctl start wazuh-manager
+
+---
+
+# 4) INSTALLATION - DASHBOARD (HTTPS 443)
+
+# Nettoyage (optionnel)
+sudo systemctl stop wazuh-dashboard
+sudo apt remove --purge wazuh-dashboard -y
+sudo rm -rf /usr/share/wazuh-dashboard /etc/wazuh-dashboard
+
+# Installation
+sudo apt install wazuh-dashboard -y
+
+# Certificats Dashboard (signés par la CA de l'indexer)
+sudo mkdir -p /etc/wazuh-dashboard/certs
+
+sudo cp /etc/wazuh-indexer/certs/ca.pem /etc/wazuh-dashboard/certs/root-ca.pem
+
+openssl genrsa -out /etc/wazuh-dashboard/certs/dashboard-key.pem 2048
+openssl req -new \
+  -key /etc/wazuh-dashboard/certs/dashboard-key.pem \
+  -out /etc/wazuh-dashboard/certs/dashboard.csr \
+  -subj "/CN=wazuh-dashboard"
+
+openssl x509 -req -days 365 \
+  -in /etc/wazuh-dashboard/certs/dashboard.csr \
+  -CA /etc/wazuh-dashboard/certs/root-ca.pem \
+  -CAkey /etc/wazuh-indexer/certs/ca-key.pem \
+  -CAcreateserial \
+  -out /etc/wazuh-dashboard/certs/dashboard.pem
+
+sudo chown -R wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs
+sudo chmod 600 /etc/wazuh-dashboard/certs/*-key.pem
+sudo chmod 644 /etc/wazuh-dashboard/certs/*.pem
+
+# Configuration Dashboard
+sudo nano /etc/wazuh-dashboard/opensearch_dashboards.yml
+server.host: 0.0.0.0
+server.port: 443
+
+opensearch.hosts: ["https://localhost:9200"]
+opensearch.ssl.verificationMode: certificate
+opensearch.ssl.certificateAuthorities: ["/etc/wazuh-dashboard/certs/root-ca.pem"]
+
+opensearch.username: "admin"
+opensearch.password: "admin"
+
+server.ssl.enabled: true
+server.ssl.key: "/etc/wazuh-dashboard/certs/dashboard-key.pem"
+server.ssl.certificate: "/etc/wazuh-dashboard/certs/dashboard.pem"
+
+uiSettings.overrides.defaultRoute: /app/wz-home
+
+
+# Service systemd (bypass use_node)
+sudo nano /etc/systemd/system/wazuh-dashboard.service
+[Unit]
+Description=Wazuh Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=wazuh-dashboard
+Group=wazuh-dashboard
+ExecStart=/usr/share/wazuh-dashboard/node/bin/node \
+  /usr/share/wazuh-dashboard/src/cli/dist \
+  --allow-root
+Restart=always
+WorkingDirectory=/usr/share/wazuh-dashboard
+Environment=NODE_OPTIONS="--max-old-space-size=2048"
+
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl enable wazuh-dashboard
+sudo systemctl daemon-reload
+sudo systemctl restart wazuh-dashboard
+
+---
+
+# 5) TESTS
+ss -tulpn | grep 9200
+ss -tulpn | grep 443
+
+curl -vk https://localhost:9200
+curl -vk https://localhost:443
+
+---
+
+# 6) ACCÈS DASHBOARD
+https://<IP_DU_SERVEUR>/
+admin / admin
+
+---
+
+Nettoyage des logs, archives, fichiers temporaires et queues recréées automatiquement :
+# 1. Supprimer les archives d'alertes (souvent 5–10 Go)
+sudo rm -rf /var/ossec/logs/archives/*
+
+# 2. Supprimer les anciennes alertes (souvent 1–3 Go)
+sudo rm -rf /var/ossec/logs/alerts/*
+
+# 3. Supprimer les logs tournants
+sudo rm -rf /var/ossec/logs/ossec/*
+
+# 4. Nettoyer les queues (sécurisé, elles se recréent)
+sudo rm -rf /var/ossec/queue/*
+
+# 5. Nettoyer les fichiers temporaires
+sudo rm -rf /var/ossec/tmp/*
