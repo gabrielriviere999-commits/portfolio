@@ -13,10 +13,16 @@ sudo systemctl restart wazuh-manager
 
 LINUX - INSTALLATION AGENT (DEBIAN / UBUNTU / ROCKY / ALMA)
 # 1) Télécharger l'agent
-curl -sO https://packages.wazuh.com/4.x/wazuh-agent/wazuh-agent_4.x.deb
+curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH \
+| sudo gpg --dearmor -o /usr/share/keyrings/wazuh.gpg
 
-# 2) Installer
-sudo dpkg -i wazuh-agent_4.x.deb
+echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] \
+https://packages.wazuh.com/4.x/apt/ stable main" \
+| sudo tee /etc/apt/sources.list.d/wazuh.list
+
+# 2) Installer l'agent
+sudo apt update
+sudo apt install wazuh-agent -y
 
 # 3) Configurer le Manager
 sudo nano /var/ossec/etc/ossec.conf
@@ -66,6 +72,8 @@ sc query wazuh-agent
 VÉRIFICATION DANS LE DASHBOARD
 Dashboard → Agents → View all agents
 Status = Active
+
+---
 
 DÉSINSTALLATION AGENT (OPTIONNEL)
 Linux :
