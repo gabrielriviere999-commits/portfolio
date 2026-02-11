@@ -12,7 +12,7 @@ generate_index() {
         echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
         echo "<title>Liste des fichiers - ${dir}</title>"
         echo "<style>"
-        echo "body { background:white; color:black; font-family:sans-serif; font-size:18px; line-height:1.5; }"
+        echo "body { background:#C0C0C0; color:black; font-family:sans-serif; font-size:18px; line-height:1.5; }"
 
         # Liens : inline pour retrait suspendu, compatible 3DS
         echo "a {"
@@ -30,10 +30,16 @@ generate_index() {
         echo "ul { margin:0; padding-left:1.2em; list-style-position:outside; }"
         echo "li { margin:4px 0; font-size:18px; }"
 
-        # Ajout du label [Dossier] via CSS → solution parfaite
+        # Ajout du label [Dossier] via CSS
         echo "li.folder::before { content:'[Dossier] '; color:#555; }"
 
         echo "h1 { font-size:22px; }"
+
+        # CSS du bouton Win98 → DANS <style>, pas après
+        echo ".win98-btn { padding:2px 6px; background:#C0C0C0; border:2px solid #fff; border-right-color:#404040; border-bottom-color:#404040; font-family:monospace; font-size:14px; text-decoration:none; display:inline-block; color:black; }"
+        echo ".win98-btn:active { border:2px solid #404040; border-right-color:#fff; border-bottom-color:#fff; }"
+        echo ".win98-btn:hover { background:#E0E0E0; }"
+
         echo "</style>"
         echo "</head><body>"
         echo "<h1>Contenu de : ${dir}</h1>"
@@ -55,12 +61,17 @@ generate_index() {
         fi
 
         if [ -d "$item" ]; then
-            # Dossier → classe spéciale
+            # Dossier
             echo "<li><a href=\"$name/liste_fichiers.html\">[Dossier]&nbsp;$name</a></li>" >> "$output"
             generate_index "$item"
         else
-            # Fichier normal
-            echo "<li><a href=\"$name\">$name</a></li>" >> "$output"
+            # Fichier normal + bouton Télécharger
+            {
+                echo "<li>"
+                echo "  <a href=\"$name\">$name</a><br>"
+                echo "  <a href=\"$name\" download class=\"win98-btn\">Télécharger</a>"
+                echo "</li>"
+            } >> "$output"
         fi
     done
 
