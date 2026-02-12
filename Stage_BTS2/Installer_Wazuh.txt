@@ -1,318 +1,108 @@
-Doc d'installation de Wazuh Indexer + Manager + Dashboard (Ubuntu 24.04)
-Créer un Wazuh
-Créer des machines Windows et Linux à administrer.
-Postgree SQL, un serveur Apache ou autres...
-Regarder les caractéristiques pour la cration de la machine Wazuh.
+# Documentation d'installation Wazuh 4.7.x
+Installation All‑in‑One sur Ubuntu 24.04
 
-https://community-scripts.github.io/ProxmoxVE/scripts?id=wazuh
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/wazuh.sh)"
+# 1. Préparation du système
+Mettre à jour la machine
+sudo apt update && sudo apt upgrade -y
 
----
-
-Prérequis Wazuh (CPU / RAM / Stockage / OS)
-
-Composant : Wazuh Server (Manager)
-----------------------------------
-CPU minimum        : 2 coeurs
-RAM minimum        : 4 Go
-CPU recommandé     : 4 coeurs
-RAM recommandée    : 8 Go
-Stockage           : 20 à 50 Go
-OS supportés       : Debian, Ubuntu, RHEL, Rocky, Alma, Amazon Linux, SLES
+Installer les dépendances nécessaires
+sudo apt install curl apt-transport-https unzip gnupg -y
 
 
-Composant : Wazuh Indexer (OpenSearch)
---------------------------------------
-CPU minimum        : 2 coeurs
-RAM minimum        : 4 Go
-CPU recommandé     : 8 coeurs
-RAM recommandée    : 16 Go
-Stockage           : 50 à 200 Go SSD (plus si beaucoup d'agents)
-OS supportés       : Linux 64-bit uniquement
+# 2. Télécharger le script officiel Wazuh
+curl -sO https://packages.wazuh.com/4.7/wazuh-install.sh
+chmod +x wazuh-install.sh
 
 
-Composant : Wazuh Dashboard
----------------------------
-CPU minimum        : 2 coeurs
-RAM minimum        : 4 Go
-CPU recommandé     : 4 coeurs
-RAM recommandée    : 8 Go
-Stockage           : 5 à 10 Go
-OS supportés       : Linux 64-bit
+# 3. Lancer l'installation All‑in‑One
+Comme certaines versions d'Ubuntu ne sont pas officiellement supportées, on ignore la vérification et
+on force une installation propre.
+
+Commande recommandée :
+sudo bash ./wazuh-install.sh -i -o -a
+
+Signification :
+    • -i → ignore-check (ignore la vérification du système)
+    • -o → overwrite (écrase toute ancienne installation)
+    • -a → all-in-one (indexer + manager + dashboard)
 
 
-Composant : Wazuh Agents
-------------------------
-CPU minimum        : 1 coeur
-RAM minimum        : 512 Mo à 1 Go
-CPU recommandé     : 1 coeur
-RAM recommandée    : 1 Go
-Stockage           : 200 à 500 Mo
-OS supportés       : Linux, Windows, macOS, BSD, Solaris, AIX
+# 4. Fin de l'installation
+Le script installe automatiquement :
+    • Wazuh Indexer
+    • Wazuh Manager
+    • Wazuh Dashboard
+    • Les certificats
+    • Les services systemd
+
+À la fin, il affiche :
+User : admin
+Password : <mot_de_passe_généré>
+
+→ Conserver ce mot de passe, il sert pour la connexion au Dashboard.
 
 
-Déploiement All-in-One (≈ 25 agents)
-------------------------------------
-CPU minimum        : 4 coeurs
-RAM minimum        : 8 Go
-CPU recommandé     : 8 coeurs
-RAM recommandée    : 16 Go
-Stockage           : 50 à 200 Go SSD
-OS supportés       : Linux 64-bit
+# 5. Accéder au Dashboard Wazuh
+Ouvrir un navigateur et accéder à :
+https://<ADRESSE_IP_DU_SERVEUR>
+ou
+https://<ADRESSE_IP_DU_SERVEUR>:443
+
+Ignorer l'avertissement SSL (certificat auto-signé).
+Identifiants :
+    • Utilisateur : admin
+    • Mot de passe : <mot_de_passe_généré>
 
 
-- L'Indexer est le composant le plus gourmand (IOPS + RAM).
-- Le stockage doit être en SSD pour de bonnes performances.
-- Debian 13 n'est pas encore officiellement supporté mais fonctionne.
-- Pour 50+ agents, privilégier un cluster Indexer (3 noeuds).
-
----
-
-Machine Wazuh
-lsb_release -a
-Ubuntu 24.04
-WAZUH ALL‑IN‑ONE (UBUNTU 24.04)
-INDEXER + MANAGER + DASHBOARD (HTTPS 443 + API OK)
-# 1) PRÉREQUIS
-apt update && apt upgrade -y
-apt install curl gnupg apt-transport-https lsb-release -y
-
-sudo curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH \
-| gpg --dearmor | sudo tee /usr/share/keyrings/wazuh.gpg > /dev/null
-
-sudo echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] \
-https://packages.wazuh.com/4.x/apt/ stable main" \
-| sudo tee /etc/apt/sources.list.d/wazuh.list
-
-sudo apt update
-
-
-# 2) INSTALLATION - INDEXER (OPENSEARCH)
-# Nettoyage (si réinstallation)
-sudo systemctl stop wazuh-indexer
-sudo apt remove --purge wazuh-indexer -y
-sudo rm -rf /etc/wazuh-indexer /var/lib/wazuh-indexer /usr/share/wazuh-indexer
-
-# Installation
-sudo apt install wazuh-indexer -y
-
-# Certificats
-sudo mkdir -p /etc/wazuh-indexer/certs
-
-sudo openssl req -x509 -nodes -days 3650 \
-  -newkey rsa:4096 \
-  -keyout /etc/wazuh-indexer/certs/ca-key.pem \
-  -out /etc/wazuh-indexer/certs/ca.pem \
-  -subj "/CN=wazuh-indexer-CA"
-
-sudo openssl genrsa -out /etc/wazuh-indexer/certs/node-key.pem 2048
-
-sudo openssl req -new \
-  -key /etc/wazuh-indexer/certs/node-key.pem \
-  -out /etc/wazuh-indexer/certs/node.csr \
-  -subj "/CN=wazuh-indexer"
-
-sudo openssl x509 -req -days 365 \
-  -in /etc/wazuh-indexer/certs/node.csr \
-  -CA /etc/wazuh-indexer/certs/ca.pem \
-  -CAkey /etc/wazuh-indexer/certs/ca-key.pem \
-  -CAcreateserial \
-  -out /etc/wazuh-indexer/certs/node.pem
-
-sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/ca-key.pem
-sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/ca.pem
-sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/node-key.pem
-sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/node.pem
-
-sudo chmod 600 /etc/wazuh-indexer/certs/ca-key.pem
-sudo chmod 600 /etc/wazuh-indexer/certs/node-key.pem
-
-sudo chmod 644 /etc/wazuh-indexer/certs/ca.pem
-sudo chmod 644 /etc/wazuh-indexer/certs/node.pem
-
-# Configuration
-sudo nano /etc/wazuh-indexer/opensearch.yml
-
-cluster.name: wazuh-cluster
-node.name: node-1
-network.host: 0.0.0.0
-
-path.data: /var/lib/wazuh-indexer
-path.logs: /var/log/wazuh-indexer
-bootstrap.memory_lock: false
-
-plugins.security.ssl.transport.pemcert_filepath: certs/node.pem
-plugins.security.ssl.transport.pemkey_filepath: certs/node-key.pem
-plugins.security.ssl.transport.pemtrustedcas_filepath: certs/ca.pem
-
-plugins.security.ssl.http.enabled: true
-plugins.security.ssl.http.pemcert_filepath: certs/node.pem
-plugins.security.ssl.http.pemkey_filepath: certs/node-key.pem
-plugins.security.ssl.http.pemtrustedcas_filepath: certs/ca.pem
-
-plugins.security.allow_default_init_securityindex: true
-discovery.type: single-node
-
-
-# Permissions + démarrage
-sudo chown -R wazuh-indexer:wazuh-indexer /var/lib/wazuh-indexer
-sudo chown -R wazuh-indexer:wazuh-indexer /var/log/wazuh-indexer
-
-sudo systemctl enable wazuh-indexer
-sudo systemctl daemon-reload
-sudo systemctl restart wazuh-indexer
-sudo systemctl status wazuh-indexer
-
-
-# 3) INSTALLATION - MANAGER
-sudo apt install wazuh-manager -y
-sudo systemctl enable wazuh-manager
-sudo systemctl start wazuh-manager
+# 6. Vérifier les services
 sudo systemctl status wazuh-manager
-
-
-# 4) INSTALLATION - DASHBOARD (HTTPS 443 + API OK)
-# Nettoyage (si réinstallation)
-sudo systemctl stop wazuh-dashboard
-sudo apt remove --purge wazuh-dashboard -y
-sudo rm -rf /usr/share/wazuh-dashboard /etc/wazuh-dashboard
-sudo dpkg --purge --force-all wazuh-dashboard
-sudo rm -rf /etc/wazuh-dashboard
-sudo rm -rf /usr/share/wazuh-dashboard
-sudo rm -rf /var/lib/wazuh-dashboard
-sudo rm -rf /var/log/wazuh-dashboard
-sudo rm -f /etc/systemd/system/wazuh-dashboard.service
-sudo systemctl daemon-reload
-
-# Installation
-sudo apt update
-sudo apt install wazuh-dashboard -y
-
-Si ça échoue :
-sudo dpkg --configure -a
-sudo apt --fix-broken install -y
-sudo apt install -f
-
-# Certificats Dashboard
-sudo mkdir -p /etc/wazuh-dashboard/certs
-
-# Copier la CA de l'indexer
-sudo cp /etc/wazuh-indexer/certs/ca.pem /etc/wazuh-dashboard/certs/root-ca.pem
-
-# Générer la clé privée du Dashboard
-sudo openssl genrsa -out /etc/wazuh-dashboard/certs/dashboard-key.pem 2048
-
-# Générer la demande de certificat
-sudo openssl req -new \
-  -key /etc/wazuh-dashboard/certs/dashboard-key.pem \
-  -out /etc/wazuh-dashboard/certs/dashboard.csr \
-  -subj "/CN=wazuh-dashboard"
-
-# Signer le certificat avec la CA de l'indexer
-sudo openssl x509 -req -days 365 \
-  -in /etc/wazuh-dashboard/certs/dashboard.csr \
-  -CA /etc/wazuh-dashboard/certs/root-ca.pem \
-  -CAkey /etc/wazuh-indexer/certs/ca-key.pem \
-  -CAcreateserial \
-  -out /etc/wazuh-dashboard/certs/dashboard.pem
-
-sudo chown wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs/dashboard-key.pem
-sudo chown wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs/dashboard.pem
-sudo chown wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs/root-ca.pem
-
-sudo chmod 600 /etc/wazuh-dashboard/certs/dashboard-key.pem
-sudo chmod 644 /etc/wazuh-dashboard/certs/dashboard.pem
-sudo chmod 644 /etc/wazuh-dashboard/certs/root-ca.pem
-
-
-# 4.1) CONFIGURATION DASHBOARD (443 + API)
-sudo nano /etc/wazuh-dashboard/opensearch_dashboards.yml
-
-server.host: 0.0.0.0
-server.port: 443
-
-opensearch.hosts: ["https://localhost:9200"]
-opensearch.ssl.verificationMode: certificate
-opensearch.ssl.certificateAuthorities: ["/etc/wazuh-dashboard/certs/root-ca.pem"]
-
-opensearch.username: "admin"
-opensearch.password: "admin"
-
-server.ssl.enabled: true
-server.ssl.key: "/etc/wazuh-dashboard/certs/dashboard-key.pem"
-server.ssl.certificate: "/etc/wazuh-dashboard/certs/dashboard.pem"
-
-uiSettings.overrides.defaultRoute: /app/wz-home
-
-# API Wazuh
-wazuh.api.host: "https://localhost"
-wazuh.api.port: 55000
-wazuh.api.username: "wazuh-wui"
-wazuh.api.password: "wazuh-wui"
-
-
-# 4.2) FIX SYSTEMD - PERMETTRE L'ÉCOUTE SUR 443
-sudo nano /etc/systemd/system/wazuh-dashboard.service
-
-[Unit]
-Description=Wazuh Dashboard
-After=network.target
-
-[Service]
-Type=simple
-User=wazuh-dashboard
-Group=wazuh-dashboard
-ExecStart=/usr/share/wazuh-dashboard/node/bin/node \
-  /usr/share/wazuh-dashboard/src/cli/dist \
-  --allow-root
-Restart=always
-WorkingDirectory=/usr/share/wazuh-dashboard
-Environment=NODE_OPTIONS="--max-old-space-size=2048"
-AmbientCapabilities=CAP_NET_BIND_SERVICE
-CapabilityBoundingSet=CAP_NET_BIND_SERVICE
-
-[Install]
-WantedBy=multi-user.target
-
-
-sudo mkdir -p /usr/share/wazuh-dashboard/config
-sudo ln -s /etc/wazuh-dashboard/opensearch_dashboards.yml \
-  /usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
-
-sudo systemctl daemon-reload
-sudo systemctl enable wazuh-dashboard
-sudo systemctl restart wazuh-dashboard
+sudo systemctl status wazuh-indexer
 sudo systemctl status wazuh-dashboard
 
-
-# 5) TESTS
-ss -tulpn | grep 9200
-ss -tulpn | grep 443
-
-curl -vk https://localhost:9200
-curl -vk https://localhost:443
+Les trois doivent être active (running).
 
 
-# 6) ACCÈS DASHBOARD
-https://<IP_DU_SERVEUR>/
-admin / admin
+# 7. Ajouter un agent (exemple Linux)
+Sur la machine cliente :
+curl -sO https://packages.wazuh.com/4.7/wazuh-agent-4.7.5.deb
+sudo dpkg -i wazuh-agent-4.7.5.deb
 
----
+Configurer l'adresse du manager :
+sudo nano /var/ossec/etc/ossec.conf
 
-Nettoyage des logs, archives, fichiers temporaires et queues recréées automatiquement :
-# 1. Supprimer les archives d'alertes (souvent 5–10 Go)
-sudo rm -rf /var/ossec/logs/archives/*
+Modifier :
+<address>MANAGER_IP</address>
 
-# 2. Supprimer les anciennes alertes (souvent 1–3 Go)
-sudo rm -rf /var/ossec/logs/alerts/*
+Par :
+<address><ADRESSE_IP_DU_SERVEUR></address>
 
-# 3. Supprimer les logs tournants
-sudo rm -rf /var/ossec/logs/ossec/*
+Puis activer l'agent :
+sudo systemctl enable wazuh-agent
+sudo systemctl start wazuh-agent
 
-# 4. Nettoyer les queues (sécurisé, elles se recréent)
-sudo rm -rf /var/ossec/queue/*
 
-# 5. Nettoyer les fichiers temporaires
-sudo rm -rf /var/ossec/tmp/*
+# 8. Valider l'agent dans le Dashboard
+Dans l'interface :
+Agents → Pending → Accept
 
-df -k
+
+# 9. Résumé rapide
++-------+---------------------------------+
+| Étape | Action                          |
++-------+---------------------------------+
+| 1     | Mise à jour + dépendances       |
++-------+---------------------------------+
+| 2     | Télécharger le script           |
++-------+---------------------------------+
+| 3     | Installer avec -i -o -a         |
++-------+---------------------------------+
+| 4     | Récupérer le mot de passe admin |
++-------+---------------------------------+
+| 5     | Accéder au dashboard            |
++-------+---------------------------------+
+| 6     | Vérifier les services           |
++-------+---------------------------------+
+| 7     | Installer un agent              |
++-------+---------------------------------+
+| 8     | Valider l'agent                 |
++-------+---------------------------------+
