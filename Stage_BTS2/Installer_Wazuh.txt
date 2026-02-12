@@ -196,7 +196,7 @@ sudo apt install -f
 # Certificats Dashboard
 sudo mkdir -p /etc/wazuh-dashboard/certs
 
-# Copier la CA de l’indexer
+# Copier la CA de l'indexer
 sudo cp /etc/wazuh-indexer/certs/ca.pem /etc/wazuh-dashboard/certs/root-ca.pem
 
 # Générer la clé privée du Dashboard
@@ -208,7 +208,7 @@ sudo openssl req -new \
   -out /etc/wazuh-dashboard/certs/dashboard.csr \
   -subj "/CN=wazuh-dashboard"
 
-# Signer le certificat avec la CA de l’indexer
+# Signer le certificat avec la CA de l'indexer
 sudo openssl x509 -req -days 365 \
   -in /etc/wazuh-dashboard/certs/dashboard.csr \
   -CA /etc/wazuh-dashboard/certs/root-ca.pem \
@@ -251,7 +251,7 @@ wazuh.api.username: "wazuh-wui"
 wazuh.api.password: "wazuh-wui"
 
 
-# 4.2) FIX SYSTEMD - PERMETTRE L’ÉCOUTE SUR 443
+# 4.2) FIX SYSTEMD - PERMETTRE L'ÉCOUTE SUR 443
 sudo nano /etc/systemd/system/wazuh-dashboard.service
 
 [Unit]
