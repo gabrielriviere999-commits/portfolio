@@ -71,25 +71,24 @@ OS supportés       : Linux 64-bit
 Machine Wazuh
 lsb_release -a
 Ubuntu 24.04
-WAZUH ALL‑IN‑ONE
-INDEXER + MANAGER + DASHBOARD (UBUNTU 24.04)
+WAZUH ALL‑IN‑ONE (UBUNTU 24.04)
+INDEXER + MANAGER + DASHBOARD (HTTPS 443 + API OK)
 # 1) PRÉREQUIS
 apt update && apt upgrade -y
 apt install curl gnupg apt-transport-https lsb-release -y
 
-curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH \
-| gpg --dearmor | tee /usr/share/keyrings/wazuh.gpg > /dev/null
+sudo curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH \
+| gpg --dearmor | sudo tee /usr/share/keyrings/wazuh.gpg > /dev/null
 
-echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] \
+sudo echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] \
 https://packages.wazuh.com/4.x/apt/ stable main" \
-| tee /etc/apt/sources.list.d/wazuh.list
+| sudo tee /etc/apt/sources.list.d/wazuh.list
 
-apt update
+sudo apt update
 
----
 
 # 2) INSTALLATION - INDEXER (OPENSEARCH)
-# Nettoyage (optionnel)
+# Nettoyage (si réinstallation)
 sudo systemctl stop wazuh-indexer
 sudo apt remove --purge wazuh-indexer -y
 sudo rm -rf /etc/wazuh-indexer /var/lib/wazuh-indexer /usr/share/wazuh-indexer
@@ -100,31 +99,40 @@ sudo apt install wazuh-indexer -y
 # Certificats
 sudo mkdir -p /etc/wazuh-indexer/certs
 
-openssl req -x509 -nodes -days 3650 \
+sudo openssl req -x509 -nodes -days 3650 \
   -newkey rsa:4096 \
   -keyout /etc/wazuh-indexer/certs/ca-key.pem \
   -out /etc/wazuh-indexer/certs/ca.pem \
   -subj "/CN=wazuh-indexer-CA"
 
-openssl genrsa -out /etc/wazuh-indexer/certs/node-key.pem 2048
-openssl req -new \
+sudo openssl genrsa -out /etc/wazuh-indexer/certs/node-key.pem 2048
+
+sudo openssl req -new \
   -key /etc/wazuh-indexer/certs/node-key.pem \
   -out /etc/wazuh-indexer/certs/node.csr \
   -subj "/CN=wazuh-indexer"
 
-openssl x509 -req -days 365 \
+sudo openssl x509 -req -days 365 \
   -in /etc/wazuh-indexer/certs/node.csr \
   -CA /etc/wazuh-indexer/certs/ca.pem \
   -CAkey /etc/wazuh-indexer/certs/ca-key.pem \
   -CAcreateserial \
   -out /etc/wazuh-indexer/certs/node.pem
 
-sudo chown -R wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs
-sudo chmod 600 /etc/wazuh-indexer/certs/*-key.pem
-sudo chmod 644 /etc/wazuh-indexer/certs/*.pem
+sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/ca-key.pem
+sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/ca.pem
+sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/node-key.pem
+sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/node.pem
+
+sudo chmod 600 /etc/wazuh-indexer/certs/ca-key.pem
+sudo chmod 600 /etc/wazuh-indexer/certs/node-key.pem
+
+sudo chmod 644 /etc/wazuh-indexer/certs/ca.pem
+sudo chmod 644 /etc/wazuh-indexer/certs/node.pem
 
 # Configuration
 sudo nano /etc/wazuh-indexer/opensearch.yml
+
 cluster.name: wazuh-cluster
 node.name: node-1
 network.host: 0.0.0.0
@@ -146,56 +154,80 @@ plugins.security.allow_default_init_securityindex: true
 discovery.type: single-node
 
 
+# Permissions + démarrage
 sudo chown -R wazuh-indexer:wazuh-indexer /var/lib/wazuh-indexer
 sudo chown -R wazuh-indexer:wazuh-indexer /var/log/wazuh-indexer
 
 sudo systemctl enable wazuh-indexer
 sudo systemctl daemon-reload
 sudo systemctl restart wazuh-indexer
+sudo systemctl status wazuh-indexer
 
----
 
 # 3) INSTALLATION - MANAGER
 sudo apt install wazuh-manager -y
 sudo systemctl enable wazuh-manager
 sudo systemctl start wazuh-manager
+sudo systemctl status wazuh-manager
 
----
 
-# 4) INSTALLATION - DASHBOARD (HTTPS 443)
-
-# Nettoyage (optionnel)
+# 4) INSTALLATION - DASHBOARD (HTTPS 443 + API OK)
+# Nettoyage (si réinstallation)
 sudo systemctl stop wazuh-dashboard
 sudo apt remove --purge wazuh-dashboard -y
 sudo rm -rf /usr/share/wazuh-dashboard /etc/wazuh-dashboard
+sudo dpkg --purge --force-all wazuh-dashboard
+sudo rm -rf /etc/wazuh-dashboard
+sudo rm -rf /usr/share/wazuh-dashboard
+sudo rm -rf /var/lib/wazuh-dashboard
+sudo rm -rf /var/log/wazuh-dashboard
+sudo rm -f /etc/systemd/system/wazuh-dashboard.service
+sudo systemctl daemon-reload
 
 # Installation
+sudo apt update
 sudo apt install wazuh-dashboard -y
 
-# Certificats Dashboard (signés par la CA de l'indexer)
+Si ça échoue :
+sudo dpkg --configure -a
+sudo apt --fix-broken install -y
+sudo apt install -f
+
+# Certificats Dashboard
 sudo mkdir -p /etc/wazuh-dashboard/certs
 
+# Copier la CA de l’indexer
 sudo cp /etc/wazuh-indexer/certs/ca.pem /etc/wazuh-dashboard/certs/root-ca.pem
 
-openssl genrsa -out /etc/wazuh-dashboard/certs/dashboard-key.pem 2048
-openssl req -new \
+# Générer la clé privée du Dashboard
+sudo openssl genrsa -out /etc/wazuh-dashboard/certs/dashboard-key.pem 2048
+
+# Générer la demande de certificat
+sudo openssl req -new \
   -key /etc/wazuh-dashboard/certs/dashboard-key.pem \
   -out /etc/wazuh-dashboard/certs/dashboard.csr \
   -subj "/CN=wazuh-dashboard"
 
-openssl x509 -req -days 365 \
+# Signer le certificat avec la CA de l’indexer
+sudo openssl x509 -req -days 365 \
   -in /etc/wazuh-dashboard/certs/dashboard.csr \
   -CA /etc/wazuh-dashboard/certs/root-ca.pem \
   -CAkey /etc/wazuh-indexer/certs/ca-key.pem \
   -CAcreateserial \
   -out /etc/wazuh-dashboard/certs/dashboard.pem
 
-sudo chown -R wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs
-sudo chmod 600 /etc/wazuh-dashboard/certs/*-key.pem
-sudo chmod 644 /etc/wazuh-dashboard/certs/*.pem
+sudo chown wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs/dashboard-key.pem
+sudo chown wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs/dashboard.pem
+sudo chown wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs/root-ca.pem
 
-# Configuration Dashboard
+sudo chmod 600 /etc/wazuh-dashboard/certs/dashboard-key.pem
+sudo chmod 644 /etc/wazuh-dashboard/certs/dashboard.pem
+sudo chmod 644 /etc/wazuh-dashboard/certs/root-ca.pem
+
+
+# 4.1) CONFIGURATION DASHBOARD (443 + API)
 sudo nano /etc/wazuh-dashboard/opensearch_dashboards.yml
+
 server.host: 0.0.0.0
 server.port: 443
 
@@ -212,9 +244,16 @@ server.ssl.certificate: "/etc/wazuh-dashboard/certs/dashboard.pem"
 
 uiSettings.overrides.defaultRoute: /app/wz-home
 
+# API Wazuh
+wazuh.api.host: "https://localhost"
+wazuh.api.port: 55000
+wazuh.api.username: "wazuh-wui"
+wazuh.api.password: "wazuh-wui"
 
-# Service systemd (bypass use_node)
+
+# 4.2) FIX SYSTEMD - PERMETTRE L’ÉCOUTE SUR 443
 sudo nano /etc/systemd/system/wazuh-dashboard.service
+
 [Unit]
 Description=Wazuh Dashboard
 After=network.target
@@ -229,15 +268,22 @@ ExecStart=/usr/share/wazuh-dashboard/node/bin/node \
 Restart=always
 WorkingDirectory=/usr/share/wazuh-dashboard
 Environment=NODE_OPTIONS="--max-old-space-size=2048"
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
 
 [Install]
 WantedBy=multi-user.target
 
-sudo systemctl enable wazuh-dashboard
-sudo systemctl daemon-reload
-sudo systemctl restart wazuh-dashboard
 
----
+sudo mkdir -p /usr/share/wazuh-dashboard/config
+sudo ln -s /etc/wazuh-dashboard/opensearch_dashboards.yml \
+  /usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
+
+sudo systemctl daemon-reload
+sudo systemctl enable wazuh-dashboard
+sudo systemctl restart wazuh-dashboard
+sudo systemctl status wazuh-dashboard
+
 
 # 5) TESTS
 ss -tulpn | grep 9200
@@ -246,7 +292,6 @@ ss -tulpn | grep 443
 curl -vk https://localhost:9200
 curl -vk https://localhost:443
 
----
 
 # 6) ACCÈS DASHBOARD
 https://<IP_DU_SERVEUR>/
@@ -269,3 +314,5 @@ sudo rm -rf /var/ossec/queue/*
 
 # 5. Nettoyer les fichiers temporaires
 sudo rm -rf /var/ossec/tmp/*
+
+df -k
