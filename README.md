@@ -11,6 +11,8 @@ Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Mode sombre : active/désactive le mode sombre du site principal.
 - Soutenir le site : ouvre la page de dons.
 
+Le bouton Q sert à lancer la recherche de fichiers en mode popup.
+
 Le bouton tab? sert à aller vers un onglet du site, utile sur petits écrans.
 
 ---
@@ -27,5 +29,7 @@ To display the site menu, click on the top left button ≡ :
 - Liste des fichiers : opens the file browser page.
 - Mode sombre : activates/deactivates the dark mode of the main site.
 - Soutenir le site : opens the donation page.
+
+The Q button is used to launch the file search in popup mode.
 
 The tab? button is used to go to a tab of the site, useful on small screens.
