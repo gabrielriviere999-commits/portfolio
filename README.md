@@ -7,6 +7,7 @@ Sur ce site, vous trouverez principalement des fichiers txt, html, pdf organisé
 Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Rechercher : ouvre la page de recherche de fichiers.
 - Rechercher (nouvel onglet) : ouvre la page de recherche de fichiers dans un nouvel onglet du navigateur.
+- Rechercher (popup) : ouvre la page de recherche de fichiers dans un popup.
 - Liste des fichiers : ouvre la page d'explorateur de fichiers.
 - Mode sombre : active/désactive le mode sombre du site principal.
 - Soutenir le site : ouvre la page de dons.
@@ -26,6 +27,7 @@ On this site, you will find mainly txt, html, pdf files organized in the form of
 To display the site menu, click on the top left button ≡ :
 - Rechercher : opens the file search page.
 - Rechercher (nouvel onglet) : opens the file search page in a new browser tab.
+- Rechercher (popup) : opens the file search page in a popup window.
 - Liste des fichiers : opens the file browser page.
 - Mode sombre : activates/deactivates the dark mode of the main site.
 - Soutenir le site : opens the donation page.
