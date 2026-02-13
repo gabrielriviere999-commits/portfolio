@@ -41,6 +41,10 @@ body {
     }
 }
 
+.navbar.hide {
+    transform: translateY(-100%);
+    transition: transform 0.2s linear;
+}
 /* --- Onglets --- */
 .tab {
     display: flex;
@@ -1795,6 +1799,23 @@ function closePopupSearch(e) {
     document.getElementById("popup-search").style.display = "none";
   }
 }
+</script>
+
+<script>
+var lastScroll = 0;
+
+window.addEventListener("scroll", function () {
+    var navbar = document.querySelector(".navbar");
+    var current = window.scrollY;
+
+    if (current > lastScroll && current > 50) {
+        navbar.classList.add("hide");
+    } else {
+        navbar.classList.remove("hide");
+    }
+
+    lastScroll = current;
+});
 </script>
 </main>
 </body>
