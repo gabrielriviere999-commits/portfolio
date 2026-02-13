@@ -9,7 +9,6 @@ Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Rechercher (nouvel onglet) : ouvre la page de recherche de fichiers dans un nouvel onglet du navigateur.
 - Rechercher (popup) : ouvre la page de recherche de fichiers dans un popup.
 - Liste des fichiers : ouvre la page d'explorateur de fichiers.
-- Mode sombre : active/désactive le mode sombre du site principal.
 - Soutenir le site : ouvre la page de dons.
 
 Le bouton Q sert à lancer la recherche de fichiers en mode popup.
@@ -29,7 +28,6 @@ To display the site menu, click on the top left button ≡ :
 - Rechercher (nouvel onglet) : opens the file search page in a new browser tab.
 - Rechercher (popup) : opens the file search page in a popup window.
 - Liste des fichiers : opens the file browser page.
-- Mode sombre : activates/deactivates the dark mode of the main site.
 - Soutenir le site : opens the donation page.
 
 The Q button is used to launch the file search in popup mode.
