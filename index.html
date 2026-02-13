@@ -179,6 +179,12 @@ body {
   display: block;
 }
 
+/* Empêche le dark mode forcé uniquement pour les iframes TXT/HTML */
+iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
+    color-scheme: light;
+    background-color: #C0C0C0;
+}
+
 .thumbnail-row {
   display: block;
   white-space: normal;
