@@ -20,33 +20,6 @@ body {
     overflow-x: auto;
 }
 
-/* Mode sombre */
-.dark-mode {
-    background-color: black;
-    color: white;
-}
-
-/* Iframes HTML/TXT uniquement */
-.dark-mode iframe:not([src$=".pdf"]):not([src$=".jpg"]):not([src$=".png"]):not([src$=".gif"]):not([src$=".webp"]):not([src$=".svg"]) {
-    filter: invert(1) hue-rotate(180deg);
-    background-color: white;
-    will-change: filter;
-}
-
-/* Miniatures : jamais inversées */
-.dark-mode .thumbnail iframe {
-    filter: none;
-}
-
-.dark-mode .thumbnail {
-    border-color: #C0C0C0;
-    background-color: #111;
-}
-
-.dark-mode .mySlide {
-  background-color: black;
-}
-
 /* --- Barre de navigation --- */
 .navbar {
     background-color: rgba(0, 0, 0, .2);
@@ -265,12 +238,6 @@ body {
   font-size: 25px;
 }
 
-/* Empêche le dark mode forcé uniquement pour les iframes TXT/HTML */
-iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
-    color-scheme: light;
-    background-color: #C0C0C0;
-}
-
 /* --- MODE MOBILE --- */
 @media screen and (max-device-width: 1280px) and (orientation: portrait) {
     html, body {
@@ -435,9 +402,7 @@ select {
 <div class="navbar">
 <select class="win98-select" aria-label="Menu du site"
         onchange="
-            if(this.value==='__darkmode__'){
-                myFunction();
-            } else if(this.value==='__search__'){
+            if(this.value==='__search__'){
                 window.open('search.html','_blank');
             } else if(this.value==='__search_popup__'){
                 openPopupSearch();
@@ -451,7 +416,6 @@ select {
     <option value="__search__">Rechercher (nouvel onglet)</option>
 	<option value="__search_popup__">Rechercher (popup)</option>
     <option value="liste_fichiers.html">Liste des fichiers</option>
-    <option value="__darkmode__">Mode sombre</option>
     <option value="README.md">README.md</option>
     <option value="donations.html">Soutenir le site</option>
 </select>
@@ -1542,10 +1506,6 @@ Mercredi 11 février 2026 : Installation de Wazuh Indexer + Manager + Dashboard 
 <p style="font-size:150px;"></p>
 <!-- Scripts -->
 <script>
-function myFunction() {
-    document.body.classList.toggle("dark-mode");
-}
-
 function openCity(evt, cityName) {
     activateTab(cityName);
 
