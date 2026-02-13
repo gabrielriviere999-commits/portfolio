@@ -33,18 +33,16 @@ body {
     gap: 3px;
 }
 
-/* Spécial Nintendo 3DS */
-@media screen and (max-device-width: 400px) and (max-device-height: 240px) {
-    .navbar {
-        position: relative !important;
-        top: 0 !important;
-    }
-}
-
 .navbar.hide {
     transform: translateY(-100%);
     transition: transform 0.2s linear;
 }
+
+.no-transform .navbar {
+    position: relative !important;
+    top: 0 !important;
+}
+
 /* --- Onglets --- */
 .tab {
     display: flex;
@@ -1499,6 +1497,29 @@ Mercredi 11 février 2026 : Installation de Wazuh Indexer + Manager + Dashboard 
 <p style="font-size:150px;"></p>
 <!-- Scripts -->
 <script>
+var lastScroll = 0;
+
+window.addEventListener("scroll", function () {
+    var navbar = document.querySelector(".navbar");
+    var current = window.scrollY;
+
+    if (current > lastScroll && current > 50) {
+        navbar.classList.add("hide");
+    } else {
+        navbar.classList.remove("hide");
+    }
+
+    lastScroll = current;
+});
+
+var supportsTransform = 'transform' in document.body.style;
+
+if (!supportsTransform) {
+    document.documentElement.classList.add('no-transform');
+}
+</script>
+
+<script>
 function openCity(evt, cityName) {
     activateTab(cityName);
 
@@ -1799,23 +1820,6 @@ function closePopupSearch(e) {
     document.getElementById("popup-search").style.display = "none";
   }
 }
-</script>
-
-<script>
-var lastScroll = 0;
-
-window.addEventListener("scroll", function () {
-    var navbar = document.querySelector(".navbar");
-    var current = window.scrollY;
-
-    if (current > lastScroll && current > 50) {
-        navbar.classList.add("hide");
-    } else {
-        navbar.classList.remove("hide");
-    }
-
-    lastScroll = current;
-});
 </script>
 </main>
 </body>
