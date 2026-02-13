@@ -18,6 +18,8 @@ b : en base 2
 Question 5 : Un étudiant a trouvéque l'on pouvait représenter (15 486)₁₀ par : (11110001111101)₂
 Qu'en pensez-vous ?
 
+---
+
 Partie 2 : L'adressage IPv4 (toutes les questions de cette partie
 traitent uniquement la version 4 du protocole IP)
 Question 6 : Quelle est la taille d'une adresse IP ?
