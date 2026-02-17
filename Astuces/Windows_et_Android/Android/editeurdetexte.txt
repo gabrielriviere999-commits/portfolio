@@ -13,10 +13,11 @@ Fonctionnalités principales :
 - Dupliquer la ligne courante
 - Supprimer la ligne courante
 - Coller à la position exacte du curseur
+- Bouton pour aller directement en bas du fichier
 - Interface Holo Dark authentique
 - Compatibilité Android 4.1+
 
-Raccourcis clavier (avec clavier physique ou Unexpected Keyboard) :
+Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
 - Ctrl + Z : Annuler
 - Ctrl + Y : Rétablir
 - Ctrl + A : Tout sélectionner
@@ -31,6 +32,17 @@ Notes :
 - L’application lit et écrit en UTF-8.
 - Les caractères invalides apparaissent sous la forme du symbole �.
 - La taille de police suit les réglages du système.
+- Le défilement vertical peut être contrôlé via le bouton "↓".
+
+Problèmes de permissions (important) :
+- Certains gestionnaires de fichiers (MiXplorer, File Manager+, etc.) peuvent
+  empêcher la sauvegarde même après sélection du fichier.
+- Dans ce cas, utilisez "Sauver sous" pour créer un nouveau fichier avec les
+  bonnes permissions.
+- L’application utilise le système SAF d’Android pour demander et conserver
+  les permissions.
+- Si un fichier refuse toujours la sauvegarde, rouvrez-le via le sélecteur
+  de documents Android.
 
 Auteur :
 Gabriel — Projet minimaliste, optimisé pour la compatibilité et la simplicité.
@@ -51,6 +63,7 @@ Main features:
 - Duplicate current line
 - Delete current line
 - Paste at the exact cursor position
+- Quick "scroll to bottom" button
 - Authentic Holo Dark interface
 - Android 4.1+ compatibility
 
@@ -69,6 +82,14 @@ Notes:
 - The app reads and writes files in UTF-8.
 - Invalid characters appear as the � replacement symbol.
 - Font size follows the system settings.
+- Vertical scrolling can be controlled using the "↓" button.
+
+Permission issues (important):
+- Some file managers (MiXplorer, File Manager+, etc.) may block saving even
+  after selecting a file.
+- In that case, use "Save As" to create a new file with proper permissions.
+- The app uses the Android SAF system to request and retain permissions.
+- If a file still cannot be saved, reopen it through the Android document picker.
 
 Author:
 Gabriel — Minimalistic project focused on compatibility and simplicity.
