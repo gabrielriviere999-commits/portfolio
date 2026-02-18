@@ -1,4 +1,4 @@
-ÉDITEUR DE TEXTE — Présentation
+ÉDITEUR DE TEXTE - Présentation
 -------------------------------
 
 Un éditeur de texte simple, léger et compatible avec les appareils anciens.
@@ -35,10 +35,10 @@ Notes :
 - Le défilement vertical peut être contrôlé via le bouton "↓".
 
 Auteur :
-Gabriel — Projet minimaliste, optimisé pour la compatibilité et la simplicité.
+Gabriel - Projet minimaliste, optimisé pour la compatibilité et la simplicité.
 
 
-TEXT EDITOR — Overview
+TEXT EDITOR - Overview
 ----------------------
 
 A simple and lightweight text editor designed for older and modern devices.
@@ -75,4 +75,4 @@ Notes:
 - Vertical scrolling can be controlled using the "↓" button.
 
 Author:
-Gabriel — Minimalistic project focused on compatibility and simplicity.
+Gabriel - Minimalistic project focused on compatibility and simplicity.
