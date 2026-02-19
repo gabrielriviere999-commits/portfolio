@@ -69,13 +69,14 @@ sudo dpkg -i wazuh-agent-4.7.5.deb
 
 Configurer l'adresse du manager :
 sudo nano /var/ossec/etc/ossec.conf
-Vulnerability, remplacer no par yes
 
 Modifier :
 <address>MANAGER_IP</address>
 
 Par :
 <address><ADRESSE_IP_DU_SERVEUR></address>
+
+Aller à <vulnerability-detector>, remplacer <enabled>no<enabled> par<enabled>yes<enabled>
 
 Puis activer l'agent :
 sudo systemctl enable wazuh-agent
