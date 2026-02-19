@@ -6,11 +6,9 @@ Mettre à jour la machine
 sudo apt update && sudo apt upgrade -y
 
 
-# 2. Télécharger le script officiel Wazuh
+# 2. Télécharger le script officiel Wazuh et installer
 curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
 
-
-# 3. Lancer l'installation All‑in‑One
 Comme certaines versions d'Ubuntu ne sont pas officiellement supportées, on ignore la vérification et
 on force une installation propre.
 
@@ -20,7 +18,7 @@ Signification :
     • -a → all-in-one (indexer + manager + dashboard)
 
 
-# 4. Fin de l'installation
+# 3. Fin de l'installation
 Le script installe automatiquement :
     • Wazuh Indexer
     • Wazuh Manager
@@ -35,7 +33,7 @@ Password : <mot_de_passe_généré>
 → Conserver ce mot de passe, il sert pour la connexion au Dashboard.
 
 
-# 5. Accéder au Dashboard Wazuh
+# 4. Accéder au Dashboard Wazuh
 Ouvrir un navigateur et accéder à :
 https://<ADRESSE_IP_DU_SERVEUR>
 ou
@@ -47,7 +45,7 @@ Identifiants :
     • Mot de passe : <mot_de_passe_généré>
 
 
-# 6. Vérifier les services
+# 5. Vérifier les services
 sudo systemctl status wazuh-manager
 sudo systemctl status wazuh-indexer
 sudo systemctl status wazuh-dashboard
@@ -55,7 +53,7 @@ sudo systemctl status wazuh-dashboard
 Les trois doivent être active (running).
 
 
-# 7. Ajouter un agent (exemple Linux)
+# 6. Ajouter un agent (exemple Linux)
 Sur la machine cliente :
 curl -sO https://packages.wazuh.com/4.7/wazuh-agent-4.7.5.deb
 sudo dpkg -i wazuh-agent-4.7.5.deb
@@ -76,28 +74,26 @@ sudo systemctl enable wazuh-agent
 sudo systemctl start wazuh-agent
 
 
-# 8. Valider l'agent dans le Dashboard
+# 7. Valider l'agent dans le Dashboard
 Dans l'interface :
 Agents → Pending → Accept
 
 
-# 9. Résumé rapide
-+-------+---------------------------------+
-| Étape | Action                          |
-+-------+---------------------------------+
-| 1     | Mise à jour                     |
-+-------+---------------------------------+
-| 2     | Télécharger le script           |
-+-------+---------------------------------+
-| 3     | Installer avec -i -o -a         |
-+-------+---------------------------------+
-| 4     | Récupérer le mot de passe admin |
-+-------+---------------------------------+
-| 5     | Accéder au dashboard            |
-+-------+---------------------------------+
-| 6     | Vérifier les services           |
-+-------+---------------------------------+
-| 7     | Installer un agent              |
-+-------+---------------------------------+
-| 8     | Valider l'agent                 |
-+-------+---------------------------------+
+# 8. Résumé rapide
++-------+------------------------------------+
+| Étape | Action                             |
++-------+------------------------------------+
+| 1     | Mise à jour                        |
++-------+------------------------------------+
+| 2     | Télécharger le script et installer |
++-------+------------------------------------+
+| 3     | Récupérer le mot de passe admin    |
++-------+------------------------------------+
+| 4     | Accéder au dashboard               |
++-------+------------------------------------+
+| 5     | Vérifier les services              |
++-------+------------------------------------+
+| 6     | Installer un agent                 |
++-------+------------------------------------+
+| 7     | Valider l'agent                    |
++-------+------------------------------------+
