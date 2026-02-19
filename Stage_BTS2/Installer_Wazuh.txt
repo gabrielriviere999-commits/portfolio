@@ -69,6 +69,7 @@ sudo dpkg -i wazuh-agent-4.7.5.deb
 
 Configurer l'adresse du manager :
 sudo nano /var/ossec/etc/ossec.conf
+Vulnerability, remplacer no par yes
 
 Modifier :
 <address>MANAGER_IP</address>
