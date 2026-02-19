@@ -11,7 +11,6 @@ sudo apt install curl apt-transport-https unzip gnupg -y
 
 # 2. Télécharger le script officiel Wazuh
 curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
-ajouter -o à la fin si le script avait déjà été lancé avant.
 
 
 # 3. Lancer l'installation All‑in‑One
