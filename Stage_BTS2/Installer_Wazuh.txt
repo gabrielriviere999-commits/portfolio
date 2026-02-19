@@ -5,9 +5,6 @@ Installation All‑in‑One sur Ubuntu 24.04
 Mettre à jour la machine
 sudo apt update && sudo apt upgrade -y
 
-Installer les dépendances nécessaires
-sudo apt install curl apt-transport-https unzip gnupg -y
-
 
 # 2. Télécharger le script officiel Wazuh
 curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
@@ -88,7 +85,7 @@ Agents → Pending → Accept
 +-------+---------------------------------+
 | Étape | Action                          |
 +-------+---------------------------------+
-| 1     | Mise à jour + dépendances       |
+| 1     | Mise à jour                     |
 +-------+---------------------------------+
 | 2     | Télécharger le script           |
 +-------+---------------------------------+
