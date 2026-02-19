@@ -13,6 +13,7 @@ sudo apt install curl apt-transport-https unzip gnupg -y
 curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
 ajouter -o à la fin si le script avait déjà été lancé avant.
 
+
 # 3. Lancer l'installation All‑in‑One
 Comme certaines versions d'Ubuntu ne sont pas officiellement supportées, on ignore la vérification et
 on force une installation propre.
