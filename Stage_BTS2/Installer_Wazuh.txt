@@ -1,4 +1,4 @@
-# Documentation d'installation Wazuh 4.7.x
+# Documentation d'installation Wazuh 4.14
 Installation All‑in‑One sur Ubuntu 24.04
 
 # 1. Préparation du système
