@@ -1,0 +1,65 @@
+Guide complet : Steam sur MX Linux (Debian 12)
+1. Préparer le système
+Activer les dépôts nécessaires
+Ouvre le fichier des sources :
+sudo nano /etc/apt/sources.list
+Ajoute ou vérifie ces lignes :
+deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
+deb http://security.debian.org/debian-security bookworm-security main contrib non-free
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free
+
+Activer l'architecture 32 bits
+Steam nécessite des bibliothèques 32 bits :
+sudo dpkg --add-architecture i386
+sudo apt update
+
+2. Résoudre les problèmes de dépendances
+Nettoie les paquets cassés :
+sudo apt --fix-broken install
+sudo apt clean
+sudo apt autoremove
+
+3. Installer Steam via Flatpak (recommandé)
+Flatpak contourne les conflits de dépendances :
+Installer Flatpak
+sudo apt install flatpak
+
+Ajouter le dépôt Flathub
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+Installer Steam
+flatpak install flathub com.valvesoftware.Steam
+Lancer Steam
+flatpak run com.valvesoftware.Steam
+
+4. Activer Proton pour les jeux Windows
+Dans Steam :
+- Va dans Paramètres → Steam Play
+- Coche Activer Steam Play pour tous les titres
+- Choisis Proton Experimental ou une version stable
+
+5. Vérifier la compatibilité des jeux
+Utilise ProtonDB pour voir si un jeu fonctionne bien sous Linux.
+
+6. Optimiser les performances
+- Installe les pilotes propriétaires (NVIDIA ou AMD)
+- Utilise MangoHUD pour surveiller les FPS :
+sudo apt install mangohud
+- Lance Steam avec MangoHUD :
+mangohud flatpak run com.valvesoftware.Steam
+
+Résumé
++-------+-------------------------------------------+
+| Étape | Action                                    |
++-------+-------------------------------------------+
+| 1     | Activer les dépôts et l'architecture i386 |
++-------+-------------------------------------------+
+| 2     | Nettoyer les paquets cassés               |
++-------+-------------------------------------------+
+| 3     | Installer Steam via Flatpak               |
++-------+-------------------------------------------+
+| 4     | Activer Proton dans Steam                 |
++-------+-------------------------------------------+
+| 5     | Vérifier la compatibilité sur ProtonDB    |
++-------+-------------------------------------------+
+| 6     | Optimiser avec pilotes et MangoHUD        |
++-------+-------------------------------------------+

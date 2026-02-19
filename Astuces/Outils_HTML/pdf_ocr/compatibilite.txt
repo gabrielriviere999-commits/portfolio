@@ -1,4 +1,4 @@
-=== Compatibilité minimale OS pour pdf_ocr ===
+=== Compatibilité minimale OS ===
 
 Windows :
 - Windows XP ............. X Pas de WebAssembly utilisable (Chrome 49 / Firefox ESR bridé)
