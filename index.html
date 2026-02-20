@@ -1363,6 +1363,9 @@ Mercredi 11 février 2026 : Installation de Wazuh Indexer + Manager + Dashboard 
 <h3>Android</h3>
 
 <div class="slideshow-container" data-group="Android">
+    <div class="mySlide" data-group="Android">
+        <iframe src="Astuces/Android/Applications/applications.txt"></iframe>
+    </div>
 
     <div class="mySlide" data-group="Android">
         <img src="Astuces/Android/Applications/tableauascii.jpg" loading="lazy">
@@ -1371,9 +1374,9 @@ Mercredi 11 février 2026 : Installation de Wazuh Indexer + Manager + Dashboard 
     <div class="mySlide" data-group="Android">
         <img src="Astuces/Android/Applications/editeurdetexte.jpg" loading="lazy">
     </div>
-    
+
     <div class="mySlide" data-group="Android">
-        <iframe src="Astuces/Android/Applications/editeurdetexte.txt"></iframe>
+        <img src="Astuces/Android/Applications/extractioncodecouleur.jpg" loading="lazy">
     </div>
 
     <button class="prev" onclick="plusSlides(-1, 'Android')"><</button>
@@ -1383,18 +1386,28 @@ Mercredi 11 février 2026 : Installation de Wazuh Indexer + Manager + Dashboard 
 </div>
 
 <div class="thumbnail-row">
-    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/tableauascii.jpg" loading="lazy" onclick="currentSlide(1, 'Android')">
-    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/editeurdetexte.jpg" loading="lazy" onclick="currentSlide(2, 'Android')">
-    <img class="thumbnail" data-group="Android" src="" onclick="currentSlide(3, 'Android')">
+    <img class="thumbnail" data-group="Android" src="" onclick="currentSlide(1, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/tableauascii.jpg" loading="lazy" onclick="currentSlide(2, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/editeurdetexte.jpg" loading="lazy" onclick="currentSlide(3, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/extractioncodecouleur.jpg" loading="lazy" onclick="currentSlide(4, 'Android')">
 </div>
 <p>Télécharger</p>
 <select id="downloadAndroid" onchange="downloadFile(this)">
     <option value="">Android...</option>
+    <option disabled>
+	    Applications
+    </option>
     <option value="Astuces/Android/Applications/tableauascii.apk">
         tableauascii.apk
     </option>
     <option value="Astuces/Android/Applications/editeurdetexte.apk">
         editeurdetexte.apk
+    </option>
+    <option value="Astuces/Android/Applications/extractioncodecouleur.apk">
+        extractioncodecouleur.apk
+    </option>
+    <option disabled>
+	    Scripts Termux
     </option>
     <option value="Astuces/Android/Termux/Preparer_Termux.txt">
         Preparer_Termux.txt
