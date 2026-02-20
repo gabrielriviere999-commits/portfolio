@@ -14,7 +14,7 @@ Fonctionnalités principales :
 - Supprimer la ligne courante
 - Coller à la position exacte du curseur
 - Bouton pour aller directement en bas du fichier
-- Interface Holo Dark authentique
+- Interface transparente
 - Compatibilité Android 4.1+
 
 Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
@@ -54,7 +54,7 @@ Main features:
 - Delete current line
 - Paste at the exact cursor position
 - Quick "scroll to bottom" button
-- Authentic Holo Dark interface
+- Transparent interface
 - Android 4.1+ compatibility
 
 Keyboard shortcuts (physical keyboard or Unexpected Keyboard):
