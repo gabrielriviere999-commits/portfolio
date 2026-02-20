@@ -60,8 +60,8 @@ Auteur :
 Gabriel - Projet minimaliste, optimisé pour la compatibilité et la simplicité.
 
 
-Extraction Code Couleurs
-------------------------
+Extraction Code Couleur
+-----------------------
 Permet d'extraire le code couleur à l'écran
 Codes couleurs disponibles dans le bouton Formats : HEX, RGB, HSL, HSV, CMYK
 
@@ -121,8 +121,8 @@ Author:
 Gabriel - Minimalistic project focused on compatibility and simplicity.
 
 
-Extraction Code Couleurs
-------------------------
+Extraction Code Couleur
+-----------------------
 Extracts the color code from the screen
 Color codes available in the Formats button: HEX, RGB, HSL, HSV, CMYK
 
