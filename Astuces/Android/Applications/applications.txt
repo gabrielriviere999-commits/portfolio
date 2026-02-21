@@ -66,6 +66,16 @@ Codes couleurs disponibles dans le bouton Formats : HEX, RGB, HSL, HSV, CMYK
 
 Compatibilité : Android 5.0+
 
+
+OCR Écran
+---------
+Permet d'extraire le texte à l'écran.
+Vous devez la lancer par la quick tile.
+Ou alors en lançant l'activité com.gabriel.ocrecran.PermissionActivity avec une application de raccourcis
+comme Shortcut Maker.
+
+Compatibilité : Android 5.0+
+
 ---
 
 🌐 English
@@ -124,4 +134,14 @@ Extraction Code Couleur
 Extracts the color code from the screen.
 Color codes available in the Formats button: HEX, RGB, HSL, HSV, CMYK
 
-Compatibility: Android 5.0+
+Compatibility : Android 5.0+
+
+
+OCR Écran
+---------
+Extracts text from the screen.
+You must launch it using the Quick Tile.
+Alternatively, launch the com.gabriel.ocrecran.PermissionActivity activity with a shortcut application
+such as Shortcut Maker.
+
+Compatibility : Android 5.0+
