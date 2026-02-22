@@ -144,7 +144,7 @@ Extraction Code Couleur
 Extracts the color code from the screen.
 Color codes available in the Formats button: HEX, RGB, HSL, HSV, CMYK
 You can run it with the quick tile or the home screen.
-This application uses PROJECT-MEDIA, to grant permanent authorisation :
+This application uses PROJECT_MEDIA, to grant permanent authorisation :
 adb command : adb shell appops set com.gabriel.extractioncodecouleur PROJECT_MEDIA allow
 Or configure and install Shizuku and App Ops and then grant this permission
 to the application.
@@ -157,7 +157,7 @@ OCR Écran
 Extracts text from the screen.
 You can launch it from the quick tile or the home screen.
 You can run it with the quick tile or the home screen.
-This application uses PROJECT-MEDIA, to grant permanent authorisation :
+This application uses PROJECT_MEDIA, to grant permanent authorisation :
 adb command : adb shell appops set com.gabriel.ocrecran PROJECT_MEDIA allow
 Or configure and install Shizuku and App Ops and then grant this permission
 to the application.
