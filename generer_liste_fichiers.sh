@@ -53,7 +53,7 @@ generate_index() {
 
     # Parcours
         # --- Dossiers en premier (triés par nom) ---
-    for item in $(printf '%s\n' "$dir"/*/ 2>/dev/null | sort); do
+    for item in $(printf '%s\n' "$dir"/*/ 2>/dev/null | sort -f); do
         [ -d "$item" ] || continue
         name=$(basename "$item")
 
@@ -62,7 +62,7 @@ generate_index() {
     done
 
     # --- Fichiers ensuite (triés par nom) ---
-    for item in $(printf '%s\n' "$dir"/* 2>/dev/null | sort); do
+    for item in $(printf '%s\n' "$dir"/* 2>/dev/null | sort -f); do
         [ -e "$item" ] || continue
         [ -d "$item" ] && continue
 
