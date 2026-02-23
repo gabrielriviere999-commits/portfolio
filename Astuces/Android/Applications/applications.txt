@@ -73,6 +73,12 @@ Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
 Compatibilité : Android 5.0+
 
 
+Sélecteur Couleur
+-----------------
+Palette de couleurs qui montre le code en HEX, RGB, HSL, HSV.
+L'option alpha ne fonctionne que pour HEX.
+
+
 OCR Écran
 ---------
 Permet d'extraire le texte à l'écran.
@@ -150,6 +156,12 @@ Or configure and install Shizuku and App Ops and then grant this permission
 to the application.
 
 Compatibility : Android 5.0+
+
+
+Sélecteur Couleur
+-----------------
+Color palette that displays the code in HEX, RGB, HSL, HSV.
+The alpha option only works for HEX.
 
 
 OCR Écran
