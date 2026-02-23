@@ -55,6 +55,7 @@ for root, dirs, files in os.walk(folder):
             "content": safe_content
         })
 
+docs.sort(key=lambda d: d["title"].lower())
 # Écriture dans docs.js
 with open(output_file, "w", encoding="utf-8") as out:
     out.write("var docs = [\n")
