@@ -52,7 +52,20 @@ generate_index() {
     fi
 
     # Parcours
-    for item in "$dir"/*; do
+        # --- Dossiers en premier (triés par nom) ---
+    for item in $(printf '%s\n' "$dir"/*/ 2>/dev/null | sort); do
+        [ -d "$item" ] || continue
+        name=$(basename "$item")
+
+        echo "<li><a href=\"$name/liste_fichiers.html\">[Dossier]&nbsp;$name</a></li>" >> "$output"
+        generate_index "$item"
+    done
+
+    # --- Fichiers ensuite (triés par nom) ---
+    for item in $(printf '%s\n' "$dir"/* 2>/dev/null | sort); do
+        [ -e "$item" ] || continue
+        [ -d "$item" ] && continue
+
         name=$(basename "$item")
 
         # Ignorer le fichier généré
@@ -60,19 +73,12 @@ generate_index() {
             continue
         fi
 
-        if [ -d "$item" ]; then
-            # Dossier
-            echo "<li><a href=\"$name/liste_fichiers.html\">[Dossier]&nbsp;$name</a></li>" >> "$output"
-            generate_index "$item"
-        else
-            # Fichier normal + bouton Télécharger
-            {
-                echo "<li>"
-                echo "  <a href=\"$name\">$name</a><br>"
-                echo "  <a href=\"$name\" download class=\"win98-btn\">Télécharger</a>"
-                echo "</li>"
-            } >> "$output"
-        fi
+        {
+            echo "<li>"
+            echo "  <a href=\"$name\">$name</a><br>"
+            echo "  <a href=\"$name\" download class=\"win98-btn\">Télécharger</a>"
+            echo "</li>"
+        } >> "$output"
     done
 
     {
