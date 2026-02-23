@@ -77,6 +77,7 @@ Sélecteur Couleur
 -----------------
 Palette de couleurs qui montre le code en HEX, RGB, HSL, HSV.
 L'option alpha ne fonctionne que pour HEX.
+Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
 
 
 OCR Écran
@@ -162,6 +163,7 @@ Sélecteur Couleur
 -----------------
 Color palette that displays the code in HEX, RGB, HSL, HSV.
 The alpha option only works for HEX.
+You can run it with the quick tile or the home screen.
 
 
 OCR Écran
