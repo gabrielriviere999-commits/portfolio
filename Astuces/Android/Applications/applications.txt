@@ -49,6 +49,11 @@ Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
 - Ctrl + S : Sauvegarder (si supporté)
 - Ctrl + D : Dupliquer la ligne
 - Ctrl + Shift + D : Supprimer la ligne
+- Ctrl + F : Ouvrir le panneau rechercher/remplacer
+- Ctrl + G : Aller à l'occurence suivante
+- Ctrl + Shift + G : Aller à l'occurence précédente
+- Ctrl + R : Remplacer l'occurence active
+- Ctrl + Shift + R : Remplacer toutes les occurences
 - Flèches : Navigation
 - Shift + Flèches : Sélection
 
@@ -137,6 +142,11 @@ Keyboard shortcuts (physical keyboard or Unexpected Keyboard):
 - Ctrl + S : Save (if supported)
 - Ctrl + D : Duplicate the line
 - Ctrl + Shift + D : Delete the line
+- Ctrl + F : Open the search/replace panel
+- Ctrl + G : Go to next occurrence
+- Ctrl + Shift + G : Go to the previous occurrence
+- Ctrl + R : Replace active occurrence
+- Ctrl + Shift + R : Replace all occurrences
 - Arrow keys : Navigation
 - Shift + Arrows : Selection
 
