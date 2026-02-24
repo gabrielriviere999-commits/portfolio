@@ -2,6 +2,7 @@
 
 generate_index() {
     local dir="$1"
+    dir="${dir%/}"
     local output="$dir/liste_fichiers.html"
 
     echo "Génération : $output"
