@@ -47,6 +47,8 @@ Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
 - Ctrl + V : Coller
 - Ctrl + X : Couper
 - Ctrl + S : Sauvegarder (si supporté)
+- Ctrl + D : Dupliquer la ligne
+- Ctrl + Shift + D : Supprimer la ligne
 - Flèches : Navigation
 - Shift + Flèches : Sélection
 
@@ -133,6 +135,8 @@ Keyboard shortcuts (physical keyboard or Unexpected Keyboard):
 - Ctrl + V : Paste
 - Ctrl + X : Cut
 - Ctrl + S : Save (if supported)
+- Ctrl + D : Duplicate the line
+- Ctrl + Shift + D : Delete the line
 - Arrow keys : Navigation
 - Shift + Arrows : Selection
 
