@@ -160,7 +160,7 @@ Dans le navigateur :
 http://<adresse_ip_serveur>/zabbix
 
 Exemple :
-http://192.168.56.101/zabbix
+http://172.20.0.106/zabbix
 
 Choisissez la langue : Français
 
@@ -169,7 +169,7 @@ Choisissez la langue : Français
 XI. Finaliser la configuration via l'interface Web
 
 Aller sur :
-http://192.168.56.101/zabbix
+http://172.20.0.106/zabbix
 
 Cliquer sur Next step à chaque étape.
 
