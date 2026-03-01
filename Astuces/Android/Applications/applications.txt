@@ -102,6 +102,11 @@ Compatibilité : Android 5.0+
 Serveur HTTP
 ------------
 Démarrer un serveur HTTP local.
+Pour vous connecter au serveur :
+Depuis votre serveur ou un autre appareil du réseau : http://ipserveur:8080
+
+Depuis votre serveur : http://ipserveur:8080 ou http://localhost:8080 ou http://127.0.0.1:8080
+ou http://0.0.0.0:8080
 
 ---
 
@@ -201,3 +206,8 @@ Compatibility : Android 5.0+
 Serveur HTTP
 ------------
 Start a local HTTP server.
+To connect to the server:
+From your server or other network device : http://ipserver:8080
+
+From your server : http://ipserver:8080 or http://localhost:8080 or http://127.0.0.1:8080
+or http://0.0.0.0:8080
