@@ -98,6 +98,11 @@ Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
 
 Compatibilité : Android 5.0+
 
+
+Serveur HTTP
+------------
+Démarrer un serveur HTTP local.
+
 ---
 
 🌐 English
@@ -191,3 +196,8 @@ Or configure and install Shizuku and App Ops and then grant this permission
 to the application.
 
 Compatibility : Android 5.0+
+
+
+Serveur HTTP
+------------
+Start a local HTTP server.
