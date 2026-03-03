@@ -36,7 +36,8 @@ Fonctionnalités principales :
 - Supprimer la ligne courante
 - Coller à la position exacte du curseur
 - Bouton pour aller directement en bas du fichier
-- Interface transparente
+- Le bouton Style ouvre un menu qui permet de changer la taille et la
+couleur du texte et la transparence d'arrière plan
 - Compatibilité Android 4.1+
 
 Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
@@ -139,7 +140,7 @@ Main features:
 - Delete current line
 - Paste at the exact cursor position
 - Quick "scroll to bottom" button
-- Transparent interface
+- The Style button opens a menu that allows the size and colour of the text and background transparency
 - Android 4.1+ compatibility
 
 Keyboard shortcuts (physical keyboard or Unexpected Keyboard):
