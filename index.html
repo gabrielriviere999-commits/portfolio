@@ -1279,8 +1279,9 @@ alors réinstallation de Wazuh avec Docker.
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(18, 'MXLinux')">
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(19, 'MXLinux')">
 </div>
+
 <p>Télécharger</p>
-<select id="downloadScripts" onchange="downloadFile(this)">
+<select id="downloadScript_Linux" onchange="downloadFile(this)">
     <option value="">Script...</option>
     <option value="Astuces/Linux/ocr_batch.sh">
         ocr_batch.sh
@@ -1311,6 +1312,16 @@ alors réinstallation de Wazuh avec Docker.
     </option>
     <option value="Astuces/Linux/change_rotation/change_rotation.zip">
         change_rotation.zip
+    </option>
+</select>
+
+<select id="downloadApplication_Linux" onchange="downloadFile(this)">
+    <option value="">Application...</option>
+    <option value="Astuces/Linux/Applications/Tableau_ASCII/ascii-table.deb">
+        ascii-table.deb
+    </option>
+    <option value="Astuces/Linux/Applications/Tableau_ASCII/ascii-table.zip">
+        ascii-table.zip
     </option>
 </select>
 
