@@ -30,8 +30,6 @@ var docs = [
   {title:"extractioncodecouleur.jpg", url:"Astuces/Android/Applications/extractioncodecouleur.jpg", content:"extractioncodecouleur.jpg "},
   {title:"Faire_un_serveur_python_local.txt", url:"Astuces/Linux/Faire_un_serveur_python_local.txt", content:"Faire_un_serveur_python_local.txt Faire un serveur python local  Sur la machine hôte : cd L'emplacement souhaité ou clic droit ouvrir dans un terminal sudo ufw allow 8000/tcp ip a python3 -m http.server 8000 --bind 0.0.0.0  Sur la machine cliente : http://ADRESSE_IP:8000 "},
   {title:"favicon.png", url:"favicon.png", content:"favicon.png "},
-  {title:"Fiche_bilan_et_evaluation_de_stage_Mairie_de_Saint-Joseph.pdf", url:"Stage_BTS2/Fiche_bilan_et_evaluation_de_stage_Mairie_de_Saint-Joseph.pdf", content:"Fiche_bilan_et_evaluation_de_stage_Mairie_de_Saint-Joseph.pdf "},
-  {title:"Fiche_bilan_et_evaluation_de_stage_Mairie_de_Saint-Philippe.pdf", url:"Stage_BTS1/Fiche_bilan_et_evaluation_de_stage_Mairie_de_Saint-Philippe.pdf", content:"Fiche_bilan_et_evaluation_de_stage_Mairie_de_Saint-Philippe.pdf "},
   {title:"fiche_memo_routage_statique.pdf", url:"Docs_BTS/IP_et_routage/fiche_memo_routage_statique.pdf", content:"fiche_memo_routage_statique.pdf "},
   {title:"generer_liste_fichiers.sh", url:"generer_liste_fichiers.sh", content:"generer_liste_fichiers.sh "},
   {title:"gnome-disk-utility.jpg", url:"Astuces/Linux/Correction_probleme_fichiers_coupes/gnome-disk-utility.jpg", content:"gnome-disk-utility.jpg "},
