@@ -202,7 +202,7 @@ sudo apt install zabbix-agent2
 sudo nano /etc/zabbix/zabbix_agent2.conf
 Server=172.20.0.106
 ServerActive=172.20.0.106
-Hostname=ServeurWebgroupe4 #Nom de la machine cliente
+Hostname=debian #Nom de la machine cliente, commande hostname
 
 3. Démarrer et activer l'agent
 sudo systemctl enable zabbix-agent2
