@@ -75,6 +75,10 @@ apt-get install phpmyadmin
 - Redémarrer Apache si nécessaire.
 - Accéder à PhpMyAdmin : http://IP_DU_SERVEUR/phpmyadmin
 
+6. Donner les bons droits à 'phpmyadmin'@'localhost' :
+CREATE USER 'phpmyadmin'@'localhost' IDENTIFIED BY 'changeme';
+GRANT ALL PRIVILEGES ON *.* TO 'phpmyadmin'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
 
 II-F. Installer BIND9 (serveur DNS)
 BIND9 permet de traduire un nom de domaine en adresse IP, rendant le serveur accessible
