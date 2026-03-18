@@ -220,7 +220,7 @@ Si tout est OK, vous devriez obtenir : 1
 Ajout d'un hôte dans l'interface
 Surveillance → Hôtes → Créer un hôte
 
-Nom : ServeurWebgroupe4
+Nom : debian
 Template : Linux by Zabbix Agent
 Groupes : Linux servers
 Interface : Agent + IP
