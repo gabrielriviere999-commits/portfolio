@@ -195,29 +195,32 @@ Mot de passe : zabbix
 
 XIII. Premier pas sur Zabbix
 
-Installer l'agent sur Debian 12 :
-sudo apt install zabbix-agent -y
+1. Installer l'agent Zabbix
+sudo apt install zabbix-agent2
 
-Modifier :
-sudo nano /etc/zabbix/zabbix_agentd.conf
+2. Configurer l'agent
+sudo nano /etc/zabbix/zabbix_agent2.conf
+Server=172.20.0.106
+ServerActive=172.20.0.106
+Hostname=ServeurWebgroupe4 #Nom de la machine cliente
 
-Commentez les anciennes lignes Server= et ServerActive=
-Ajouter :
+3. Démarrer et activer l'agent
+sudo systemctl enable zabbix-agent2
+sudo systemctl start zabbix-agent2
 
-Server=<ip_de_votre_serveur_zabbix>
-ServerActive=<ip_de_votre_serveur_zabbix>
-Hostname=<nom_de_votre_serveur_a_ajouter>
+Vérifier l'état :
+systemctl status zabbix-agent2
 
-Redémarrer :
-sudo systemctl restart zabbix-agent
-sudo systemctl enable zabbix-agent
+4. Vérifier la communication avec le serveur Zabbix
+zabbix_get -s <IP_du_client> -k agent.ping
+Si tout est OK, vous devriez obtenir : 1
 
 ---
 
 Ajout d'un hôte dans l'interface
 Surveillance → Hôtes → Créer un hôte
 
-Nom : Debian12_SonarQube
+Nom : ServeurWebgroupe4
 Template : Linux by Zabbix Agent
 Groupes : Linux servers
 Interface : Agent + IP
