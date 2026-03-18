@@ -19,6 +19,8 @@ tableau généré, lorsque le tableau atteint la largeur maximale, le texte pass
 Le bouton "Valeurs par défaut" permet de rétablir le séparateur et la largeur
 par défaut.
 Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Vous devez utiliser une police régulière dans l'application concernée comme monospace ou mono...
+ou regular... pour que le tableau soit affiché sans décalages lors de la lecture.
 
 
 ÉDITEUR DE TEXTE
@@ -123,6 +125,8 @@ You can change the data separator and the maximum width of the generated table. 
 reaches the maximum width, the text will wrap to the next line within the cells.
 The "Default Values" button restores the default separator and width.
 You can run it with the quick tile or the home screen.
+You must use a regular font in the relevant application as a monospace or mono... or regular...
+so that the table is displayed without offsets during reading.
 
 
 ÉDITEUR DE TEXTE
