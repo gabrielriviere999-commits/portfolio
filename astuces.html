@@ -52,7 +52,7 @@ body {
 }
 
 /* Style général des boutons d’onglets */
-.tab button {
+.tab button, .tab span {
     font-family: monospace;
     font-size: 14px;
     padding: 6px 12px;
@@ -72,37 +72,20 @@ body {
 }
 
 /* Hover */
-.tab button:hover {
+.tab button:hover, .tab span:hover {
     background: #D8D8D8;
 }
 
 /* Bouton actif */
-.tab button.active {
+.tab button.active, .tab span.active {
     border-color: #808080 #FFFFFF #FFFFFF #808080;
     background: #B0B0B0;
 }
 
 .tab span {
-    display: inline-block;
-    font-family: monospace;			
-    font-size: 14px;
-    padding: 10px 12px;
-    background: #C0C0C0;
-    border: 2px solid;
-    border-color: #FFFFFF #808080 #808080 #FFFFFF;
-    cursor: pointer;
-    margin-right: 2px;
-    box-sizing: border-box;
-    color: black;
-}
-
-.tab span:hover {
-    background: #D8D8D8;
-}
-
-.tab span.active {
-    background: #B0B0B0;
-    border-color: #808080 #FFFFFF #FFFFFF #808080;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .win98-select {
@@ -263,7 +246,7 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
         min-width: 950px;
     }
 
-    .navbar .tab button {
+    .navbar .tab button, .navbar .tab span {
         font-size: 20px;
         padding: 6px 12px;
         border-width: 3px;
@@ -281,7 +264,7 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
         box-sizing: border-box;
     }
 
-    .tab:not(.navbar .tab) button {
+    .tab:not(.navbar .tab) button, .tab:not(.navbar .tab) span {
         font-size: 22px;
         padding: 6px 12px;
         border-width: 3px;
