@@ -6,8 +6,329 @@
 <title>BTS</title>
 <meta name="description" content="BTS">
 <link rel="icon" href="favicon.png" type="image/png">
-<link href="portfolio.css" rel="stylesheet">
+<style>
+/* --- Styles généraux --- */
+body {
+    background-color: #C0C0C0;
+    margin: 5;
+    padding: 0;
+    color: black;
+    font-size: 25px;
+    font-family: monospace;
+    overflow-x: auto;
+}
 
+/* --- Barre de navigation --- */
+.navbar {
+    background-color: rgba(0, 0, 0, .2);
+    position: fixed;
+    z-index: 1000;
+    padding: 2px;
+    top: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.navbar.hide {
+    transform: translateY(-100%);
+    transition: transform 0.2s linear;
+}
+
+.no-transform .navbar {
+    position: relative !important;
+    top: 0 !important;
+}
+
+/* --- Onglets --- */
+.tab {
+    display: flex;
+    align-items: center;
+    margin-top: 0;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: thin;
+}
+
+/* Style général des boutons d’onglets */
+.tab button {
+    font-family: monospace;
+    font-size: 14px;
+    padding: 6px 12px;
+    background: #C0C0C0;
+    border: 2px solid;
+    border-color: #FFFFFF #808080 #808080 #FFFFFF;
+    cursor: pointer;
+    margin-right: 2px;
+    box-sizing: border-box;
+    color: black;
+}
+
+/* Ajustement spécial pour les onglets dans la navbar (meilleur rendu Win98) */
+.navbar .tab button {
+    padding: 10px 12px;
+    opacity: 0.8;
+}
+
+/* Hover */
+.tab button:hover {
+    background: #D8D8D8;
+}
+
+/* Bouton actif */
+.tab button.active {
+    border-color: #808080 #FFFFFF #FFFFFF #808080;
+    background: #B0B0B0;
+}
+
+.win98-select {
+    /* Style Win98 */
+    font-family: monospace;
+    font-size: 14px;
+    background: #C0C0C0;
+    opacity: 0.8;
+    border: 2px solid;
+    border-color: #FFFFFF #808080 #808080 #FFFFFF;
+    color: black;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    /* Forme carrée */
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    margin-right: 2px;
+
+    /* Supprimer le style moderne du select */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* Centrage du symbole */
+    text-align: center;
+    line-height: 36px;
+
+    /* Empêche les décalages */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Hover Win98 */
+.win98-select:hover {
+    background: #D8D8D8;
+}
+
+/* Effet enfoncé Win98 */
+.win98-select:active {
+    border-color: #808080 #FFFFFF #FFFFFF #808080;
+    background: #B0B0B0;
+}
+
+/* --- Galerie slideshow --- */
+.slideshow-container {
+  position: relative;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.mySlide {
+  display: none;
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+  text-align: left;
+  /* Effet enfoncé */
+  border: 2px solid;
+  border-color: #808080 #FFFFFF #FFFFFF #808080;
+  background-color: #C0C0C0;
+  padding: 4px;
+}
+
+/* Spécial Nintendo 3DS */
+@media screen and (max-device-width: 400px) and (max-device-height: 240px) {
+  .mySlide {
+    padding-bottom: 100px;
+  }
+}
+
+.mySlide img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.mySlide iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  overflow-x: auto;
+  overflow-y: auto;
+  display: block;
+}
+
+/* Empêche le dark mode forcé uniquement pour les iframes TXT/HTML */
+iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
+    color-scheme: light;
+    background-color: #C0C0C0;
+}
+
+.thumbnail-row {
+  display: block;
+  white-space: normal;
+  padding: 4px;
+  box-sizing: border-box;
+  margin-top: 10px;
+  font-size: 0;
+}
+
+.thumbnail {
+  display: inline-block;
+  vertical-align: top;
+  width: 80px;
+  height: 60px;
+  margin: 2px;
+  object-fit: cover;
+  border: 2px solid #000;
+  cursor: pointer;
+  font-size: 40px;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.thumbnail:hover {
+  opacity: 0.7;
+}
+
+.thumbnail.active {
+  border: 2px solid #00f;
+  opacity: 1;
+}
+
+.prev, .next, .openfullscreen {
+  background: #C0C0C0;
+  border: 2px solid;
+  border-color: #FFFFFF #808080 #808080 #FFFFFF;
+  font-family: monospace;
+  font-size: 22px;
+  color: black;
+  padding: 1px 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Effet bouton enfoncé */
+.prev:active, .next:active, .openfullscreen:active {
+  border-color: #808080 #FFFFFF #FFFFFF #808080;
+  background: #B0B0B0;
+}
+
+.slide-counter {
+  position: absolute;
+  bottom: 0px;
+  left: 180px;
+  font-size: 25px;
+}
+
+/* --- MODE MOBILE --- */
+@media screen and (max-device-width: 1280px) and (orientation: portrait) {
+    html, body {
+        min-width: 950px;
+    }
+
+    .navbar .tab button {
+        font-size: 20px;
+        padding: 6px 12px;
+        border-width: 3px;
+        height: 60px;
+        line-height: normal;
+    }
+
+    .win98-select {
+        font-size: 20px;
+        width: 60px;
+        height: 60px;
+        line-height: normal;
+        border-width: 3px;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .tab:not(.navbar .tab) button {
+        font-size: 22px;
+        padding: 6px 12px;
+        border-width: 3px;
+        height: 60px;
+        line-height: normal;
+        box-sizing: border-box;
+    }
+
+    .mySlide {
+        height: calc(75vh + 200px);
+    }
+
+    .prev,
+    .next,
+    .openfullscreen {
+        font-size: 32px;
+        padding: 10px 18px;
+        border-width: 3px;
+        min-width: 70px;
+        min-height: 50px;
+        line-height: 30px;
+        box-sizing: border-box;
+    }
+
+    .slide-counter {
+        font-size: 32px;
+        bottom: 8px;
+        left: 280px;
+    }
+}
+
+@media screen and (max-device-width: 1280px) and (orientation: landscape) {
+    html, body {
+        min-width: 950px;
+    }
+
+    .prev,
+    .next,
+    .openfullscreen {
+        font-size: 28px;
+    }
+
+    .mySlide {
+        height: calc(50vh + 150px);
+    }
+}
+
+/* --- Bouton de téléchargement --- */
+.dl-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 5px 0;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.dl-btn:hover {
+    background-color: #3e8e41;
+}
+
+select {
+    height: 40px;
+    line-height: 40px;
+    color: brown;
+}
+</style>
 </head>
 <body>
 <main>
