@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stages</title>
+<meta name="description" content="Stages">
+<link rel="icon" href="favicon.png" type="image/png">
+<link href="portfolio.css" rel="stylesheet"></link>
+
+</head>
+<body>
+<main>
+<!-- Barre de navigation -->
+<div class="navbar">
+<select class="win98-select" aria-label="Menu du site"
+        onchange="
+            if(this.value==='__search__'){
+                window.open('search.html','_blank');
+            } else if(this.value==='__search_popup__'){
+                openPopupSearch();
+            } else if(this.value!==''){
+                location.href=this.value;
+            }
+            this.selectedIndex = 0;
+        ">
+    <option value="">≡</option>
+    <option value="search.html">Rechercher</option>
+    <option value="__search__">Rechercher (nouvel onglet)</option>
+	<option value="__search_popup__">Rechercher (popup)</option>
+    <option value="liste_fichiers.html">Liste des fichiers</option>
+    <option value="README.md">README.md</option>
+    <option value="donations.html">Soutenir le site</option>
+</select>
+<button class="win98-select" onclick="openPopupSearch()">Q</button>
+    <div class="tab">
+		<a><select class="win98-select" aria-label="Basculer vers onglet du site"
+        onchange="
+            location.href=this.value;
+            this.selectedIndex = 0;
+        ">
+            <option value="">tab?</option>
+            <option value="index.html">Accueil</option>
+            <option value="bts.html">BTS</option>
+            <option disabled="stages.html">Stages</option>
+            <option value="astuces.html">Astuces</option>
+        </select></a>
+        <a href="index.html"><button class="tablinks" onclick="index.html">Accueil</button></a>
+        <a href="bts.html"><button class="tablinks" onclick="bts.html">BTS</button></a>
+        <button class="tablinks" onclick="stages.html">Stages</button>
+        <a href="astuces.html"><button class="tablinks" onclick="astuces.html">Astuces</button></a>
+    </div>
+</div>
+
+<!-- Contenu des onglets -->
+<div id="Stages" class="tabcontent">
+<h2>Stages</h2>
+
+    <!-- Onglets des établissements -->
+    <div class="tab">
+		<button onclick="switchTab('college_bory_de_saint-vincent', 'etablissement', this)" class="etablissement_btn">Collège Bory de Saint-Vincent</button>
+        <button onclick="switchTab('lycee_vincendo', 'etablissement', this)" class="etablissement_btn">Lycée de Vincendo</button>
+        <button onclick="switchTab('lycee_poivre', 'etablissement', this)" class="etablissement_btn">Lycée Pierre Poivre</button>
+    </div>
+
+    <!-- Groupe Collège Bory de Saint-Vincent -->
+    <div id="college_bory_de_saint-vincent" class="etablissement" style="display:none;">
+	<h3>Ferme Équestre de Saint-Philippe</h3>
+<pre style="font-size:14px;">
++----------------------+--------------------------------------------------+------------------------------+-------------+
+| Jour                 | Tâches observées ou effectuées                   | Matériaux/Outils utilisés    | Autonomie   |
++----------------------+--------------------------------------------------+------------------------------+-------------+
+| Mardi 15 décembre    | Nettoyer étriers, peigner cheval, observer mon   | savon, cuir, éponge, graise, | Aide        |
+| 2020                 | tuteur                                           | peignes                      | partielle   |
++----------------------+--------------------------------------------------+------------------------------+-------------+
+| Mercredi 16 décembre | démêler fil, passer le balais, nettoyer selle,   | savon, cuir, éponge,         | Aide        |
+| 2020                 | ranger piquets                                   | graisse, balais              | partielle   |
++----------------------+--------------------------------------------------+------------------------------+-------------+
+| Jeudi 17 décembre    | nettoyer obrevoirs                               | éponge, gros seau            | Aide        |
+| 2020                 |                                                  |                              | partielle   |
++----------------------+--------------------------------------------------+------------------------------+-------------+
+| Vendredi 18 décembre | brosser poney, balayer, monter sur poney         | brosses, balais, selle,      | Aide        |
+| 2020                 |                                                  | étrier                       | partielle   |
++----------------------+--------------------------------------------------+------------------------------+-------------+
+</pre>
+    </div>
+ 
+    <!-- Groupe Vincendo -->
+    <div id="lycee_vincendo" class="etablissement" style="display:none;">
+        <div class="tab">
+            <button onclick="switchTab('v_stage_muta_optique', 'v_stage', this)" class="v_stage_btn">Muta Optique</button>
+            <button onclick="switchTab('v_stage_optic_2000', 'v_stage', this)" class="v_stage_btn">Optic 2000</button>
+            <button onclick="switchTab('v_stage_optique_de_bourbon', 'v_stage', this)" class="v_stage_btn">Optique de Bourbon</button>
+        </div>
+
+        <div id="v_stage_muta_optique" class="v_stage" style="display:none;">
+<pre style="font-size:14px;">
+Lundi 24 janvier 2022 :
+On m'a montré les différents linéaires. À l'entrée à gauche, il y a les solaires avec les rapels de marques
+au dessus.
+Il y a aussi le côté enfant, le côté mixte à droite. Et il reste le côté homme et le côté femme.
+Au fond du magasin
+il y a les toilettes avec un tableau d'acuité visuelle sur la porte. Juste à côté il y a l'atelier et la
+salle de repos.
+Sur le contoir, il y a tous les produits d'entretien pour lentilles et lunettes, il y a les piles auditives
+et les cordons. Il y a des étuis et des montures dans les tiroirs. Le montage est centralisé à Sainte-Marie. 
+
+Mardi 25 janvier 2022:
+On m'a mit un badge
+J'ai regardé quelqu'un parler avec un client et après elle à rhabillé la monture plastique,
+puis elle l'a nettoyé. Elle a renseigné un client sur ses droits. J'ai revissé la branche, puis j'ai nettoyé
+les verres.
+J'ai fait le pointage de la péniche et j'ai appelé le client. J'ai rangé les montures.
+
+Mercredi 26 janvier 2022:
+J'ai changé les verres d'une monture plastique, puis je l'ai netttoyé. J'ai plié des carnets de vue.
+J'ai aidé un client à choisir une monture. J'ai rangé les montures.
+
+Jeudi 27 janvier 2022:
+J'ai changé le verre  de la monture métal et rhabillé. J'ai changé le verre de la monture nylor.
+J'ai rangé les montures.
+
+Lundi 31 janvier 2022:
+J'ai changé les verres d'une monture plastique. J'ai revissé les visses d'une monture métal.
+J'ai compté les montures dans une boîte. J'ai rangé les solaires sur les présentoirs et dans les pochettes
+dans les tiroirs. J'ai détruit des papiers.
+
+Mardi 1er février 2022:
+J'ai plié des carnets. J'ai détruit du papier. J'ai plié les garanties.
+
+Lundi 7 février 2022:
+J'ai nettoyé une monture plastique et revissé une branche.J'ai détruit du papier.
+J'ai fait le pointage des montures. J'ai rangé les papiers et lunettes des clients dans les péniches.
+
+Mardi 8 février 2022:
+J'ai plié des carnets, j'ai détruit du papier. J'ai nettoyé les lunettes.
+
+Mercredi 9 février 2022:
+J'ai détruit du papier. J'ai rangé les papiers et lunettes des clients dans les péniches.
+J'ai rangé toutes les péniches vides dans la nouvelle armoire.
+
+Jeudi 10 février 2022:
+J'ai mis des gomettes sur les montures en soldes.
+
+Lundi 13 juin 2022:
+J'ai plié des carnets de vue, j'ai rangé les papiers et lunettes des clients dans les péniches,
+j'ai barré les commandes journalières reçues, j'ai regroupé par date et nom les péniches.
+
+Mardi 14 juin 2022:
+J'ai mis les boîtes à lunettes dans les péniches des clients, j'ai rangé les papiers et lunettes des
+clients dans les péniches, j'ai revisé la branche d'une monture, j'ai plié des carnets de vue,
+j'ai rangé les carnets de vue dans l'armoire, j'ai déballé les cartons et rangé les boîtes à lunettes dans
+les tiroirs, j'ai barré les commandes journalières reçues. J'ai bipé les dossiers des clients, j'ai rangé
+par ordre alphabétique les péniches des clients.
+
+Mercredi 15 juin 2022:
+j'ai rangé les papiers et lunettes des clients dans les péniches, J'ai mis les boîtes à lunettes dans les
+péniches des clients, j'ai barré les commandes journalières reçues.
+
+Jeudi 16 juin 2022:
+J'ai nettoyé les lunettes d'un client, j'ai remis les montures sur les présentoirs, j'ai rangé les papiers
+et lunettes des clients dans les péniches, J'ai mis les boîtes à lunettes dans les péniches des clients,
+j'ai barré les commandes journalières reçues. J'ai classé par date les péniches, J'ai bipé les dossiers
+des clients.
+
+Vendredi 17 juin 2022:
+J'ai plié les garanties, j'ai rangé les papiers et lunettes des clients dans les péniches, J'ai mis les
+boîtes à lunettes dans les péniches des clients, j'ai barré les commandes journalières reçues.
+
+Lundi 20 juin 2022:
+J'ai revissé les branches des lunettes d'un client et nettoyé les verres, j'ai plié des carnets de vue.
+j'ai rangé les papiers et lunettes des clients dans les péniches, J'ai mis les boîtes à lunettes dans les
+péniches des clients, j'ai barré les commandes journalières reçues, j'ai rangé les péniches par ordre
+alphabétique.
+
+Mardi 21 juin 2022:
+j'ai rangé les papiers et lunettes des clients dans les péniches, j'ai mis les boîtes à lunettes dans les
+péniches des clients, j'ai barré les commandes journalières reçues,
+j'ai bipé les dossiers des clients, j'ai plié des carnets de vue.
+
+Mercredi 22 juin 2022:
+J'ai plié les papiers de garanties, j'ai rangé les papiers et lunettes des clients dans les péniches,
+J'ai mis les boîtes à lunettes dans les péniches des clients, j'ai barré les commandes journalières reçues.
+
+Vendredi 24 juin 2022:
+J'ai plié des carnets de vue, j'ai rangé les papiers et lunettes des clients dans les péniches,
+J'ai mis les boîtes à lunettes dans les péniches des clients, j'ai barré les commandes journalières reçues.
+
+Lundi 27 juin 2022:
+J'ai bippé les dossiers, j'ai rangé les papiers et lunettes des clients dans les péniches,
+J'ai mis les boîtes à lunettes dans les péniches des clients, j'ai barré les commandes journalières reçues,
+j'ai alligné les étiquettes, j'ai remplacle fil d'une monture nylor.
+
+Mardi 28 juin 2022:
+J'ai revissé et nettoyé les lunettes d'un client, j'ai rangé les papiers et lunettes des clients dans les
+péniches. J'ai mis les boîtes à lunettes dans les péniches des clients, j'ai barré les commandes
+journalières reçues.
+
+Mercredi 29 juin 2022:
+J'ai bippé les dessiers, plié les papiers de garanties, j'ai rangé les papiers et lunettes des clients dans les péniches.
+J'ai mis les boîtes à lunettes dans les péniches des clients, j'ai barré les commandes journalières reçues.
+
+Jeudi 30 juin 2022:
+J'ai bippé les dossiers des clients, j'ai plié les carnets de vue,  j'ai rangé les papiers et lunettes des
+clients dans les péniches, J'ai mis les boîtes à lunettes dans les péniches des clients,
+j'ai barré les commandes journalières reçues.
+
+Vendredi 1er juillet 2022:
+j'ai rangé les papiers et lunettes des clients dans les péniches, J'ai mis les boîtes à lunettes dans les
+péniches des clients, j'ai barré les commandes journalières reçues.
+</pre>
+        </div>
+
+        <div id="v_stage_optic_2000" class="v_stage" style="display:none;">
+<pre style="font-size:14px;">
+Lundi 21 novembre 2022:
+J'ai donné les lunettes aux clients, j'ai visité les lieux, j'ai désinfecté les lunettes avec le
+stérilisateur, j'ai rangé les lunettes sur les présentoirs.
+
+Mardi 22 novembre 2022:
+J'ai rangé les lunettes sur les présentoirs et dans les tiroirs, j'ai étiqueté les nouvelles paires,
+j'ai désinfecté les lunettes avec le stérilisateur, j'ai proposé une monture à un client, j'ai numérisé
+des papiers.
+
+Mercredi 23 novembre 2022:
+j'ai numérisé des papiers, j'ai désinfecté les lunettes avec le stérilisateur.
+
+Jeudi 24 novembre 2022:
+J'ai rangé les lunettes sur les présentoirs, on est allés chercher les poscas à optique 2000,
+j'ai nettoyé les lunettes d'un client.
+
+Vendredi 25 novembre 2022:
+J'ai désinfecté les lunettes, j'ai rangé les lunettes sur les présentoirs, on est allés peser les
+enveloppes de la pharmacie.
+
+Lundi 28 novembre 2022:
+J'ai étiqueté les lunettes, j'ai désinfecté les lunettes, j'ai rangé kes lunettes sur les présentoirs.
+
+Mercredi 30 novembre 2022:
+J'ai désinfecté les lunettes, j'ai rangé les lunettes sur les présentoirs.
+
+Jeudi 1er décembre 2022:
+J'ai rangé les lunettes sur les présentoirs.
+
+Vendredi 2 décembre 2022:
+J'ai rangé les cartons de la pharmacie.
+
+Lundi 5 décembre 2022:
+J'ai jetté les cartons avec le pharmacien, j'ai vérifié les papiers.
+
+Mardi 6 décembre 2022:
+J'ai enlevé les doublons sur les présentoir pour les remplacer par des nouvelles montures, j'ai désinfecté
+les montures, j'ai étiqueté les montures.
+
+Mercredi 7 décembre 2022:
+J'ai vérifié les papiers, on est allé faire les courses à Intermark et acheter des rouleaux thermiques et
+des trombones à bureau réunion.
+
+Jeudi 8 décembre 2022:
+J'ai rangé les lunettes sur les présentoirs, j'ai désinfecté les lunettes, j'ai récupéré les papiers dans
+l'imprimante et numérisé.
+
+Vendredi 9 décembre 2022:
+J'ai rangé les lunettes sur les présentoirs, j'ai désinfecté les lunettes.
+
+Lundi 12 décembre 2022:
+J'ai rangé les lunettes sur les présentoirs.
+
+Mardi 13 décembre 2022:
+J'ai rangé les lunettes sur les présentoirs, j'ai désinfecté les lunettes.
+
+Mercredi 14 décembre 2022:
+J'ai désinfecté les lunettes, j'ai numérisé l'ordonnance d'un client.
+
+Jeudi 15 décembre 2022:
+J'ai désinfecté les lunettes, j'ai rangé les lunettes sur les présentoirs.
+
+Vendredi 16 décembre 2022:
+J'ai désinfecté les lunettes, j'ai rangé les lunettes sur les présentoirs.
+</pre>
+        </div>
+        <div id="v_stage_optique_de_bourbon" class="v_stage" style="display:none;">
+<pre style="font-size:14px;">
+Mardi 11 avril 2023:
+Julia m'a montré les différents endroits du magasin, elle m'a dit ce qu'on fait.
+J'ai assisté à des ventes, j'ai rangé les produits sur l'étagère, j'ai remplacé la visse d'une lunette d'un
+client.
+
+Mercredi 12 avril 2023:
+J'ai rangé les lunettes sur les présentoirs, j'ai nettoyé les lunettes et cherché leur étuis. J'ai trié les
+péniches commandes par date et les péniches livraisons par l'ordre alphabétique. J'ai jeté les cartons dans
+la poubelle jaune.
+
+Jeudi 13 avril 2023:
+J'ai remplacé les lunettes manquantes sur les présentoirs, j' ai assisté à des ventes, j'ai numérisé et
+imprimé des papiers.
+
+<b style="font-size:20px;">Procédures :</b>
+<b>Archiver les BL (bons de livraisons)</b>
+- Déverrouiller
+- Cosium : cliquer sur carré bleu de favoris.
+- Faire défiler tout en bas de la page.
+- Cliquer sur consulter dessous achats.
+- Regarder le BL qui correspond au N° et date.
+- Après avoir vérifié, cliquer sur archiver.
+- Faire défiler tout en haut de la page.
+- CLiquer sur le rectangle archiver.
+- écrire sur le papier BL : Archivé le : date d'aujourd'hui
+- Mettre sur la pile BL achivés.
+Ensuite ranger les montures ainsi que les étuis.
+
+<b>Scanner</b>
+- Déverrouiller l'ordinateur puis cliquer sur cosium.
+- Regarder sur le devis le nom et le prénom de la personne.
+- Regarder sa mutuelle.
+- si CMU : scanner devi(s)
+- si autre mutuelle (groupama, MGEN):
+ - Tapper nom et prénom du client.
+ - Cocher c07
+ - Cliquer sur rechercher.
+ - Si il y a plein de dossiers communs, cliquer sur afficher.
+ - Cliquer sur la date en dessous de dossiers lunettes.
+ - Regarder si il y a tous les documents
+ Si il n'y a pas de prise en charge ou d'attestation CMU :
+ Faire imprimer papier Améli, saisir les chiffres dessous son nom sous le NIR.
+ - Cliquer sur valider.
+- Prendre les papiers.
+- Mettre dans l'imprimante.
+- Cliquer sur munérisation.
+- Appuyer sur bouton départ.
+- Sur ordinateur, partir sur scan (du bureau)
+- CLiquer sur le document.
+- CLic droit, renommer, majuscule devis + améli ou autre + nom et prénom du client.
+- Retourner sur cosium.
+- Cliquer sur le petit papier.
+- Cliquer sur téléchargement avancé.
+- Cliquer sur téléchargement depuis disque dur.
+- Type et parcourir pour sélectionner le fichier.
+- Valider.
+Améli = fichier client     Attestation = CMU = carte mutuelle optique     PEC = prise en charge
+
+<b>Réceptionner avec rvision</b>
+- Aller sur le site rvision.
+- nom d'utilisateur
+- Cliquer sur valider.
+- Cliquer sur suivis ateliers.
+- Cliquer sur réception magasin.
+- Saisir le code qui est dessous le code barre du papier sur codebarre.
+- Mettre les dossiers dans les péniches à facturer/appeler.
+péniche : (boîte où l'on range les lunettes et autres pour les livrer au client)
+
+<b>Créer un rendez-vous avec minute pass</b>
+- Écrire minute dans la barre d'adresse et cliquer sur optique de bourbon.
+- Cliquer sur accueil magasin.
+- Cliquer sur planning.
+- Cliquer sur créer un rendez-vous.
+- Entrer le nom, prénom, téléphone, code postal et ville du client.
+- Cliquer sur créer un nouveau client.
+- Cliquer sur prestation et livraison lunettes.
+- Cliquer sur collaborateur et conseiller ODB.
+- Appeler le client pour connaître la date et l'heure.
+Si il ne répond pas : écrire sur la fiche atelier messagerie vocale la date où on l'a appelé.
+Cliquer sur fermer fermer (sans créer le rendez-vous).
+Si il répond on fixe le rendez-vous et sur la fiche atelier on écrit appelé le + la date où on l'a appelé.
+On clique sur la date + heure voulue et on clique sur créer le rendez-vous.
+</pre>
+        </div>
+    </div>
+
+    <!-- Groupe Pierre Poivre -->
+    <div id="lycee_poivre" class="etablissement" style="display:none;">
+        <div class="tab">
+            <button onclick="switchTab('p_stage_bts1', 'p_stage', this)" class="p_stage_btn">BTS 1</button>
+            <button onclick="switchTab('p_stage_bts2', 'p_stage', this)" class="p_stage_btn">BTS 2</button>
+        </div>
+<p></p>
+<a href="Attestations_stages_BTS.zip" download>Télécharger Attestations_stages_BTS.zip</a>
+        <div id="p_stage_bts1" class="p_stage" style="display:none;">
+            <h3>Mairie de Saint-Philippe</h3>
+<pre style="font-size:14px;">
+Lundi 2 juin 2025 : Découverte des lieux.
+Mardi 3 juin 2025 : Synthèse de l'histoire de Saint-Philippe.
+Mercredi 4 juin 2025 : Continuer la synthèse.
+Jeudi 12 juin 2025 : Lecture magazines de Saint-Philippe.
+</pre>
+        </div>
+
+        <div id="p_stage_bts2" class="p_stage" style="display:none;">
+            <h3>Mairie de Saint-Joseph</h3>
+<pre style="font-size:14px;">
+Mercredi 14 janvier 2026 : J'ai installé MX Linux 23.6 XFCE sur un PC portable Asus et en suite
+j'ai fait des recherches sur Guacamole, bastion et Wazuh.
+
+Jeudi 15 janvier 2026 : Dans un bureau informatique qui sert aux personnes qui ont besoins de faire
+leurs papiers etc..., j'ai changé l'ordre de boot d'une machine (mettre Ubuntu en premier) pour qu'elle
+puisse démarrer car sa pile bios se décharge rapidement ce qui a fait que la config du bios a été reset,
+il y avait un _ qui clignottait en boucle.
+Configuration du réseau et installation de Guacamole sur la machine Guacamole mise à disposition sur le
+Proxmox.
+Problèmes rencontrés : Les .jar étaient absents dans l'archive du module JDBC.
+Interface Web : Erreur HTTP 404 – /guacamole introuvable.
+
+Vendredi 16 janvier 2026 : J'ai continué l'installation de Guacamole (sans le module JDBC) et j'ai réussi à
+me connecter à l'interface web SSH.
+
+Lundi 19 janvier 2026 : J'ai procédé à l'installation de la partie JDBC de Guacamole.
+
+Mardi 20 janvier 2026 : Suppression de Guacamole pour le réinstaller avec JDBC en suivant cette doc
+<a href="https://www.it-connect.fr/tuto-apache-guacamole-bastion-rdp-ssh-debian/#III_Installer_Apache_Guacamole_sur_Debian">https://www.it-connect.fr/tuto-apache-guacamole-bastion-rdp-ssh-debian/#III_Installer_Apache_Guacamole_sur_Debian</a>
+en l'adaptant pour Ubuntu 24.04
+
+Mercredi 21 janvier 2026 : J'ai ajouté la doc Installer_Guacamole_avec_JDBC.txt sur mon portfolio.
+J'ai ajouté une page de recherche de fichiers à mon portfolio.
+
+Vendredi 23 janvier 2026 : Mise à jour de Guacamole 1.5.5 vers 1.6.0, il faut installer les extensions
+TOTP, Recording Storage, partage de fichiers.
+Problèmes rencontrés : permissions de Tomcat 9 qui empêchait son démarrage et l'interface Web était
+inaccessible.
+Après installation et configuration de TOTP, j'ai pu mettre mon identifiant/motdepasse sur le web, il m'a
+demandé un QR Code une seule fois, j'ai installé FreeOTP sur mon téléphone puis le code ne fonctionne pas.
+Résolution : 
+- Dans le fichier /etc/guacamole/guacamole.properties :
+Effacer auth-provider: net.sourceforge.guacamole.net.auth.mysql.MySQLAuthenticationProvider
+Remplacer totp-mode: time-based par totp-mode: sha1
+- sudo rm /etc/guacamole/extensions/guacamole-auth-jdbc-mysql-1.5.5.jar
+
+Lundi 26 janvier 2026 : Je suis allé sur PageSpeed Insights pour tester les performances de mon site.
+J'ai testé la connexion SFTP avec la machine Guacamole et Debian 13.
+
+Mardi 27 janvier 2026 : J'ai mieux adapté mon site pour les mobiles.
+
+Mercredi 28 - Vendredi 30 janvier 2026 : J'ai testé mes scripts de tableau ascii et inverseur de casse sur
+des VM Windows 8.1, 10 et un pc Windows 11, ils fonctionnent mais les caractères avec accents et autres
+posent problème.
+
+Lundi 2 - Vendredi 6 février 2026 : J'ai fait 3 pages Web, ce sont des outils :
+Tableau ASCII, Remplacer texte et Convertisseur d'unités.
+Onglet Astuces -> Outils HTML
+
+Mercredi 11 février 2026 : Installation de Wazuh Indexer + Manager + Dashboard (Ubuntu 24.04)
+
+Lundi 16 février 2026 - Vendredi 20 février 2026 : Réinstallation de Wazuh à la bonne version à échoué,
+alors réinstallation de Wazuh avec Docker.
+</pre>
+<div class="slideshow-container" data-group="Stage_BTS2">
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Guacamole.html"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Wazuh.html"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Guacamole_config_ens18.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Installer_Guacamole_sans_JDBC.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Installer_Guacamole_avec_JDBC.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Checklist_permissions_Tomcat9.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Installer_TOTP.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Installer_Recording_Storage.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Guacamole_SSH_SFTP_RDP.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Stage_BTS2">
+        <iframe src="Stage_BTS2/Installer_Wazuh.txt"></iframe>
+    </div>
+    <button class="prev" onclick="plusSlides(-1, 'Stage_BTS2')"><</button>
+    <button class="next" onclick="plusSlides(1, 'Stage_BTS2')">></button>
+    <button class="openfullscreen" onclick="openFullscreen('Stage_BTS2')">□</button>
+    <div id="counter-Stage_BTS2" class="slide-counter"></div>
+</div>
+
+<div class="thumbnail-row">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(1, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(2, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(3, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(4, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(5, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(6, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(7, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(8, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(9, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(10, 'Stage_BTS2')">
+    <img class="thumbnail" data-group="Stage_BTS2" src="" onclick="currentSlide(11, 'Stage_BTS2')">
+</div>
+
+<select id="download_Stage_BTS2" onchange="downloadFile(this)">
+    <option value="">Télécharger...</option>
+    <option value="Stage_BTS2/Guacamole.html">
+        Guacamole.html
+    </option>
+    <option value="Stage_BTS2/Wazuh.html">
+        Wazuh.html
+    </option>
+    <option value="Stage_BTS2/Guacamole_config_ens18.txt">
+        Guacamole_config_ens18.txt
+    </option>
+    <option value="Stage_BTS2/Installer_Guacamole_sans_JDBC.txt">
+        Installer_Guacamole_sans_JDBC.txt
+    </option>
+    <option value="Stage_BTS2/Installer_Guacamole_avec_JDBC.txt">
+        Installer_Guacamole_avec_JDBC.txt
+    </option>
+    <option value="Stage_BTS2/MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt">
+        MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt
+    </option>
+    <option value="Stage_BTS2/Checklist_permissions_Tomcat9.txt">
+        Checklist_permissions_Tomcat9.txt
+    </option>
+    <option value="Stage_BTS2/Installer_TOTP.txt">
+        Installer_TOTP.txt
+    </option>
+    <option value="Stage_BTS2/Installer_Recording_Storage.txt">
+        Installer_Recording_Storage.txt
+    </option>
+    <option value="Stage_BTS2/Guacamole_SSH_SFTP_RDP.txt">
+        Guacamole_SSH_SFTP_RDP.txt
+    </option>
+    <option value="Stage_BTS2/Installer_Wazuh.txt">
+        Installer_Wazuh.txt
+    </option>
+    <option value="Stage_BTS2/Stage_BTS2.zip">
+        --Tout télécharger--
+    </option>
+</select>
+<pre style="font-size:14px;">
+</pre>
+        </div>
+    </div>
+</div>
+<p style="font-size:150px;"></p>
+<!-- Scripts -->
+<script>
+var lastScroll = 0;
+
+window.addEventListener("scroll", function () {
+    var navbar = document.querySelector(".navbar");
+    var current = window.scrollY;
+
+    if (current > lastScroll && current > 50) {
+        navbar.classList.add("hide");
+    } else {
+        navbar.classList.remove("hide");
+    }
+
+    lastScroll = current;
+});
+
+var supportsTransform = 'transform' in document.body.style;
+
+if (!supportsTransform) {
+    document.documentElement.classList.add('no-transform');
+}
+</script>
+
+<script>
+function openSubTab(evt, tabName) {
+    var i, subtabs;
+    subtabs = document.getElementsByClassName("subtabcontent");
+    for (i = 0; i < subtabs.length; i++) {
+        subtabs[i].style.display = "none";
+    }
+    document.getElementById(tabName).style.display = "block";
+}
+
+function switchTab(tabName, group, elmnt) {
+    // Cacher tous les contenus du groupe
+    var contents = document.getElementsByClassName(group);
+    for (var i = 0; i < contents.length; i++) {
+        contents[i].style.display = "none";
+    }
+
+    // Enlever la classe active de tous les boutons du groupe
+    var buttons = document.getElementsByClassName(group + "_btn");
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+    }
+
+    // Afficher le contenu demandé
+    document.getElementById(tabName).style.display = "block";
+
+    // Ajouter la classe active au bouton cliqué
+    if (elmnt) elmnt.classList.add("active");
+}
+
+function activateTab(cityName) {
+    var i, tabcontent, tablinks;
+
+    // Masquer tous les contenus
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Désactiver tous les onglets
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+
+    // Afficher le contenu demandé
+    document.getElementById(cityName).style.display = "block";
+
+    // Activer le bouton correspondant
+    for (i = 0; i < tablinks.length; i++) {
+        if (tablinks[i].textContent.trim() === cityName) {
+            tablinks[i].classList.add("active");
+            break;
+        }
+    }
+}
+document.addEventListener("DOMContentLoaded", function() {
+    activateTab("Stages");
+});
+</script>
+
+<script>
+function downloadFile(select) {
+    const file = select.value;
+    if (!file) return;
+
+    // Teste si le navigateur supporte l'attribut download
+    const a = document.createElement("a");
+    const supportsDownload = "download" in a;
+
+    if (supportsDownload) {
+        // Mode normal : téléchargement
+        a.href = file;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    } else {
+        // Mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
+        window.open(file, "_blank");
+    }
+
+    // Réinitialise le menu
+    select.value = "";
+}
+</script>
+
+<script>
+var slideIndex = {
+  Stage_BTS2: 0
+};
+
+function plusSlides(n, group) {
+  slideIndex[group] = slideIndex[group] + n;
+  showSlides(slideIndex[group], group);
+}
+
+function currentSlide(n, group) {
+  slideIndex[group] = n;
+  showSlides(slideIndex[group], group);
+}
+
+function showSlides(n, group) {
+  var allSlides = document.getElementsByClassName("mySlide");
+  var slides = [];
+  var i;
+
+  // Filtrer par data-group
+  for (i = 0; i < allSlides.length; i++) {
+    if (allSlides[i].getAttribute("data-group") === group) {
+      slides.push(allSlides[i]);
+    }
+  }
+
+  var allThumbs = document.getElementsByClassName("thumbnail");
+  var thumbs = [];
+
+  for (i = 0; i < allThumbs.length; i++) {
+    if (allThumbs[i].getAttribute("data-group") === group) {
+      thumbs.push(allThumbs[i]);
+    }
+  }
+
+  if (slides.length === 0) {
+    return;
+  }
+
+  if (n > slides.length) {
+    slideIndex[group] = 1;
+  }
+  if (n < 1) {
+    slideIndex[group] = slides.length;
+  }
+
+  // Masquer tous les slides du groupe
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+
+  // Désactiver toutes les miniatures du groupe
+  for (i = 0; i < thumbs.length; i++) {
+    thumbs[i].className = thumbs[i].className.replace(" active", "");
+  }
+
+  var current = slides[slideIndex[group] - 1];
+  current.style.display = "block";
+
+  // Lazy-load PDF
+  var iframes = current.getElementsByTagName("iframe");
+  if (iframes.length > 0) {
+    var iframe = iframes[0];
+    var dataSrc = iframe.getAttribute("data-src");
+    if (iframe && !iframe.src && dataSrc) {
+      iframe.src = dataSrc;
+    }
+  }
+
+  if (thumbs.length > 0 && thumbs[slideIndex[group] - 1]) {
+    thumbs[slideIndex[group] - 1].className += " active";
+  }
+
+  var counter = document.getElementById("counter-" + group);
+  if (counter) {
+    counter.textContent = slideIndex[group] + " / " + slides.length;
+  }
+}
+</script>
+
+<script>
+function openFullscreen(group) {
+    var index = slideIndex[group] || 1;
+    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    if (slides.length === 0) return;
+
+    var activeSlide = slides[index - 1];
+    if (!activeSlide) return;
+
+    // 1) iframe (HTML, TXT, PDF)
+    var iframe = activeSlide.querySelector("iframe");
+    if (iframe) {
+        var url = iframe.src || iframe.getAttribute("data-src");
+        if (url) {
+            window.open(url, "_blank");
+            return;
+        }
+    }
+
+    // 2) image
+    var img = activeSlide.querySelector("img");
+    if (img && img.src) {
+        window.open(img.src, "_blank");
+        return;
+    }
+
+    // 3) vidéo
+    var video = activeSlide.querySelector("video");
+    if (video && video.src) {
+        window.open(video.src, "_blank");
+        return;
+    }
+
+    console.log("Aucun contenu ouvrable trouvé dans cette slide");
+}
+</script>
+
+<!-- POPUP RECHERCHE -->
+<div id="popup-search" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.3);
+  z-index:9999;
+" onclick="closePopupSearch(event)">
+
+  <div style="
+    position:absolute;
+    top:5%;
+    left:5%;
+    width:90%;
+    height:90%;
+    background:#C0C0C0;
+    border:2px solid #fff;
+    border-right-color:#404040;
+    border-bottom-color:#404040;
+  ">
+
+    <!-- Barre de titre Win98 -->
+    <div style="
+      background:#000080;
+      color:white;
+      padding:4px;
+      font-family:sans-serif;
+      font-size:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    ">
+      <span>Recherche</span>
+
+      <!-- Bouton X Win98 -->
+      <button onclick="closePopupSearch()" 
+        style="
+          width:20px;
+          height:20px;
+          background:#C0C0C0;
+          border:2px solid #fff;
+          border-right-color:#404040;
+          border-bottom-color:#404040;
+          font-weight:bold;
+          cursor:pointer;
+          padding:0;
+          margin:0;
+        "
+        onmouseover="this.style.background='#E0E0E0'"
+        onmouseout="this.style.background='#C0C0C0'"
+        onmousedown="this.style.border='2px solid #404040'; this.style.borderRightColor='#fff'; this.style.borderBottomColor='#fff';"
+        onmouseup="this.style.border='2px solid #fff'; this.style.borderRightColor='#404040'; this.style.borderBottomColor='#404040';"
+      >X</button>
+    </div>
+
+    <!-- Contenu -->
+    <iframe src="search.html" style="
+      width:100%;
+      height:calc(100% - 28px);
+      border:none;
+    "></iframe>
+
+  </div>
+</div>
+<script>
+function openPopupSearch() {
+  document.getElementById("popup-search").style.display = "block";
+}
+
+function closePopupSearch(e) {
+  if (!e || e.target.id === "popup-search") {
+    document.getElementById("popup-search").style.display = "none";
+  }
+}
+</script>
+</main>
+</body>
+</html>

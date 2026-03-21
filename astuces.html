@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Astuces</title>
+<meta name="description" content="Astuces">
+<link rel="icon" href="favicon.png" type="image/png">
+<link href="portfolio.css" rel="stylesheet"></link>
+
+<style>
+.donate-btn {
+  font-family: monospace;
+  font-size: 22px;
+  padding: 4px 10px;
+  background: #FFD700;
+  border: 2px solid;
+  border-color: #FFFFFF #808000 #808000 #FFFFFF;
+  cursor: pointer;
+  box-sizing: border-box;
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* états */
+.donate-btn.hover {
+  background: #FFEA00;
+}
+
+.donate-btn.active {
+  background: #DAA520;
+  border-color: #808000 #FFFFFF #FFFFFF #808000;
+}
+
+.outilshtml-btn {
+  font-family: monospace;
+  font-size: 22px;
+  padding: 4px 10px;
+  background: #3A6EA5; /* bleu Win98 */
+  border: 2px solid;
+  border-color: #FFFFFF #000080 #000080 #FFFFFF; /* relief 3D bleu */
+  cursor: pointer;
+  box-sizing: border-box;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* état hover : légèrement plus clair */
+.outilshtml-btn.hover {
+  background: #4A82C2; /* bleu clair Win98 */
+}
+
+/* état active : bouton enfoncé */
+.outilshtml-btn.active {
+  background: #2F5B8A; /* bleu foncé */
+  border-color: #000080 #FFFFFF #FFFFFF #000080; /* inversion du relief */
+}
+
+/* mobile */
+@media screen and (max-device-width: 1280px) {
+  .donate-btn {
+    font-size: 36px;
+    padding: 10px 15px;
+    border-width: 5px;
+  }
+}
+</style>
+
+</head>
+<body>
+<main>
+<!-- Barre de navigation -->
+<div class="navbar">
+<select class="win98-select" aria-label="Menu du site"
+        onchange="
+            if(this.value==='__search__'){
+                window.open('search.html','_blank');
+            } else if(this.value==='__search_popup__'){
+                openPopupSearch();
+            } else if(this.value!==''){
+                location.href=this.value;
+            }
+            this.selectedIndex = 0;
+        ">
+    <option value="">≡</option>
+    <option value="search.html">Rechercher</option>
+    <option value="__search__">Rechercher (nouvel onglet)</option>
+	<option value="__search_popup__">Rechercher (popup)</option>
+    <option value="liste_fichiers.html">Liste des fichiers</option>
+    <option value="README.md">README.md</option>
+    <option value="donations.html">Soutenir le site</option>
+</select>
+<button class="win98-select" onclick="openPopupSearch()">Q</button>
+    <div class="tab">
+		<a><select class="win98-select" aria-label="Basculer vers onglet du site"
+        onchange="
+            location.href=this.value;
+            this.selectedIndex = 0;
+        ">
+            <option value="">tab?</option>
+            <option value="index.html">Accueil</option>
+            <option value="bts.html">BTS</option>
+            <option value="stages.html">Stages</option>
+            <option disabled="astuces.html">Astuces</option>
+        </select></a>
+        <a href="index.html"><button class="tablinks" onclick="index.html">Accueil</button></a>
+        <a href="bts.html"><button class="tablinks" onclick="bts.html">BTS</button></a>
+        <a href="stages.html"><button class="tablinks" onclick="stages.html">Stages</button></a>
+        <button class="tablinks" onclick="astuces.html">Astuces</button>
+    </div>
+</div>
+
+<!-- Contenu des onglets -->
+<div id="Astuces" class="tabcontent">
+<h2>Astuces</h2>
+<p style="text-align:left;">
+  <a href="donations.html"
+     class="donate-btn"
+     onmouseover="this.classList.add('hover');"
+     onmouseout="this.classList.remove('hover'); this.classList.remove('active');"
+     onmousedown="this.classList.add('active');"
+     onmouseup="this.classList.remove('active');"
+  >
+    Soutenir le site
+  </a>
+</p>
+
+<h3>MX Linux</h3>
+
+<div class="slideshow-container" data-group="MXLinux">
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Installer_MXLinux_en_dualboot.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <img src="Astuces/Linux/Montage_partitions_efi_et_root.jpg" loading="lazy">
+    </div>
+    
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Quelques_applications_Linux.txt"></iframe>
+    </div>    
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Correction_probleme_fichiers_coupes/Correction_probleme_fichiers_coupes.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <img src="Astuces/Linux/Correction_probleme_fichiers_coupes/gnome-disk-utility.jpg" loading="lazy">
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <img src="Astuces/Linux/Correction_probleme_fichiers_coupes/Reessayer.jpg" loading="lazy">
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <img src="Astuces/Linux/Correction_probleme_fichiers_coupes/Tout_remplacer.jpg" loading="lazy">
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Installer_OCR_converter_sur_MXLinux.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Installer_OCR_Capture_sur_MXLinux.txt"></iframe>
+    </div>    
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Coller_du_texte_dans_des_VM.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/tableau_ascii_presentation.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/change_rotation/change_rotation.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Installer_Recoll.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Installer_GoldenDict.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Activer_python_pour_geany.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Configurer_samba_sur_MXLinux.txt"></iframe>
+    </div>
+    
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Faire_un_serveur_python_local.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Nettoyer.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="MXLinux">
+        <iframe src="Astuces/Linux/Installer_Steam_sur_Linux.txt"></iframe>
+    </div>
+
+    <button class="prev" onclick="plusSlides(-1, 'MXLinux')"><</button>
+    <button class="next" onclick="plusSlides(1, 'MXLinux')">></button>
+    <button class="openfullscreen" onclick="openFullscreen('MXLinux')">□</button>
+    <div id="counter-MXLinux" class="slide-counter"></div>
+</div>
+
+<div class="thumbnail-row">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(1, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="Astuces/Linux/Montage_partitions_efi_et_root.jpg" loading="lazy" onclick="currentSlide(2, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(3, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(4, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="Astuces/Linux/Correction_probleme_fichiers_coupes/gnome-disk-utility.jpg" loading="lazy" onclick="currentSlide(5, 'MXLinux')">   
+    <img class="thumbnail" data-group="MXLinux" src="Astuces/Linux/Correction_probleme_fichiers_coupes/Reessayer.jpg" loading="lazy" onclick="currentSlide(6, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="Astuces/Linux/Correction_probleme_fichiers_coupes/Tout_remplacer.jpg" loading="lazy" onclick="currentSlide(7, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(8, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(9, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(10, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(11, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(12, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(13, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(14, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(15, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(16, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(17, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(18, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(19, 'MXLinux')">
+</div>
+
+<p>Télécharger</p>
+<select id="download_Script_Linux" onchange="downloadFile(this)">
+    <option value="">Script...</option>
+    <option value="Astuces/Linux/ocr_batch.sh">
+        ocr_batch.sh
+    </option>
+    <option value="Astuces/Linux/ocr_capture.sh">
+        ocr_capture.sh
+    </option>
+    <option value="Astuces/Linux/coller_tapper_clipboard.sh">
+        coller_tapper_clipboard.sh
+    </option>
+    <option value="Astuces/Linux/Scripts_python/tableau_ascii/tableau_clipboard_linux.py">
+        tableau_clipboard_linux.py
+    </option>
+    <option value="Astuces/Linux/Scripts_python/Casse_caracteres/minuscule_linux.py">
+        minuscule_linux.py
+    </option>
+    <option value="Astuces/Linux/Scripts_python/Casse_caracteres/majuscule_linux.py">
+        majuscule_linux.py
+    </option>
+    <option value="Astuces/Linux/Scripts_python/Casse_caracteres/inverser_casse_linux.py">
+        inverser_casse_linux.py
+    </option>
+    <option value="Astuces/Linux/Transparence/transparence20.sh">
+        transparence20.sh
+    </option>
+    <option value="Astuces/Linux/Transparence/opaque.sh">
+        opaque.sh
+    </option>
+    <option value="Astuces/Linux/change_rotation/change_rotation.zip">
+        change_rotation.zip
+    </option>
+</select>
+
+<select id="download_Application_Linux" onchange="downloadFile(this)">
+    <option value="">Application...</option>
+    <option value="Astuces/Linux/Applications/Tableau_ASCII/ascii-table.deb">
+        ascii-table.deb
+    </option>
+    <option value="Astuces/Linux/Applications/Tableau_ASCII/ascii-table.zip">
+        ascii-table.zip
+    </option>
+</select>
+
+<select id="download_Linux_Mint" onchange="downloadFile(this)">
+    <option value="">Linux Mint...</option>
+    <option value="Astuces/Linux/Linux_Mint/Ajouter_envoyer_vers_bluetooth_sur_Linux_Mint.txt">
+        Ajouter_envoyer_vers_bluetooth_sur_Linux_Mint.txt
+    </option>
+</select>
+<p></p>
+<h3>Android</h3>
+
+<div class="slideshow-container" data-group="Android">
+    <div class="mySlide" data-group="Android">
+        <iframe src="Astuces/Android/Applications/applications.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Android">
+        <img src="Astuces/Android/Applications/tableauascii.jpg" loading="lazy">
+    </div>
+
+    <div class="mySlide" data-group="Android">
+        <img src="Astuces/Android/Applications/editeurdetexte.jpg" loading="lazy">
+    </div>
+
+    <div class="mySlide" data-group="Android">
+        <img src="Astuces/Android/Applications/extractioncodecouleur.jpg" loading="lazy">
+    </div>
+
+    <div class="mySlide" data-group="Android">
+        <img src="Astuces/Android/Applications/selecteurcouleur.jpg" loading="lazy">
+    </div>
+
+    <div class="mySlide" data-group="Android">
+        <img src="Astuces/Android/Applications/ocrecran.jpg" loading="lazy">
+    </div>
+
+    <button class="prev" onclick="plusSlides(-1, 'Android')"><</button>
+    <button class="next" onclick="plusSlides(1, 'Android')">></button>
+    <button class="openfullscreen" onclick="openFullscreen('Android')">□</button>
+    <div id="counter-Android" class="slide-counter"></div>
+</div>
+
+<div class="thumbnail-row">
+    <img class="thumbnail" data-group="Android" src="" onclick="currentSlide(1, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/tableauascii.jpg" loading="lazy" onclick="currentSlide(2, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/editeurdetexte.jpg" loading="lazy" onclick="currentSlide(3, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/extractioncodecouleur.jpg" loading="lazy" onclick="currentSlide(4, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/selecteurcouleur.jpg" loading="lazy" onclick="currentSlide(5, 'Android')">
+    <img class="thumbnail" data-group="Android" src="Astuces/Android/Applications/ocrecran.jpg" loading="lazy" onclick="currentSlide(6, 'Android')">
+</div>
+<p>Télécharger</p>
+<select id="download_Android" onchange="downloadFile(this)">
+    <option value="">Android...</option>
+    <option disabled>
+	    Applications
+    </option>
+    <option value="Astuces/Android/Applications/tableauascii.apk">
+        tableauascii.apk
+    </option>
+    <option value="Astuces/Android/Applications/editeurdetexte.apk">
+        editeurdetexte.apk
+    </option>
+    <option value="Astuces/Android/Applications/extractioncodecouleur.apk">
+        extractioncodecouleur.apk
+    </option>
+    <option value="Astuces/Android/Applications/selecteurcouleur.apk">
+        selecteurcouleur.apk
+    </option>
+    <option value="Astuces/Android/Applications/ocrecran.apk">
+        ocrecran.apk
+    </option>
+    <option value="Astuces/Android/Applications/serveurhttp.apk">
+        serveurhttp.apk
+    </option>
+    <option value="Astuces/Android/Applications/serveurhttpandroid4.apk">
+        serveurhttpandroid4.apk
+    </option>
+    <option disabled>
+	    Scripts Termux
+    </option>
+    <option value="Astuces/Android/Termux/Preparer_Termux.txt">
+        Preparer_Termux.txt
+    </option>
+    <option value="Astuces/Android/Termux/tableau_clipboard_android.py">
+        tableau_clipboard_android.py
+    </option>
+    <option value="Astuces/Android/Termux/minuscule_android.py">
+        minuscule_android.py
+    </option>
+    <option value="Astuces/Android/Termux/majuscule_android.py">
+        majuscule_android.py
+    </option>
+    <option value="Astuces/Android/Termux/inverser_casse_android.py">
+        inverser_casse_android.py
+    </option>
+</select>
+<p></p>
+<select id="download_Windows" onchange="downloadFile(this)">
+    <option value="">Windows...</option>
+    <option value="Astuces/Windows/tableau_clipboard_windows.py">
+        tableau_clipboard_windows.py
+    </option>
+    <option value="Astuces/Windows/minuscule_windows.py">
+        minuscule_windows.py
+    </option>
+    <option value="Astuces/Windows/majuscule_windows.py">
+        majuscule_windows.py
+    </option>
+    <option value="Astuces/Windows/inverser_casse_windows.py">
+        inverser_casse_windows.py
+    </option>
+</select>
+<p></p>
+<select id="download_Autres_OS" onchange="downloadFile(this)">
+    <option value="">Autres OS...</option>
+    <option disabled>
+	    macOS
+    </option>
+    <option value="Astuces/Autres_OS/macOS/tableau_clipboard_macos.py">
+        tableau_clipboard_macos.py
+    </option>
+    <option value="Astuces/Autres_OS/macOS/minuscule_macos.py">
+        minuscule_macos.py
+    </option>
+    <option value="Astuces/Autres_OS/macOS/majuscule_macos.py">
+        majuscule_macos.py
+    </option>
+    <option value="Astuces/Autres_OS/macOS/inverser_casse_macos.py">
+        inverser_casse_macos.py
+    </option>
+    <option disabled>
+	    FreeBSD
+    </option>
+    <option value="Astuces/Autres_OS/FreeBSD/tableau_clipboard_freebsd.py">
+        tableau_clipboard_freebsd.py
+    </option>
+    <option value="Astuces/Autres_OS/FreeBSD/minuscule_freebsd.py">
+        minuscule_freebsd.py
+    </option>
+    <option value="Astuces/Autres_OS/FreeBSD/majuscule_freebsd.py">
+        majuscule_freebsd.py
+    </option>
+    <option value="Astuces/Autres_OS/FreeBSD/inverser_casse_freebsd.py">
+        inverser_casse_freebsd.py
+    </option>
+    <option disabled>
+	    Solaris
+    </option>
+    <option value="Astuces/Autres_OS/Solaris/tableau_clipboard_solaris.py">
+        tableau_clipboard_solaris.py
+    </option>
+    <option value="Astuces/Autres_OS/Solaris/minuscule_solaris.py">
+        minuscule_solaris.py
+    </option>
+    <option value="Astuces/Autres_OS/Solaris/majuscule_solaris.py">
+        majuscule_solaris.py
+    </option>
+    <option value="Astuces/Autres_OS/Solaris/inverser_casse_solaris.py">
+        inverser_casse_solaris.py
+    </option>
+</select>
+<p></p>
+<select id="download_Java" onchange="downloadFile(this)">
+    <option value="">Java...</option>
+    <option value="Astuces/Java/Tableau_ASCII/Prerequis.txt">
+        Prerequis.txt
+    </option>
+    <option value="Astuces/Java/Tableau_ASCII/TableauASCII.jar">
+        TableauASCII.jar
+    </option>
+    <option value="Astuces/Java/Tableau_ASCII/ascii-table-java.zip">
+        ascii-table-java.zip
+    </option>
+</select>
+<p></p>
+<p style="text-align:left;">
+  <a href="Astuces/Outils_HTML/outils.html"
+     class="outilshtml-btn"
+     onmouseover="this.classList.add('hover');"
+     onmouseout="this.classList.remove('hover'); this.classList.remove('active');"
+     onmousedown="this.classList.add('active');"
+     onmouseup="this.classList.remove('active');"
+  >
+    Outils HTML
+  </a>
+</p>
+<a href="Astuces/Astuces.zip" download>Tout télécharger</a>
+</div>
+<p style="font-size:150px;"></p>
+<!-- Scripts -->
+<script>
+var lastScroll = 0;
+
+window.addEventListener("scroll", function () {
+    var navbar = document.querySelector(".navbar");
+    var current = window.scrollY;
+
+    if (current > lastScroll && current > 50) {
+        navbar.classList.add("hide");
+    } else {
+        navbar.classList.remove("hide");
+    }
+
+    lastScroll = current;
+});
+
+var supportsTransform = 'transform' in document.body.style;
+
+if (!supportsTransform) {
+    document.documentElement.classList.add('no-transform');
+}
+</script>
+
+<script>
+function activateTab(cityName) {
+    var i, tabcontent, tablinks;
+
+    // Masquer tous les contenus
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Désactiver tous les onglets
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+
+    // Afficher le contenu demandé
+    document.getElementById(cityName).style.display = "block";
+
+    // Activer le bouton correspondant
+    for (i = 0; i < tablinks.length; i++) {
+        if (tablinks[i].textContent.trim() === cityName) {
+            tablinks[i].classList.add("active");
+            break;
+        }
+    }
+}
+document.addEventListener("DOMContentLoaded", function() {
+    activateTab("Astuces");
+});
+</script>
+
+<script>
+function downloadFile(select) {
+    const file = select.value;
+    if (!file) return;
+
+    // Teste si le navigateur supporte l'attribut download
+    const a = document.createElement("a");
+    const supportsDownload = "download" in a;
+
+    if (supportsDownload) {
+        // Mode normal : téléchargement
+        a.href = file;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    } else {
+        // Mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
+        window.open(file, "_blank");
+    }
+
+    // Réinitialise le menu
+    select.value = "";
+}
+</script>
+
+<script>
+var slideIndex = {
+  MXLinux: 0,
+  Android: 0
+};
+
+function plusSlides(n, group) {
+  slideIndex[group] = slideIndex[group] + n;
+  showSlides(slideIndex[group], group);
+}
+
+function currentSlide(n, group) {
+  slideIndex[group] = n;
+  showSlides(slideIndex[group], group);
+}
+
+function showSlides(n, group) {
+  var allSlides = document.getElementsByClassName("mySlide");
+  var slides = [];
+  var i;
+
+  // Filtrer par data-group
+  for (i = 0; i < allSlides.length; i++) {
+    if (allSlides[i].getAttribute("data-group") === group) {
+      slides.push(allSlides[i]);
+    }
+  }
+
+  var allThumbs = document.getElementsByClassName("thumbnail");
+  var thumbs = [];
+
+  for (i = 0; i < allThumbs.length; i++) {
+    if (allThumbs[i].getAttribute("data-group") === group) {
+      thumbs.push(allThumbs[i]);
+    }
+  }
+
+  if (slides.length === 0) {
+    return;
+  }
+
+  if (n > slides.length) {
+    slideIndex[group] = 1;
+  }
+  if (n < 1) {
+    slideIndex[group] = slides.length;
+  }
+
+  // Masquer tous les slides du groupe
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+
+  // Désactiver toutes les miniatures du groupe
+  for (i = 0; i < thumbs.length; i++) {
+    thumbs[i].className = thumbs[i].className.replace(" active", "");
+  }
+
+  var current = slides[slideIndex[group] - 1];
+  current.style.display = "block";
+
+  // Lazy-load PDF
+  var iframes = current.getElementsByTagName("iframe");
+  if (iframes.length > 0) {
+    var iframe = iframes[0];
+    var dataSrc = iframe.getAttribute("data-src");
+    if (iframe && !iframe.src && dataSrc) {
+      iframe.src = dataSrc;
+    }
+  }
+
+  if (thumbs.length > 0 && thumbs[slideIndex[group] - 1]) {
+    thumbs[slideIndex[group] - 1].className += " active";
+  }
+
+  var counter = document.getElementById("counter-" + group);
+  if (counter) {
+    counter.textContent = slideIndex[group] + " / " + slides.length;
+  }
+}
+</script>
+
+<script>
+function openFullscreen(group) {
+    var index = slideIndex[group] || 1;
+    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    if (slides.length === 0) return;
+
+    var activeSlide = slides[index - 1];
+    if (!activeSlide) return;
+
+    // 1) iframe (HTML, TXT, PDF)
+    var iframe = activeSlide.querySelector("iframe");
+    if (iframe) {
+        var url = iframe.src || iframe.getAttribute("data-src");
+        if (url) {
+            window.open(url, "_blank");
+            return;
+        }
+    }
+
+    // 2) image
+    var img = activeSlide.querySelector("img");
+    if (img && img.src) {
+        window.open(img.src, "_blank");
+        return;
+    }
+
+    // 3) vidéo
+    var video = activeSlide.querySelector("video");
+    if (video && video.src) {
+        window.open(video.src, "_blank");
+        return;
+    }
+
+    console.log("Aucun contenu ouvrable trouvé dans cette slide");
+}
+</script>
+
+<!-- POPUP RECHERCHE -->
+<div id="popup-search" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.3);
+  z-index:9999;
+" onclick="closePopupSearch(event)">
+
+  <div style="
+    position:absolute;
+    top:5%;
+    left:5%;
+    width:90%;
+    height:90%;
+    background:#C0C0C0;
+    border:2px solid #fff;
+    border-right-color:#404040;
+    border-bottom-color:#404040;
+  ">
+
+    <!-- Barre de titre Win98 -->
+    <div style="
+      background:#000080;
+      color:white;
+      padding:4px;
+      font-family:sans-serif;
+      font-size:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    ">
+      <span>Recherche</span>
+
+      <!-- Bouton X Win98 -->
+      <button onclick="closePopupSearch()" 
+        style="
+          width:20px;
+          height:20px;
+          background:#C0C0C0;
+          border:2px solid #fff;
+          border-right-color:#404040;
+          border-bottom-color:#404040;
+          font-weight:bold;
+          cursor:pointer;
+          padding:0;
+          margin:0;
+        "
+        onmouseover="this.style.background='#E0E0E0'"
+        onmouseout="this.style.background='#C0C0C0'"
+        onmousedown="this.style.border='2px solid #404040'; this.style.borderRightColor='#fff'; this.style.borderBottomColor='#fff';"
+        onmouseup="this.style.border='2px solid #fff'; this.style.borderRightColor='#404040'; this.style.borderBottomColor='#404040';"
+      >X</button>
+    </div>
+
+    <!-- Contenu -->
+    <iframe src="search.html" style="
+      width:100%;
+      height:calc(100% - 28px);
+      border:none;
+    "></iframe>
+
+  </div>
+</div>
+<script>
+function openPopupSearch() {
+  document.getElementById("popup-search").style.display = "block";
+}
+
+function closePopupSearch(e) {
+  if (!e || e.target.id === "popup-search") {
+    document.getElementById("popup-search").style.display = "none";
+  }
+}
+</script>
+</main>
+</body>
+</html>

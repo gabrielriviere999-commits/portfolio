@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BTS</title>
+<meta name="description" content="BTS">
+<link rel="icon" href="favicon.png" type="image/png">
+<link href="portfolio.css" rel="stylesheet"></link>
+
+</head>
+<body>
+<main>
+<!-- Barre de navigation -->
+<div class="navbar">
+<select class="win98-select" aria-label="Menu du site"
+        onchange="
+            if(this.value==='__search__'){
+                window.open('search.html','_blank');
+            } else if(this.value==='__search_popup__'){
+                openPopupSearch();
+            } else if(this.value!==''){
+                location.href=this.value;
+            }
+            this.selectedIndex = 0;
+        ">
+    <option value="">≡</option>
+    <option value="search.html">Rechercher</option>
+    <option value="__search__">Rechercher (nouvel onglet)</option>
+	<option value="__search_popup__">Rechercher (popup)</option>
+    <option value="liste_fichiers.html">Liste des fichiers</option>
+    <option value="README.md">README.md</option>
+    <option value="donations.html">Soutenir le site</option>
+</select>
+<button class="win98-select" onclick="openPopupSearch()">Q</button>
+    <div class="tab">
+		<a><select class="win98-select" aria-label="Basculer vers onglet du site"
+        onchange="
+            location.href=this.value;
+            this.selectedIndex = 0;
+        ">
+            <option value="">tab?</option>
+            <option value="index.html">Accueil</option>
+            <option disabled="bts.html">BTS</option>
+            <option value="stages.html">Stages</option>
+            <option value="astuces.html">Astuces</option>
+        </select></a>
+        <a href="index.html"><button class="tablinks" onclick="index.html">Accueil</button></a>
+        <button class="tablinks" onclick="bts.html">BTS</button>
+        <a href="stages.html"><button class="tablinks" onclick="stages.html">Stages</button></a>
+        <a href="astuces.html"><button class="tablinks" onclick="astuces.html">Astuces</button></a>
+    </div>
+</div>
+
+<!-- Contenu -->
+<div id="BTS" class="tabcontent">
+<h2>BTS</h2>
+<a href="Veille_technologique/Veille_technologique_les_logiciels_libres_pour_linux.html">Veille technologique</a>
+<p></p>
+<div class="tab">
+    <button onclick="switchTab('docs_bts', 'bts', this)" class="bts_btn">Docs BTS</button>
+    <button onclick="switchTab('infra_bts', 'bts', this)" class="bts_btn">Infra BTS</button>
+</div>
+
+<div id="docs_bts" class="bts" style="display:none;">
+<h3>IP et routage</h3>
+<div class="slideshow-container" data-group="IP_et_routage">
+
+    <div class="mySlide" data-group="IP_et_routage">
+        <iframe src="Docs_BTS/IP_et_routage/Devoir_Num1_-_Les_conversions_et_l_adressage_lPV4.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="IP_et_routage">
+        <iframe data-src="Docs_BTS/IP_et_routage/Correction_devoir_Num1_-_Les_conversions_et_l_adressage_IPV4.pdf"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="IP_et_routage">
+        <iframe src="Docs_BTS/IP_et_routage/Conversions_bases.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="IP_et_routage">
+        <iframe data-src="Docs_BTS/IP_et_routage/Les_commandes_de_base_des_equipements_Cisco.pdf"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="IP_et_routage">
+        <iframe data-src="Docs_BTS/IP_et_routage/fiche_memo_routage_statique.pdf"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="IP_et_routage">
+        <iframe data-src="Docs_BTS/IP_et_routage/Le_routage_dynamique.pdf"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="IP_et_routage">
+        <img src="Docs_BTS/IP_et_routage/Poster_IPv6.png" loading="lazy">
+    </div>
+    
+    <button class="prev" onclick="plusSlides(-1, 'IP_et_routage')"><</button>
+    <button class="next" onclick="plusSlides(1, 'IP_et_routage')">></button>
+    <button class="openfullscreen" onclick="openFullscreen('IP_et_routage')">□</button>
+    <div id="counter-IP_et_routage" class="slide-counter"></div>
+</div>
+
+<div class="thumbnail-row">
+    <img class="thumbnail" data-group="IP_et_routage" src="" onclick="currentSlide(1, 'IP_et_routage')">
+    <img class="thumbnail" data-group="IP_et_routage" src="" onclick="currentSlide(2, 'IP_et_routage')">
+    <img class="thumbnail" data-group="IP_et_routage" src="" onclick="currentSlide(3, 'IP_et_routage')">
+    <img class="thumbnail" data-group="IP_et_routage" src="" onclick="currentSlide(4, 'IP_et_routage')">
+    <img class="thumbnail" data-group="IP_et_routage" src="" onclick="currentSlide(5, 'IP_et_routage')">
+    <img class="thumbnail" data-group="IP_et_routage" src="" onclick="currentSlide(6, 'IP_et_routage')">
+    <img class="thumbnail" data-group="IP_et_routage" src="Docs_BTS/IP_et_routage/Poster_IPv6.png" loading="lazy" onclick="currentSlide(7, 'IP_et_routage')">
+</div>
+<p style="font-size:50px;"></p>
+<h3>HAProxy</h3>
+<div class="slideshow-container" data-group="HAProxy">
+
+    <div class="mySlide" data-group="HAProxy">
+        <iframe data-src="Docs_BTS/HAProxy/Documentation_HAProxy_WEB1_et_WEB2_avec_MySQL.pdf"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="HAProxy">
+        <iframe src="Docs_BTS/HAProxy/HaproxyIPsStatiques.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="HAProxy">
+        <iframe src="Docs_BTS/HAProxy/Installer_galera_avec_MariaDB.txt"></iframe>
+    </div>
+    
+    <button class="prev" onclick="plusSlides(-1, 'HAProxy')"><</button>
+    <button class="next" onclick="plusSlides(1, 'HAProxy')">></button>
+    <button class="openfullscreen" onclick="openFullscreen('HAProxy')">□</button>
+    <div id="counter-HAProxy" class="slide-counter"></div>
+</div>
+
+<div class="thumbnail-row">
+    <img class="thumbnail" data-group="HAProxy" src="" onclick="currentSlide(1, 'HAProxy')">
+    <img class="thumbnail" data-group="HAProxy" src="" onclick="currentSlide(2, 'HAProxy')">
+    <img class="thumbnail" data-group="HAProxy" src="" onclick="currentSlide(3, 'HAProxy')">
+</div>
+<p style="font-size:50px;"></p>
+<h3>GLPI</h3>
+<div class="slideshow-container" data-group="GLPI">
+
+    <div class="mySlide" data-group="GLPI">
+        <iframe src="Docs_BTS/GLPI/Installer_Nginx_avec_php-fpm_et_mariaDB.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="GLPI">
+        <iframe src="Docs_BTS/GLPI/Installer_GLPI_avec_Nginx_sans_apache.txt"></iframe>
+    </div>
+    <button class="prev" onclick="plusSlides(-1, 'GLPI')"><</button>
+    <button class="next" onclick="plusSlides(1, 'GLPI')">></button>
+    <button class="openfullscreen" onclick="openFullscreen('GLPI')">□</button>
+    <div id="counter-GLPI" class="slide-counter"></div>
+</div>
+
+<div class="thumbnail-row">
+    <img class="thumbnail" data-group="GLPI" src="" onclick="currentSlide(1, 'GLPI')">
+    <img class="thumbnail" data-group="GLPI" src="" onclick="currentSlide(2, 'GLPI')">
+</div>
+<a href="Docs_BTS/Docs_BTS.zip" download>Télécharger toutes les docs</a>
+</div>
+
+<div id="infra_bts" class="bts" style="display:none;">
+<p></p>
+<div class="slideshow-container" data-group="Infra_BTS">
+
+    <div class="mySlide" data-group="Infra_BTS">
+        <iframe src="Infra_BTS/Routeur_et_Switch.txt"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Infra_BTS">
+        <iframe data-src="Infra_BTS/Presentation_d_une_infrastructure_reseau.pdf"></iframe>
+    </div>
+
+    <div class="mySlide" data-group="Infra_BTS">
+        <iframe src="Infra_BTS/Tableau_IP_Haproxy_glpi_et_zabbix.txt"></iframe>
+    </div>
+    
+    <div class="mySlide" data-group="Infra_BTS">
+        <iframe src="Infra_BTS/Installation_de_base_d_un_serveur_web.txt"></iframe>
+    </div>
+    
+    <div class="mySlide" data-group="Infra_BTS">
+        <iframe src="Infra_BTS/Installation_et_configuration_de_GLPI.txt"></iframe>
+    </div>
+
+	<div class="mySlide" data-group="Infra_BTS">
+        <iframe src="Infra_BTS/Installation_et_configuration_de_Zabbix.txt"></iframe>
+    </div>
+	<div class="mySlide" data-group="Infra_BTS">
+        <iframe src="Infra_BTS/Active_Directory.txt"></iframe>
+    </div>
+    <button class="prev" onclick="plusSlides(-1, 'Infra_BTS')"><</button>
+    <button class="next" onclick="plusSlides(1, 'Infra_BTS')">></button>
+    <button class="openfullscreen" onclick="openFullscreen('Infra_BTS')">□</button>
+    <div id="counter-Infra_BTS" class="slide-counter"></div>
+</div>
+
+<div class="thumbnail-row">
+    <img class="thumbnail" data-group="Infra_BTS" src="" onclick="currentSlide(1, 'Infra_BTS')">
+    <img class="thumbnail" data-group="Infra_BTS" src="" onclick="currentSlide(2, 'Infra_BTS')">
+    <img class="thumbnail" data-group="Infra_BTS" src="" onclick="currentSlide(3, 'Infra_BTS')">
+    <img class="thumbnail" data-group="Infra_BTS" src="" onclick="currentSlide(4, 'Infra_BTS')">
+    <img class="thumbnail" data-group="Infra_BTS" src="" onclick="currentSlide(5, 'Infra_BTS')">
+    <img class="thumbnail" data-group="Infra_BTS" src="" onclick="currentSlide(6, 'Infra_BTS')">
+    <img class="thumbnail" data-group="Infra_BTS" src="" onclick="currentSlide(7, 'Infra_BTS')">
+</div>
+
+<select id="download_Infra_BTS" onchange="downloadFile(this)">
+    <option value="">Télécharger...</option>
+    <option value="Infra_BTS/Routeur_et_Switch.txt">
+        Routeur_et_Switch.txt
+    </option>
+    <option value="Infra_BTS/Presentation_d_une_infrastructure_reseau.pdf">
+        Presentation_d_une_infrastructure_reseau.pdf
+    </option>
+    <option value="Infra_BTS/Schema_Reseau_2025-2026.png">
+        Schema_Reseau_2025-2026.png
+    </option>
+    <option value="Infra_BTS/Routeur_et_Switch_20250917_082333.jpg">
+        Routeur_et_Switch_20250917_082333.jpg
+    </option>    
+    <option value="Infra_BTS/Routeur_et_Switch_20250917_110645.jpg">
+        Routeur_et_Switch_20250917_110645.jpg
+    </option>
+    <option value="Infra_BTS/Tableau_IP_Haproxy_glpi_et_zabbix.txt">
+        Tableau_IP_Haproxy_glpi_et_zabbix.txt
+    </option>
+    <option value="Infra_BTS/Installation_de_base_d_un_serveur_web.txt">
+        Installation_de_base_d_un_serveur_web.txt
+    </option>
+    <option value="Infra_BTS/Installation_et_configuration_de_GLPI.txt">
+        Installation_et_configuration_de_GLPI.txt
+    </option>
+    <option value="Infra_BTS/Installation_et_configuration_de_Zabbix.txt">
+        Installation_et_configuration_de_Zabbix.txt
+    </option>
+    <option value="Infra_BTS/Active_Directory.txt">
+        Active_Directory.txt
+    </option>
+    <option value="Infra_BTS/Infra_BTS.zip">
+        --Tout télécharger--
+    </option>
+</select>
+</div>
+</div>
+<p style="font-size:150px;"></p>
+<!-- Scripts -->
+<script>
+var lastScroll = 0;
+
+window.addEventListener("scroll", function () {
+    var navbar = document.querySelector(".navbar");
+    var current = window.scrollY;
+
+    if (current > lastScroll && current > 50) {
+        navbar.classList.add("hide");
+    } else {
+        navbar.classList.remove("hide");
+    }
+
+    lastScroll = current;
+});
+
+var supportsTransform = 'transform' in document.body.style;
+
+if (!supportsTransform) {
+    document.documentElement.classList.add('no-transform');
+}
+</script>
+
+<script>
+function openSubTab(evt, tabName) {
+    var i, subtabs;
+    subtabs = document.getElementsByClassName("subtabcontent");
+    for (i = 0; i < subtabs.length; i++) {
+        subtabs[i].style.display = "none";
+    }
+    document.getElementById(tabName).style.display = "block";
+}
+
+function switchTab(tabName, group, elmnt) {
+    // Cacher tous les contenus du groupe
+    var contents = document.getElementsByClassName(group);
+    for (var i = 0; i < contents.length; i++) {
+        contents[i].style.display = "none";
+    }
+
+    // Enlever la classe active de tous les boutons du groupe
+    var buttons = document.getElementsByClassName(group + "_btn");
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+    }
+
+    // Afficher le contenu demandé
+    document.getElementById(tabName).style.display = "block";
+
+    // Ajouter la classe active au bouton cliqué
+    if (elmnt) elmnt.classList.add("active");
+}
+
+function activateTab(cityName) {
+    var i, tabcontent, tablinks;
+
+    // Masquer tous les contenus
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Désactiver tous les onglets
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+
+    // Afficher le contenu demandé
+    document.getElementById(cityName).style.display = "block";
+
+    // Activer le bouton correspondant
+    for (i = 0; i < tablinks.length; i++) {
+        if (tablinks[i].textContent.trim() === cityName) {
+            tablinks[i].classList.add("active");
+            break;
+        }
+    }
+}
+document.addEventListener("DOMContentLoaded", function() {
+    activateTab("BTS");
+});
+</script>
+
+<script>
+function downloadFile(select) {
+    const file = select.value;
+    if (!file) return;
+
+    // Teste si le navigateur supporte l'attribut download
+    const a = document.createElement("a");
+    const supportsDownload = "download" in a;
+
+    if (supportsDownload) {
+        // Mode normal : téléchargement
+        a.href = file;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    } else {
+        // Mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
+        window.open(file, "_blank");
+    }
+
+    // Réinitialise le menu
+    select.value = "";
+}
+</script>
+
+<script>
+var slideIndex = {
+  IP_et_routage: 0,
+  HAProxy: 0,
+  GLPI: 0,
+  Infra_BTS: 0
+};
+
+function plusSlides(n, group) {
+  slideIndex[group] = slideIndex[group] + n;
+  showSlides(slideIndex[group], group);
+}
+
+function currentSlide(n, group) {
+  slideIndex[group] = n;
+  showSlides(slideIndex[group], group);
+}
+
+function showSlides(n, group) {
+  var allSlides = document.getElementsByClassName("mySlide");
+  var slides = [];
+  var i;
+
+  // Filtrer par data-group
+  for (i = 0; i < allSlides.length; i++) {
+    if (allSlides[i].getAttribute("data-group") === group) {
+      slides.push(allSlides[i]);
+    }
+  }
+
+  var allThumbs = document.getElementsByClassName("thumbnail");
+  var thumbs = [];
+
+  for (i = 0; i < allThumbs.length; i++) {
+    if (allThumbs[i].getAttribute("data-group") === group) {
+      thumbs.push(allThumbs[i]);
+    }
+  }
+
+  if (slides.length === 0) {
+    return;
+  }
+
+  if (n > slides.length) {
+    slideIndex[group] = 1;
+  }
+  if (n < 1) {
+    slideIndex[group] = slides.length;
+  }
+
+  // Masquer tous les slides du groupe
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+
+  // Désactiver toutes les miniatures du groupe
+  for (i = 0; i < thumbs.length; i++) {
+    thumbs[i].className = thumbs[i].className.replace(" active", "");
+  }
+
+  var current = slides[slideIndex[group] - 1];
+  current.style.display = "block";
+
+  // Lazy-load PDF
+  var iframes = current.getElementsByTagName("iframe");
+  if (iframes.length > 0) {
+    var iframe = iframes[0];
+    var dataSrc = iframe.getAttribute("data-src");
+    if (iframe && !iframe.src && dataSrc) {
+      iframe.src = dataSrc;
+    }
+  }
+
+  if (thumbs.length > 0 && thumbs[slideIndex[group] - 1]) {
+    thumbs[slideIndex[group] - 1].className += " active";
+  }
+
+  var counter = document.getElementById("counter-" + group);
+  if (counter) {
+    counter.textContent = slideIndex[group] + " / " + slides.length;
+  }
+}
+</script>
+
+<script>
+function openFullscreen(group) {
+    var index = slideIndex[group] || 1;
+    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    if (slides.length === 0) return;
+
+    var activeSlide = slides[index - 1];
+    if (!activeSlide) return;
+
+    // 1) iframe (HTML, TXT, PDF)
+    var iframe = activeSlide.querySelector("iframe");
+    if (iframe) {
+        var url = iframe.src || iframe.getAttribute("data-src");
+        if (url) {
+            window.open(url, "_blank");
+            return;
+        }
+    }
+
+    // 2) image
+    var img = activeSlide.querySelector("img");
+    if (img && img.src) {
+        window.open(img.src, "_blank");
+        return;
+    }
+
+    // 3) vidéo
+    var video = activeSlide.querySelector("video");
+    if (video && video.src) {
+        window.open(video.src, "_blank");
+        return;
+    }
+
+    console.log("Aucun contenu ouvrable trouvé dans cette slide");
+}
+</script>
+
+<!-- POPUP RECHERCHE -->
+<div id="popup-search" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.3);
+  z-index:9999;
+" onclick="closePopupSearch(event)">
+
+  <div style="
+    position:absolute;
+    top:5%;
+    left:5%;
+    width:90%;
+    height:90%;
+    background:#C0C0C0;
+    border:2px solid #fff;
+    border-right-color:#404040;
+    border-bottom-color:#404040;
+  ">
+
+    <!-- Barre de titre Win98 -->
+    <div style="
+      background:#000080;
+      color:white;
+      padding:4px;
+      font-family:sans-serif;
+      font-size:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    ">
+      <span>Recherche</span>
+
+      <!-- Bouton X Win98 -->
+      <button onclick="closePopupSearch()" 
+        style="
+          width:20px;
+          height:20px;
+          background:#C0C0C0;
+          border:2px solid #fff;
+          border-right-color:#404040;
+          border-bottom-color:#404040;
+          font-weight:bold;
+          cursor:pointer;
+          padding:0;
+          margin:0;
+        "
+        onmouseover="this.style.background='#E0E0E0'"
+        onmouseout="this.style.background='#C0C0C0'"
+        onmousedown="this.style.border='2px solid #404040'; this.style.borderRightColor='#fff'; this.style.borderBottomColor='#fff';"
+        onmouseup="this.style.border='2px solid #fff'; this.style.borderRightColor='#404040'; this.style.borderBottomColor='#404040';"
+      >X</button>
+    </div>
+
+    <!-- Contenu -->
+    <iframe src="search.html" style="
+      width:100%;
+      height:calc(100% - 28px);
+      border:none;
+    "></iframe>
+
+  </div>
+</div>
+<script>
+function openPopupSearch() {
+  document.getElementById("popup-search").style.display = "block";
+}
+
+function closePopupSearch(e) {
+  if (!e || e.target.id === "popup-search") {
+    document.getElementById("popup-search").style.display = "none";
+  }
+}
+</script>
+</main>
+</body>
+</html>
