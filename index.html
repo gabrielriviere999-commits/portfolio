@@ -46,15 +46,16 @@
             <option value="stages.html">Stages</option>
             <option value="astuces.html">Astuces</option>
         </select></a>
-        <button class="tablinks" onclick="accueil.html">Accueil</button>
-        <a href="bts.html"><button class="tablinks" onclick="bts.html">BTS</button></a>
-        <a href="stages.html"><button class="tablinks" onclick="stages.html">Stages</button></a>
-        <a href="astuces.html"><button class="tablinks" onclick="astuces.html">Astuces</button></a>
+    <a href="index.html"><button class="active">Accueil</button></a>
+    <a href="bts.html"><button>BTS</button></a>
+    <a href="stages.html"><button>Stages</button></a>
+    <a href="astuces.html"><button>Astuces</button></a>
+
     </div>
 </div>
 
 <!-- Contenu -->
-<div id="Accueil" class="tabcontent">
+<p style="font-size:80px;"></p>
 <h2>Accueil</h2>
 <div class="slideshow-container" data-group="Accueil">
 
@@ -77,7 +78,6 @@
     <div class="thumbnail" data-group="Accueil" onclick="currentSlide(2, 'Accueil')">CV</div>
 </div>
 <a href="Accueil/tableau_synthese_E5-2025.ods" download>Télécharger tableau_synthese_E5-2025.ods</a>
-</div>
 </div>
 <p style="font-size:150px;"></p>
 <!-- Scripts -->
@@ -102,38 +102,6 @@ var supportsTransform = 'transform' in document.body.style;
 if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
 }
-</script>
-
-<script>
-function activateTab(cityName) {
-    var i, tabcontent, tablinks;
-
-    // Masquer tous les contenus
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-
-    // Désactiver tous les onglets
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].classList.remove("active");
-    }
-
-    // Afficher le contenu demandé
-    document.getElementById(cityName).style.display = "block";
-
-    // Activer le bouton correspondant
-    for (i = 0; i < tablinks.length; i++) {
-        if (tablinks[i].textContent.trim() === cityName) {
-            tablinks[i].classList.add("active");
-            break;
-        }
-    }
-}
-document.addEventListener("DOMContentLoaded", function() {
-    activateTab("Accueil");
-});
 </script>
 
 <script>

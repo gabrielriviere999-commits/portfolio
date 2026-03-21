@@ -105,15 +105,15 @@
             <option value="stages.html">Stages</option>
             <option disabled="astuces.html">Astuces</option>
         </select></a>
-        <a href="index.html"><button class="tablinks" onclick="index.html">Accueil</button></a>
-        <a href="bts.html"><button class="tablinks" onclick="bts.html">BTS</button></a>
-        <a href="stages.html"><button class="tablinks" onclick="stages.html">Stages</button></a>
-        <button class="tablinks" onclick="astuces.html">Astuces</button>
+    <a href="index.html"><button>Accueil</button></a>
+    <a href="bts.html"><button>BTS</button></a>
+    <a href="stages.html"><button>Stages</button></a>
+    <a href="astuces.html"><button class="active">Astuces</button></a>
     </div>
 </div>
 
-<!-- Contenu des onglets -->
-<div id="Astuces" class="tabcontent">
+<!-- Contenu -->
+<p style="font-size:80px;"></p>
 <h2>Astuces</h2>
 <p style="text-align:left;">
   <a href="donations.html"
@@ -465,7 +465,6 @@
   </a>
 </p>
 <a href="Astuces/Astuces.zip" download>Tout télécharger</a>
-</div>
 <p style="font-size:150px;"></p>
 <!-- Scripts -->
 <script>
@@ -489,38 +488,6 @@ var supportsTransform = 'transform' in document.body.style;
 if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
 }
-</script>
-
-<script>
-function activateTab(cityName) {
-    var i, tabcontent, tablinks;
-
-    // Masquer tous les contenus
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-
-    // Désactiver tous les onglets
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].classList.remove("active");
-    }
-
-    // Afficher le contenu demandé
-    document.getElementById(cityName).style.display = "block";
-
-    // Activer le bouton correspondant
-    for (i = 0; i < tablinks.length; i++) {
-        if (tablinks[i].textContent.trim() === cityName) {
-            tablinks[i].classList.add("active");
-            break;
-        }
-    }
-}
-document.addEventListener("DOMContentLoaded", function() {
-    activateTab("Astuces");
-});
 </script>
 
 <script>

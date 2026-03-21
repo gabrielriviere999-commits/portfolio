@@ -45,15 +45,15 @@
             <option disabled="stages.html">Stages</option>
             <option value="astuces.html">Astuces</option>
         </select></a>
-        <a href="index.html"><button class="tablinks" onclick="index.html">Accueil</button></a>
-        <a href="bts.html"><button class="tablinks" onclick="bts.html">BTS</button></a>
-        <button class="tablinks" onclick="stages.html">Stages</button>
-        <a href="astuces.html"><button class="tablinks" onclick="astuces.html">Astuces</button></a>
+    <a href="index.html"><button>Accueil</button></a>
+    <a href="bts.html"><button>BTS</button></a>
+    <a href="stages.html"><button class="active">Stages</button></a>
+    <a href="astuces.html"><button>Astuces</button></a>
     </div>
 </div>
 
-<!-- Contenu des onglets -->
-<div id="Stages" class="tabcontent">
+<!-- Contenu -->
+<p style="font-size:80px;"></p>
 <h2>Stages</h2>
 
     <!-- Onglets des établissements -->
@@ -577,15 +577,6 @@ if (!supportsTransform) {
 </script>
 
 <script>
-function openSubTab(evt, tabName) {
-    var i, subtabs;
-    subtabs = document.getElementsByClassName("subtabcontent");
-    for (i = 0; i < subtabs.length; i++) {
-        subtabs[i].style.display = "none";
-    }
-    document.getElementById(tabName).style.display = "block";
-}
-
 function switchTab(tabName, group, elmnt) {
     // Cacher tous les contenus du groupe
     var contents = document.getElementsByClassName(group);
@@ -605,36 +596,6 @@ function switchTab(tabName, group, elmnt) {
     // Ajouter la classe active au bouton cliqué
     if (elmnt) elmnt.classList.add("active");
 }
-
-function activateTab(cityName) {
-    var i, tabcontent, tablinks;
-
-    // Masquer tous les contenus
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-
-    // Désactiver tous les onglets
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].classList.remove("active");
-    }
-
-    // Afficher le contenu demandé
-    document.getElementById(cityName).style.display = "block";
-
-    // Activer le bouton correspondant
-    for (i = 0; i < tablinks.length; i++) {
-        if (tablinks[i].textContent.trim() === cityName) {
-            tablinks[i].classList.add("active");
-            break;
-        }
-    }
-}
-document.addEventListener("DOMContentLoaded", function() {
-    activateTab("Stages");
-});
 </script>
 
 <script>

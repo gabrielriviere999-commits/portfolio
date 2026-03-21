@@ -1,7 +1,7 @@
 /* --- Styles généraux --- */
 body {
     background-color: #C0C0C0;
-    margin: 0;
+    margin: 5;
     padding: 0;
     color: black;
     font-size: 25px;
@@ -72,15 +72,6 @@ body {
 .tab button.active {
     border-color: #808080 #FFFFFF #FFFFFF #808080;
     background: #B0B0B0;
-}
-
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    overflow-x: visible;
-    white-space: nowrap;
-    font-family: monospace;
-    margin-top: 40px;
 }
 
 .win98-select {
@@ -239,10 +230,6 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
 @media screen and (max-device-width: 1280px) and (orientation: portrait) {
     html, body {
         min-width: 950px;
-    }
-
-    .tabcontent {
-        margin-top: 95px;
     }
 
     .navbar .tab button {
