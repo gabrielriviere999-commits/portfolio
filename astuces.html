@@ -860,68 +860,46 @@ function currentSlide(n, group) {
 }
 
 function showSlides(n, group) {
-  var allSlides = document.getElementsByClassName("mySlide");
-  var slides = [];
-  var i;
+    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var thumbs = document.querySelectorAll('.thumbnail[data-group="' + group + '"]');
+    var total = slides.length;
+    var i;
 
-  // Filtrer par data-group
-  for (i = 0; i < allSlides.length; i++) {
-    if (allSlides[i].getAttribute("data-group") === group) {
-      slides.push(allSlides[i]);
+    if (total === 0) return;
+
+    if (n > total) slideIndex[group] = 1;
+    if (n < 1) slideIndex[group] = total;
+
+    // Masquer tous les slides
+    for (i = 0; i < total; i++) {
+        slides[i].style.display = "none";
     }
-  }
 
-  var allThumbs = document.getElementsByClassName("thumbnail");
-  var thumbs = [];
-
-  for (i = 0; i < allThumbs.length; i++) {
-    if (allThumbs[i].getAttribute("data-group") === group) {
-      thumbs.push(allThumbs[i]);
+    // Désactiver toutes les miniatures
+    for (i = 0; i < thumbs.length; i++) {
+        // fallback sans classList
+        thumbs[i].className = thumbs[i].className.replace(" active", "");
     }
-  }
 
-  if (slides.length === 0) {
-    return;
-  }
+    var current = slides[slideIndex[group] - 1];
+    current.style.display = "block";
 
-  if (n > slides.length) {
-    slideIndex[group] = 1;
-  }
-  if (n < 1) {
-    slideIndex[group] = slides.length;
-  }
-
-  // Masquer tous les slides du groupe
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
-  }
-
-  // Désactiver toutes les miniatures du groupe
-  for (i = 0; i < thumbs.length; i++) {
-    thumbs[i].className = thumbs[i].className.replace(" active", "");
-  }
-
-  var current = slides[slideIndex[group] - 1];
-  current.style.display = "block";
-
-  // Lazy-load PDF
-  var iframes = current.getElementsByTagName("iframe");
-  if (iframes.length > 0) {
-    var iframe = iframes[0];
-    var dataSrc = iframe.getAttribute("data-src");
-    if (iframe && !iframe.src && dataSrc) {
-      iframe.src = dataSrc;
+    // Lazy-load iframe
+    var iframe = current.querySelector("iframe[data-src]");
+    if (iframe && !iframe.src) {
+        iframe.src = iframe.getAttribute("data-src");
     }
-  }
 
-  if (thumbs.length > 0 && thumbs[slideIndex[group] - 1]) {
-    thumbs[slideIndex[group] - 1].className += " active";
-  }
+    // Activer la miniature
+    if (thumbs[slideIndex[group] - 1]) {
+        thumbs[slideIndex[group] - 1].className += " active";
+    }
 
-  var counter = document.getElementById("counter-" + group);
-  if (counter) {
-    counter.textContent = slideIndex[group] + " / " + slides.length;
-  }
+    // Mettre à jour le compteur
+    var counter = document.getElementById("counter-" + group);
+    if (counter) {
+        counter.textContent = slideIndex[group] + " / " + total;
+    }
 }
 </script>
 
