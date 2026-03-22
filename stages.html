@@ -913,23 +913,21 @@ if (!supportsTransform) {
 
 <script>
 function switchTab(tabName, group, elmnt) {
-    // Cacher tous les contenus du groupe
     var contents = document.getElementsByClassName(group);
     for (var i = 0; i < contents.length; i++) {
         contents[i].style.display = "none";
     }
 
-    // Enlever la classe active de tous les boutons du groupe
     var buttons = document.getElementsByClassName(group + "_btn");
     for (var i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove("active");
+        buttons[i].className = buttons[i].className.replace(" active", "");
     }
 
-    // Afficher le contenu demandé
     document.getElementById(tabName).style.display = "block";
 
-    // Ajouter la classe active au bouton cliqué
-    if (elmnt) elmnt.classList.add("active");
+    if (elmnt) {
+        elmnt.className += " active";
+    }
 }
 </script>
 
