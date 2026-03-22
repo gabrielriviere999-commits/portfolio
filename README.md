@@ -7,11 +7,10 @@ Sur ce site, vous trouverez principalement des fichiers txt, html, pdf organisé
 Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Rechercher : ouvre la page de recherche de fichiers.
 - Rechercher (nouvel onglet) : ouvre la page de recherche de fichiers dans un nouvel onglet du navigateur.
-- Rechercher (popup) : ouvre la page de recherche de fichiers dans un popup.
 - Liste des fichiers : ouvre la page d'explorateur de fichiers.
 - Soutenir le site : ouvre la page de dons.
 
-Le bouton Q sert à lancer la recherche de fichiers en mode popup.
+Le bouton Q sert à lancer la recherche de fichiers.
 
 Le bouton tab? sert à aller vers un onglet du site, utile sur petits écrans.
 
@@ -26,10 +25,9 @@ On this site, you will find mainly txt, html, pdf files organized in the form of
 To display the site menu, click on the top left button ≡ :
 - Rechercher : opens the file search page.
 - Rechercher (nouvel onglet) : opens the file search page in a new browser tab.
-- Rechercher (popup) : opens the file search page in a popup window.
 - Liste des fichiers : opens the file browser page.
 - Soutenir le site : opens the donation page.
 
-The Q button is used to launch the file search in popup mode.
+The Q button is used to launch the file search.
 
-The tab? button is used to go to a tab of the site, useful on small screens.
+The tab? button is used to go to a tab of the site, useful on small screens
