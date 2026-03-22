@@ -463,7 +463,7 @@ select {
     </div>
 
     <div class="mySlide" data-group="MXLinux">
-        <img src="Astuces/Linux/Montage_partitions_efi_et_root.jpg" loading="lazy">
+        <img data-src="Astuces/Linux/Montage_partitions_efi_et_root.jpg" loading="lazy">
     </div>
     
     <div class="mySlide" data-group="MXLinux">
@@ -475,15 +475,15 @@ select {
     </div>
 
     <div class="mySlide" data-group="MXLinux">
-        <img src="Astuces/Linux/Correction_probleme_fichiers_coupes/gnome-disk-utility.jpg" loading="lazy">
+        <img data-src="Astuces/Linux/Correction_probleme_fichiers_coupes/gnome-disk-utility.jpg" loading="lazy">
     </div>
 
     <div class="mySlide" data-group="MXLinux">
-        <img src="Astuces/Linux/Correction_probleme_fichiers_coupes/Reessayer.jpg" loading="lazy">
+        <img data-src="Astuces/Linux/Correction_probleme_fichiers_coupes/Reessayer.jpg" loading="lazy">
     </div>
 
     <div class="mySlide" data-group="MXLinux">
-        <img src="Astuces/Linux/Correction_probleme_fichiers_coupes/Tout_remplacer.jpg" loading="lazy">
+        <img data-src="Astuces/Linux/Correction_probleme_fichiers_coupes/Tout_remplacer.jpg" loading="lazy">
     </div>
 
     <div class="mySlide" data-group="MXLinux">
@@ -622,23 +622,23 @@ select {
     </div>
 
     <div class="mySlide" data-group="Android">
-        <img src="Astuces/Android/Applications/tableauascii.jpg" loading="lazy">
+        <img data-src="Astuces/Android/Applications/tableauascii.jpg" loading="lazy">
     </div>
 
     <div class="mySlide" data-group="Android">
-        <img src="Astuces/Android/Applications/editeurdetexte.jpg" loading="lazy">
+        <img data-src="Astuces/Android/Applications/editeurdetexte.jpg" loading="lazy">
     </div>
 
     <div class="mySlide" data-group="Android">
-        <img src="Astuces/Android/Applications/extractioncodecouleur.jpg" loading="lazy">
+        <img data-src="Astuces/Android/Applications/extractioncodecouleur.jpg" loading="lazy">
     </div>
 
     <div class="mySlide" data-group="Android">
-        <img src="Astuces/Android/Applications/selecteurcouleur.jpg" loading="lazy">
+        <img data-src="Astuces/Android/Applications/selecteurcouleur.jpg" loading="lazy">
     </div>
 
     <div class="mySlide" data-group="Android">
-        <img src="Astuces/Android/Applications/ocrecran.jpg" loading="lazy">
+        <img data-src="Astuces/Android/Applications/ocrecran.jpg" loading="lazy">
     </div>
 
     <button class="prev" onclick="plusSlides(-1, 'Android')"><</button>
@@ -888,6 +888,12 @@ function showSlides(n, group) {
     var iframe = current.querySelector("iframe[data-src]");
     if (iframe && !iframe.src) {
         iframe.src = iframe.getAttribute("data-src");
+    }
+
+    // Lazy-load image
+    var img = current.querySelector("img[data-src]");
+    if (img && !img.src) {
+        img.src = img.getAttribute("data-src");
     }
 
     // Activer la miniature

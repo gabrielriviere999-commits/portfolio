@@ -503,6 +503,12 @@ function showSlides(n, group) {
         iframe.src = iframe.getAttribute("data-src");
     }
 
+    // Lazy-load image
+    var img = current.querySelector("img[data-src]");
+    if (img && !img.src) {
+        img.src = img.getAttribute("data-src");
+    }
+
     // Activer la miniature
     if (thumbs[slideIndex[group] - 1]) {
         thumbs[slideIndex[group] - 1].className += " active";

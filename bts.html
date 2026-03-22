@@ -419,7 +419,7 @@ select {
     </div>
 
     <div class="mySlide" data-group="IP_et_routage">
-        <img src="Docs_BTS/IP_et_routage/Poster_IPv6.png" loading="lazy">
+        <img data-src="Docs_BTS/IP_et_routage/Poster_IPv6.png" loading="lazy">
     </div>
     
     <button class="prev" onclick="plusSlides(-1, 'IP_et_routage')"><</button>
@@ -689,6 +689,12 @@ function showSlides(n, group) {
     var iframe = current.querySelector("iframe[data-src]");
     if (iframe && !iframe.src) {
         iframe.src = iframe.getAttribute("data-src");
+    }
+
+    // Lazy-load image
+    var img = current.querySelector("img[data-src]");
+    if (img && !img.src) {
+        img.src = img.getAttribute("data-src");
     }
 
     // Activer la miniature
