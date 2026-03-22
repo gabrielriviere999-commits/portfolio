@@ -89,7 +89,7 @@ body {
     justify-content: center;
 }
 
-.tab a {
+.tab a, .win98-select {
     text-decoration: none;
 }
 
@@ -407,8 +407,6 @@ select {
         onchange="
             if(this.value==='__search__'){
                 window.open('search.html','_blank');
-            } else if(this.value==='__search_popup__'){
-                openPopupSearch();
             } else if(this.value!==''){
                 location.href=this.value;
             }
@@ -417,12 +415,11 @@ select {
     <option value="">≡</option>
     <option value="search.html">Rechercher</option>
     <option value="__search__">Rechercher (nouvel onglet)</option>
-	<option value="__search_popup__">Rechercher (popup)</option>
     <option value="liste_fichiers.html">Liste des fichiers</option>
     <option value="README.md">README.md</option>
     <option value="donations.html">Soutenir le site</option>
 </select>
-<button class="win98-select" onclick="openPopupSearch()">Q</button>
+<a href="search.html" class="win98-select">Q</a>
     <div class="tab">
 		<a><select class="win98-select" aria-label="Basculer vers onglet du site"
         onchange="
@@ -962,85 +959,6 @@ function openFullscreen(group) {
     }
 
     console.log("Aucun contenu ouvrable trouvé dans cette slide");
-}
-</script>
-
-<!-- POPUP RECHERCHE -->
-<div id="popup-search" style="
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.3);
-  z-index:9999;
-" onclick="closePopupSearch(event)">
-
-  <div style="
-    position:absolute;
-    top:5%;
-    left:5%;
-    width:90%;
-    height:90%;
-    background:#C0C0C0;
-    border:2px solid #fff;
-    border-right-color:#404040;
-    border-bottom-color:#404040;
-  ">
-
-    <!-- Barre de titre Win98 -->
-    <div style="
-      background:#000080;
-      color:white;
-      padding:4px;
-      font-family:sans-serif;
-      font-size:14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    ">
-      <span>Recherche</span>
-
-      <!-- Bouton X Win98 -->
-      <button onclick="closePopupSearch()" 
-        style="
-          width:20px;
-          height:20px;
-          background:#C0C0C0;
-          border:2px solid #fff;
-          border-right-color:#404040;
-          border-bottom-color:#404040;
-          font-weight:bold;
-          cursor:pointer;
-          padding:0;
-          margin:0;
-        "
-        onmouseover="this.style.background='#E0E0E0'"
-        onmouseout="this.style.background='#C0C0C0'"
-        onmousedown="this.style.border='2px solid #404040'; this.style.borderRightColor='#fff'; this.style.borderBottomColor='#fff';"
-        onmouseup="this.style.border='2px solid #fff'; this.style.borderRightColor='#404040'; this.style.borderBottomColor='#404040';"
-      >X</button>
-    </div>
-
-    <!-- Contenu -->
-    <iframe src="search.html" style="
-      width:100%;
-      height:calc(100% - 28px);
-      border:none;
-    "></iframe>
-
-  </div>
-</div>
-<script>
-function openPopupSearch() {
-  document.getElementById("popup-search").style.display = "block";
-}
-
-function closePopupSearch(e) {
-  if (!e || e.target.id === "popup-search") {
-    document.getElementById("popup-search").style.display = "none";
-  }
 }
 </script>
 </main>
