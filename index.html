@@ -19,6 +19,10 @@ body {
     overflow-x: auto;
 }
 
+.win98-btn { padding:2px 6px; background:#C0C0C0; border:2px solid #fff; border-right-color:#404040; border-bottom-color:#404040; text-decoration:none; display:inline-block; color:black; }
+.win98-btn:active { border:2px solid #404040; border-right-color:#fff; border-bottom-color:#fff; }
+.win98-btn:hover { background:#E0E0E0; }
+
 /* --- Barre de navigation --- */
 .navbar {
     background-color: rgba(0, 0, 0, .2);
@@ -142,108 +146,6 @@ body {
     background: #B0B0B0;
 }
 
-/* --- Galerie slideshow --- */
-.slideshow-container {
-  position: relative;
-  max-width: 100%;
-  margin-left: 0;
-  margin-right: auto;
-}
-
-.mySlide {
-  display: none;
-  width: 100%;
-  height: 280px;
-  height: 70vh;
-  overflow: hidden;
-  text-align: left;
-  /* Effet enfoncé */
-  border: 2px solid;
-  border-color: #808080 #FFFFFF #FFFFFF #808080;
-  background-color: #C0C0C0;
-  padding: 4px;
-}
-
-.mySlide img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-.mySlide iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  overflow-x: auto;
-  overflow-y: auto;
-  display: block;
-}
-
-/* Empêche le dark mode forcé uniquement pour les iframes TXT/HTML */
-iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
-    color-scheme: light;
-    background-color: #C0C0C0;
-}
-
-.thumbnail-row {
-  display: block;
-  white-space: normal;
-  padding: 4px;
-  box-sizing: border-box;
-  margin-top: 10px;
-  font-size: 0;
-}
-
-.thumbnail {
-  display: inline-block;
-  vertical-align: top;
-  width: 80px;
-  height: 60px;
-  margin: 2px;
-  object-fit: cover;
-  border: 2px solid #000;
-  cursor: pointer;
-  font-size: 40px;
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-
-.thumbnail:hover {
-  opacity: 0.7;
-}
-
-.thumbnail.active {
-  border: 2px solid #00f;
-  opacity: 1;
-}
-
-.prev, .next, .openfullscreen {
-  background: #C0C0C0;
-  border: 2px solid;
-  border-color: #FFFFFF #808080 #808080 #FFFFFF;
-  font-family: monospace;
-  font-size: 22px;
-  color: black;
-  padding: 1px 10px;
-  user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-
-/* Effet bouton enfoncé */
-.prev:active, .next:active, .openfullscreen:active {
-  border-color: #808080 #FFFFFF #FFFFFF #808080;
-  background: #B0B0B0;
-}
-
-.slide-counter {
-  position: absolute;
-  bottom: 0px;
-  left: 180px;
-  font-size: 25px;
-}
-
 /* --- MODE MOBILE --- */
 @media screen and (max-device-width: 1280px) and (orientation: portrait) {
     html, body {
@@ -276,67 +178,12 @@ iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
         line-height: normal;
         box-sizing: border-box;
     }
-
-    .mySlide {
-        height: calc(75vh + 200px);
-    }
-
-    .prev,
-    .next,
-    .openfullscreen {
-        font-size: 32px;
-        padding: 10px 18px;
-        border-width: 3px;
-        min-width: 70px;
-        min-height: 50px;
-        line-height: 30px;
-        box-sizing: border-box;
-    }
-
-    .slide-counter {
-        font-size: 32px;
-        bottom: 8px;
-        left: 280px;
-    }
 }
 
 @media screen and (max-device-width: 1280px) and (orientation: landscape) {
     html, body {
         min-width: 950px;
     }
-
-    .prev,
-    .next,
-    .openfullscreen {
-        font-size: 28px;
-    }
-
-    .mySlide {
-		height: 240px;
-        height: calc(50vh + 150px);
-    }
-}
-
-/* --- Bouton de téléchargement --- */
-.dl-btn {
-    display: inline-block;
-    padding: 10px 15px;
-    margin: 5px 0;
-    background-color: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.dl-btn:hover {
-    background-color: #3e8e41;
-}
-
-select {
-    height: 40px;
-    line-height: 40px;
-    color: brown;
 }
 </style>
 </head>
@@ -384,29 +231,13 @@ select {
 <!-- Contenu -->
 <p style="font-size:80px;"></p>
 <h2>Accueil</h2>
-<div class="slideshow-container" data-group="Accueil">
-
-    <div class="mySlide" data-group="Accueil">
-        <iframe src="Accueil/tableau_synthese_E5-2025.html" title="Tableau de synthèse E5 2025"></iframe>
-    </div>
-
-    <div class="mySlide" data-group="Accueil">
-        <iframe data-src="Accueil/CV_Riviere_Gabriel.pdf" title="CV de Rivière Gabriel"></iframe>
-    </div>
-
-    <button class="prev" onclick="plusSlides(-1, 'Accueil')"><</button>
-    <button class="next" onclick="plusSlides(1, 'Accueil')">></button>
-    <button class="openfullscreen" onclick="openFullscreen('Accueil')">□</button>
-    <div id="counter-Accueil" class="slide-counter"></div>
-</div>
-
-<div class="thumbnail-row">
-    <div class="thumbnail" data-group="Accueil" onclick="currentSlide(1, 'Accueil')">TS</div>
-    <div class="thumbnail" data-group="Accueil" onclick="currentSlide(2, 'Accueil')">CV</div>
-</div>
-<a href="Accueil/tableau_synthese_E5-2025.ods" download>Télécharger tableau_synthese_E5-2025.ods</a>
+<iframe src="Accueil/tableau_synthese_E5-2025.html" style="width:100%; height:70vh"></iframe>
+<a href="Accueil/tableau_synthese_E5-2025.ods" class="win98-btn" download>Télécharger tableau_synthese_E5-2025.ods</a>
+<p></p>
+<a href="Accueil/CV_Riviere_Gabriel.pdf" class="win98-btn">Ouvrir le CV</a>
 </div>
 <p style="font-size:150px;"></p>
+
 <!-- Scripts -->
 <script>
 var lastScroll = 0;
@@ -429,140 +260,6 @@ var supportsTransform = 'transform' in document.body.style;
 if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
 }
-</script>
-
-<script>
-function downloadFile(select) {
-    const file = select.value;
-    if (!file) return;
-
-    // Teste si le navigateur supporte l'attribut download
-    const a = document.createElement("a");
-    const supportsDownload = "download" in a;
-
-    if (supportsDownload) {
-        // Mode normal : téléchargement
-        a.href = file;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-    } else {
-        // Mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
-        window.open(file, "_blank");
-    }
-
-    // Réinitialise le menu
-    select.value = "";
-}
-</script>
-
-<script>
-var slideIndex = {
-  Accueil: 0
-};
-
-function plusSlides(n, group) {
-  slideIndex[group] = slideIndex[group] + n;
-  showSlides(slideIndex[group], group);
-}
-
-function currentSlide(n, group) {
-  slideIndex[group] = n;
-  showSlides(slideIndex[group], group);
-}
-
-function showSlides(n, group) {
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
-    var thumbs = document.querySelectorAll('.thumbnail[data-group="' + group + '"]');
-    var total = slides.length;
-    var i;
-
-    if (total === 0) return;
-
-    if (n > total) slideIndex[group] = 1;
-    if (n < 1) slideIndex[group] = total;
-
-    // Masquer tous les slides
-    for (i = 0; i < total; i++) {
-        slides[i].style.display = "none";
-    }
-
-    // Désactiver toutes les miniatures
-    for (i = 0; i < thumbs.length; i++) {
-        // fallback sans classList
-        thumbs[i].className = thumbs[i].className.replace(" active", "");
-    }
-
-    var current = slides[slideIndex[group] - 1];
-    current.style.display = "block";
-
-    // Lazy-load iframe
-    var iframe = current.querySelector("iframe[data-src]");
-    if (iframe && !iframe.src) {
-        iframe.src = iframe.getAttribute("data-src");
-    }
-
-    // Lazy-load image
-    var img = current.querySelector("img[data-src]");
-    if (img && !img.src) {
-        img.src = img.getAttribute("data-src");
-    }
-
-    // Activer la miniature
-    if (thumbs[slideIndex[group] - 1]) {
-        thumbs[slideIndex[group] - 1].className += " active";
-    }
-
-    // Mettre à jour le compteur
-    var counter = document.getElementById("counter-" + group);
-    if (counter) {
-        counter.textContent = slideIndex[group] + " / " + total;
-    }
-}
-</script>
-
-<script>
-function openFullscreen(group) {
-    var index = slideIndex[group] || 1;
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
-    if (slides.length === 0) return;
-
-    var activeSlide = slides[index - 1];
-    if (!activeSlide) return;
-
-    // 1) iframe (HTML, TXT, PDF)
-    var iframe = activeSlide.querySelector("iframe");
-    if (iframe) {
-        var url = iframe.src || iframe.getAttribute("data-src");
-        if (url) {
-            window.open(url, "_blank");
-            return;
-        }
-    }
-
-    // 2) image
-    var img = activeSlide.querySelector("img");
-    if (img && img.src) {
-        window.open(img.src, "_blank");
-        return;
-    }
-
-    // 3) vidéo
-    var video = activeSlide.querySelector("video");
-    if (video && video.src) {
-        window.open(video.src, "_blank");
-        return;
-    }
-
-    console.log("Aucun contenu ouvrable trouvé dans cette slide");
-}
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    currentSlide(1, "Accueil");
-});
 </script>
 </main>
 </body>
