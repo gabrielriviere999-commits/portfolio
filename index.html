@@ -146,43 +146,10 @@ body {
     background: #B0B0B0;
 }
 
-/* --- MODE MOBILE --- */
-@media screen and (max-device-width: 1280px) and (orientation: portrait) {
-    html, body {
-        min-width: 950px;
-    }
-
-    .navbar .tab button, .navbar .tab span {
-        font-size: 20px;
-        padding: 6px 12px;
-        border-width: 3px;
-        height: 60px;
-        line-height: normal;
-    }
-
-    .win98-select {
-        font-size: 20px;
-        width: 60px;
-        height: 60px;
-        line-height: normal;
-        border-width: 3px;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    .tab:not(.navbar .tab) button, .tab:not(.navbar .tab) span {
-        font-size: 22px;
-        padding: 6px 12px;
-        border-width: 3px;
-        height: 60px;
-        line-height: normal;
-        box-sizing: border-box;
-    }
-}
-
-@media screen and (max-device-width: 1280px) and (orientation: landscape) {
-    html, body {
-        min-width: 950px;
+/* --- Mode mobile --- */
+@media screen and (max-width: 720px) {
+    iframe {
+        zoom: 0.5;
     }
 }
 </style>
