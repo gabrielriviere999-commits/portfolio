@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau HTML</title>
+<style>
+body { background-color: #C0C0C0; }
+textarea { width: 100%; height: 150px; overflow-x: auto; white-space: pre; }
+pre { background: #eee; padding: 10px; white-space: pre; }
+button { margin-top: 10px; padding: 6px 10px; }
+</style>
+</head>
+<body>			
+
+<h3>Tableau HTML</h3>
+
+Séparateur : <input id="sep" value=";" size="1">
+<br><br>
+Texte : <input type="color" id="txtcolor" value="#000000">
+Fond : <input type="color" id="bgcolor" value="#ffffff">
+Bordure : <input type="color" id="bordercolor" value="#000000">
+Épaisseur : <input type="number" id="borderwidth" value="1" min="0" max="10" style="width:50px;">
+Alignement :
+<select id="align">
+  <option value="left">Gauche</option>
+  <option value="center">Centre</option>
+  <option value="right">Droite</option>
+</select>
+&nbsp;&nbsp;
+<button onclick="resetParams()" style="background-color:#ff4444; color:black;">Valeurs par défaut</button>
+
+<br><br>
+<textarea id="input"></textarea>
+
+<br>
+<button onclick="convertir()" style="background-color:#ff8800; color:black;">Convertir</button>
+<button onclick="copier()" style="background-color:#4CAF50; color:black;">Copier</button>
+<button onclick="effacerTout()" style="background-color:#ff4444; color:black;">Effacer tout</button>
+
+<h3>Résultat</h3>
+<textarea id="output" style="width:100%; height:200px; font-family:monospace; white-space:pre;"></textarea>
+
+<h3>Aperçu</h3>
+<div id="preview" style="background:white; padding:10px;"></div>
+
+<script>
+// ------------------------------
+// Compatibilité maximale (ES3)
+// ------------------------------
+
+function setText(el, txt) {
+    if (el.textContent !== undefined) el.textContent = txt;
+    else el.innerText = txt; // IE6/IE7
+}
+
+function getText(el) {
+    return (el.textContent !== undefined) ? el.textContent : el.innerText;
+}
+
+function escapeHTML(str) {
+  if (!str) return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function htmlTable(rows, txt, bg, border, bw, align) {
+  if (!rows || !rows.length) return "";
+
+  var maxCols = 0;
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].length > maxCols) maxCols = rows[i].length;
+  }
+
+  var cellStyle =
+    "color:" + txt + ";" +
+    "background:" + bg + ";" +
+    "border:" + bw + "px solid " + border + ";" +
+    "padding:4px;" +
+    "text-align:" + align + ";";
+
+  var out = '<table border="' + bw + '" cellspacing="0" cellpadding="4" style="border:' + bw + 'px solid ' + border + ';">\n';
+
+  for (var r = 0; r < rows.length; r++) {
+    out += "  <tr>\n";
+
+    for (var c = 0; c < maxCols; c++) {
+      var cell = rows[r][c];
+
+      if (cell) {
+        while (cell.length && (cell.charAt(0) === " " || cell.charAt(0) === "\t")) {
+          cell = cell.substring(1);
+        }
+        while (cell.length && (cell.charAt(cell.length - 1) === " " || cell.charAt(cell.length - 1) === "\t")) {
+          cell = cell.substring(0, cell.length - 1);
+        }
+      }
+
+      if (!cell) cell = "&nbsp;";
+
+      if (cell === "&nbsp;") {
+        out += '    <td style="' + cellStyle + '">&nbsp;</td>\n';
+      } else {
+        out += '    <td style="' + cellStyle + '">' + escapeHTML(cell) + "</td>\n";
+      }
+    }
+
+    out += "  </tr>\n";
+  }
+
+  out += "</table>";
+  return out;
+}
+
+// ------------------------------
+// Conversion
+// ------------------------------
+function convertir() {
+  var texte = document.getElementById("input").value;
+  var sep = document.getElementById("sep").value || ";";
+  var align = document.getElementById("align").value;
+
+  if (!texte) {
+    document.getElementById("output").textContent = "Aucune donnée.";
+    return;
+  }
+
+  // Récupération des couleurs
+  var txt = document.getElementById("txtcolor").value;
+  var bg = document.getElementById("bgcolor").value;
+  var border = document.getElementById("bordercolor").value;
+  var bw = document.getElementById("borderwidth").value;
+
+  // Conversion CSV → tableau JS
+  var lignes = texte.split("\n");
+  var rows = [];
+  for (var i = 0; i < lignes.length; i++) {
+    rows.push(lignes[i].split(sep));
+  }
+
+  // Génération du tableau HTML (MAINTENANT rows existe)
+  var table = htmlTable(rows, txt, bg, border, bw, align);
+
+  // Affichage dans le textarea (modif)
+  document.getElementById("output").value = table;
+
+  // Aperçu réel
+  document.getElementById("preview").innerHTML = table;
+
+  // Aperçu réel
+  document.getElementById("preview").innerHTML = table;
+}
+
+// Bouton copier compatible anciens navigateurs
+function copier() {
+  var texte = document.getElementById("output").value;
+
+  var temp = document.createElement("textarea");
+  temp.value = texte;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (e) {}
+
+  document.body.removeChild(temp);
+
+  // --- Feedback visuel ---
+  var btn = event.target; // le bouton qui a été cliqué
+  var old = btn.textContent;
+  btn.textContent = "Copié !";
+
+  setTimeout(function() {
+    btn.textContent = old;
+  }, 800);
+}
+
+// Bouton Effacer tout
+function effacerTout() {
+  document.getElementById("input").value = "";
+  document.getElementById("output").value = "";
+  document.getElementById("preview").innerHTML = "";
+
+  // Efface la sauvegarde
+  localStorage.removeItem("input_text");
+  localStorage.removeItem("output_text");
+}
+
+function resetParams() {
+  document.getElementById("sep").value = ";";
+  document.getElementById("txtcolor").value = "#000000";
+  document.getElementById("bgcolor").value = "#ffffff";
+  document.getElementById("bordercolor").value = "#000000";
+  document.getElementById("borderwidth").value = "1";
+  document.getElementById("align").value = "left";
+
+  // Sauvegarde
+  localStorage.setItem("sep", ";");
+  localStorage.setItem("txtcolor", "#000000");
+  localStorage.setItem("bgcolor", "#ffffff");
+  localStorage.setItem("bordercolor", "#000000");
+  localStorage.setItem("borderwidth", "1");
+  localStorage.setItem("align", "left");
+
+  convertir();
+}
+
+// ------------------------------
+// Sauvegarde/Restauration
+// ------------------------------
+
+function saveState() {
+  localStorage.setItem("input_text", document.getElementById("input").value);
+  localStorage.setItem("sep", document.getElementById("sep").value);
+  localStorage.setItem("txtcolor", document.getElementById("txtcolor").value);
+  localStorage.setItem("bgcolor", document.getElementById("bgcolor").value);
+  localStorage.setItem("bordercolor", document.getElementById("bordercolor").value);
+  localStorage.setItem("borderwidth", document.getElementById("borderwidth").value);
+  localStorage.setItem("align", document.getElementById("align").value);
+}
+
+document.getElementById("input").oninput = saveState;
+document.getElementById("sep").oninput = saveState;
+document.getElementById("txtcolor").oninput = function() {
+    saveState();
+    convertir();
+};
+document.getElementById("bgcolor").oninput = function() {
+    saveState();
+    convertir();
+};
+document.getElementById("bordercolor").oninput = function() {
+    saveState();
+    convertir();
+};
+document.getElementById("borderwidth").oninput = function() {
+    saveState();
+    convertir();
+};
+document.getElementById("align").oninput = function() {
+    saveState();
+    convertir();
+};
+document.getElementById("output").oninput = function () {
+    document.getElementById("preview").innerHTML = this.value;
+};
+
+window.onload = function() {
+  var savedInput = localStorage.getItem("input_text");
+  var savedSep = localStorage.getItem("sep");
+  var t = localStorage.getItem("txtcolor");
+  var b = localStorage.getItem("bgcolor");
+  var bc = localStorage.getItem("bordercolor");
+  var bw = localStorage.getItem("borderwidth");
+  var al = localStorage.getItem("align");
+
+  if (savedInput !== null) document.getElementById("input").value = savedInput;
+  if (savedSep !== null) document.getElementById("sep").value = savedSep;
+  if (t) document.getElementById("txtcolor").value = t;
+  if (b) document.getElementById("bgcolor").value = b;
+  if (bc) document.getElementById("bordercolor").value = bc;
+  if (bw) document.getElementById("borderwidth").value = bw;
+  if (al) document.getElementById("align").value = al;
+  convertir();
+};
+</script>
+
+</body>
+</html>
