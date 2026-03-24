@@ -212,26 +212,23 @@ function resetParams() {
 
 function saveState() {
   localStorage.setItem("input_text", document.getElementById("input").value);
-  localStorage.setItem("output_text", getText(document.getElementById("output")));
   localStorage.setItem("sep", document.getElementById("sep").value);
   localStorage.setItem("maxwidth", document.getElementById("maxwidth").value);
 }
 
 document.getElementById("input").oninput = saveState;
-document.getElementById("output").oninput = saveState;
 document.getElementById("sep").oninput = saveState;
 document.getElementById("maxwidth").oninput = saveState;
 
 window.onload = function() {
   var savedInput = localStorage.getItem("input_text");
-  var savedOutput = localStorage.getItem("output_text");
   var savedSep = localStorage.getItem("sep");
   var savedMax = localStorage.getItem("maxwidth");
 
   if (savedInput !== null) document.getElementById("input").value = savedInput;
-  if (savedOutput !== null) setText(document.getElementById("output"), savedOutput);
   if (savedSep !== null) document.getElementById("sep").value = savedSep;
   if (savedMax !== null) document.getElementById("maxwidth").value = savedMax;
+  convertir();
 };
 </script>
 
