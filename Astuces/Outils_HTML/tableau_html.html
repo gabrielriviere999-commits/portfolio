@@ -11,7 +11,7 @@ pre { background: #eee; padding: 10px; white-space: pre; }
 button { margin-top: 10px; padding: 6px 10px; }
 </style>
 </head>
-<body>			
+<body>          
 
 <h3>Tableau HTML</h3>
 
@@ -27,6 +27,8 @@ Alignement :
   <option value="center">Centre</option>
   <option value="right">Droite</option>
 </select>
+<br><br>
+<input type="checkbox" id="limitwidth"> Largeur : <input type="number" id="maxwidth" value="300" min="50" max="2000" style="width:60px;"> px
 &nbsp;&nbsp;
 <button onclick="resetParams()" style="background-color:#ff4444; color:black;">Valeurs par défaut</button>
 
@@ -74,14 +76,28 @@ function htmlTable(rows, txt, bg, border, bw, align) {
     if (rows[i].length > maxCols) maxCols = rows[i].length;
   }
 
+  // Style des cellules : ajout du wrap
   var cellStyle =
     "color:" + txt + ";" +
     "background:" + bg + ";" +
     "border:" + bw + "px solid " + border + ";" +
     "padding:4px;" +
-    "text-align:" + align + ";";
+    "text-align:" + align + ";" +
+    "word-wrap:break-word;" +
+    "overflow-wrap:break-word;";
 
-  var out = '<table border="' + bw + '" cellspacing="0" cellpadding="4" style="border:' + bw + 'px solid ' + border + ';">\n';
+  // Style du tableau
+  var tableStyle = "border:" + bw + "px solid " + border + ";";
+
+  // Limitation de largeur si coché
+  var limitEl = document.getElementById("limitwidth");
+  if (limitEl && limitEl.checked) {
+    var mwEl = document.getElementById("maxwidth");
+    var mw = mwEl ? mwEl.value : "300";
+    tableStyle += "width:" + mw + "px;table-layout:fixed;";
+  }
+
+  var out = '<table border="' + bw + '" cellspacing="0" cellpadding="4" style="' + tableStyle + '">\n';
 
   for (var r = 0; r < rows.length; r++) {
     out += "  <tr>\n";
@@ -123,33 +139,25 @@ function convertir() {
   var align = document.getElementById("align").value;
 
   if (!texte) {
-    document.getElementById("output").textContent = "Aucune donnée.";
+    document.getElementById("output").value = "Aucune donnée.";
+    document.getElementById("preview").innerHTML = "";
     return;
   }
 
-  // Récupération des couleurs
   var txt = document.getElementById("txtcolor").value;
   var bg = document.getElementById("bgcolor").value;
   var border = document.getElementById("bordercolor").value;
   var bw = document.getElementById("borderwidth").value;
 
-  // Conversion CSV → tableau JS
   var lignes = texte.split("\n");
   var rows = [];
   for (var i = 0; i < lignes.length; i++) {
     rows.push(lignes[i].split(sep));
   }
 
-  // Génération du tableau HTML (MAINTENANT rows existe)
   var table = htmlTable(rows, txt, bg, border, bw, align);
 
-  // Affichage dans le textarea (modif)
   document.getElementById("output").value = table;
-
-  // Aperçu réel
-  document.getElementById("preview").innerHTML = table;
-
-  // Aperçu réel
   document.getElementById("preview").innerHTML = table;
 }
 
@@ -166,8 +174,7 @@ function copier() {
 
   document.body.removeChild(temp);
 
-  // --- Feedback visuel ---
-  var btn = event.target; // le bouton qui a été cliqué
+  var btn = event.target;
   var old = btn.textContent;
   btn.textContent = "Copié !";
 
@@ -182,11 +189,11 @@ function effacerTout() {
   document.getElementById("output").value = "";
   document.getElementById("preview").innerHTML = "";
 
-  // Efface la sauvegarde
   localStorage.removeItem("input_text");
   localStorage.removeItem("output_text");
 }
 
+// Valeurs par défaut
 function resetParams() {
   document.getElementById("sep").value = ";";
   document.getElementById("txtcolor").value = "#000000";
@@ -194,14 +201,17 @@ function resetParams() {
   document.getElementById("bordercolor").value = "#000000";
   document.getElementById("borderwidth").value = "1";
   document.getElementById("align").value = "left";
+  document.getElementById("limitwidth").checked = false;
+  document.getElementById("maxwidth").value = "300";
 
-  // Sauvegarde
   localStorage.setItem("sep", ";");
   localStorage.setItem("txtcolor", "#000000");
   localStorage.setItem("bgcolor", "#ffffff");
   localStorage.setItem("bordercolor", "#000000");
   localStorage.setItem("borderwidth", "1");
   localStorage.setItem("align", "left");
+  localStorage.setItem("limitwidth", "0");
+  localStorage.setItem("maxwidth", "300");
 
   convertir();
 }
@@ -218,32 +228,45 @@ function saveState() {
   localStorage.setItem("bordercolor", document.getElementById("bordercolor").value);
   localStorage.setItem("borderwidth", document.getElementById("borderwidth").value);
   localStorage.setItem("align", document.getElementById("align").value);
+  localStorage.setItem("limitwidth", document.getElementById("limitwidth").checked ? "1" : "0");
+  localStorage.setItem("maxwidth", document.getElementById("maxwidth").value);
 }
 
 document.getElementById("input").oninput = saveState;
 document.getElementById("sep").oninput = saveState;
+
 document.getElementById("txtcolor").oninput = function() {
-    saveState();
-    convertir();
+  saveState();
+  convertir();
 };
 document.getElementById("bgcolor").oninput = function() {
-    saveState();
-    convertir();
+  saveState();
+  convertir();
 };
 document.getElementById("bordercolor").oninput = function() {
-    saveState();
-    convertir();
+  saveState();
+  convertir();
 };
 document.getElementById("borderwidth").oninput = function() {
-    saveState();
-    convertir();
+  saveState();
+  convertir();
 };
 document.getElementById("align").oninput = function() {
-    saveState();
-    convertir();
+  saveState();
+  convertir();
 };
+document.getElementById("limitwidth").oninput = function() {
+  saveState();
+  convertir();
+};
+document.getElementById("maxwidth").oninput = function() {
+  saveState();
+  convertir();
+};
+
+// Edition manuelle du HTML
 document.getElementById("output").oninput = function () {
-    document.getElementById("preview").innerHTML = this.value;
+  document.getElementById("preview").innerHTML = this.value;
 };
 
 window.onload = function() {
@@ -254,6 +277,8 @@ window.onload = function() {
   var bc = localStorage.getItem("bordercolor");
   var bw = localStorage.getItem("borderwidth");
   var al = localStorage.getItem("align");
+  var lw = localStorage.getItem("limitwidth");
+  var mw = localStorage.getItem("maxwidth");
 
   if (savedInput !== null) document.getElementById("input").value = savedInput;
   if (savedSep !== null) document.getElementById("sep").value = savedSep;
@@ -262,6 +287,9 @@ window.onload = function() {
   if (bc) document.getElementById("bordercolor").value = bc;
   if (bw) document.getElementById("borderwidth").value = bw;
   if (al) document.getElementById("align").value = al;
+  if (lw === "1") document.getElementById("limitwidth").checked = true;
+  if (mw) document.getElementById("maxwidth").value = mw;
+
   convertir();
 };
 </script>
