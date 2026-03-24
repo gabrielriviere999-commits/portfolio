@@ -195,23 +195,29 @@ Mot de passe : zabbix
 
 XIII. Premier pas sur Zabbix
 
-1. Installer l'agent Zabbix
+1. Ajouter le dépôt Zabbix
+
+wget https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian12_all.deb
+sudo dpkg -i zabbix-release_latest+debian12_all.deb
+sudo apt update
+
+2. Installer l'agent Zabbix
 sudo apt install zabbix-agent2
 
-2. Configurer l'agent
+3. Configurer l'agent
 sudo nano /etc/zabbix/zabbix_agent2.conf
 Server=172.20.0.106
 ServerActive=172.20.0.106
 Hostname=debian #Nom de la machine cliente, commande hostname
 
-3. Démarrer et activer l'agent
+4. Démarrer et activer l'agent
 sudo systemctl enable zabbix-agent2
 sudo systemctl start zabbix-agent2
 
 Vérifier l'état :
 systemctl status zabbix-agent2
 
-4. Vérifier la communication avec le serveur Zabbix
+5. Vérifier la communication avec le serveur Zabbix
 zabbix_get -s <IP_du_client> -k agent.ping
 Si tout est OK, vous devriez obtenir : 1
 
