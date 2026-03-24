@@ -1,4 +1,4 @@
-Documentation d'installation et de configuration de GLPI
+# INSTALLATION GLPI
 1) Informations de base
 - Votre nom : GabrielWissam
 - Nom du serveur : glpigabrielwissam

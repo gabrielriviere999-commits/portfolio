@@ -1,10 +1,9 @@
-Documentation : Installation de base d’un serveur web sous Debian
-Cette documentation décrit les étapes essentielles pour installer et configurer un serveur
-web complet avec Apache, PHP, MySQL, BIND9, Postfix et VSFTPD sous Debian.
+Installation de base d'un serveur web sous Debian
+avec Apache, PHP, MySQL, BIND9, Postfix et VSFTPD sous Debian.
 
 II. Installation de base
 II-B. Préparer son serveur
-Avant d’installer quoi que ce soit, il est important de mettre à jour le serveur pour disposer des
+Avant d'installer quoi que ce soit, il est important de mettre à jour le serveur pour disposer des
 dernières versions des paquets et correctifs de sécurité.
 
 1. Se connecter en root sur le serveur.
@@ -18,13 +17,13 @@ changements.
 
 
 II-C. Installer Apache 2 (serveur web)
-Apache est l’un des serveurs HTTP les plus utilisés. Il permet de servir des pages web statiques et
+Apache est l'un des serveurs HTTP les plus utilisés. Il permet de servir des pages web statiques et
 dynamiques.
 
 1. Installer Apache 2 :
 apt-get install apache2
 
-2. Tester l’installation en ouvrant dans un navigateur :
+2. Tester l'installation en ouvrant dans un navigateur :
 http://IP_DU_SERVEUR/
 
 3. Supprimer la redirection par défaut (facultatif) pour accéder directement à la racine
@@ -35,11 +34,11 @@ nano /etc/apache2/sites-available/000-default.conf
 
 
 II-D. Installer PHP 5
-PHP permet d’afficher des pages web dynamiques.
+PHP permet d'afficher des pages web dynamiques.
 1. Installer PHP 5 :
 apt-get install php5
 
-2. Si le paquet n’est pas trouvé, ajouter le dépôt DotDeb :
+2. Si le paquet n'est pas trouvé, ajouter le dépôt DotDeb :
 nano /etc/apt/sources.list
 # Ajouter la ligne suivante :
 deb http://packages.dotdeb.org stable all
@@ -83,7 +82,7 @@ FLUSH PRIVILEGES;
 
 II-F. Installer BIND9 (serveur DNS)
 BIND9 permet de traduire un nom de domaine en adresse IP, rendant le serveur accessible
-via un nom plutôt que l’IP.
+via un nom plutôt que l'IP.
 apt-get install bind9
 
 - La configuration des zones DNS se fait via les fichiers de configuration de BIND.
