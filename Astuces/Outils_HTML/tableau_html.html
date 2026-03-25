@@ -9,6 +9,10 @@ body { background-color: #C0C0C0; }
 textarea { width: 100%; height: 150px; overflow-x: auto; white-space: pre; }
 pre { background: #eee; padding: 10px; white-space: pre; }
 button { margin-top: 10px; padding: 6px 10px; }
+
+.selectedCell {
+    outline: 2px solid blue;
+}
 </style>
 </head>
 <body>          
@@ -159,6 +163,7 @@ function convertir() {
 
   document.getElementById("output").value = table;
   document.getElementById("preview").innerHTML = table;
+  enableCellMerging();
 }
 
 // Bouton copier compatible anciens navigateurs
@@ -268,6 +273,101 @@ document.getElementById("maxwidth").oninput = function() {
 document.getElementById("output").oninput = function () {
   document.getElementById("preview").innerHTML = this.value;
 };
+
+var selectedCell = null;
+
+function enableCellMerging() {
+    var preview = document.getElementById("preview");
+    var cells = preview.getElementsByTagName("td");
+
+    for (var i = 0; i < cells.length; i++) {
+        cells[i].onclick = function() {
+
+            // Sélection simple
+            if (!selectedCell) {
+                selectedCell = this;
+                this.className = "selectedCell";
+                return;
+            }
+
+            // Désélection
+            if (selectedCell === this) {
+                this.className = "";
+                selectedCell = null;
+                return;
+            }
+
+            var cellA = selectedCell;
+            var cellB = this;
+
+            var rowA = cellA.parentNode;
+            var rowB = cellB.parentNode;
+
+            var indexA = -1, indexB = -1;
+
+            // Trouver l'index de colonne
+            var rowCellsA = rowA.getElementsByTagName("td");
+            var rowCellsB = rowB.getElementsByTagName("td");
+
+            for (var j = 0; j < rowCellsA.length; j++)
+                if (rowCellsA[j] === cellA) indexA = j;
+
+            for (var j = 0; j < rowCellsB.length; j++)
+                if (rowCellsB[j] === cellB) indexB = j;
+
+            // -----------------------------
+            // 1) Fusion horizontale
+            // -----------------------------
+            if (rowA === rowB && Math.abs(indexA - indexB) === 1) {
+
+                var first = indexA < indexB ? cellA : cellB;
+                var second = indexA < indexB ? cellB : cellA;
+
+                var colspan = first.getAttribute("colspan");
+                colspan = colspan ? parseInt(colspan, 10) + 1 : 2;
+                first.setAttribute("colspan", colspan);
+
+                second.parentNode.removeChild(second);
+            }
+
+            // -----------------------------
+            // 2) Fusion verticale
+            // -----------------------------
+            else if (indexA === indexB) {
+
+                // Vérifier que les lignes sont adjacentes
+                var table = rowA.parentNode;
+                var rows = table.getElementsByTagName("tr");
+
+                var rowIndexA = -1, rowIndexB = -1;
+
+                for (var r = 0; r < rows.length; r++) {
+                    if (rows[r] === rowA) rowIndexA = r;
+                    if (rows[r] === rowB) rowIndexB = r;
+                }
+
+                if (Math.abs(rowIndexA - rowIndexB) === 1) {
+
+                    var top = rowIndexA < rowIndexB ? cellA : cellB;
+                    var bottom = rowIndexA < rowIndexB ? cellB : cellA;
+
+                    var rowspan = top.getAttribute("rowspan");
+                    rowspan = rowspan ? parseInt(rowspan, 10) + 1 : 2;
+                    top.setAttribute("rowspan", rowspan);
+
+                    bottom.parentNode.removeChild(bottom);
+                }
+            }
+
+            // Nettoyage
+            cellA.className = "";
+            selectedCell = null;
+
+            // Mise à jour du code HTML
+            document.getElementById("output").value = document.getElementById("preview").innerHTML;
+        };
+    }
+}
 
 window.onload = function() {
   var savedInput = localStorage.getItem("input_text");
