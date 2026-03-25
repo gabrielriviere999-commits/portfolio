@@ -272,6 +272,7 @@ document.getElementById("maxwidth").oninput = function() {
 // Edition manuelle du HTML
 document.getElementById("output").oninput = function () {
   document.getElementById("preview").innerHTML = this.value;
+  enableCellMerging();
 };
 
 var selectedCell = null;
