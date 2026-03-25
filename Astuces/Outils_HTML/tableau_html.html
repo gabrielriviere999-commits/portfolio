@@ -367,6 +367,27 @@ function enableCellMerging() {
             // Mise à jour du code HTML
             document.getElementById("output").value = document.getElementById("preview").innerHTML;
         };
+cells[i].ondblclick = function() {
+    var td = this;
+
+    // empêcher la fusion pendant l'édition
+    selectedCell = null;
+    td.className = "";
+
+    td.setAttribute("contenteditable", "true");
+    td.focus();
+
+    td.onblur = function() {
+        td.removeAttribute("contenteditable");
+
+        // mise à jour du code HTML
+        document.getElementById("output").value =
+            document.getElementById("preview").innerHTML;
+
+        // réactiver la fusion
+        enableCellMerging();
+    };
+};
     }
 }
 
