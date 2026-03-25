@@ -61,7 +61,7 @@ Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
 - Shift + Flèches : Sélection
 
 Notes :
-- L’application lit et écrit en UTF-8.
+- L'application lit et écrit en UTF-8.
 - Les caractères invalides apparaissent sous la forme du symbole �.
 - La taille de police suit les réglages du système.
 - Le défilement vertical peut être contrôlé via le bouton "↓".
