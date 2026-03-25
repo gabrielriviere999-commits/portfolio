@@ -158,15 +158,14 @@ pre {
 .mySlide {
   display: none;
   width: 100%;
-  height: 280px;
   height: 70vh;
   overflow: hidden;
   text-align: left;
-  /* Effet enfoncé */
   border: 2px solid;
   border-color: #808080 #FFFFFF #FFFFFF #808080;
   background-color: #C0C0C0;
   padding: 4px;
+  box-sizing: border-box;
 }
 
 .mySlide img {
@@ -175,19 +174,17 @@ pre {
   object-fit: contain;
 }
 
-.mySlide iframe {
+.iframe-holder {
+  width: 100%;
+  height: 100%;
+}
+
+.iframe-holder iframe {
   width: 100%;
   height: 100%;
   border: none;
-  overflow-x: auto;
-  overflow-y: auto;
-  display: block;
-}
-
-/* Empêche le dark mode forcé uniquement pour les iframes TXT/HTML */
-iframe:not([src$=".pdf"]):not([src$=".PDF"]) {
-    color-scheme: light;
-    background-color: #C0C0C0;
+  color-scheme: light;
+  background-color: #C0C0C0;
 }
 
 .thumbnail-row {
@@ -697,47 +694,47 @@ alors réinstallation de Wazuh avec Docker.
 <div class="slideshow-container" data-group="Stage_BTS2">
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Guacamole.html"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Guacamole.html"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Wazuh.html"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Wazuh.html"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Guacamole_config_ens18.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Guacamole_config_ens18.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Installer_Guacamole_sans_JDBC.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Installer_Guacamole_sans_JDBC.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Installer_Guacamole_avec_JDBC.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Installer_Guacamole_avec_JDBC.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Checklist_permissions_Tomcat9.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Checklist_permissions_Tomcat9.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Installer_TOTP.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Installer_TOTP.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Installer_Recording_Storage.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Installer_Recording_Storage.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Guacamole_SSH_SFTP_RDP.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Guacamole_SSH_SFTP_RDP.txt"></div>
     </div>
 
     <div class="mySlide" data-group="Stage_BTS2">
-        <iframe data-src="Stage_BTS2/Installer_Wazuh.txt"></iframe>
+        <div class="iframe-holder" data-src="Stage_BTS2/Installer_Wazuh.txt"></div>
     </div>
     <button class="prev" onclick="plusSlides(-1, 'Stage_BTS2')"><</button>
     <button class="next" onclick="plusSlides(1, 'Stage_BTS2')">></button>
@@ -905,18 +902,11 @@ function showSlides(n, group) {
 
     // Désactiver toutes les miniatures
     for (i = 0; i < thumbs.length; i++) {
-        // fallback sans classList
         thumbs[i].className = thumbs[i].className.replace(" active", "");
     }
 
     var current = slides[slideIndex[group] - 1];
     current.style.display = "block";
-
-    // Lazy-load iframe
-    var iframe = current.querySelector("iframe[data-src]");
-    if (iframe && !iframe.src) {
-        iframe.src = iframe.getAttribute("data-src");
-    }
 
     // Lazy-load image
     var img = current.querySelector("img[data-src]");
@@ -933,6 +923,15 @@ function showSlides(n, group) {
     var counter = document.getElementById("counter-" + group);
     if (counter) {
         counter.textContent = slideIndex[group] + " / " + total;
+    }
+
+    // Création dynamique de l’iframe
+    var holder = current.querySelector(".iframe-holder");
+    if (holder && !holder.dataset.loaded) {
+        var iframe = document.createElement("iframe");
+        iframe.src = holder.getAttribute("data-src");
+        holder.appendChild(iframe);
+        holder.dataset.loaded = "1";
     }
 }
 </script>
