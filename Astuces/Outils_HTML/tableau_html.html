@@ -45,6 +45,7 @@ Alignement :
 <button onclick="effacerTout()" style="background-color:#ff4444; color:black;">Effacer tout</button>
 
 <h3>Résultat</h3>
+<input type="checkbox" id="fusionMode"> Activer la fusion
 <textarea id="output" style="width:100%; height:200px; font-family:monospace; white-space:pre;"></textarea>
 
 <h3>Aperçu</h3>
@@ -277,6 +278,22 @@ document.getElementById("output").oninput = function () {
 
 var selectedCell = null;
 
+function indexInRow(cell) {
+    var tds = cell.parentNode.getElementsByTagName("td");
+    for (var i = 0; i < tds.length; i++) {
+        if (tds[i] === cell) return i;
+    }
+    return -1;
+}
+
+function rowIndex(row) {
+    var rows = row.parentNode.getElementsByTagName("tr");
+    for (var i = 0; i < rows.length; i++) {
+        if (rows[i] === row) return i;
+    }
+    return -1;
+}
+
 function enableCellMerging() {
     var preview = document.getElementById("preview");
     var cells = preview.getElementsByTagName("td");
@@ -284,89 +301,69 @@ function enableCellMerging() {
     for (var i = 0; i < cells.length; i++) {
         cells[i].onclick = function() {
 
-            // Sélection simple
-            if (!selectedCell) {
-                selectedCell = this;
-                this.className = "selectedCell";
-                return;
-            }
+    // Si la fusion n'est pas activée → ne rien faire
+    if (!document.getElementById("fusionMode").checked) {
+        return;
+    }
 
-            // Désélection
-            if (selectedCell === this) {
-                this.className = "";
-                selectedCell = null;
-                return;
-            }
+    if (!selectedCell) {
+        selectedCell = this;
+        this.className = "selectedCell";
+        return;
+    }
 
-            var cellA = selectedCell;
-            var cellB = this;
+    if (selectedCell === this) {
+        this.className = "";
+        selectedCell = null;
+        return;
+    }
 
-            var rowA = cellA.parentNode;
-            var rowB = cellB.parentNode;
+    var A = selectedCell;
+    var B = this;
+    A.className = "";
+    selectedCell = null;
 
-            var indexA = -1, indexB = -1;
+    var rowA = A.parentNode;
+    var rowB = B.parentNode;
 
-            // Trouver l'index de colonne
-            var rowCellsA = rowA.getElementsByTagName("td");
-            var rowCellsB = rowB.getElementsByTagName("td");
+    var indexA = indexInRow(A);
+    var indexB = indexInRow(B);
 
-            for (var j = 0; j < rowCellsA.length; j++)
-                if (rowCellsA[j] === cellA) indexA = j;
+    // Fusion horizontale
+    if (rowA === rowB && Math.abs(indexA - indexB) === 1) {
+        var first = indexA < indexB ? A : B;
+        var second = indexA < indexB ? B : A;
 
-            for (var j = 0; j < rowCellsB.length; j++)
-                if (rowCellsB[j] === cellB) indexB = j;
+        var colspan = first.getAttribute("colspan");
+        colspan = colspan ? parseInt(colspan,10)+1 : 2;
+        first.setAttribute("colspan", colspan);
 
-            // -----------------------------
-            // 1) Fusion horizontale
-            // -----------------------------
-            if (rowA === rowB && Math.abs(indexA - indexB) === 1) {
+        second.parentNode.removeChild(second);
+    }
 
-                var first = indexA < indexB ? cellA : cellB;
-                var second = indexA < indexB ? cellB : cellA;
+    // Fusion verticale
+    else if (indexA === indexB) {
+        var table = rowA.parentNode;
+        var rows = table.getElementsByTagName("tr");
 
-                var colspan = first.getAttribute("colspan");
-                colspan = colspan ? parseInt(colspan, 10) + 1 : 2;
-                first.setAttribute("colspan", colspan);
+        var rA = rowIndex(rowA);
+        var rB = rowIndex(rowB);
 
-                second.parentNode.removeChild(second);
-            }
+        if (Math.abs(rA - rB) === 1) {
+            var top = rA < rB ? A : B;
+            var bottom = rA < rB ? B : A;
 
-            // -----------------------------
-            // 2) Fusion verticale
-            // -----------------------------
-            else if (indexA === indexB) {
+            var rowspan = top.getAttribute("rowspan");
+            rowspan = rowspan ? parseInt(rowspan,10)+1 : 2;
+            top.setAttribute("rowspan", rowspan);
 
-                // Vérifier que les lignes sont adjacentes
-                var table = rowA.parentNode;
-                var rows = table.getElementsByTagName("tr");
+            bottom.parentNode.removeChild(bottom);
+        }
+    }
 
-                var rowIndexA = -1, rowIndexB = -1;
-
-                for (var r = 0; r < rows.length; r++) {
-                    if (rows[r] === rowA) rowIndexA = r;
-                    if (rows[r] === rowB) rowIndexB = r;
-                }
-
-                if (Math.abs(rowIndexA - rowIndexB) === 1) {
-
-                    var top = rowIndexA < rowIndexB ? cellA : cellB;
-                    var bottom = rowIndexA < rowIndexB ? cellB : cellA;
-
-                    var rowspan = top.getAttribute("rowspan");
-                    rowspan = rowspan ? parseInt(rowspan, 10) + 1 : 2;
-                    top.setAttribute("rowspan", rowspan);
-
-                    bottom.parentNode.removeChild(bottom);
-                }
-            }
-
-            // Nettoyage
-            cellA.className = "";
-            selectedCell = null;
-
-            // Mise à jour du code HTML
-            document.getElementById("output").value = document.getElementById("preview").innerHTML;
-        };
+    document.getElementById("output").value = document.getElementById("preview").innerHTML;
+    enableCellMerging();
+};
 cells[i].ondblclick = function() {
     var td = this;
 
