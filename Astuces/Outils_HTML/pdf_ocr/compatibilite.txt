@@ -44,6 +44,6 @@ Navigateurs non supportés / très limités :
 
 Notes :
 - Des appareils plus anciens (ex : Android 4.4 + Firefox 68) peuvent parfois fonctionner,
-  mais ce n’est PAS garanti et ce n’est pas une cible officielle.
+  mais ce n'est PAS garanti et ce n'est pas une cible officielle.
 - Windows XP est considéré comme non supporté, même si certains navigateurs tiers
   peuvent charger partiellement la page.
