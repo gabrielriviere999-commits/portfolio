@@ -50,6 +50,8 @@ Alignement :
 <h3>Aperçu</h3>
 <input type="checkbox" id="fusionMode"> Activer la fusion
 <div id="preview" style="background:white; padding:10px;"></div>
+<button onclick="deleteSelectedRow()">Supprimer ligne</button>
+<button onclick="deleteSelectedColumn()">Supprimer colonne</button>
 
 <script>
 // ------------------------------
@@ -292,6 +294,42 @@ function rowIndex(row) {
         if (rows[i] === row) return i;
     }
     return -1;
+}
+
+function deleteSelectedRow() {
+    if (!selectedCell) return;
+
+    var row = selectedCell.parentNode;
+    row.parentNode.removeChild(row);
+
+    selectedCell = null;
+
+    document.getElementById("output").value =
+        document.getElementById("preview").innerHTML;
+
+    enableCellMerging();
+}
+
+function deleteSelectedColumn() {
+    if (!selectedCell) return;
+
+    var colIndex = indexInRow(selectedCell);
+    var table = selectedCell.parentNode.parentNode;
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var tds = rows[i].getElementsByTagName("td");
+        if (tds[colIndex]) {
+            rows[i].removeChild(tds[colIndex]);
+        }
+    }
+
+    selectedCell = null;
+
+    document.getElementById("output").value =
+        document.getElementById("preview").innerHTML;
+
+    enableCellMerging();
 }
 
 function enableCellMerging() {
