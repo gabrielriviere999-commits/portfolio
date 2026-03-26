@@ -52,6 +52,9 @@ Alignement :
 <div id="preview" style="background:white; padding:10px;"></div>
 <button onclick="deleteSelectedRow()">Supprimer ligne</button>
 <button onclick="deleteSelectedColumn()">Supprimer colonne</button>
+<button onclick="addRow()">Ajouter ligne</button>
+<button onclick="addColumn()">Ajouter colonne</button>
+<button onclick="unmergeCell()">Défusionner</button>
 
 <script>
 // ------------------------------
@@ -329,6 +332,139 @@ function deleteSelectedColumn() {
     document.getElementById("output").value =
         document.getElementById("preview").innerHTML;
 
+    enableCellMerging();
+}
+
+function clearSelection() {
+    var preview = document.getElementById("preview");
+    var cells = preview.getElementsByTagName("td");
+
+    for (var i = 0; i < cells.length; i++) {
+        if (cells[i].className === "selectedCell") {
+            cells[i].className = "";
+        }
+    }
+
+    selectedCell = null;
+}
+
+function addRow() {
+    var preview = document.getElementById("preview");
+    var table = preview.getElementsByTagName("table")[0];
+    if (!table) return;
+
+    var rows = table.getElementsByTagName("tr");
+    if (!rows.length) return;
+
+    // On prend la première ligne comme modèle
+    var modelRow = rows[0];
+    var modelCells = modelRow.getElementsByTagName("td");
+    if (!modelCells.length) return;
+
+    var newRow = document.createElement("tr");
+
+    for (var i = 0; i < modelCells.length; i++) {
+        var td = document.createElement("td");
+        td.innerHTML = "&nbsp;";
+        // copier le style de la cellule modèle
+        td.setAttribute("style", modelCells[i].getAttribute("style") || "");
+        newRow.appendChild(td);
+    }
+
+    // Si une cellule est sélectionnée → insérer sous sa ligne
+    if (selectedCell) {
+        var rIndex = rowIndex(selectedCell.parentNode);
+        var rowsArr = table.getElementsByTagName("tr");
+        if (rIndex >= 0 && rIndex < rowsArr.length - 1) {
+            table.insertBefore(newRow, rowsArr[rIndex + 1]);
+        } else {
+            table.appendChild(newRow);
+        }
+        selectedCell = null;
+    } else {
+        // sinon, ajouter à la fin
+        table.appendChild(newRow);
+    }
+
+    clearSelection();
+    document.getElementById("output").value = preview.innerHTML;
+    enableCellMerging();
+}
+
+function addColumn() {
+    var preview = document.getElementById("preview");
+    var table = preview.getElementsByTagName("table")[0];
+    if (!table) return;
+
+    var rows = table.getElementsByTagName("tr");
+    if (!rows.length) return;
+
+    // On prend la première cellule existante comme modèle de style
+    var modelCell = rows[0].getElementsByTagName("td")[0];
+    if (!modelCell) return;
+    var modelStyle = modelCell.getAttribute("style") || "";
+
+    var insertIndex = null;
+    if (selectedCell) {
+        insertIndex = indexInRow(selectedCell) + 1;
+    }
+
+    for (var r = 0; r < rows.length; r++) {
+        var tds = rows[r].getElementsByTagName("td");
+        var newCell = document.createElement("td");
+        newCell.innerHTML = "&nbsp;";
+        newCell.setAttribute("style", modelStyle);
+
+        if (insertIndex === null || insertIndex >= tds.length) {
+            rows[r].appendChild(newCell);
+        } else {
+            rows[r].insertBefore(newCell, tds[insertIndex]);
+        }
+    }
+
+    selectedCell = null;
+
+    clearSelection();
+    document.getElementById("output").value = preview.innerHTML;
+    enableCellMerging();
+}
+
+function unmergeCell() {
+    if (!selectedCell) return;
+
+    var cell = selectedCell;
+    var row = cell.parentNode;
+    var table = row.parentNode;
+
+    var colIndex = indexInRow(cell);
+    var rowIndexStart = rowIndex(row);
+
+    var rowspan = parseInt(cell.getAttribute("rowspan") || "1", 10);
+    var colspan = parseInt(cell.getAttribute("colspan") || "1", 10);
+
+    // Réinitialiser
+    cell.removeAttribute("rowspan");
+    cell.removeAttribute("colspan");
+
+    // Restaurer les cellules verticales
+    for (var r = 1; r < rowspan; r++) {
+        var targetRow = table.getElementsByTagName("tr")[rowIndexStart + r];
+        var newCell = document.createElement("td");
+        newCell.innerHTML = "&nbsp;";
+        targetRow.insertBefore(newCell, targetRow.getElementsByTagName("td")[colIndex] || null);
+    }
+
+    // Restaurer les cellules horizontales
+    for (var c = 1; c < colspan; c++) {
+        var newCell2 = document.createElement("td");
+        newCell2.innerHTML = "&nbsp;";
+        row.insertBefore(newCell2, row.getElementsByTagName("td")[colIndex + 1] || null);
+    }
+
+    selectedCell = null;
+
+    clearSelection();
+    document.getElementById("output").value = document.getElementById("preview").innerHTML;
     enableCellMerging();
 }
 
