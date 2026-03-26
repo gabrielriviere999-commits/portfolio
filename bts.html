@@ -18,6 +18,29 @@ body {
     overflow-x: auto;
 }
 
+.win98-btn {
+    padding: 2px 6px;
+    background: #3A6EA5;
+    border: 2px solid #FFFFFF;
+    border-right-color: #1A2F4A;
+    border-bottom-color: #1A2F4A;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+    font-family: monospace;
+}
+
+.win98-btn:hover {
+    background: #4A82C0;
+}
+
+.win98-btn:active {
+    border: 2px solid #1A2F4A;
+    border-right-color: #FFFFFF;
+    border-bottom-color: #FFFFFF;
+    background: #2F5C8A;
+}
+
 /* --- Barre de navigation --- */
 .navbar {
     background-color: rgba(0, 0, 0, .2);
@@ -532,7 +555,7 @@ select {
 <p></p>
 <a href="Accueil/tableau_synthese_E5-2025.ods" class="win98-btn" download>Télécharger tableau_synthese_E5-2025.ods</a>
 <p></p>
-<a href="Veille_technologique/Veille_technologique_les_logiciels_libres_pour_linux.html">Veille technologique</a>
+<a href="Veille_technologique/Veille_technologique_les_logiciels_libres_pour_linux.html" class="win98-btn">Veille technologique</a>
 <p></p>
 <div class="tab">
     <button onclick="switchTab('docs_bts', 'bts', this)" class="bts_btn">Docs BTS</button>
