@@ -28,6 +28,11 @@ input { margin:5px; }
 <br>
 
 <label>Séparateur :</label> <input type="text" id="sep" value=";" style="width:40px;">
+<button onclick="alignerGlobal('left')">Aligner tout à gauche</button>
+<button onclick="alignerGlobal('center')">Aligner tout au centre</button>
+<button onclick="alignerGlobal('right')">Aligner tout à droite</button>
+<button onclick="couleurGlobal('color')">Couleur texte (global)</button>
+<button onclick="couleurGlobal('backgroundColor')">Couleur fond (global)</button>
 
 <br>
 <button onclick="convertir()" class="win98-btn">Convertir</button>
@@ -244,6 +249,41 @@ function setStyle(prop, value) {
 function choisirCouleur(prop) {
     var color = prompt("Couleur (red, #ff0000...)");
     if (color) setStyle(prop, color);
+}
+
+function alignerGlobal(direction) {
+    if (!hot) return;
+
+    var data = hot.getData();
+    for (var r = 0; r < data.length; r++) {
+        for (var c = 0; c < data[r].length; c++) {
+            var key = r + "-" + c;
+            styles[key] = styles[key] || {};
+            styles[key].textAlign = direction;
+        }
+    }
+
+    hot.render();
+    updateOutput();
+}
+
+function couleurGlobal(prop) {
+    if (!hot) return;
+
+    var color = prompt("Couleur (red, #ff0000...)");
+    if (!color) return;
+
+    var data = hot.getData();
+    for (var r = 0; r < data.length; r++) {
+        for (var c = 0; c < data[r].length; c++) {
+            var key = r + "-" + c;
+            styles[key] = styles[key] || {};
+            styles[key][prop] = color;
+        }
+    }
+
+    hot.render();
+    updateOutput();
 }
 
 function shiftStylesRow(startRow, delta) {
