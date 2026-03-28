@@ -42,6 +42,27 @@ body {
     background: #2F5C8A;
 }
 
+/* ASCII compact + affichage ligne par ligne */
+pre.ascii {
+  font-family: monospace;
+  font-weight: bold;
+  white-space: pre-wrap; /* ignore les espaces du code */
+  margin: 0;
+  padding: 0;
+  line-height: 1 !important;
+}
+
+pre.ascii span {
+  display: block;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+/* Couleurs */
+.l1 { color: #D98800; }
+.l2 { color: #D95E00; }
+.l3 { color: #D90000; }
+
 /* --- Barre de navigation --- */
 .navbar {
     background-color: rgba(0, 0, 0, .2);
@@ -218,6 +239,9 @@ body {
 <h1>Accueil</h1>
 <p></p>
 <p>Portfolio de Rivière Gabriel<p>
+<pre class="ascii">
+<span class="l1">+---+---+---+---+---+</span><span class="l1">| X | X | X | X | X |</span><span class="l2">+---+---+---+---+---+</span><span class="l2">| X |   |   |   |   |</span><span class="l3">+---+---+---+---+---+</span><span class="l3">| X |   | X | X | X |</span><span class="l3">+---+---+---+---+---+</span><span class="l2">| X |   |   |   | X |</span><span class="l2">+---+---+---+---+---+</span><span class="l1">| X | X | X | X | X |</span><span class="l1">+---+---+---+---+---+</span>
+</pre>
 <a href="Accueil/CV_Riviere_Gabriel.pdf" class="win98-btn">Ouvrir le CV</a>
 <p style="font-size:150px;"></p>
 
