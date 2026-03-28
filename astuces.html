@@ -257,52 +257,51 @@ select {
 
 <style>
 .donate-btn {
-  font-family: monospace;
-  font-size: 22px;
-  padding: 4px 10px;
-  background: #FFD700;
-  border: 2px solid;
-  border-color: #FFFFFF #808000 #808000 #FFFFFF;
-  cursor: pointer;
-  box-sizing: border-box;
-  color: black;
-  text-decoration: none;
-  display: inline-block;
+    padding: 4px 10px;
+    background: #FFD700;
+    border: 2px solid #FFFFFF;
+    border-right-color: #808000;
+    border-bottom-color: #808000;
+    text-decoration: none;
+    display: inline-block;
+    color: black;
+    font-family: monospace;
+    font-size: 22px;
 }
 
-/* états */
-.donate-btn.hover {
-  background: #FFEA00;
+.donate-btn:hover {
+    background: #FFEA00;
 }
 
-.donate-btn.active {
-  background: #DAA520;
-  border-color: #808000 #FFFFFF #FFFFFF #808000;
+.donate-btn:active {
+    border: 2px solid #808000;
+    border-right-color: #FFFFFF;
+    border-bottom-color: #FFFFFF;
+    background: #DAA520;
 }
 
 .outilshtml-btn {
-  font-family: monospace;
-  font-size: 22px;
-  padding: 4px 10px;
-  background: #3A6EA5;
-  border: 2px solid;
-  border-color: #FFFFFF #000080 #000080 #FFFFFF;
-  cursor: pointer;
-  box-sizing: border-box;
-  color: white;
-  text-decoration: none;
-  display: inline-block;
+    padding: 4px 10px;
+    background: #3A6EA5;
+    border: 2px solid #FFFFFF;
+    border-right-color: #1A2F4A;
+    border-bottom-color: #1A2F4A;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+    font-family: monospace;
+    font-size: 22px;
 }
 
-/* état hover : légèrement plus clair */
-.outilshtml-btn.hover {
-  background: #4A82C2;
+.outilshtml-btn:hover {
+    background: #4A82C0;
 }
 
-/* état active : bouton enfoncé */
-.outilshtml-btn.active {
-  background: #2F5B8A;
-  border-color: #000080 #FFFFFF #FFFFFF #000080;
+.outilshtml-btn:active {
+    border: 2px solid #1A2F4A;
+    border-right-color: #FFFFFF;
+    border-bottom-color: #FFFFFF;
+    background: #2F5C8A;
 }
 </style>
 </head>
@@ -349,17 +348,7 @@ select {
 <!-- Contenu -->
 <p style="font-size:80px;"></p>
 <h1>Astuces</h1>
-<p style="text-align:left;">
-  <a href="donations.html"
-     class="donate-btn"
-     onmouseover="this.classList.add('hover');"
-     onmouseout="this.classList.remove('hover'); this.classList.remove('active');"
-     onmousedown="this.classList.add('active');"
-     onmouseup="this.classList.remove('active');"
-  >
-    Soutenir le site
-  </a>
-</p>
+<a href="donations.html" class="donate-btn">Soutenir le site</a>
 
 <h2>MX Linux</h2>
 
@@ -687,17 +676,8 @@ select {
     </option>
 </select>
 <p></p>
-<p style="text-align:left;">
-  <a href="Astuces/Outils_HTML/outils.html"
-     class="outilshtml-btn"
-     onmouseover="this.classList.add('hover');"
-     onmouseout="this.classList.remove('hover'); this.classList.remove('active');"
-     onmousedown="this.classList.add('active');"
-     onmouseup="this.classList.remove('active');"
-  >
-    Outils HTML
-  </a>
-</p>
+<a href="Astuces/Outils_HTML/outils.html" class="outilshtml-btn">Outils HTML</a>
+<p></p>
 <a href="https://codeload.github.com/gabrielriviere999-commits/portfolio/zip/refs/heads/main" download>Tout télécharger</a>
 <p style="font-size:150px;"></p>
 <!-- Scripts -->
