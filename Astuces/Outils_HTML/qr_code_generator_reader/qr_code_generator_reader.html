@@ -395,11 +395,13 @@ document.getElementById("copy-btn").onclick = function () {
   document.execCommand("copy");
   document.body.removeChild(temp);
 
-  var fb = document.getElementById("copy-feedback");
-  fb.style.display = "inline";
-  setTimeout(function () {
-    fb.style.display = "none";
-  }, 1000);
+  var btn = event.target;
+  var old = btn.textContent;
+  btn.textContent = "Copié !";
+
+  setTimeout(function() {
+    btn.textContent = old;
+  }, 800);
 };
 </script>
 </body>
