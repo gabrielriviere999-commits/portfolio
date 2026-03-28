@@ -1296,24 +1296,19 @@ document.getElementById("copyBtn").onclick = function () {
 
   // Sélectionner + copier
   temp.select();
-  try {
-    document.execCommand("copy");
-  } catch (e) {
-    // La 3DS ne supporte pas toujours execCommand,
-    // mais au moins ça ne plante pas.
-  }
+  try { document.execCommand("copy"); } catch (e) {}
 
   // Supprimer le textarea
   document.body.removeChild(temp);
 
   // Feedback visuel
-  var fb = document.getElementById("copyFeedback");
-  fb.style.display = "inline";
+  var btn = event.target;
+  var old = btn.textContent;
+  btn.textContent = "Copié !";
 
-  // Disparition après 1 seconde
-  setTimeout(function () {
-    fb.style.display = "none";
-  }, 1000);
+  setTimeout(function() {
+    btn.textContent = old;
+  }, 800);
 };
 
 document.getElementById("inputValue").value = "1";
