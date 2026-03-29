@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simplificateur HTML LibreOffice</title>
+<style>
+body {
+    background-color: #C0C0C0;
+    margin: 20px;
+}
+textarea {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 15px;
+}
+#output {
+    width: 100%;
+    height: 200px;
+    white-space: pre;
+}
+
+.win98-btn { padding:4px 10px; background:#C0C0C0; border:2px solid #fff; border-right-color:#404040; border-bottom-color:#404040; text-decoration:none; display:inline-block; color:black; }
+.win98-btn:active { border:2px solid #404040; border-right-color:#fff; border-bottom-color:#fff; }
+.win98-btn:hover { background:#E0E0E0; }
+</style>
+</head>
+<body>
+
+<h2>Simplificateur HTML LibreOffice Calc → HTML léger</h2>
+
+<p>Colle ici ton code HTML :</p>
+<textarea id="input"></textarea>
+
+<button onclick="simplify()" class="win98-btn">Simplifier</button>
+<button onclick="copyOutput()" class="win98-btn">Copier</button>
+
+<h3>Résultat :</h3>
+<textarea id="output"></textarea>
+
+<script>
+// Fonction utilitaire : normalise les espaces
+function trimAll(str) {
+    return str.replace(/\s+/g, ' ').replace(/> </g, '><');
+}
+
+// Génère un nom de classe unique
+var classCounter = 0;
+function newClassName() {
+    classCounter++;
+    return "c" + classCounter;
+}
+
+function simplify() {
+    var html = document.getElementById("input").value;
+
+    // 1. Nettoyage de base
+    html = html.replace(/<font[^>]*>/gi, "");
+    html = html.replace(/<\/font>/gi, "");
+    html = html.replace(/<span[^>]*>/gi, "");
+    html = html.replace(/<\/span>/gi, "");
+    html = html.replace(/style="/gi, "data-style=\""); // on garde temporairement
+
+    // 2. Extraction des styles inline
+    var styleMap = {}; // style → className
+    var css = "";
+
+    html = html.replace(/data-style="([^"]*)"/gi, function(match, style) {
+        style = trimAll(style);
+
+        if (!styleMap[style]) {
+            var className = newClassName();
+            styleMap[style] = className;
+            css += "." + className + " { " + style + " }\n";
+        }
+
+        return "class=\"" + styleMap[style] + "\"";
+    });
+
+    // 3. Nettoyage final
+    html = trimAll(html);
+
+    // 4. Sortie
+    document.getElementById("output").value =
+        "<style>\n" +
+        css +
+        "</style>\n\n" +
+        html;
+}
+
+// Bouton pour copier le résultat
+function copyOutput() {
+    var texte = document.getElementById("output").value;
+
+    // textarea temporaire invisible et fixe
+    var temp = document.createElement("textarea");
+    temp.value = texte;
+
+    temp.style.position = "fixed";
+    temp.style.top = "0";
+    temp.style.left = "0";
+    temp.style.opacity = "0";
+
+    document.body.appendChild(temp);
+    temp.focus();
+    temp.select();
+
+    try { document.execCommand("copy"); } catch (e) {}
+
+    document.body.removeChild(temp);
+    
+    // --- Feedback visuel ---
+    var btn = event.target;
+    var old = btn.textContent;
+    btn.textContent = "Copié !";
+
+    setTimeout(function() {
+      btn.textContent = old;
+    }, 800);
+}
+</script>
+
+</body>
+</html>
