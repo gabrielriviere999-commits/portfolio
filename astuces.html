@@ -247,7 +247,7 @@ body {
   object-fit: cover;
   border: 2px solid #000;
   cursor: pointer;
-  font-size: 40px;
+  font-size: 12px;
   user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -436,12 +436,12 @@ select {
 
 <div class="thumbnail-row">
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(1, 'MXLinux')">
-    <img class="thumbnail" data-group="MXLinux" src="thumbnails/Montage_partitions_efi_et_root_thumbnail.jpg" loading="lazy" onclick="currentSlide(2, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" loading="lazy" onclick="currentSlide(2, 'MXLinux')">
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(3, 'MXLinux')">
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(4, 'MXLinux')">
-    <img class="thumbnail" data-group="MXLinux" src="thumbnails/gnome-disk-utility_thumbnail.jpg" loading="lazy" onclick="currentSlide(5, 'MXLinux')">   
-    <img class="thumbnail" data-group="MXLinux" src="thumbnails/Reessayer_thumbnail.jpg" loading="lazy" onclick="currentSlide(6, 'MXLinux')">
-    <img class="thumbnail" data-group="MXLinux" src="thumbnails/Tout_remplacer_thumbnail.jpg" loading="lazy" onclick="currentSlide(7, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" loading="lazy" onclick="currentSlide(5, 'MXLinux')">   
+    <img class="thumbnail" data-group="MXLinux" src="" loading="lazy" onclick="currentSlide(6, 'MXLinux')">
+    <img class="thumbnail" data-group="MXLinux" src="" loading="lazy" onclick="currentSlide(7, 'MXLinux')">
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(8, 'MXLinux')">
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(9, 'MXLinux')">
     <img class="thumbnail" data-group="MXLinux" src="" onclick="currentSlide(10, 'MXLinux')">
@@ -542,12 +542,12 @@ select {
 </div>
 
 <div class="thumbnail-row">
-    <img class="thumbnail" data-group="Android" src="" onclick="currentSlide(1, 'Android')">
-    <img class="thumbnail" data-group="Android" src="thumbnails/tableauascii_thumbnail.jpg" loading="lazy" onclick="currentSlide(2, 'Android')">
-    <img class="thumbnail" data-group="Android" src="thumbnails/editeurdetexte_thumbnail.jpg" loading="lazy" onclick="currentSlide(3, 'Android')">
-    <img class="thumbnail" data-group="Android" src="thumbnails/extractioncodecouleur_thumbnail.jpg" loading="lazy" onclick="currentSlide(4, 'Android')">
-    <img class="thumbnail" data-group="Android" src="thumbnails/selecteurcouleur_thumbnail.jpg" loading="lazy" onclick="currentSlide(5, 'Android')">
-    <img class="thumbnail" data-group="Android" src="thumbnails/ocrecran_thumbnail.jpg" loading="lazy" onclick="currentSlide(6, 'Android')">
+    <div class="thumbnail" data-group="Android" onclick="currentSlide(1, 'Android')">Descrip<br>tion</div>
+    <div class="thumbnail" data-group="Android" onclick="currentSlide(2, 'Android')">Tableau ASCII</div>
+    <div class="thumbnail" data-group="Android" onclick="currentSlide(3, 'Android')">Éditeur de texte</div>
+    <div class="thumbnail" data-group="Android" onclick="currentSlide(4, 'Android')">Extraction Code Couleur</div>
+    <div class="thumbnail" data-group="Android" onclick="currentSlide(5, 'Android')">Sélecteur Couleur</div>
+    <div class="thumbnail" data-group="Android" onclick="currentSlide(6, 'Android')">OCR Écran</div>
 </div>
 <p style="font-size:20px;">Télécharger</p>
 <select id="download_Android" onchange="downloadFile(this)">
