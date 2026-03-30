@@ -33,3 +33,7 @@ Dans Steam :
 
 6) (Optionnel) Installer GameMode pour de meilleures performances
 sudo apt install gamemode
+
+7) Modifier les options de montage dans gnome-disk-utility
+Pour que l'utilisation de disque NTFS/exFAT externe fonctionne
+Remplacer nosuid,nodev,nofail,noauto,x-gvfs-show par nosuid,nodev,nofail,x-gvfs-show,uid=1000,gid=1000,umask=000
