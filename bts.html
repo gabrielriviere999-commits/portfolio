@@ -256,6 +256,16 @@ body {
   background: #B0B0B0;
 }
 
+.slide-buttons {
+    display: flex;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.slide-buttons button {
+    pointer-events: auto;
+}
+
 .slide-counter {
   position: absolute;
   bottom: 0px;
@@ -385,10 +395,12 @@ select {
     <div class="mySlide" data-group="IP_et_routage">
         <img data-src="Docs_BTS/IP_et_routage/Poster_IPv6.png">
     </div>
-    
-    <button class="prev" onclick="plusSlides(-1, 'IP_et_routage')"><</button>
-    <button class="next" onclick="plusSlides(1, 'IP_et_routage')">></button>
-    <button class="openfullscreen" onclick="openFullscreen('IP_et_routage')">□</button>
+
+    <div class="slide-buttons">
+        <button class="prev" onclick="plusSlides(-1, 'IP_et_routage')"><</button>
+        <button class="next" onclick="plusSlides(1, 'IP_et_routage')">></button>
+        <button class="openfullscreen" onclick="openFullscreen('IP_et_routage')">□</button>
+    </div>
     <div id="counter-IP_et_routage" class="slide-counter"></div>
 </div>
 
@@ -416,10 +428,12 @@ select {
     <div class="mySlide" data-group="HAProxy">
         <div class="iframe-holder" data-src="Docs_BTS/HAProxy/Installer_galera_avec_MariaDB.txt"></div>
     </div>
-    
-    <button class="prev" onclick="plusSlides(-1, 'HAProxy')"><</button>
-    <button class="next" onclick="plusSlides(1, 'HAProxy')">></button>
-    <button class="openfullscreen" onclick="openFullscreen('HAProxy')">□</button>
+
+    <div class="slide-buttons">
+        <button class="prev" onclick="plusSlides(-1, 'HAProxy')"><</button>
+        <button class="next" onclick="plusSlides(1, 'HAProxy')">></button>
+        <button class="openfullscreen" onclick="openFullscreen('HAProxy')">□</button>
+    </div>
     <div id="counter-HAProxy" class="slide-counter"></div>
 </div>
 
@@ -439,9 +453,12 @@ select {
     <div class="mySlide" data-group="GLPI">
         <div class="iframe-holder" data-src="Docs_BTS/GLPI/Installer_GLPI_avec_Nginx_sans_apache.txt"></div>
     </div>
-    <button class="prev" onclick="plusSlides(-1, 'GLPI')"><</button>
-    <button class="next" onclick="plusSlides(1, 'GLPI')">></button>
-    <button class="openfullscreen" onclick="openFullscreen('GLPI')">□</button>
+
+    <div class="slide-buttons">
+        <button class="prev" onclick="plusSlides(-1, 'GLPI')"><</button>
+        <button class="next" onclick="plusSlides(1, 'GLPI')">></button>
+        <button class="openfullscreen" onclick="openFullscreen('GLPI')">□</button>
+    </div>
     <div id="counter-GLPI" class="slide-counter"></div>
 </div>
 
@@ -481,9 +498,12 @@ select {
 	<div class="mySlide" data-group="Infra_BTS">
         <div class="iframe-holder" data-src="Infra_BTS/Active_Directory.txt"></div>
     </div>
-    <button class="prev" onclick="plusSlides(-1, 'Infra_BTS')"><</button>
-    <button class="next" onclick="plusSlides(1, 'Infra_BTS')">></button>
-    <button class="openfullscreen" onclick="openFullscreen('Infra_BTS')">□</button>
+
+    <div class="slide-buttons">
+        <button class="prev" onclick="plusSlides(-1, 'Infra_BTS')"><</button>
+        <button class="next" onclick="plusSlides(1, 'Infra_BTS')">></button>
+        <button class="openfullscreen" onclick="openFullscreen('Infra_BTS')">□</button>
+    </div>
     <div id="counter-Infra_BTS" class="slide-counter"></div>
 </div>
 

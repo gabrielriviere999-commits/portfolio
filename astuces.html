@@ -281,6 +281,16 @@ body {
   background: #B0B0B0;
 }
 
+.slide-buttons {
+    display: flex;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.slide-buttons button {
+    pointer-events: auto;
+}
+
 .slide-counter {
   position: absolute;
   bottom: 0px;
@@ -428,9 +438,11 @@ select {
         <div class="iframe-holder" data-src="Astuces/Linux/Installer_Steam_sur_Linux.txt"></div>
     </div>
 
-    <button class="prev" onclick="plusSlides(-1, 'MXLinux')"><</button>
-    <button class="next" onclick="plusSlides(1, 'MXLinux')">></button>
-    <button class="openfullscreen" onclick="openFullscreen('MXLinux')">□</button>
+    <div class="slide-buttons">
+        <button class="prev" onclick="plusSlides(-1, 'MXLinux')"><</button>
+        <button class="next" onclick="plusSlides(1, 'MXLinux')">></button>
+        <button class="openfullscreen" onclick="openFullscreen('MXLinux')">□</button>
+    </div>
     <div id="counter-MXLinux" class="slide-counter"></div>
 </div>
 
@@ -535,9 +547,11 @@ select {
         <img data-src="Astuces/Android/Applications/ocrecran.jpg">
     </div>
 
-    <button class="prev" onclick="plusSlides(-1, 'Android')"><</button>
-    <button class="next" onclick="plusSlides(1, 'Android')">></button>
-    <button class="openfullscreen" onclick="openFullscreen('Android')">□</button>
+    <div class="nav-buttons">
+        <button class="prev" onclick="plusSlides(-1, 'Android')"><</button>
+        <button class="next" onclick="plusSlides(1, 'Android')">></button>
+        <button class="openfullscreen" onclick="openFullscreen('Android')">□</button>
+    </div>
     <div id="counter-Android" class="slide-counter"></div>
 </div>
 
