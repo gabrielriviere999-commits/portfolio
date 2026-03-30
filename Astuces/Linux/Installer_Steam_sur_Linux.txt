@@ -24,7 +24,7 @@ sudo apt install ./steam-launcher_latest-stable_all.deb
 → Lancer Steam depuis le menu.
 → Steam téléchargera automatiquement la version complète.
 
-5) Activer Proton (pour les jeux Windows)
+5) Activer Proton si pas activé (pour les jeux Windows)
 Dans Steam :
   - Ouvrir Paramètres
   - Aller dans "Compatibilité"
