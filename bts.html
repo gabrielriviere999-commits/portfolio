@@ -599,12 +599,12 @@ function switchTab(tabName, group, elmnt) {
 
 <script>
 function downloadFile(select) {
-    const file = select.value;
+    var file = select.value;
     if (!file) return;
 
     // Teste si le navigateur supporte l'attribut download
-    const a = document.createElement("a");
-    const supportsDownload = "download" in a;
+    var a = document.createElement("a");
+    var supportsDownload = ("download" in a);
 
     if (supportsDownload) {
         // Mode normal : téléchargement
