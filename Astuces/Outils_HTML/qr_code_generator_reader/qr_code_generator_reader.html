@@ -81,6 +81,7 @@ input:hover {
 
 .palette {
   margin-top: 6px;
+  opacity: 0;
 }
 
 .palette div {
@@ -479,14 +480,14 @@ document.getElementById("copy-btn").onclick = function () {
   }, 800);
 };
 
-function initColorPicker(hexInputId, previewId, callback) {
+function initColorPicker(hexInputId, previewId, callback, skipInit) {
   var input = document.getElementById(hexInputId);
   var preview = document.getElementById(previewId);
 
-  function applyColor(hex) {
+  function applyColor(hex, trigger) {
     preview.style.background = hex;
     input.value = hex;
-    callback(hex);
+    if (trigger !== false) callback(hex);
   }
 
   input.oninput = function () {
@@ -504,7 +505,9 @@ function initColorPicker(hexInputId, previewId, callback) {
     };
   }
 
-  applyColor(input.value);
+  // Ne déclenche pas generateQR au chargement
+  applyColor(input.value, false);
+  palette.style.opacity = "1";
 }
 
 var bgSlider = document.getElementById("bgOpacity");
