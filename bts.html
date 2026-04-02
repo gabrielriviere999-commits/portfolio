@@ -357,6 +357,7 @@ select {
 <a href="Accueil/tableau_synthese_E5-2025.ods" class="win98-btn-bleu" download>Télécharger tableau_synthese_E5-2025.ods</a>
 <p></p>
 <a href="Veille_technologique/Veille_technologique_les_logiciels_libres_pour_linux.html" class="win98-btn-bleu">Veille technologique</a>
+<br><br><hr>
 <h2>Infrastructure</h2>
 <div class="slideshow-container" data-group="Infrastructure">
 
@@ -438,9 +439,7 @@ select {
         Active_Directory.txt
     </option>
 </select>
-<p style="font-size:50px;"></p>
-<hr><br>
-<h2>Autres docs</h2>
+<br><br><hr>
 <h2>IP et routage</h2>
 <div class="slideshow-container" data-group="IP_et_routage">
 
@@ -572,10 +571,10 @@ function downloadFile(select) {
 
 <script>
 var slideIndex = {
+  Infrastructure: 0,
   IP_et_routage: 0,
   HAProxy: 0,
-  GLPI: 0,
-  Infrastructure: 0
+  GLPI: 0
 };
 
 function plusSlides(n, group) {
