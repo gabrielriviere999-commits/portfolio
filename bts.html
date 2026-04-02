@@ -357,42 +357,119 @@ select {
 <a href="Accueil/tableau_synthese_E5-2025.ods" class="win98-btn-bleu" download>Télécharger tableau_synthese_E5-2025.ods</a>
 <p></p>
 <a href="Veille_technologique/Veille_technologique_les_logiciels_libres_pour_linux.html" class="win98-btn-bleu">Veille technologique</a>
-<p></p>
-<div class="tab">
-    <button onclick="switchTab('docs_bts', 'bts', this)" class="bts_btn">Docs BTS</button>
-    <button onclick="switchTab('infra_bts', 'bts', this)" class="bts_btn">Infra BTS</button>
+<h2>Infrastructure</h2>
+<div class="slideshow-container" data-group="Infrastructure">
+
+    <div class="mySlide" data-group="Infrastructure">
+        <div class="iframe-holder" data-src="BTS/Routeur_et_Switch.txt"></div>
+    </div>
+
+    <div class="mySlide" data-group="Infrastructure">
+        <div class="iframe-holder" data-src="BTS/Presentation_d_une_infrastructure_reseau.pdf"></div>
+    </div>
+
+    <div class="mySlide" data-group="Infrastructure">
+        <div class="iframe-holder" data-src="BTS/Tableau_IP.txt"></div>
+    </div>
+    
+    <div class="mySlide" data-group="Infrastructure">
+        <div class="iframe-holder" data-src="BTS/Installation_de_base_d_un_serveur_web.txt"></div>
+    </div>
+    
+    <div class="mySlide" data-group="Infrastructure">
+        <div class="iframe-holder" data-src="BTS/Installation_et_configuration_de_GLPI.txt"></div>
+    </div>
+
+	<div class="mySlide" data-group="Infrastructure">
+        <div class="iframe-holder" data-src="BTS/Installation_et_configuration_de_Zabbix.txt"></div>
+    </div>
+	<div class="mySlide" data-group="Infrastructure">
+        <div class="iframe-holder" data-src="BTS/Active_Directory.txt"></div>
+    </div>
+
+    <div class="slide-buttons">
+        <button class="prev" onclick="plusSlides(-1, 'Infrastructure')"><</button>
+        <button class="next" onclick="plusSlides(1, 'Infrastructure')">></button>
+        <button class="openfullscreen" onclick="openFullscreen('Infrastructure')">□</button>
+    </div>
+    <div id="counter-Infrastructure" class="slide-counter"></div>
 </div>
 
-<div id="docs_bts" class="bts" style="display:none;">
+<div class="thumbnail-row">
+    <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(1, 'Infrastructure')"></div>
+    <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(2, 'Infrastructure')"></div>
+    <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(3, 'Infrastructure')"></div>
+    <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(4, 'Infrastructure')"></div>
+    <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(5, 'Infrastructure')"></div>
+    <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(6, 'Infrastructure')"></div>
+    <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(7, 'Infrastructure')"></div>
+</div>
+
+<select id="download_Infrastructure" onchange="downloadFile(this)">
+    <option value="">Télécharger...</option>
+    <option value="BTS/Routeur_et_Switch.txt">
+        Routeur_et_Switch.txt
+    </option>
+    <option value="BTS/Presentation_d_une_infrastructure_reseau.pdf">
+        Presentation_d_une_infrastructure_reseau.pdf
+    </option>
+    <option value="BTS/Schema_Reseau_2025-2026.png">
+        Schema_Reseau_2025-2026.png
+    </option>
+    <option value="BTS/Routeur_et_Switch_20250917_082333.jpg">
+        Routeur_et_Switch_20250917_082333.jpg
+    </option>    
+    <option value="BTS/Routeur_et_Switch_20250917_110645.jpg">
+        Routeur_et_Switch_20250917_110645.jpg
+    </option>
+    <option value="BTS/Tableau_IP.txt">
+        Tableau_IP.txt
+    </option>
+    <option value="BTS/Installation_de_base_d_un_serveur_web.txt">
+        Installation_de_base_d_un_serveur_web.txt
+    </option>
+    <option value="BTS/Installation_et_configuration_de_GLPI.txt">
+        Installation_et_configuration_de_GLPI.txt
+    </option>
+    <option value="BTS/Installation_et_configuration_de_Zabbix.txt">
+        Installation_et_configuration_de_Zabbix.txt
+    </option>
+    <option value="BTS/Active_Directory.txt">
+        Active_Directory.txt
+    </option>
+</select>
+<p style="font-size:50px;"></p>
+<hr><br>
+<h2>Autres docs</h2>
 <h2>IP et routage</h2>
 <div class="slideshow-container" data-group="IP_et_routage">
 
     <div class="mySlide" data-group="IP_et_routage">
-        <div class="iframe-holder" data-src="Docs_BTS/IP_et_routage/Devoir_Num1_-_Les_conversions_et_l_adressage_lPV4.txt"></div>
+        <div class="iframe-holder" data-src="BTS/IP_et_routage/Devoir_Num1_-_Les_conversions_et_l_adressage_lPV4.txt"></div>
     </div>
 
     <div class="mySlide" data-group="IP_et_routage">
-        <div class="iframe-holder" data-src="Docs_BTS/IP_et_routage/Correction_devoir_Num1_-_Les_conversions_et_l_adressage_IPV4.pdf"></div>
+        <div class="iframe-holder" data-src="BTS/IP_et_routage/Correction_devoir_Num1_-_Les_conversions_et_l_adressage_IPV4.pdf"></div>
     </div>
 
     <div class="mySlide" data-group="IP_et_routage">
-        <div class="iframe-holder" data-src="Docs_BTS/IP_et_routage/Conversions_bases.txt"></div>
+        <div class="iframe-holder" data-src="BTS/IP_et_routage/Conversions_bases.txt"></div>
     </div>
 
     <div class="mySlide" data-group="IP_et_routage">
-        <div class="iframe-holder" data-src="Docs_BTS/IP_et_routage/Les_commandes_de_base_des_equipements_Cisco.pdf"></div>
+        <div class="iframe-holder" data-src="BTS/IP_et_routage/Les_commandes_de_base_des_equipements_Cisco.pdf"></div>
     </div>
 
     <div class="mySlide" data-group="IP_et_routage">
-        <div class="iframe-holder" data-src="Docs_BTS/IP_et_routage/fiche_memo_routage_statique.pdf"></div>
+        <div class="iframe-holder" data-src="BTS/IP_et_routage/fiche_memo_routage_statique.pdf"></div>
     </div>
 
     <div class="mySlide" data-group="IP_et_routage">
-        <div class="iframe-holder" data-src="Docs_BTS/IP_et_routage/Le_routage_dynamique.pdf"></div>
+        <div class="iframe-holder" data-src="BTS/IP_et_routage/Le_routage_dynamique.pdf"></div>
     </div>
 
     <div class="mySlide" data-group="IP_et_routage">
-        <img data-src="Docs_BTS/IP_et_routage/Poster_IPv6.png">
+        <img data-src="BTS/IP_et_routage/Poster_IPv6.png">
     </div>
 
     <div class="slide-buttons">
@@ -417,15 +494,15 @@ select {
 <div class="slideshow-container" data-group="HAProxy">
 
     <div class="mySlide" data-group="HAProxy">
-        <div class="iframe-holder" data-src="Docs_BTS/HAProxy/Documentation_HAProxy_WEB1_et_WEB2_avec_MySQL.pdf"></div>
+        <div class="iframe-holder" data-src="BTS/HAProxy/Documentation_HAProxy_WEB1_et_WEB2_avec_MySQL.pdf"></div>
     </div>
 
     <div class="mySlide" data-group="HAProxy">
-        <div class="iframe-holder" data-src="Docs_BTS/HAProxy/HaproxyIPsStatiques.txt"></div>
+        <div class="iframe-holder" data-src="BTS/HAProxy/HaproxyIPsStatiques.txt"></div>
     </div>
 
     <div class="mySlide" data-group="HAProxy">
-        <div class="iframe-holder" data-src="Docs_BTS/HAProxy/Installer_galera_avec_MariaDB.txt"></div>
+        <div class="iframe-holder" data-src="BTS/HAProxy/Installer_galera_avec_MariaDB.txt"></div>
     </div>
 
     <div class="slide-buttons">
@@ -440,115 +517,6 @@ select {
     <div class="thumbnail" data-group="HAProxy" onclick="currentSlide(1, 'HAProxy')"></div>
     <div class="thumbnail" data-group="HAProxy" onclick="currentSlide(2, 'HAProxy')"></div>
     <div class="thumbnail" data-group="HAProxy" onclick="currentSlide(3, 'HAProxy')"></div>
-</div>
-<p style="font-size:50px;"></p>
-<h2>GLPI</h2>
-<div class="slideshow-container" data-group="GLPI">
-
-    <div class="mySlide" data-group="GLPI">
-        <div class="iframe-holder" data-src="Docs_BTS/GLPI/Installer_Nginx_avec_php-fpm_et_mariaDB.txt"></div>
-    </div>
-
-    <div class="mySlide" data-group="GLPI">
-        <div class="iframe-holder" data-src="Docs_BTS/GLPI/Installer_GLPI_avec_Nginx_sans_apache.txt"></div>
-    </div>
-
-    <div class="slide-buttons">
-        <button class="prev" onclick="plusSlides(-1, 'GLPI')"><</button>
-        <button class="next" onclick="plusSlides(1, 'GLPI')">></button>
-        <button class="openfullscreen" onclick="openFullscreen('GLPI')">□</button>
-    </div>
-    <div id="counter-GLPI" class="slide-counter"></div>
-</div>
-
-<div class="thumbnail-row">
-    <div class="thumbnail" data-group="GLPI" onclick="currentSlide(1, 'GLPI')"></div>
-    <div class="thumbnail" data-group="GLPI" onclick="currentSlide(2, 'GLPI')"></div>
-</div>
-</div>
-
-<div id="infra_bts" class="bts" style="display:none;">
-<p></p>
-<div class="slideshow-container" data-group="Infra_BTS">
-
-    <div class="mySlide" data-group="Infra_BTS">
-        <div class="iframe-holder" data-src="Infra_BTS/Routeur_et_Switch.txt"></div>
-    </div>
-
-    <div class="mySlide" data-group="Infra_BTS">
-        <div class="iframe-holder" data-src="Infra_BTS/Presentation_d_une_infrastructure_reseau.pdf"></div>
-    </div>
-
-    <div class="mySlide" data-group="Infra_BTS">
-        <div class="iframe-holder" data-src="Infra_BTS/Tableau_IP.txt"></div>
-    </div>
-    
-    <div class="mySlide" data-group="Infra_BTS">
-        <div class="iframe-holder" data-src="Infra_BTS/Installation_de_base_d_un_serveur_web.txt"></div>
-    </div>
-    
-    <div class="mySlide" data-group="Infra_BTS">
-        <div class="iframe-holder" data-src="Infra_BTS/Installation_et_configuration_de_GLPI.txt"></div>
-    </div>
-
-	<div class="mySlide" data-group="Infra_BTS">
-        <div class="iframe-holder" data-src="Infra_BTS/Installation_et_configuration_de_Zabbix.txt"></div>
-    </div>
-	<div class="mySlide" data-group="Infra_BTS">
-        <div class="iframe-holder" data-src="Infra_BTS/Active_Directory.txt"></div>
-    </div>
-
-    <div class="slide-buttons">
-        <button class="prev" onclick="plusSlides(-1, 'Infra_BTS')"><</button>
-        <button class="next" onclick="plusSlides(1, 'Infra_BTS')">></button>
-        <button class="openfullscreen" onclick="openFullscreen('Infra_BTS')">□</button>
-    </div>
-    <div id="counter-Infra_BTS" class="slide-counter"></div>
-</div>
-
-<div class="thumbnail-row">
-    <div class="thumbnail" data-group="Infra_BTS" onclick="currentSlide(1, 'Infra_BTS')"></div>
-    <div class="thumbnail" data-group="Infra_BTS" onclick="currentSlide(2, 'Infra_BTS')"></div>
-    <div class="thumbnail" data-group="Infra_BTS" onclick="currentSlide(3, 'Infra_BTS')"></div>
-    <div class="thumbnail" data-group="Infra_BTS" onclick="currentSlide(4, 'Infra_BTS')"></div>
-    <div class="thumbnail" data-group="Infra_BTS" onclick="currentSlide(5, 'Infra_BTS')"></div>
-    <div class="thumbnail" data-group="Infra_BTS" onclick="currentSlide(6, 'Infra_BTS')"></div>
-    <div class="thumbnail" data-group="Infra_BTS" onclick="currentSlide(7, 'Infra_BTS')"></div>
-</div>
-
-<select id="download_Infra_BTS" onchange="downloadFile(this)">
-    <option value="">Télécharger...</option>
-    <option value="Infra_BTS/Routeur_et_Switch.txt">
-        Routeur_et_Switch.txt
-    </option>
-    <option value="Infra_BTS/Presentation_d_une_infrastructure_reseau.pdf">
-        Presentation_d_une_infrastructure_reseau.pdf
-    </option>
-    <option value="Infra_BTS/Schema_Reseau_2025-2026.png">
-        Schema_Reseau_2025-2026.png
-    </option>
-    <option value="Infra_BTS/Routeur_et_Switch_20250917_082333.jpg">
-        Routeur_et_Switch_20250917_082333.jpg
-    </option>    
-    <option value="Infra_BTS/Routeur_et_Switch_20250917_110645.jpg">
-        Routeur_et_Switch_20250917_110645.jpg
-    </option>
-    <option value="Infra_BTS/Tableau_IP.txt">
-        Tableau_IP.txt
-    </option>
-    <option value="Infra_BTS/Installation_de_base_d_un_serveur_web.txt">
-        Installation_de_base_d_un_serveur_web.txt
-    </option>
-    <option value="Infra_BTS/Installation_et_configuration_de_GLPI.txt">
-        Installation_et_configuration_de_GLPI.txt
-    </option>
-    <option value="Infra_BTS/Installation_et_configuration_de_Zabbix.txt">
-        Installation_et_configuration_de_Zabbix.txt
-    </option>
-    <option value="Infra_BTS/Active_Directory.txt">
-        Active_Directory.txt
-    </option>
-</select>
 </div>
 <p style="font-size:150px;"></p>
 
@@ -573,26 +541,6 @@ var supportsTransform = 'transform' in document.body.style;
 
 if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
-}
-</script>
-
-<script>
-function switchTab(tabName, group, elmnt) {
-    var contents = document.getElementsByClassName(group);
-    for (var i = 0; i < contents.length; i++) {
-        contents[i].style.display = "none";
-    }
-
-    var buttons = document.getElementsByClassName(group + "_btn");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].className = buttons[i].className.replace(" active", "");
-    }
-
-    document.getElementById(tabName).style.display = "block";
-
-    if (elmnt) {
-        elmnt.className += " active";
-    }
 }
 </script>
 
@@ -627,7 +575,7 @@ var slideIndex = {
   IP_et_routage: 0,
   HAProxy: 0,
   GLPI: 0,
-  Infra_BTS: 0
+  Infrastructure: 0
 };
 
 function plusSlides(n, group) {
