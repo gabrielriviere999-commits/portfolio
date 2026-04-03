@@ -405,40 +405,6 @@ select {
     <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(6, 'Infrastructure')"></div>
     <div class="thumbnail" data-group="Infrastructure" onclick="currentSlide(7, 'Infrastructure')"></div>
 </div>
-
-<select id="download_Infrastructure" onchange="downloadFile(this)">
-    <option value="">Télécharger...</option>
-    <option value="BTS/Routeur_et_Switch.txt">
-        Routeur_et_Switch.txt
-    </option>
-    <option value="BTS/Presentation_d_une_infrastructure_reseau.pdf">
-        Presentation_d_une_infrastructure_reseau.pdf
-    </option>
-    <option value="BTS/Schema_Reseau_2025-2026.png">
-        Schema_Reseau_2025-2026.png
-    </option>
-    <option value="BTS/Routeur_et_Switch_20250917_082333.jpg">
-        Routeur_et_Switch_20250917_082333.jpg
-    </option>    
-    <option value="BTS/Routeur_et_Switch_20250917_110645.jpg">
-        Routeur_et_Switch_20250917_110645.jpg
-    </option>
-    <option value="BTS/Tableau_IP.txt">
-        Tableau_IP.txt
-    </option>
-    <option value="BTS/Installation_de_base_d_un_serveur_web.txt">
-        Installation_de_base_d_un_serveur_web.txt
-    </option>
-    <option value="BTS/Installation_et_configuration_de_GLPI.txt">
-        Installation_et_configuration_de_GLPI.txt
-    </option>
-    <option value="BTS/Installation_et_configuration_de_Zabbix.txt">
-        Installation_et_configuration_de_Zabbix.txt
-    </option>
-    <option value="BTS/Active_Directory.txt">
-        Active_Directory.txt
-    </option>
-</select>
 <br><br><hr>
 <h2>IP et routage</h2>
 <div class="slideshow-container" data-group="IP_et_routage">
@@ -540,32 +506,6 @@ var supportsTransform = 'transform' in document.body.style;
 
 if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
-}
-</script>
-
-<script>
-function downloadFile(select) {
-    var file = select.value;
-    if (!file) return;
-
-    // Teste si le navigateur supporte l'attribut download
-    var a = document.createElement("a");
-    var supportsDownload = ("download" in a);
-
-    if (supportsDownload) {
-        // Mode normal : téléchargement
-        a.href = file;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-    } else {
-        // Mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
-        window.open(file, "_blank");
-    }
-
-    // Réinitialise le menu
-    select.value = "";
 }
 </script>
 
