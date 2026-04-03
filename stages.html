@@ -727,43 +727,6 @@ Lundi 16 février 2026 - Vendredi 20 février 2026 : Réinstallation de Wazuh à
     <div class="thumbnail" data-group="Stage_BTS2" onclick="currentSlide(10, 'Stage_BTS2')"></div>
     <div class="thumbnail" data-group="Stage_BTS2" onclick="currentSlide(11, 'Stage_BTS2')"></div>
 </div>
-
-<select id="download_Stage_BTS2" onchange="downloadFile(this)">
-    <option value="">Télécharger...</option>
-    <option value="Stage_BTS2/Guacamole.html">
-        Guacamole.html
-    </option>
-    <option value="Stage_BTS2/Wazuh.html">
-        Wazuh.html
-    </option>
-    <option value="Stage_BTS2/Guacamole_config_ens18.txt">
-        Guacamole_config_ens18.txt
-    </option>
-    <option value="Stage_BTS2/Installer_Guacamole_sans_JDBC.txt">
-        Installer_Guacamole_sans_JDBC.txt
-    </option>
-    <option value="Stage_BTS2/Installer_Guacamole_avec_JDBC.txt">
-        Installer_Guacamole_avec_JDBC.txt
-    </option>
-    <option value="Stage_BTS2/MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt">
-        MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt
-    </option>
-    <option value="Stage_BTS2/Checklist_permissions_Tomcat9.txt">
-        Checklist_permissions_Tomcat9.txt
-    </option>
-    <option value="Stage_BTS2/Installer_TOTP.txt">
-        Installer_TOTP.txt
-    </option>
-    <option value="Stage_BTS2/Installer_Recording_Storage.txt">
-        Installer_Recording_Storage.txt
-    </option>
-    <option value="Stage_BTS2/Guacamole_SSH_SFTP_RDP.txt">
-        Guacamole_SSH_SFTP_RDP.txt
-    </option>
-    <option value="Stage_BTS2/Installer_Wazuh.txt">
-        Installer_Wazuh.txt
-    </option>
-</select>
         </div>
     </div>
 <p style="font-size:150px;"></p>
@@ -809,32 +772,6 @@ function switchTab(tabName, group, elmnt) {
     if (elmnt) {
         elmnt.className += " active";
     }
-}
-</script>
-
-<script>
-function downloadFile(select) {
-    var file = select.value;
-    if (!file) return;
-
-    // Teste si le navigateur supporte l'attribut download
-    var a = document.createElement("a");
-    var supportsDownload = ("download" in a);
-
-    if (supportsDownload) {
-        // Mode normal : téléchargement
-        a.href = file;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-    } else {
-        // Mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
-        window.open(file, "_blank");
-    }
-
-    // Réinitialise le menu
-    select.value = "";
 }
 </script>
 
