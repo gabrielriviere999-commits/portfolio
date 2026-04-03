@@ -299,7 +299,7 @@ body {
 
 /* --- Mode mobile --- */
 @media screen and (max-width: 720px) {
-    .mySlide iframe {
+    .mySlide iframe:not([src$=".pdf"]) {
         zoom: 0.5;
     }
 }
