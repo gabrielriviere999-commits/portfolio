@@ -718,32 +718,6 @@ if (!supportsTransform) {
 </script>
 
 <script>
-function downloadFile(select) {
-    var file = select.value;
-    if (!file) return;
-
-    // Teste si le navigateur supporte l'attribut download
-    var a = document.createElement("a");
-    var supportsDownload = ("download" in a);
-
-    if (supportsDownload) {
-        // Mode normal : téléchargement
-        a.href = file;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-    } else {
-        // Mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
-        window.open(file, "_blank");
-    }
-
-    // Réinitialise le menu
-    select.value = "";
-}
-</script>
-
-<script>
 var slideIndex = {
   MXLinux: 0,
   Android: 0
