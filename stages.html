@@ -219,7 +219,7 @@ pre {
   opacity: 1;
 }
 
-.prev, .next, .openfullscreen {
+.slide-btn {
   background: #C0C0C0;
   border: 2px solid;
   border-color: #FFFFFF #808080 #808080 #FFFFFF;
@@ -233,7 +233,7 @@ pre {
 }
 
 /* Effet bouton enfoncé */
-.prev:active, .next:active, .openfullscreen:active {
+.slide-btn:active {
   border-color: #808080 #FFFFFF #FFFFFF #808080;
   background: #B0B0B0;
 }
@@ -251,7 +251,7 @@ pre {
 .slide-counter {
   position: absolute;
   bottom: 0px;
-  left: 180px;
+  left: 220px;
   font-size: 25px;
 }
 
@@ -700,9 +700,10 @@ Lundi 16 février 2026 - Vendredi 20 février 2026 : Réinstallation de Wazuh à
     </div>
 
     <div class="slide-buttons">
-        <button class="prev" onclick="plusSlides(-1, 'Stage_BTS2')"><</button>
-        <button class="next" onclick="plusSlides(1, 'Stage_BTS2')">></button>
-        <button class="openfullscreen" onclick="openFullscreen('Stage_BTS2')">□</button>
+        <button class="slide-btn" onclick="plusSlides(-1, 'Stage_BTS2')"><</button>
+        <button class="slide-btn" onclick="plusSlides(1, 'Stage_BTS2')">></button>
+        <button class="slide-btn" onclick="openFullscreen('Stage_BTS2')">□</button>
+        <button class="slide-btn" onclick="downloadSlide('Stage_BTS2')">↓</button>
     </div>
     <div id="counter-Stage_BTS2" class="slide-counter"></div>
 </div>
@@ -869,6 +870,50 @@ function openFullscreen(group) {
     }
 
     console.log("Aucun contenu ouvrable trouvé dans cette slide");
+}
+</script>
+
+<script>
+function downloadSlide(group) {
+    var index = slideIndex[group] || 1;
+    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    if (slides.length === 0) return;
+
+    var activeSlide = slides[index - 1];
+    if (!activeSlide) return;
+
+    var url = null;
+
+    // 1) iframe (HTML, TXT, PDF)
+    var iframe = activeSlide.querySelector("iframe");
+    if (iframe) {
+        url = iframe.src || iframe.getAttribute("data-src");
+    }
+
+    // 2) image
+    var img = activeSlide.querySelector("img");
+    if (!url && img) {
+        url = img.src;
+    }
+
+    // 3) vidéo
+    var video = activeSlide.querySelector("video");
+    if (!url && video) {
+        url = video.src;
+    }
+
+    if (!url) {
+        console.log("Aucun contenu téléchargeable trouvé");
+        return;
+    }
+
+    // Création d’un lien invisible pour forcer le téléchargement
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = url.split('/').pop(); // nom du fichier
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 </script>
 </main>
