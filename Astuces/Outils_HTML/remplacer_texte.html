@@ -264,7 +264,6 @@ function effacerTout() {
 
 function saveState() {
   localStorage.setItem("casse_input", document.getElementById("input").value);
-  localStorage.setItem("casse_output", getText(document.getElementById("output")));
 }
 
 function saveChecks() {
@@ -301,10 +300,8 @@ document.getElementById("output").oninput = saveState;
 
 window.onload = function() {
   var savedInput = localStorage.getItem("casse_input");
-  var savedOutput = localStorage.getItem("casse_output");
 
   if (savedInput !== null) document.getElementById("input").value = savedInput;
-  if (savedOutput !== null) setText(document.getElementById("output"), savedOutput);
 
   var cmin = localStorage.getItem("chk_min");
   var cmaj = localStorage.getItem("chk_maj");
