@@ -1,4 +1,4 @@
-# Documentation – Cluster MariaDB Galera avec HAProxy
+# Documentation - Cluster MariaDB Galera avec HAProxy
 
 ## 1. Objectif
 
@@ -168,7 +168,7 @@ galera_new_cluster
 
 ---
 
-## 10. Haute disponibilité – Limitation actuelle
+## 10. Haute disponibilité - Limitation actuelle
 
 ### ⚠️ Cluster à 2 nœuds
 
