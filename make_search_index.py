@@ -19,7 +19,7 @@ docs = []
 
 for root, dirs, files in os.walk(folder):
     # Retirer les dossiers inutiles de la liste parcourue
-    dirs[:] = [d for d in dirs if d not in {".git", ".github", "__pycache__", "thumbnails"}]
+    dirs[:] = [d for d in dirs if d not in {".git", ".github", "__pycache__"}]
 
     for f in files:
         # Ignorer certains fichiers générés
