@@ -17,7 +17,7 @@ li { margin:4px 0; font-size:18px; }
 li.folder::before { content:'[Dossier] '; color:#555; }
 h1 { font-size:22px; }
 
-/* ASCII compact + affichage ligne par ligne */
+/* Logo ASCII */
 pre.ascii {
   font-family: monospace;
   font-weight: bold;
@@ -25,6 +25,8 @@ pre.ascii {
   margin: 0;
   padding: 0;
   line-height: 1 !important;
+  background: black;
+  display: table;
 }
 
 pre.ascii span {
@@ -33,10 +35,8 @@ pre.ascii span {
   margin: 0;
   padding: 0;
 }
-/* Couleurs */
-.l1 { color: #D98800; }
-.l2 { color: #D95E00; }
-.l3 { color: #D90000; }
+
+.l { color: #33FF33; }
 </style>
 </head><body>
 <h1>Outils</h1>
@@ -50,8 +50,6 @@ pre.ascii span {
 </ul>
 
 <br>
-<pre class="ascii">
-<span class="l1">+---+---+---+---+---+</span><span class="l1">| X | X | X | X | X |</span><span class="l2">+---+---+---+---+---+</span><span class="l2">| X |   |   |   |   |</span><span class="l3">+---+---+---+---+---+</span><span class="l3">| X |   | X | X | X |</span><span class="l3">+---+---+---+---+---+</span><span class="l2">| X |   |   |   | X |</span><span class="l2">+---+---+---+---+---+</span><span class="l1">| X | X | X | X | X |</span><span class="l1">+---+---+---+---+---+</span>
-</pre>
+<pre class="ascii"><span class="l">+---+---+---+---+---+</span><span class="l">| X | X | X | X | X |</span><span class="l">+---+---+---+---+---+</span><span class="l">| X |   |   |   |   |</span><span class="l">+---+---+---+---+---+</span><span class="l">| X |   | X | X | X |</span><span class="l">+---+---+---+---+---+</span><span class="l">| X |   |   |   | X |</span><span class="l">+---+---+---+---+---+</span><span class="l">| X | X | X | X | X |</span><span class="l">+---+---+---+---+---+</span></pre>
 
 </body></html>
