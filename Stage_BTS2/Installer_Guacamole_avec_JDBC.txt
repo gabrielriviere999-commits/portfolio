@@ -1,4 +1,4 @@
-# 📘 Documentation : Installation et Configuration d'Apache Guacamole avec JDBC sur Ubuntu 24.04 LTS
+# Documentation : Installation et Configuration d'Apache Guacamole avec JDBC sur Ubuntu 24.04 LTS
 
 ## 0. Nettoyage
 [1] Arrêter les services
