@@ -1,27 +1,7 @@
-<svg width="64" height="64" viewBox="0 0 16.933 16.933" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0.213" y="0.213" width="16.508" height="16.508"
-        fill="#990101" stroke="#990101" stroke-width="0.425"/>
-
-  <path d="M0 0 L16.933 16.933" stroke="#000" stroke-width="0.388" fill="none"/>
-  <path d="M16.933 0 L0 16.933" stroke="#000" stroke-width="0.401" fill="none"/>
-  <path d="M0 8.466 L16.933 8.466" stroke="#000" stroke-width="0.399" fill="none"/>
-  <path d="M8.466 0 L8.466 16.933" stroke="#000" stroke-width="0.401" fill="none"/>
-
-  <circle cx="8.466" cy="8.466" r="7.804"
-          fill="none" stroke="#000" stroke-width="0.4"/>
-
-  <ellipse cx="8.466" cy="8.422" rx="2.634" ry="2.634"
-           fill="none" stroke="#000" stroke-width="0.432"/>
-
-  <path d="M12.291 4.664
-           C12.291 4.664 10.797 3.045 8.475 3.082
-            6.877 3.108 5.647 3.768 4.721 4.724
-            3.732 5.744 3.243 7.128 3.284 8.463
-            3.325 9.783 3.883 11.175 4.867 12.094
-            5.866 13.027 7.171 13.561 8.48 13.579
-            9.833 13.598 11.168 13.03 12.127 12.141
-            13.089 11.249 13.487 10.185 13.652 9.431
-            13.777 8.857 13.772 8.465 13.772 8.465
-            L13.552 8.465 8.679 8.462"
-        fill="none" stroke="#f00" stroke-width="0.4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16.933 16.933">
+<rect x=".213" y=".213" width="16.508" height="16.508" fill="#990101" stroke="#990101" stroke-width=".425"/>
+<path d="M0 0L16.933 16.933M16.933 0L0 16.933M0 8.466h16.933M8.466 0v16.933" stroke="#000" stroke-width=".4" fill="none"/>
+<circle cx="8.466" cy="8.466" r="7.804" fill="none" stroke="#000" stroke-width=".4"/>
+<ellipse cx="8.466" cy="8.422" rx="2.634" ry="2.634" fill="none" stroke="#000" stroke-width=".43"/>
+<path d="M12.291 4.664C12.291 4.664 10.797 3.045 8.475 3.082 6.877 3.108 5.647 3.768 4.721 4.724 3.732 5.744 3.243 7.128 3.284 8.463c.041 1.32.599 2.712 1.583 3.631 1 0.933 2.305 1.467 3.614 1.485 1.353.019 2.688-.549 3.647-1.438.962-.892 1.36-1.956 1.525-2.71.125-.574.12-.966.12-.966h-.22l-4.873-.003" fill="none" stroke="#f00" stroke-width=".4" stroke-linecap="round"/>
 </svg>
