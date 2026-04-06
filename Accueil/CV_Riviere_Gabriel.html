@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CV - Rivière Gabriel</title>
+  <link rel="stylesheet" href="cv.css">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #020712;
+  color: #000;
+}
+
+/* Page A4 centrée */
+.page {
+  max-width: 900px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at 8px 8px, #00ff66 0 2px, transparent 2px),
+    linear-gradient(#0b1f33 1px, transparent 1px),
+    linear-gradient(90deg, #0b1f33 1px, transparent 1px);
+  background-size: 16px 16px, 16px 16px, 16px 16px;
+  background-color: #020712;
+  border: 1px solid #222;
+}
+
+/* En-tête */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.name-block h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  background: #c0c0c0;
+  padding: 0.3rem 0.6rem;
+  display: inline-block;
+}
+
+.name-block .subtitle {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: #111;
+}
+
+/* Layout colonnes */
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 1.5rem;
+}
+
+/* Blocs */
+.block {
+  background: rgba(192, 192, 192, 0.96);
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.block h2 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.block h3 {
+  margin-bottom: 0.2rem;
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.block p,
+.block li {
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.block ul {
+  padding-left: 1.1rem;
+  margin: 0.2rem 0 0.4rem;
+}
+
+/* Liens */
+a {
+  color: #0044aa;
+  word-break: break-all;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .page {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="name-block">
+        <h1>Rivière Gabriel</h1>
+        <p class="subtitle">BTS SIO SISR - Services informatiques aux organisations</p>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="col left">
+
+        <section class="block">
+		  <img src="logo.svg" width=200px height=200px alt="logo.svg">
+          <h2>Contacts</h2>
+          <p>Mail : <a href="mailto:gabriel.riviere999@gmail.com">gabriel.riviere999@gmail.com</a></p>
+          <p>Saint-Philippe 97442, La Réunion</p>
+          <p>Portfolio : 
+            <a href="https://gabrielriviere999-commits.github.io/portfolio/">
+              https://gabrielriviere999-commits.github.io/portfolio/
+            </a>
+          </p>
+        </section>
+
+        <section class="block">
+          <h2>Compétences</h2>
+          <ul>
+            <li>Traitement de fichiers</li>
+            <li>Édition de photos</li>
+            <li>Dépannage de systèmes d’exploitation</li>
+            <li>HTML, CSS, JS, SQL, Python, Android</li>
+            <li>Réseaux et systèmes : switchs et routeurs Cisco, outils Linux, Active Directory</li>
+          </ul>
+        </section>
+
+        <section class="block">
+          <h2>Activités</h2>
+          <ul>
+            <li>Mécanique vélo et trottinette</li>
+            <li>Photographies</li>
+            <li>Jeux vidéo</li>
+          </ul>
+        </section>
+      </section>
+
+      <section class="col right">
+        <section class="block">
+          <h2>Expériences professionnelles</h2>
+
+          <h3>Collège Bory de Saint Vincent</h3>
+          <ul>
+            <li>Stage d’observation à La Ferme équestre de St Philippe  
+                (14/12/2020 au 18/12/2020)</li>
+          </ul>
+
+          <h3>Bac Pro Optique Lunetterie</h3>
+          <ul>
+            <li>Muta Optique St Joseph (20/09/2021 au 09/10/2021)</li>
+            <li>Muta Optique St Joseph (13/06/2022 au 02/07/2022)</li>
+            <li>Optique 2000 St Joseph (21/11/2022 au 17/12/2022)</li>
+            <li>Optique de Bourbon St Joseph (10/04/2023 au 06/05/2023)</li>
+            <li>Optique de Bourbon St Joseph (11/09/2023 au 07/10/2023)</li>
+            <li>Optique de Bourbon St Joseph (29/01/2024 au 24/02/2024)</li>
+          </ul>
+
+          <h3>BTS SIO SISR</h3>
+          <ul>
+            <li>Mairie de Saint-Philippe - Stage 1ère année  
+                (02/06/2025 au 27/06/2025)</li>
+            <li>Mairie de Saint-Joseph - Stage 2ème année  
+                (14/01/2026 au 24/02/2026)</li>
+          </ul>
+        </section>
+
+        <section class="block">
+          <h2>Formations</h2>
+          <h3>Collège Bory de Saint-Vincent (2017-2021)</h3>
+          <ul>
+            <li>Diplôme national du brevet (2021)</li>
+            <li>ASSR²</li>
+          </ul>
+
+          <h3>Lycée de Vincendo (2021-2024)</h3>
+          <ul>
+            <li>Attestation de réussite intermédiaire en baccalauréat professionnel optique lunetterie (BPOL)</li>
+            <li>SST : Sauveteur secouriste du travail</li>
+          </ul>
+
+          <h3>Lycée Pierre Poivre (2024-2026)</h3>
+          <ul>
+            <li>En cours de formation au BTS SIO SISR  
+                (Solutions d’Infrastructure, Systèmes et Réseaux)</li>
+          </ul>
+        </section>
+
+        <section class="block">
+          <h2>Certifications</h2>
+          <h3>PIX</h3>
+          <p>Vérification : <a href="https://app.pix.fr/verification-certificat">
+            https://app.pix.fr/verification-certificat
+          </a></p>
+          <p>Lycée de Vincendo : P-MRJDQ9TB</p>
+          <p>Lycée Pierre Poivre : P-JHD88DCY</p>
+        </section>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
