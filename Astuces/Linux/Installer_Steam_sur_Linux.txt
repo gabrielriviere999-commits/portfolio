@@ -1,6 +1,6 @@
 INSTALLATION DE STEAM SUR MX LINUX
 
-1) Activer l’architecture 32 bits
+1) Activer l'architecture 32 bits
 sudo dpkg --add-architecture i386
 sudo apt update
 
