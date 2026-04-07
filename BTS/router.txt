@@ -1,11 +1,11 @@
 Router#show run
 Building configuration...
 
-Current configuration : 3318 bytes
+Current configuration : 3201 bytes
 !
-! Last configuration change at 08:05:59 UTC Tue Apr 7 2026
-! NVRAM config last updated at 08:06:00 UTC Tue Apr 7 2026
-! NVRAM config last updated at 08:06:00 UTC Tue Apr 7 2026
+! Last configuration change at 09:04:35 UTC Tue Apr 7 2026
+! NVRAM config last updated at 09:05:20 UTC Tue Apr 7 2026
+! NVRAM config last updated at 09:05:20 UTC Tue Apr 7 2026
 version 15.1
 service config
 service timestamps debug datetime msec
@@ -96,39 +96,34 @@ interface GigabitEthernet0/0
  duplex auto
  speed auto
 !
-interface GigabitEthernet0/0.24
- description VLAN24 (anciennement Gi0/2.24)
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.24
  encapsulation dot1Q 24
  ip address 172.17.4.254 255.255.255.0
  ip nat inside
  ip virtual-reassembly in
 !
-interface GigabitEthernet0/0.100
- description VLAN100
+interface GigabitEthernet0/1.100
  encapsulation dot1Q 100
  ip address 192.168.100.254 255.255.255.0
  ip nat inside
  ip virtual-reassembly in
 !
-interface GigabitEthernet0/0.200
- description VLAN200
+interface GigabitEthernet0/1.200
  encapsulation dot1Q 200
  ip address 192.168.101.254 255.255.255.0
  ip nat inside
  ip virtual-reassembly in
 !
-interface GigabitEthernet0/0.300
- description VLAN300
+interface GigabitEthernet0/1.300
  encapsulation dot1Q 300
  ip address 192.168.102.254 255.255.255.0
  ip nat inside
  ip virtual-reassembly in
-!
-interface GigabitEthernet0/1
- no ip address
- shutdown
- duplex auto
- speed auto
 !
 interface Serial0/0/0
  no ip address

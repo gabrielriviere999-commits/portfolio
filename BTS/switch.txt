@@ -1,7 +1,7 @@
 Switch#show run
 Building configuration...
 
-Current configuration : 4451 bytes
+Current configuration : 4486 bytes
 !
 version 12.2
 no service pad
@@ -155,7 +155,7 @@ interface FastEthernet0/23
 !
 interface FastEthernet0/24
  switchport trunk native vlan 300
- switchport trunk allowed vlan 100,200,300
+ switchport trunk allowed vlan 24,100,200,300
  switchport mode trunk
  switchport nonegotiate
  spanning-tree portfast trunk
@@ -167,8 +167,8 @@ interface GigabitEthernet0/2
 interface Vlan1
  ip address 192.168.1.2 255.255.255.0
 !
-interface Vlan2
- ip address 192.168.2.2 255.255.255.0
+interface Vlan24
+ ip address 172.17.4.2 255.255.255.0
 !
 interface Vlan100
  no ip address
@@ -181,6 +181,7 @@ interface Vlan200
 interface Vlan300
  no ip address
 !
+ip default-gateway 172.17.4.254
 ip http server
 ip http secure-server
 !
