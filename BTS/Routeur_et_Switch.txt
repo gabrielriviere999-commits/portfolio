@@ -8,7 +8,7 @@ VLAN configurés
 +----------------------+----------------+------------------+-----------------+
 | VLAN                 | Sous-interface | Réseau           | Passerelle      |
 +----------------------+----------------+------------------+-----------------+
-| VLAN 24              | Gi0/1.24       | 192.168.24.0/24  | 192.168.24.254  |
+| VLAN 24              | Gi0/1.24       | 172.17.4.0/24    | 172.17.4.254    |
 +----------------------+----------------+------------------+-----------------+
 | VLAN 100             | Gi0/1.100      | 192.168.100.0/24 | 192.168.100.254 |
 +----------------------+----------------+------------------+-----------------+
@@ -16,49 +16,55 @@ VLAN configurés
 +----------------------+----------------+------------------+-----------------+
 | VLAN 300             | Gi0/1.300      | 192.168.102.0/24 | 192.168.102.254 |
 +----------------------+----------------+------------------+-----------------+
-| VLAN 24 (autre lien) | Gi0/2.24       | 172.17.4.0/24    | 172.17.4.254    |
-+----------------------+----------------+------------------+-----------------+
+
+Note : Gi0/1 est l'interface trunk vers le switch (toutes les sous-interfaces sont sur Gi0/1).
+       Gi0/2 n'est plus utilisée dans la configuration actuelle.
 
 
 2. Services DHCP
 Pools DHCP configurés
-- vlan100 → 192.168.100.0/24
-- vlan200 → 192.168.101.0/24
-- vlan300 → 192.168.102.0/24
-- vlan24 → 172.17.4.0/24
-- Plages exclues
+- vlan100 → 192.168.100.0/24, passerelle 192.168.100.254, DNS 8.8.8.8 / 8.8.4.4
+- vlan200 → 192.168.101.0/24, passerelle 192.168.101.254, DNS 8.8.8.8 / 8.8.4.4
+- vlan300 → 192.168.102.0/24, passerelle 192.168.102.254, DNS 8.8.8.8 / 8.8.4.4
+- vlan24  → 172.17.4.0/24,    passerelle 172.17.4.254,    DNS 8.8.8.8
 
-Pour éviter de distribuer les IP réservées :
-192.168.24.1-20 ; 192.168.100.1-20 ; 192.168.101.1-20 ; 192.168.102.1-20 ; 172.17.4.2
+Plages exclues (adresses réservées non distribuées par DHCP) :
+- 192.168.24.1  → 192.168.24.20
+- 192.168.100.1 → 192.168.100.20
+- 192.168.101.1 → 192.168.101.20
+- 192.168.102.1 → 192.168.102.20
+- 172.17.4.2 (IP de management du switch)
 
 
 3. Interfaces principales
-Vers Internet
+Vers Internet (WAN)
 Gi0/0
 - IP : 172.16.1.244/24
 - NAT outside
 
 Vers le switch (Trunk 802.1Q)
 Gi0/1
+- Pas d'IP sur l'interface physique
 - NAT inside
-- Sous-interfaces pour VLAN 24,100,200,300
-
-Deuxième trunk
-Gi0/2.24
-- VLAN 24 sur un autre lien trunk
+- Sous-interfaces :
+    Gi0/1.24  → encapsulation dot1Q 24  → 172.17.4.254/24
+    Gi0/1.100 → encapsulation dot1Q 100 → 192.168.100.254/24
+    Gi0/1.200 → encapsulation dot1Q 200 → 192.168.101.254/24
+    Gi0/1.300 → encapsulation dot1Q 300 → 192.168.102.254/24
 
 
 4. NAT & Routage
 NAT Overload configuré
 Permet aux VLAN internes d'accéder à Internet via l'IP publique :
-ip nat inside source list 10 interface Gi0/0 overload
+ip nat inside source list 10 interface GigabitEthernet0/0 overload
 
 ACL 10 autorise :
-- 192.168.24.0/24
 - 192.168.100.0/24
 - 192.168.101.0/24
 - 192.168.102.0/24
 - 172.17.4.0/24
+
+Note : Le réseau 192.168.24.0/24 n'est plus dans l'ACL 10 (absent de la config actuelle).
 
 Route par défaut
 ip route 0.0.0.0 0.0.0.0 172.16.1.254
@@ -67,8 +73,13 @@ ip route 0.0.0.0 0.0.0.0 172.16.1.254
 
 5. Autres éléments
 Accès
-- SSH version 2 activé
+- SSH version 2 activé (timeout 60s)
 - Console et VTY ouverts sans mot de passe (à sécuriser)
+- HTTP désactivé (no ip http server / no ip http secure-server)
+
+Boot
+- Image chargée : c2900-universalk9-mz.SPA.151-4.M4.bin
+- Matériel : CISCO2901/K9
 
 
 ========== SWITCH ==========
@@ -81,26 +92,37 @@ VLAN 200 (Accès utilisateur 2)
 Ports : Fa0/13 → Fa0/23
 Mode : access
 
-VLAN 300 (Native / Trunk)
+VLAN 300 (Native VLAN du trunk)
+Pas de ports d'accès dédiés.
+Utilisé comme native VLAN sur le trunk Fa0/24.
+
+VLAN 24 (Management)
+Pas de ports d'accès dédiés.
+Utilisé uniquement pour le SVI de management du switch.
+Transporté via le trunk Fa0/24.
+
 Port Trunk : Fa0/24
 - Native VLAN : 300
-- VLAN autorisés : 100, 200, 300
+- VLAN autorisés : 24, 100, 200, 300
 - switchport nonegotiate
 - spanning-tree portfast trunk
 
 
 2. Interfaces VLAN (SVI)
-Présentes mais pas utilisées pour le routage (seul le routeur effectue le routage
-inter-VLAN).
-- Vlan1 : 192.168.1.2/24
-- Vlan2 : 192.168.2.2/24
-- Vlan100/200/300 : sans IP (Simple présence pour spanning-tree)
+- Vlan1  : 192.168.1.2/24 (à supprimer, non utilisée)
+- Vlan24 : 172.17.4.2/24  → SVI de management actif
+- Vlan100 : sans IP (présence pour spanning-tree uniquement)
+- Vlan200 : sans IP (présence pour spanning-tree uniquement)
+- Vlan300 : sans IP (présence pour spanning-tree uniquement)
+
+Passerelle par défaut du switch : 172.17.4.254 (Gi0/1.24 du routeur)
 
 
 3. Spanning-Tree
 - Mode : PVST
-- spanning-tree portfast sur VLAN 100 & 200
-- Port Trunk : PortFast activé
+- spanning-tree portfast configuré sur les SVI Vlan100 et Vlan200 (sans effet réel sur SVI,
+  à déplacer sur les ports d'accès Fa0/1-23 en production)
+- Port Trunk Fa0/24 : PortFast trunk activé
 
 
 4. Services
@@ -109,7 +131,8 @@ inter-VLAN).
 
 
 5. Architecture Résumée
-- VLAN 100 = utilisateurs
-- VLAN 200 = utilisateurs
-- VLAN 300 = native VLAN pour le trunk avec le routeur
-- Fa0/24 = Trunk principal vers le routeur (Gi0/1)
+- VLAN 100 = utilisateurs (Fa0/1 à Fa0/12) → réseau 192.168.100.0/24
+- VLAN 200 = utilisateurs (Fa0/13 à Fa0/23) → réseau 192.168.101.0/24
+- VLAN 300 = native VLAN du trunk → réseau 192.168.102.0/24
+- VLAN 24  = management switch → réseau 172.17.4.0/24
+- Fa0/24   = Trunk principal vers le routeur (Gi0/1), transporte VLANs 24,100,200,300
