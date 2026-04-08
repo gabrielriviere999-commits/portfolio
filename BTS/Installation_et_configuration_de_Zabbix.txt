@@ -157,7 +157,7 @@ sudo systemctl enable zabbix-server zabbix-agent apache2
 X. Accéder à l'interface web de Zabbix
 
 Dans le navigateur :
-http://<adresse_ip_serveur>/zabbix
+http://adresse_ip_serveur/zabbix
 
 Exemple :
 http://172.20.0.106/zabbix
@@ -218,7 +218,7 @@ Vérifier l'état :
 systemctl status zabbix-agent2
 
 5. Vérifier la communication avec le serveur Zabbix
-zabbix_get -s <IP_du_client> -k agent.ping
+zabbix_get -s IP_du_client -k agent.ping
 Si tout est OK, vous devriez obtenir : 1
 
 ---
