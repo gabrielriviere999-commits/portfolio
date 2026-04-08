@@ -1,5 +1,3 @@
-Exemple d'adresse IP statique pour la carte réseau connectée à internet
-
 sudo nano /etc/netplan/50-cloud-init.yaml
 
 network:
