@@ -180,6 +180,8 @@ body {
         onchange="
             if(this.value==='__search__'){
                 window.open('search.html','_blank');
+            } else if(this.value==='__liste_fichiers__'){
+                window.open('liste_fichiers.html','_blank');
             } else if(this.value!==''){
                 location.href=this.value;
             }
@@ -189,6 +191,7 @@ body {
     <option value="search.html">Rechercher</option>
     <option value="__search__">Rechercher (nouvel onglet)</option>
     <option value="liste_fichiers.html">Liste des fichiers</option>
+    <option value="__liste_fichiers__">Liste des fichiers (nouvel onglet)</option>
     <option value="README.md">README.md</option>
     <option value="donations.html">Soutenir le site</option>
 </select>
