@@ -16,7 +16,3 @@ c;d;e;f
 | c                                                     | d                                                    | e | f |
 +-------------------------------------------------------+------------------------------------------------------+---+---+
 
-
-SOLUTION universelle, rien à installer, vous pouvez aller sur cette page :
-https://gabrielriviere999-commits.github.io/portfolio/Astuces/Outils_HTML/outils.html
-Il ne devrait pas y avoir de problèmes d'accents même avec Windows.

@@ -3,8 +3,7 @@ une méthode de frappe simulée.
 Installer xdotool
 Installer xclip ou xsel
 Créer un fichier coller_tapper_clipboard.sh
-Coller le contenu de ce script ou le télécharger :
-https://gabrielriviere999-commits.github.io/portfolio/Astuces/Linux/coller_tapper_clipboard.sh
+Coller le contenu de ce script ou le télécharger dans Script.
 
 Ouvrir un terminal :
 chmod +x coller_tapper_clipboard.sh
