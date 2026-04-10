@@ -1,4 +1,4 @@
-Sur linux, il arrive souvent que photos et autres soient coupés sur des stockages exfat,
+Sur linux, il peut arriver que des photos et autres soient coupés sur des stockages exfat,
 fat32 et peut-étre d'autres. Les NTFS ne semblent pas impactés.
 Pour limiter le problème, il faut installer gnome-disk-utility.
 Cliquer sur le disque en question, puis la partition.
