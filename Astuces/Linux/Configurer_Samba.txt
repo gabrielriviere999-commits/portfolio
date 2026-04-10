@@ -49,19 +49,13 @@ sudo smbpasswd -a mxlinux
 
 Accéder au partage depuis MiXplorer (Android)
 Paramètres à entrer :
-+----------+--------------------------------------+
-| Champ    | Valeur à entrer                      |
-+----------+--------------------------------------+
-| Server   | Adresse IP de ton PC MX Linux        |
-+----------+--------------------------------------+
-| Port     | 445                                  |
-+----------+--------------------------------------+
-| User     | mxlinux ou guest                     |
-+----------+--------------------------------------+
-| Password | Mot de passe Samba ou vide si invité |
-+----------+--------------------------------------+
-| Path     | monpartage                           |
-+----------+--------------------------------------+
+
+Champ : Valeur à entrer
+Server : Adresse IP de ton PC MX Linux
+Port : 445
+User : mxlinux ou guest
+Password : Mot de passe Samba ou vide si invité
+Path : monpartage
 
 Résolution des problèmes
 - Lecture seule : vérifie writable = yes et les permissions du dossier (chmod 777)

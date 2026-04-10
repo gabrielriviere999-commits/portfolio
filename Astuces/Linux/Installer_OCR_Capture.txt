@@ -35,7 +35,7 @@ Ajouter un raccourci clavier
 2. Clique sur Ajouter
 3. Remplis :
 Nom : OCR Capture
-Commande : /home/ton_nom_utilisateur/ocr_capture.sh
+Commande : /home/nom_utilisateur/ocr_capture.sh
 Raccourci : par exemple Ctrl + Alt + O
 
 Résultat

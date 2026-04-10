@@ -5,9 +5,9 @@ Prérequis
 Assurez-vous que les outils suivants sont installés :
 sudo apt update
 sudo apt install ocrmypdf tesseract-ocr tesseract-ocr-fra
-    • ocrmypdf : outil principal pour appliquer l'OCR
-    • tesseract-ocr : moteur de reconnaissance optique
-    • tesseract-ocr-fra : langue française pour Tesseract
+- ocrmypdf : outil principal pour appliquer l'OCR
+- tesseract-ocr : moteur de reconnaissance optique
+- tesseract-ocr-fra : langue française pour Tesseract
 
 Télécharger le script dans Script → ocr_batch.sh
 
@@ -17,10 +17,10 @@ Fonctionnement
 1. Le script vérifie et crée les dossiers nécessaires.
 2. Il parcourt tous les fichiers .pdf dans pdf_input.
 3. Pour chaque fichier, il applique l'OCR avec les options suivantes :
-◦ --force-ocr : force l'OCR même si le PDF contient déjà du texte
-◦ --rotate-pages : corrige l'orientation des pages
-◦ --deskew : redresse les pages inclinées
-◦ -l fra : utilise la langue française
+--force-ocr : force l'OCR même si le PDF contient déjà du texte
+--rotate-pages : corrige l'orientation des pages
+--deskew : redresse les pages inclinées
+-l fra : utilise la langue française
 4. Les fichiers convertis sont enregistrés dans pdf_output
 
 Utilisation
@@ -33,7 +33,9 @@ chmod +x ocr_batch.sh
 
 Résultat
 Tu obtiendras dans pdf_output des fichiers PDF avec une couche texte OCR, consultables et
-sélectionnables dans n'importe quel lecteur PDF.
+sélectionnables.
+
+---
 
 Tu peux ajouter ton script ocr_batch.sh au menu des applications de MX Linux en créant un fichier .desktop
 
@@ -47,15 +49,15 @@ Colle ce contenu :
 Type=Application
 Name=OCR Batch PDF
 Comment=Convertit tous les PDF du dossier en PDF texte OCR
-Exec=/chemin/vers/ocr_batch.sh
+Exec=/home/nom_utilisateur/ocr_batch.sh
 Icon=accessories-text-editor
 Terminal=true
 Categories=Utility;
 
-Remplace /chemin/vers/ocr_batch.sh par le chemin absolu de ton script, par exemple /home/toto/ocr/ocr_batch.sh
+Remplace /home/nom_utilisateur/ocr_batch.sh par ton chemin
 
 2. Rends le script exécutable
-chmod +x /chemin/vers/ocr_batch.sh
+chmod +x /home/nom_utilisateur/ocr_batch.sh
 
 3. Vérifie dans le menu
 - Ouvre le menu MX Linux
@@ -66,4 +68,4 @@ Astuce : changer l'icône
 Tu peux remplacer Icon=accessories-text-editor par une autre icône disponible dans ton système, comme :
 Icon=utilities-terminal
 Icon=document-send
-Ou le chemin vers une icône personnalisée : Icon=/home/toto/ocr/icon.png
+Ou le chemin vers une icône personnalisée : Icon=/home/nom_utilisateur/ocr/icon.png
