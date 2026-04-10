@@ -53,7 +53,6 @@ pre {
     margin-top: 0;
     width: 100%;
     white-space: nowrap;
-    scrollbar-width: thin;
     overflow-x: auto
 }
 
@@ -62,7 +61,7 @@ pre {
     font-family: monospace;
     font-size: 14px;
     padding: 6px 12px;
-    background: #C0C0C0;
+    background-color: #C0C0C0;
     border: 2px solid;
     border-color: #FFFFFF #808080 #808080 #FFFFFF;
     cursor: pointer;
@@ -79,13 +78,13 @@ pre {
 
 /* Hover */
 .tab button:hover, .tab span:hover {
-    background: #D8D8D8;
+    background-color: #D8D8D8;
 }
 
 /* Bouton actif */
 .tab button.active, .tab span.active {
     border-color: #808080 #FFFFFF #FFFFFF #808080;
-    background: #B0B0B0;
+    background-color: #B0B0B0;
 }
 
 .tab span {
@@ -106,7 +105,7 @@ pre {
     /* Style Win98 */
     font-family: monospace;
     font-size: 14px;
-    background: #C0C0C0;
+    background-color: #C0C0C0;
     opacity: 0.8;
     border: 2px solid;
     border-color: #FFFFFF #808080 #808080 #FFFFFF;
@@ -137,20 +136,19 @@ pre {
 
 /* Hover Win98 */
 .win98-select:hover {
-    background: #D8D8D8;
+    background-color: #D8D8D8;
 }
 
 /* Effet enfoncé Win98 */
 .win98-select:active {
     border-color: #808080 #FFFFFF #FFFFFF #808080;
-    background: #B0B0B0;
+    background-color: #B0B0B0;
 }
 
 /* --- Galerie slideshow --- */
 .slideshow-container {
   position: relative;
   max-width: 100%;
-  margin-left: 0;
   margin-right: auto;
 }
 
@@ -220,7 +218,7 @@ pre {
 }
 
 .slide-btn {
-  background: #C0C0C0;
+  background-color: #C0C0C0;
   border: 2px solid;
   border-color: #FFFFFF #808080 #808080 #FFFFFF;
   font-family: monospace;
@@ -235,7 +233,7 @@ pre {
 /* Effet bouton enfoncé */
 .slide-btn:active {
   border-color: #808080 #FFFFFF #FFFFFF #808080;
-  background: #B0B0B0;
+  background-color: #B0B0B0;
 }
 
 .slide-buttons {
@@ -260,6 +258,35 @@ pre {
     .mySlide iframe:not([src$=".pdf"]) {
         zoom: 0.5;
     }
+}
+
+/* --- Arborescence --- */
+summary {
+    cursor: pointer;
+    border: 2px solid #808080;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    padding: 4px;
+}
+
+/* --- Niveau 1 --- */
+details > summary,
+details > *:not(summary) {
+    margin-left: 0;
+}
+
+details {
+    margin-bottom: 12px;
+}
+
+/* --- Niveau 2 --- */
+details details > summary,
+details details > *:not(summary) {
+    margin-left: 10px;
+}
+
+details details {
+    margin-bottom: 4px;
 }
 </style>
 </head>
@@ -306,17 +333,9 @@ pre {
 <p style="font-size:80px;"></p>
 <h1>Stages</h1>
 
-    <!-- Onglets des établissements -->
-    <div class="tab">
-		<button onclick="switchTab('college_bory_de_saint-vincent', 'etablissement', this)" class="etablissement_btn">Collège Bory de Saint-Vincent</button>
-        <button onclick="switchTab('lycee_vincendo', 'etablissement', this)" class="etablissement_btn">Lycée de Vincendo</button>
-        <button onclick="switchTab('lycee_poivre', 'etablissement', this)" class="etablissement_btn">Lycée Pierre Poivre</button>
-    </div>
-
-    <!-- Groupe Collège Bory de Saint-Vincent -->
-    <div id="college_bory_de_saint-vincent" class="etablissement" style="display:none;">
-	<h2>Ferme équestre de Saint-Philippe</h2>
-<pre style="white-space: pre; overflow-wrap: normal; word-wrap: no;">
+<details><summary>Collège Bory de Saint-Vincent</summary>
+<h2>Ferme équestre de Saint-Philippe</h2>
+<pre style="overflow-x: auto; white-space: pre; word-wrap: no;">
 +----------------------+----------------------------------+---------------------------+-------------+
 | Jour                 | Tâches observées ou effectuées   | Matériaux/Outils utilisés | Autonomie   |
 +----------------------+----------------------------------+---------------------------+-------------+
@@ -333,17 +352,10 @@ pre {
 | 2020                 | monter sur poney                 | étrier                    | partielle   |
 +----------------------+----------------------------------+---------------------------+-------------+
 </pre>
-    </div>
- 
-    <!-- Groupe Vincendo -->
-    <div id="lycee_vincendo" class="etablissement" style="display:none;">
-        <div class="tab">
-            <button onclick="switchTab('v_stage_muta_optique', 'v_stage', this)" class="v_stage_btn">Muta Optique</button>
-            <button onclick="switchTab('v_stage_optic_2000', 'v_stage', this)" class="v_stage_btn">Optic 2000</button>
-            <button onclick="switchTab('v_stage_optique_de_bourbon', 'v_stage', this)" class="v_stage_btn">Optique de Bourbon</button>
-        </div>
+</details>
 
-        <div id="v_stage_muta_optique" class="v_stage" style="display:none;">
+<details><summary>Lycée de Vincendo</summary>
+<details><summary>Muta Optique</summary>
 <pre>
 Lundi 24 janvier 2022 :
 On m'a montré les différents linéaires. À l'entrée à gauche, il y a les solaires avec les rapels de marques au dessus.
@@ -442,9 +454,9 @@ J'ai mis les boîtes à lunettes dans les péniches des clients, barré les comm
 Vendredi 1er juillet 2022 :
 J'ai rangé les papiers et lunettes des clients dans les péniches, mis les boîtes à lunettes dans les péniches des clients, barré les commandes journalières reçues.
 </pre>
-        </div>
+</details>
 
-        <div id="v_stage_optic_2000" class="v_stage" style="display:none;">
+<details><summary>Optic 2000</summary>
 <pre>
 Lundi 21 novembre 2022 :
 J'ai donné les lunettes aux clients, visité les lieux, désinfecté les lunettes avec le stérilisateur, rangé les lunettes sur les présentoirs.
@@ -504,8 +516,9 @@ J'ai désinfecté les lunettes. J'ai rangé les lunettes sur les présentoirs.
 Vendredi 16 décembre 2022 :
 J'ai désinfecté les lunettes. J'ai rangé les lunettes sur les présentoirs.
 </pre>
-        </div>
-        <div id="v_stage_optique_de_bourbon" class="v_stage" style="display:none;">
+</details>
+
+<details><summary>Optique de Bourbon</summary>
 <pre>
 Mardi 11 avril 2023 :
 On m'a montré les différents endroits du magasin, elle m'a dit ce qu'on fait.
@@ -588,29 +601,24 @@ Cliquer sur fermer (sans créer le rendez-vous).
 Si il répond on fixe le rendez-vous et sur la fiche atelier on écrit appelé le + la date où on l'a appelé.
 On clique sur la date + heure voulue et on clique sur créer le rendez-vous.
 </pre>
-        </div>
-    </div>
+</details>
+</details>
 
-    <!-- Groupe Pierre Poivre -->
-    <div id="lycee_poivre" class="etablissement" style="display:none;">
-        <div class="tab">
-            <button onclick="switchTab('p_stage_bts1', 'p_stage', this)" class="p_stage_btn">BTS 1</button>
-            <button onclick="switchTab('p_stage_bts2', 'p_stage', this)" class="p_stage_btn">BTS 2</button>
-        </div>
-<p></p>
-<a href="https://drive.google.com/drive/folders/1jcK-8ZkBrQghz4HsKdG9731g8tfhvbTR?usp=drive_link" download>Attestations de stages</a>
-        <div id="p_stage_bts1" class="p_stage" style="display:none;">
-            <h2>Mairie de Saint-Philippe</h2>
+<details><summary>Lycée Pierre Poivre</summary>
+<p><a href="https://drive.google.com/drive/folders/1jcK-8ZkBrQghz4HsKdG9731g8tfhvbTR?usp=drive_link" download>Attestations de stages</a></p>
+
+<details><summary>BTS 1</summary>
+<h2>Mairie de Saint-Philippe</h2>
 <pre>
 Lundi 2 juin 2025 : Découverte des lieux.
 Mardi 3 juin 2025 : Synthèse de l'histoire de Saint-Philippe.
 Mercredi 4 juin 2025 : Continuer la synthèse.
 Jeudi 12 juin 2025 : Lecture magazines de Saint-Philippe.
 </pre>
-        </div>
+</details>
 
-        <div id="p_stage_bts2" class="p_stage" style="display:none;">
-            <h2>Mairie de Saint-Joseph</h2>
+<details><summary>BTS 2</summary>
+<h2>Mairie de Saint-Joseph</h2>
 <pre>
 Mercredi 14 janvier 2026 : J'ai installé MX Linux 23.6 XFCE sur un PC portable Asus et en suite j'ai fait des recherches sur Guacamole, bastion et Wazuh.
 
@@ -720,8 +728,9 @@ Lundi 16 - Vendredi 20 février 2026 : Réinstallation de Wazuh à la bonne vers
     <div class="thumbnail" data-group="Stage_BTS2" onclick="currentSlide(10, 'Stage_BTS2')"></div>
     <div class="thumbnail" data-group="Stage_BTS2" onclick="currentSlide(11, 'Stage_BTS2')"></div>
 </div>
-        </div>
-    </div>
+
+</details>
+</details>
 <p style="font-size:150px;"></p>
 
 <!-- Scripts -->
@@ -745,26 +754,6 @@ var supportsTransform = 'transform' in document.body.style;
 
 if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
-}
-</script>
-
-<script>
-function switchTab(tabName, group, elmnt) {
-    var contents = document.getElementsByClassName(group);
-    for (var i = 0; i < contents.length; i++) {
-        contents[i].style.display = "none";
-    }
-
-    var buttons = document.getElementsByClassName(group + "_btn");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].className = buttons[i].className.replace(" active", "");
-    }
-
-    document.getElementById(tabName).style.display = "block";
-
-    if (elmnt) {
-        elmnt.className += " active";
-    }
 }
 </script>
 
