@@ -193,7 +193,7 @@ body {
   max-width: 100%;
 }
 
-.mySlide {
+.slide {
   display: none;
   width: 100%;
   height: 70vh;
@@ -206,7 +206,7 @@ body {
   box-sizing: border-box;
 }
 
-.mySlide img {
+.slide img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
@@ -296,7 +296,7 @@ body {
 
 /* --- Mode mobile --- */
 @media screen and (max-width: 720px) {
-    .mySlide iframe:not([src$=".pdf"]) { zoom: 0.5; }
+    .slide iframe:not([src$=".pdf"]) { zoom: 0.5; }
 }
 
 /* --- Bouton de téléchargement --- */
@@ -355,71 +355,71 @@ select {
 
 <div class="slideshow-container" data-group="Linux">
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Installer_MXLinux_en_dualboot.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <img data-src="Astuces/Linux/Montage_partitions_efi_et_root.jpg">
     </div>
     
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Quelques_applications_Linux.txt"></div>
     </div>    
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Correction_probleme_fichiers_coupes.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Installer_OCR_Converter.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Installer_OCR_Capture.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Coller_du_texte_dans_des_VM.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/tableau_ascii_presentation.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/change_rotation.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Installer_Recoll.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Installer_GoldenDict.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Activer_python_pour_geany.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Configurer_Samba.txt"></div>
     </div>
     
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Faire_un_serveur_python_local.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Nettoyer_Linux.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Installer_Steam_sur_Linux.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Linux">
+    <div class="slide" data-group="Linux">
         <div class="iframe-holder" data-src="Astuces/Linux/Ajouter_envoyer_vers_bluetooth_sur_Linux_Mint.txt"></div>
     </div>
 
@@ -501,27 +501,27 @@ select {
 <h2>Android</h2>
 
 <div class="slideshow-container" data-group="Android">
-    <div class="mySlide" data-group="Android">
+    <div class="slide" data-group="Android">
         <div class="iframe-holder" data-src="Astuces/Android/Applications/applications.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Android">
+    <div class="slide" data-group="Android">
         <img data-src="Astuces/Android/Applications/tableauascii.jpg">
     </div>
 
-    <div class="mySlide" data-group="Android">
+    <div class="slide" data-group="Android">
         <img data-src="Astuces/Android/Applications/editeurdetexte.jpg">
     </div>
 
-    <div class="mySlide" data-group="Android">
+    <div class="slide" data-group="Android">
         <img data-src="Astuces/Android/Applications/extractioncodecouleur.jpg">
     </div>
 
-    <div class="mySlide" data-group="Android">
+    <div class="slide" data-group="Android">
         <img data-src="Astuces/Android/Applications/selecteurcouleur.jpg">
     </div>
 
-    <div class="mySlide" data-group="Android">
+    <div class="slide" data-group="Android">
         <img data-src="Astuces/Android/Applications/ocrecran.jpg">
     </div>
 
@@ -738,7 +738,7 @@ function currentSlide(n, group) {
 }
 
 function showSlides(n, group) {
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     var thumbs = document.querySelectorAll('.thumbnail[data-group="' + group + '"]');
     var total = slides.length;
     var i;
@@ -792,7 +792,7 @@ function showSlides(n, group) {
 <script>
 function openFullscreen(group) {
     var index = slideIndex[group] || 1;
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     if (slides.length === 0) return;
 
     var activeSlide = slides[index - 1];
@@ -829,7 +829,7 @@ function openFullscreen(group) {
 <script>
 function downloadSlide(group) {
     var index = slideIndex[group] || 1;
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     if (slides.length === 0) return;
 
     var activeSlide = slides[index - 1];

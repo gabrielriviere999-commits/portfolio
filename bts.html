@@ -168,7 +168,7 @@ body {
   max-width: 100%;
 }
 
-.mySlide {
+.slide {
   display: none;
   width: 100%;
   height: 70vh;
@@ -181,7 +181,7 @@ body {
   box-sizing: border-box;
 }
 
-.mySlide img {
+.slide img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
@@ -271,7 +271,7 @@ body {
 
 /* --- Mode mobile --- */
 @media screen and (max-width: 720px) {
-    .mySlide iframe:not([src$=".pdf"]) { zoom: 0.5; }
+    .slide iframe:not([src$=".pdf"]) { zoom: 0.5; }
     table { zoom: 0.4; }
 }
 </style>
@@ -348,47 +348,47 @@ body {
 <h2>Infrastructure</h2>
 <div class="slideshow-container" data-group="Infrastructure">
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/router.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/switch.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/Routeur_et_Switch.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <img data-src="BTS/Routeur.jpg">
     </div>
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <img data-src="BTS/Switch.jpg">
     </div>
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <img data-src="BTS/Schema_infrastructure.png">
     </div>
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/Tableau_IP.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/Installation_de_base_d_un_serveur_web.txt"></div>
     </div>
     
-    <div class="mySlide" data-group="Infrastructure">
+    <div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/Installation_et_configuration_de_GLPI.txt"></div>
     </div>
 
-  	<div class="mySlide" data-group="Infrastructure">
+  	<div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/Installation_et_configuration_de_Zabbix.txt"></div>
     </div>
 
-  	<div class="mySlide" data-group="Infrastructure">
+  	<div class="slide" data-group="Infrastructure">
         <div class="iframe-holder" data-src="BTS/Active_Directory.txt"></div>
     </div>
 
@@ -418,15 +418,15 @@ body {
 <h2>HAProxy</h2>
 <div class="slideshow-container" data-group="HAProxy">
 
-    <div class="mySlide" data-group="HAProxy">
+    <div class="slide" data-group="HAProxy">
         <div class="iframe-holder" data-src="BTS/HAProxy/HAProxy_WEB1_et_WEB2_avec_MySQL.html"></div>
     </div>
 
-    <div class="mySlide" data-group="HAProxy">
+    <div class="slide" data-group="HAProxy">
         <div class="iframe-holder" data-src="BTS/HAProxy/HaproxyIPsStatiques.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="HAProxy">
+    <div class="slide" data-group="HAProxy">
         <div class="iframe-holder" data-src="BTS/HAProxy/Installer_galera_avec_MariaDB.txt"></div>
     </div>
 
@@ -488,7 +488,7 @@ function currentSlide(n, group) {
 }
 
 function showSlides(n, group) {
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     var thumbs = document.querySelectorAll('.thumbnail[data-group="' + group + '"]');
     var total = slides.length;
     var i;
@@ -542,7 +542,7 @@ function showSlides(n, group) {
 <script>
 function openFullscreen(group) {
     var index = slideIndex[group] || 1;
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     if (slides.length === 0) return;
 
     var activeSlide = slides[index - 1];
@@ -579,7 +579,7 @@ function openFullscreen(group) {
 <script>
 function downloadSlide(group) {
     var index = slideIndex[group] || 1;
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     if (slides.length === 0) return;
 
     var activeSlide = slides[index - 1];

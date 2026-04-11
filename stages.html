@@ -152,7 +152,7 @@ pre {
   margin-right: auto;
 }
 
-.mySlide {
+.slide {
   display: none;
   width: 100%;
   height: 70vh;
@@ -165,7 +165,7 @@ pre {
   box-sizing: border-box;
 }
 
-.mySlide img {
+.slide img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
@@ -255,7 +255,7 @@ pre {
 
 /* --- Mode mobile --- */
 @media screen and (max-width: 720px) {
-    .mySlide iframe:not([src$=".pdf"]) { zoom: 0.5; }
+    .slide iframe:not([src$=".pdf"]) { zoom: 0.5; }
 }
 
 /* --- Arborescence --- */
@@ -662,47 +662,47 @@ Lundi 16 - Vendredi 20 février 2026 : Réinstallation de Wazuh à la bonne vers
 </pre>
 <div class="slideshow-container" data-group="Stage_BTS2">
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Guacamole.html"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Wazuh.html"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Guacamole_config_ens18.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Installer_Guacamole_sans_JDBC.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Installer_Guacamole_avec_JDBC.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/MAJ_Guacamole_avec_JDBC_vers_1.6.0.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Checklist_permissions_Tomcat9.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Installer_TOTP.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Installer_Recording_Storage.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Guacamole_SSH_SFTP_RDP.txt"></div>
     </div>
 
-    <div class="mySlide" data-group="Stage_BTS2">
+    <div class="slide" data-group="Stage_BTS2">
         <div class="iframe-holder" data-src="Stage_BTS2/Installer_Wazuh.txt"></div>
     </div>
 
@@ -773,7 +773,7 @@ function currentSlide(n, group) {
 }
 
 function showSlides(n, group) {
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     var thumbs = document.querySelectorAll('.thumbnail[data-group="' + group + '"]');
     var total = slides.length;
     var i;
@@ -827,7 +827,7 @@ function showSlides(n, group) {
 <script>
 function openFullscreen(group) {
     var index = slideIndex[group] || 1;
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     if (slides.length === 0) return;
 
     var activeSlide = slides[index - 1];
@@ -864,7 +864,7 @@ function openFullscreen(group) {
 <script>
 function downloadSlide(group) {
     var index = slideIndex[group] || 1;
-    var slides = document.querySelectorAll('.mySlide[data-group="' + group + '"]');
+    var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     if (slides.length === 0) return;
 
     var activeSlide = slides[index - 1];
