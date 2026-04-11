@@ -15,17 +15,15 @@ generate_index() {
         echo "<style>"
         echo "body { background:#C0C0C0; color:black; font-family:sans-serif; font-size:18px; line-height:1.5; }"
 
-        # Liens : inline pour retrait suspendu, compatible 3DS
+        # Liens : inline pour retrait suspendu
         echo "a {"
         echo "  color:blue;"
         echo "  display:inline;"
-        echo "  word-wrap:break-word;"   # compatible 3DS
+        echo "  word-wrap:break-word;"
         echo "  white-space:normal;"
         echo "  max-width:100%;"
         echo "  font-size:18px;"
         echo "}"
-
-        echo "a:visited { color:purple; }"
 
         # Puces propres
         echo "ul { margin:0; padding-left:1.2em; list-style-position:outside; }"
