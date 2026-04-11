@@ -1,4 +1,4 @@
-Installer Recoll (Recherche de documents par leurs contenus.)
+Installer Recoll (Recherche de documents par leurs contenus)
 
 sudo apt update
 sudo apt install recoll
