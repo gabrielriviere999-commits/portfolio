@@ -57,45 +57,11 @@ function padRight(str, len) {
 }
 
 function wrapText(str, max) {
-  var words = str.split(" ");
-  var lines = [];
-  var current = "";
-  var i, w, parts, p;
-
-  for (i = 0; i < words.length; i++) {
-    w = words[i];
-
-    // Si le mot est plus long que la colonne → fallback caractère
-    if (w.length > max) {
-
-      // On pousse la ligne courante si elle existe
-      if (current.length > 0) {
-        lines.push(current);
-        current = "";
-      }
-
-      // Découpe par caractères
-      for (p = 0; p < w.length; p += max) {
-        lines.push(w.substring(p, p + max));
-      }
-
-      continue;
-    }
-
-    // Sinon wrap par mots
-    if (current.length === 0) {
-      current = w;
-    } else if (current.length + 1 + w.length <= max) {
-      current += " " + w;
-    } else {
-      lines.push(current);
-      current = w;
-    }
+  var out = [];
+  for (var i = 0; i < str.length; i += max) {
+    out.push(str.substring(i, i + max));
   }
-
-  if (current.length > 0) lines.push(current);
-
-  return lines;
+  return out;
 }
 
 function asciiTable(rows, MAX_TABLE_WIDTH) {
