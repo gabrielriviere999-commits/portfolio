@@ -72,11 +72,51 @@ def ajuster_largeurs(largeurs, max_width):
         i += 1
     return new
 
-def wrap_cell(cell, w):
-    t = str(cell)
-    if not t:
+def wrap_cell(cell, largeur):
+    texte = str(cell)
+    if not texte:
         return [""]
-    return textwrap.wrap(t, width=w, replace_whitespace=False, drop_whitespace=False) or [""]
+
+    words = texte.split(" ")
+    lines = []
+    current = ""
+
+    for w in words:
+
+        # --- Mot trop long : découpe par caractères ---
+        if len(w) > largeur:
+
+            # Si la ligne courante contient quelque chose → on la pousse
+            if current:
+                lines.append(current)
+                current = ""
+
+            start = 0
+            while start < len(w):
+                chunk = w[start:start+largeur]
+                start += largeur
+
+                # La dernière tranche devient la ligne courante
+                if start >= len(w):
+                    current = chunk
+                else:
+                    lines.append(chunk)
+
+            continue
+
+        # --- Mot normal ---
+        if not current:
+            current = w
+        elif len(current) + 1 + len(w) <= largeur:
+            current += " " + w
+        else:
+            lines.append(current)
+            current = w
+
+    if current:
+        lines.append(current)
+
+    return lines
 
 def generer_tableau(lignes, max_width=MAX_WIDTH):
     if not lignes:
