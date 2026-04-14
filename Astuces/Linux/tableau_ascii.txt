@@ -1,11 +1,9 @@
-Scripts tableau clipboard ascii.
-Ces scripts ont été testés sur Linux, Windows, Android, macOS.
-Seul sur Windows, les caractères tels que des accents et ç sont cassés.
-Les scripts sont en dessous du texte Télécharger
+Scripts et applications de tableau ASCII.
+Seul pour le script Windows, les caractères tels que les accents et ç sont cassés.
 
-Vous devez utiliser une police régulière dans l'application concernée comme monospace ou mono...
-ou regular... pour que le tableau soit affiché sans décalages lors de la lecture.
-Vous pouvez modifier le séparateur ; et la largeur maximale du tableau en modifiant le script.
+Vous devez utiliser une police régulière comme monospace ou mono... ou regular...
+dans l'application concernée pour que le tableau soit affiché sans décalages lors de la lecture.
+Vous pouvez modifier le séparateur ; et la largeur maximale du tableau.
 Quand le tableau atteint la largeur maximale, le texte passe à la ligne :
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 c;d;e;f
@@ -15,4 +13,3 @@ c;d;e;f
 +-------------------------------------------------------+------------------------------------------------------+---+---+
 | c                                                     | d                                                    | e | f |
 +-------------------------------------------------------+------------------------------------------------------+---+---+
-
