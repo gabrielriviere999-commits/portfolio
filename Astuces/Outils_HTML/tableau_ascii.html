@@ -79,7 +79,7 @@ function wrapText(str, max) {
         var chunk = w.substring(start, start + max);
         start += max;
 
-        // ⚠La dernière tranche devient la ligne courante
+        // La dernière tranche devient la ligne courante
         if (start >= w.length) {
           current = chunk; // ← clé de la correction
         } else {
