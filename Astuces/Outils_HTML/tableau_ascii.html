@@ -57,11 +57,50 @@ function padRight(str, len) {
 }
 
 function wrapText(str, max) {
-  var out = [];
-  for (var i = 0; i < str.length; i += max) {
-    out.push(str.substring(i, i + max));
+  var words = str.split(" ");
+  var lines = [];
+  var current = "";
+
+  for (var i = 0; i < words.length; i++) {
+    var w = words[i];
+
+    // --- Cas 1 : mot plus long que la colonne → découpe par caractères ---
+    if (w.length > max) {
+
+      // Si la ligne actuelle contient quelque chose, on la pousse avant de couper
+      if (current.length > 0) {
+        lines.push(current);
+        current = "";
+      }
+
+      // Découpe du mot trop long
+      var start = 0;
+      while (start < w.length) {
+        lines.push(w.substring(start, start + max));
+        start += max;
+      }
+
+      continue;
+    }
+
+    // --- Cas 2 : mot normal, on tente de l'ajouter à la ligne ---
+    if (current.length === 0) {
+      // Première insertion
+      current = w;
+    } else if (current.length + 1 + w.length <= max) {
+      // Le mot rentre → on ajoute avec un espace
+      current += " " + w;
+    } else {
+      // Le mot ne rentre pas → nouvelle ligne
+      lines.push(current);
+      current = w;
+    }
   }
-  return out;
+
+  // Dernière ligne
+  if (current.length > 0) lines.push(current);
+
+  return lines;
 }
 
 function asciiTable(rows, MAX_TABLE_WIDTH) {
