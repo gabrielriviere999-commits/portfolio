@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentation HAProxy glpi1 ou zabbix1 et glpi2 ou zabbix2 avec MySQL</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto 30px auto;
+      padding: 20px 30px;
+      border: 2px solid;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 600;
+      margin-top: 1.2em;
+      margin-bottom: 0.4em;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+
+    p {
+      margin: 0.3em 0;
+    }
+
+    ul, ol {
+      margin: 0.4em 0 0.4em 1.4em;
+    }
+
+    code {
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
+      font-size: 0.95em;
+      background-color: #f0f0f0;
+      padding: 1px 3px;
+    }
+
+    pre {
+      margin: 0;
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
+      font-size: 0.9em;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .code-block {
+      margin: 0.6em 0;
+      padding: 10px 12px;
+      background-color: black;
+      color: white;
+      border: 1px solid #000;
+    }
+
+    .figure {
+      margin: 0.8em 0;
+      padding: 10px 12px;
+      background-color: #E2E6F0;
+      border: 1px solid;
+      border-left-width: 4px;
+      border-left-color: #2B4F81;
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
+      font-size: 0.9em;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .section-title {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 1em;
+      margin-bottom: 0.3em;
+    }
+
+    .note {
+      margin: 0.6em 0;
+      padding: 8px 10px;
+      border-left: 4px solid #f0ad4e;
+      background-color: #fff8e5;
+      font-size: 0.95em;
+    }
+
+    .table-wrapper {
+      margin: 0.8em 0;
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 100%;
+      font-size: 0.95em;
+    }
+
+    th, td {
+      border: 1px solid #999;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+    }
+
+    .page-break {
+      margin: 20px auto;
+      border: none;
+      border-top: 2px dashed #bbb;
+      max-width: 200px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .inline-title {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <h1>Documentation HAProxy GLPI ou Zabbix avec MySQL</h1>
+
+    <h2>Haute disponibilité</h2>
+
+    <p><span class="inline-title">Objectif :</span> Serveur disponible à tout moment « ou presque ».</p>
+
+    <p><span class="inline-title">PCA :</span> plan de continuité d'activité.</p>
+
+    <h2>Infrastructure virtuelle</h2>
+
+    <p>3 machines virtuelles.</p>
+
+    <h3>Machine HAProxy</h3>
+
+    <ul>
+      <li><span class="inline-title">Username :</span> vboxuser</li>
+      <li><span class="inline-title">Password :</span> changeme</li>
+    </ul>
+
+    <h3>Nom de la machine</h3>
+
+    <div class="code-block">
+      <pre>sudo nano /etc/hostname</pre>
+    </div>
+
+    <p>La nommer <code>haproxyglpi</code>ou <code>haproxyzabbix</code>.</p>
+    <p>Ne pas installer LAMP sur cette machine.</p>
+
+    <h3>Configuration réseau HAProxy (Netplan)</h3>
+
+    <div class="code-block">
+      <pre>ls /etc/netplan
+sudo nano /etc/netplan/50-cloud-init.yaml</pre>
+    </div>
+
+<div class="figure">network:
+  version: 2
+  ethernets:
+    ens18:
+      dhcp4: false
+      dhcp6: false
+      addresses: [172.20.0.105/24] #ou 106 pour haproxyzabbix
+      routes:
+        - to: 0.0.0.0/0
+          via: 172.20.0.254
+          metric: 100
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 1.1.1.1
+    ens19:
+      addresses: [172.17.4.12/23] #ou 13 pour haproxyzabbix
+      dhcp4: false
+      dhcp6: false</div>
+
+    <div class="code-block">
+      <pre>sudo netplan try
+sudo netplan apply</pre>
+    </div>
+
+    <hr class="page-break">
+
+    <h2>Installation et configuration de HAProxy</h2>
+
+    <div class="code-block">
+      <pre>sudo apt install haproxy</pre>
+    </div>
+
+    <p>Modifier le fichier de configuration :</p>
+
+    <div class="code-block">
+      <pre>sudo nano /etc/haproxy/haproxy.cfg</pre>
+    </div>
+
+    <p>Ajouter les lignes suivantes :</p>
+
+    <div class="figure">frontend http_front
+	bind *:80
+	stats uri /stats
+	default_backend http_back
+
+backend http_back
+	balance roundrobin
+	server glpi1 172.17.4.124:80 check #ou zabbix1 172.17.4.134:8080
+	server glpi2 172.17.4.125:80 check #ou zabbix2 172.17.4.135:8080</div>
+
+    <p>Enregistrer avec <code>Ctrl+X</code>, puis <code>Y</code>, puis Entrée.</p>
+
+    <h3>Tests de connectivité depuis HAProxy</h3>
+
+    <div class="code-block">
+      <pre>ping 172.17.4.124   # ping glpi1 ou 134 zabbix1 ok
+ping 172.17.4.125   # ping glpi2 ou 135 zabbix2 ok
+ping google.com      # ok</pre>
+    </div>
+
+    <hr class="page-break">
+
+    <h2>Machine glpi1 ou zabbix1</h2>
+
+    <ul>
+      <li><span class="inline-title">Username :</span> vboxuser</li>
+      <li><span class="inline-title">Password :</span> changeme</li>
+    </ul>
+
+    <h3>Nom de la machine</h3>
+
+    <div class="code-block">
+      <pre>sudo nano /etc/hostname</pre>
+    </div>
+    <p>Mettre : <code>glpi1</code> ou <code>zabbix1</code>.</p>
+
+    <h3>Installation du serveur LAMP</h3>
+
+    <div class="code-block">
+      <pre>sudo apt install lamp-server^</pre>
+    </div>
+
+    <h3>Configuration réseau glpi1 ou zabbix1 (Netplan)</h3>
+
+    <div class="code-block">
+      <pre>ls /etc/netplan
+sudo nano /etc/netplan/50-cloud-init.yaml</pre>
+    </div>
+
+    <div class="figure">network:
+  version: 2
+  ethernets:
+    ens18:
+      addresses: [172.17.4.124/24] #ou 34 pour zabbix1
+      dhcp4: false
+      dhcp6: false</div>
+
+    <div class="code-block">
+      <pre>sudo netplan try
+sudo netplan apply</pre>
+    </div>
+
+    <h3>Modification de la page d'accueil glpi1 ou zabbix1</h3>
+
+    <div class="code-block">
+      <pre>sudo nano /var/www/html/index.html</pre>
+    </div>
+
+    <div class="figure">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+&lt;!--
+Modified from the Debian original for Ubuntu
+Last updated: 2022-03-22
+See: https://launchpad.net/bugs/1966004
+--&gt;
+
+&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+  &lt;title&gt;Bienvenue&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  Bienvenue sur glpi1 ou zabbix1
+&lt;/body&gt;
+&lt;style type="text/css" media="screen"&gt;
+  * {
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+  }
+  body, html {
+    padding: 3px 3px 3px 3px;
+    background-color: #D8DBE2;
+    font-family: Ubuntu, Verdana, sans-serif;
+    font-size: 11pt;
+    text-align: center;
+  }
+  div.main_page {
+    position: relative;
+    display: table;
+    width: 800px;
+    margin-bottom: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0px 0px 0px 0px;
+    border-width: 2px;
+    border-color: #212738;
+    border-style: solid;
+    background-color: #FFFFFF;
+  }
+&lt;/style&gt;
+&lt;/html&gt;</div>
+
+    <h3>Passerelle par défaut glpi1 ou zabbix1</h3>
+
+    <div class="code-block">
+      <pre>sudo nano /etc/netplan/00-installer-config.yaml
+sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
+    </div>
+
+    <div class="figure">network:
+  version: 2
+  ethernets:
+    ens18:
+      addresses:
+        - 172.17.4.124/24  # ou 34 pour zabbix1
+      routes:
+        - to: 0.0.0.0/0
+          via: 172.17.4.12   #ou 13 pour haproxyzabbix
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 1.1.1.1</div>
+
+    <div class="code-block">
+      <pre>sudo netplan try
+sudo netplan apply</pre>
+    </div>
+
+    <h3>Tests glpi1 ou zabbix1</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <tr>
+          <th>Commande</th>
+          <th>Résultat attendu</th>
+        </tr>
+        <tr>
+          <td><code>ping 172.17.4.12 ou 13</code></td>
+          <td># ping HAProxy ok</td>
+        </tr>
+        <tr>
+          <td><code>ping 172.17.4.125 ou 35</code></td>
+          <td># ping glpi2 ou zabbix2 ok</td>
+        </tr>
+      </table>
+    </div>
+
+    <hr class="page-break">
+
+    <h2>Machine glpi2 ou zabbix2</h2>
+
+    <ul>
+      <li><span class="inline-title">Username :</span> vboxuser</li>
+      <li><span class="inline-title">Password :</span> changeme</li>
+    </ul>
+
+    <h3>Nom de la machine</h3>
+
+    <div class="code-block">
+      <pre>sudo nano /etc/hostname</pre>
+    </div>
+    <p>Mettre : <code>glpi2</code> ou <code>zabbix2</code>.</p>
+
+    <h3>Installation du serveur LAMP</h3>
+
+    <div class="code-block">
+      <pre>sudo apt install lamp-server^</pre>
+    </div>
+
+    <h3>Configuration réseau glpi2 ou zabbix2 (Netplan)</h3>
+
+    <div class="code-block">
+      <pre>ls /etc/netplan
+sudo nano /etc/netplan/50-cloud-init.yaml</pre>
+    </div>
+
+    <div class="figure">network:
+  version: 2
+  ethernets:
+    ens18:
+      addresses: [172.17.4.125/24] #ou 135 pour zabbix2
+      dhcp4: false
+      dhcp6: false</div>
+
+    <div class="code-block">
+      <pre>sudo netplan try
+sudo netplan apply</pre>
+    </div>
+
+    <h3>Modification de la page d'accueil glpi2 ou zabbix2</h3>
+
+    <div class="code-block">
+      <pre>sudo nano /var/www/html/index.html</pre>
+    </div>
+
+    <div class="figure">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+
+&lt;!--
+Modified from the Debian original for Ubuntu
+Last updated: 2022-03-22
+See: https://launchpad.net/bugs/1966004
+--&gt;
+
+&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+  &lt;title&gt;Bienvenue&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  Bienvenue sur glpi2 ou zabbix2
+&lt;/body&gt;
+&lt;style type="text/css" media="screen"&gt;
+  * {
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+  }
+  body, html {
+    padding: 3px 3px 3px 3px;
+    background-color: #D8DBE2;
+    font-family: Ubuntu, Verdana, sans-serif;
+    font-size: 11pt;
+    text-align: center;
+  }
+  div.main_page {
+    position: relative;
+    display: table;
+    width: 800px;
+    margin-bottom: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0px 0px 0px 0px;
+    border-width: 2px;
+    border-color: #212738;
+    border-style: solid;
+    background-color: #FFFFFF;
+  }
+&lt;/style&gt;
+&lt;/html&gt;</div>
+
+    <h3>Passerelle par défaut glpi2 ou zabbix2</h3>
+
+    <div class="code-block">
+      <pre>sudo nano /etc/netplan/00-installer-config.yaml
+sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
+    </div>
+
+    <div class="figure">network:
+  version: 2
+  ethernets:
+    ens18:
+      addresses:
+        - 172.17.4.125/24  # ou 35 pour zabbix2
+      routes:
+        - to: 0.0.0.0/0
+          via: 172.17.4.12   #ou 13 pour haproxyzabbix
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 1.1.1.1</div>
+
+    <div class="code-block">
+      <pre>sudo netplan try
+sudo netplan apply</pre>
+    </div>
+
+    <h3>Tests glpi2 ou zabbix2</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <tr>
+          <th colspan="2">Test :</th>
+        </tr>
+        <tr>
+          <td><code>ping 172.17.4.12 ou 13</code></td>
+          <td># ping HAProxy ok</td>
+        </tr>
+        <tr>
+          <td><code>ping 172.17.4.124 ou 34</code></td>
+          <td># ping glpi1 ou zabbix1 ok</td>
+        </tr>
+      </table>
+    </div>
+
+    <hr class="page-break">
+
+    <h2>Accès à internet pour glpi1 ou zabbix1 et glpi2 ou zabbix2</h2>
+
+    <h3>Route par défaut sur glpi1 ou zabbix1 et glpi2 ou zabbix2</h3>
+
+    <div class="code-block">
+      <pre>sudo ip route add default via 172.17.4.12 #ou 13 pour haproxyzabbix
+ip route</pre>
+    </div>
+
+    <p>Il doit y avoir :</p>
+    <div class="figure">default via 172.17.4.12 dev ens18 #ou 13</div>
+
+    <h3>Configuration du routage et du NAT sur HAProxy</h3>
+
+    <p>Activer le routage IPv4 :</p>
+
+    <div class="code-block">
+      <pre>sudo nano /etc/sysctl.conf</pre>
+    </div>
+
+    <p>Décommenter la ligne :</p>
+
+    <div class="figure">net.ipv4.ip_forward=1</div>
+
+    <h3>Configuration du NAT avec iptables</h3>
+
+    <div class="code-block">
+      <pre>sudo iptables -t nat -L -n -v</pre>
+    </div>
+
+    <p>Il doit y avoir une règle de type :</p>
+
+    <div class="figure">MASQUERADE all -- 172.17.4.0/24 anywhere</div>
+
+    <p>Sinon, ajouter la règle :</p>
+
+    <div class="code-block">
+      <pre>sudo iptables -t nat -A POSTROUTING -s 172.17.4.0/24 -o ens18 -j MASQUERADE</pre>
+    </div>
+
+    <p>Vérifier la valeur de <code>ip_forward</code> :</p>
+
+    <div class="code-block">
+      <pre>sudo sysctl net.ipv4.ip_forward</pre>
+    </div>
+
+    <p>Il doit être à 1, sinon :</p>
+
+    <div class="code-block">
+      <pre>sudo sysctl -w net.ipv4.ip_forward=1</pre>
+    </div>
+
+    <p>Rendre la configuration iptables persistante :</p>
+
+    <div class="code-block">
+      <pre>sudo apt install iptables-persistent
+sudo netfilter-persistent save</pre>
+    </div>
+
+    <p>Test final :</p>
+
+    <div class="code-block">
+      <pre>ping google.com   # ok</pre>
+    </div>
+
+    <hr class="page-break">
+
+    <h2>Accès à HAProxy depuis la machine physique</h2>
+
+    <p>Sur HAProxy, l'interface <code>ens18</code> est configurée en <code>inet</code>.</p>
+
+    <p>Depuis un navigateur de la machine physique :</p>
+
+    <div class="figure">http://172.20.0.105 #ou 106 pour haproxyzabbix
+http://172.20.0.105/stats</div>
+
+    <p>La première URL permet d'accéder au service web équilibré, la seconde à la page de statistiques HAProxy (<code>stats uri /stats</code>).</p>
+
+  </div>
+
+</body>
+</html>
