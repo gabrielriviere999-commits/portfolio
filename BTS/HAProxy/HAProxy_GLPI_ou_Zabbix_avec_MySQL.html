@@ -237,8 +237,8 @@ backend http_back
     <h3>Tests de connectivité depuis HAProxy</h3>
 
     <div class="code-block">
-      <pre>ping 172.17.4.124   # ping glpi1 ou zabbix1 ok
-ping 172.17.4.125   # ping glpi2 ou zabbix2 ok
+      <pre>ping 172.17.4.124   # ping glpi1 ou 134 zabbix1 ok
+ping 172.17.4.125   # ping glpi2 ou 135 zabbix2 ok
 ping google.com      # ok</pre>
     </div>
 
@@ -275,7 +275,7 @@ sudo nano /etc/netplan/50-cloud-init.yaml</pre>
   version: 2
   ethernets:
     ens18:
-      addresses: [172.17.4.124/24] #ou 34 pour zabbix1
+      addresses: [172.17.4.124/24] #ou 134 pour zabbix1
       dhcp4: false
       dhcp6: false</div>
 
@@ -347,7 +347,7 @@ sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
   ethernets:
     ens18:
       addresses:
-        - 172.17.4.124/24  # ou 34 pour zabbix1
+        - 172.17.4.124/24  # ou 134 pour zabbix1
       routes:
         - to: 0.0.0.0/0
           via: 172.17.4.12   #ou 13 pour haproxyzabbix
@@ -371,10 +371,10 @@ sudo netplan apply</pre>
         </tr>
         <tr>
           <td><code>ping 172.17.4.12 ou 13</code></td>
-          <td># ping HAProxy ok</td>
+          <td># ping haproxyglpi ou haproxyzabbix ok</td>
         </tr>
         <tr>
-          <td><code>ping 172.17.4.125 ou 35</code></td>
+          <td><code>ping 172.17.4.125 ou 135</code></td>
           <td># ping glpi2 ou zabbix2 ok</td>
         </tr>
       </table>
@@ -485,7 +485,7 @@ sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
   ethernets:
     ens18:
       addresses:
-        - 172.17.4.125/24  # ou 35 pour zabbix2
+        - 172.17.4.125/24  # ou 135 pour zabbix2
       routes:
         - to: 0.0.0.0/0
           via: 172.17.4.12   #ou 13 pour haproxyzabbix
@@ -507,11 +507,11 @@ sudo netplan apply</pre>
           <th colspan="2">Test :</th>
         </tr>
         <tr>
-          <td><code>ping 192.168.10.1</code></td>
-          <td># ping HAProxy ok</td>
+          <td><code>ping 172.17.4.12 ou 13</code></td>
+          <td># ping haproxyglpi ou haproxyzabbix ok</td>
         </tr>
         <tr>
-          <td><code>ping 192.168.10.11</code></td>
+          <td><code>ping 172.17.4.124 ou 134</code></td>
           <td># ping glpi1 ou zabbix1 ok</td>
         </tr>
       </table>
