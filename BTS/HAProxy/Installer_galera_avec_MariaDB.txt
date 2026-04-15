@@ -1,224 +1,187 @@
-# Documentation - Cluster MariaDB Galera avec HAProxy
-
-## 1. Objectif
-
-Mettre en place un cluster MariaDB Galera hautement disponible avec :
-
-* 2 nœuds MariaDB : web1, web2
-* 1 HAProxy pour l'accès applicatif
-* Réplication synchrone des données
-* Bascule automatique en cas de panne
+Documentation Cluster Galera MariaDB
+Pour GLPI (glpi1 + glpi2) et Zabbix (zabbix1 + zabbix2)
+Avec HAProxy séparés (haproxyglpi et haproxyzabbix)
 
 ---
 
-## 2. Architecture
+# 1. Objectif
+Mettre en place deux clusters MariaDB Galera indépendants :
 
-Clients / Applications
-        |
-     HAProxy
-        |
-+------------------+
-| web1 | web2      |
-| DB   | DB        |
-| Galera Cluster   |
-+------------------+
+- Cluster GLPI : glpi1 ↔ glpi2
+- Cluster Zabbix : zabbix1 ↔ zabbix2
 
----
+Chaque cluster assure :
 
-## 3. Prérequis
-
-### OS
-
-* Ubuntu 24.04 LTS
-
-### Base de données
-
-* MariaDB 10.11 (inclut Galera 4)
-
-### Réseau
-
-* Les nœuds doivent pouvoir communiquer sur :
-
-  * TCP 3306 (MySQL)
-  * TCP 4567 (réplication Galera)
-  * TCP 4568 (IST)
-  * TCP 4444 (SST)
+- Réplication synchrone
+- Haute disponibilité
+- Aucune interférence entre GLPI et Zabbix
 
 ---
 
-## 4. Installation MariaDB + Galera
+# 2. Adressage réseau utilisé
+## Cluster GLPI
+- glpi1 : 172.17.4.124
+- glpi2 : 172.17.4.125
+- HAProxy GLPI : 172.17.4.12
 
-### Sur web1 et web2
+## Cluster Zabbix
+- zabbix1 : 172.17.4.134
+- zabbix2 : 172.17.4.135
+- HAProxy Zabbix : 172.17.4.13
 
+---
+
+# 3. Préparation des machines GLPI et Zabbix
+MariaDB est déjà installé via LAMP.
+Ajouter uniquement Galera :
 sudo apt update
-sudo apt install mariadb-server galera-4 -y
+sudo apt install galera-4 -y
 
 Vérification :
-
 ls /usr/lib/galera/libgalera_smm.so
 
 ---
 
-## 5. Configuration Galera
-
-### Fichier
-
+# 4. Configuration du cluster GLPI
+Éditer sur glpi1 et glpi2 :
 sudo nano /etc/mysql/mariadb.conf.d/60-galera.cnf
 
-### Configuration commune
-
+## 4.1 Configuration commune GLPI
 [galera]
 wsrep_on=ON
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
 
-wsrep_cluster_name="galera_cluster"
-wsrep_cluster_address="gcomm://IP_WEB1,IP_WEB2"
+wsrep_cluster_name="galera_glpi"
+wsrep_cluster_address="gcomm://172.17.4.124,172.17.4.125"
 
 binlog_format=ROW
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
 
-### Configuration spécifique
+## 4.2 Configuration spécifique GLPI
+### glpi1
+wsrep_node_name="glpi1"
+wsrep_node_address="172.17.4.124"
 
-#### web1
-
-wsrep_node_name="web1"
-wsrep_node_address="IP_WEB1"
-
-#### web2
-
-wsrep_node_name="web2"
-wsrep_node_address="IP_WEB2"
+### glpi2
+wsrep_node_name="glpi2"
+wsrep_node_address="172.17.4.125"
 
 ---
 
-## 6. Démarrage du cluster (IMPORTANT)
+# 5. Démarrage du cluster GLPI
 
-### 6.1 Bootstrap du premier nœud
-
-Sur web1 uniquement :
-
+## 5.1 Bootstrap sur glpi1
 sudo galera_new_cluster
 
----
-
-### 6.2 Démarrage du second nœud
-
-Sur web2 :
-
+## 5.2 Démarrage glpi2
 sudo systemctl start mariadb
 
 ---
 
-## 7. Vérification du cluster
+# 6. Test du cluster GLPI
+
+Sur glpi1 :
+CREATE DATABASE test_glpi;
+
+Sur glpi2 :
+SHOW DATABASES LIKE 'test_glpi';
+
+---
+
+# 7. Configuration du cluster Zabbix
+
+Éditer sur zabbix1 et zabbix2 :
+sudo nano /etc/mysql/mariadb.conf.d/60-galera.cnf
+
+## 7.1 Configuration commune Zabbix
+[galera]
+wsrep_on=ON
+wsrep_provider=/usr/lib/galera/libgalera_smm.so
+
+wsrep_cluster_name="galera_zabbix"
+wsrep_cluster_address="gcomm://172.17.4.134,172.17.4.135"
+
+binlog_format=ROW
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+
+## 7.2 Configuration spécifique Zabbix
+
+### zabbix1
+wsrep_node_name="zabbix1"
+wsrep_node_address="172.17.4.134"
+
+### zabbix2
+wsrep_node_name="zabbix2"
+wsrep_node_address="172.17.4.135"
+
+---
+
+# 8. Démarrage du cluster Zabbix
+
+## 8.1 Bootstrap sur zabbix1
+sudo galera_new_cluster
+
+## 8.2 Démarrage zabbix2
+sudo systemctl start mariadb
+
+---
+
+# 9. Test du cluster Zabbix
+Sur zabbix1 :
+CREATE DATABASE test_zabbix;
+
+Sur zabbix2 :
+SHOW DATABASES LIKE 'test_zabbix';
+
+---
+
+# 10. Vérifications générales
 
 Sur chaque nœud :
-sudo mariadb
-
 SHOW VARIABLES LIKE 'wsrep_on';
 SHOW STATUS LIKE 'wsrep_cluster_size';
 SHOW STATUS LIKE 'wsrep_cluster_status';
 SHOW STATUS LIKE 'wsrep_local_state_comment';
 SHOW STATUS LIKE 'wsrep_ready';
 
-### Résultat attendu
+Valeurs attendues :
 
-| Variable                  | Valeur  |
-| ------------------------- | ------- |
-| wsrep_on                  | ON      |
-| wsrep_cluster_size        | 2       |
-| wsrep_cluster_status      | Primary |
-| wsrep_local_state_comment | Synced  |
-| wsrep_ready               | ON      |
+- wsrep_on = ON
+- wsrep_cluster_size = 2
+- wsrep_cluster_status = Primary
+- wsrep_local_state_comment = Synced
+- wsrep_ready = ON
 
 ---
 
-## 8. Test de réplication
+# 11. HAProxy GLPI et Zabbix
 
-Sur web1 :
+Aucune modification nécessaire.
+Les HAProxy continuent d’équilibrer uniquement le trafic HTTP.
 
-CREATE DATABASE galera_test;
+- HAProxy GLPI → glpi1 + glpi2
+- HAProxy Zabbix → zabbix1 + zabbix2
 
-Sur web2 :
-
-SHOW DATABASES LIKE 'galera_test';
-
-La base doit apparaitre immédiatement.
+MariaDB n’est pas traversé par HAProxy.
 
 ---
 
-## 9. Problèmes connus / pièges
+# 12. Bonnes pratiques
 
-### 9.1 SHOW STATUS LIKE 'wsrep_on' retourne Empty set
-
-Normal avec MariaDB 10.11
-Utiliser :
-SHOW VARIABLES LIKE 'wsrep_on';
-
----
-
-### 9.2 Démarrage incorrect
-
-Ne jamais faire :
-systemctl restart mariadb
-pour le premier démarrage du cluster.
-
-Toujours utiliser :
-galera_new_cluster
+- Toujours démarrer un seul nœud à la fois
+- Toujours booter le cluster via 'galera_new_cluster'
+- Ne jamais mélanger GLPI et Zabbix dans un même cluster
+- Sauvegardes régulières (Galera ≠ backup)
+- Surveiller 'wsrep_cluster_size'
 
 ---
 
-## 10. Haute disponibilité - Limitation actuelle
+# 13. Résultat final
 
-### ⚠️ Cluster à 2 nœuds
-
-Risque de split-brain si un nœud tombe.
-
-### Solutions recommandées :
-
-* Ajouter un 3ème nœud Galera
-* OU ajouter garbd (Galera Arbitrator)
-
----
-
-## 11. HAProxy (principe)
-
-HAProxy :
-
-* Vérifie que le nœud est :
-
-  * Primary
-  * wsrep_ready = ON
-* Redirige uniquement vers les nœuds sains
-
-(Il ne stocke aucune donnée)
-
----
-
-## 12. Commandes utiles
-
-### Logs MariaDB
-
-journalctl -u mariadb -n 100
-
-### État global
-
-SHOW STATUS LIKE 'wsrep_%';
-
----
-
-## 13. Bonnes pratiques
-
-* Toujours arrêter les nœuds un par un
-* Toujours redémarrer un seul nœud Galera à la fois
-* Sauvegardes régulières (Galera ≠ backup)
-* Surveiller wsrep_cluster_size
-
----
-
-## 14. Conclusion
-
-MariaDB Galera est correctement installé
-Le cluster est fonctionnel et synchronisé
-L'architecture est prête pour HAProxy
-⚠️ Ajouter un 3ème nœud ou garbd pour la production
+- GLPI est en haute disponibilité (web + base)
+- Zabbix est en haute disponibilité (web + base)
+- Les deux environnements sont totalement séparés
+- Les MariaDB locaux ne sont pas cassés
+- Les HAProxy continuent de fonctionner normalement
