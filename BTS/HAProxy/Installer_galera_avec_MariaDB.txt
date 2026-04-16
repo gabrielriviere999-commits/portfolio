@@ -57,6 +57,7 @@ wsrep_node_address="172.17.4.125"
 ---
 
 # 4. Démarrage du cluster
+mysql -u root -p
 
 ## 4.1 Bootstrap sur web1
 sudo galera_new_cluster
