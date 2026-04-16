@@ -1,37 +1,24 @@
 Documentation Cluster Galera MariaDB
-Pour GLPI (glpi1 + glpi2) et Zabbix (zabbix1 + zabbix2)
-Avec HAProxy séparés (haproxyglpi et haproxyzabbix)
+web1 et web2
 
 ---
-
-# 1. Objectif
-Mettre en place deux clusters MariaDB Galera indépendants :
-
-- Cluster GLPI : glpi1 ↔ glpi2
-- Cluster Zabbix : zabbix1 ↔ zabbix2
 
 Chaque cluster assure :
 
 - Réplication synchrone
 - Haute disponibilité
-- Aucune interférence entre GLPI et Zabbix
 
 ---
 
-# 2. Adressage réseau utilisé
-## Cluster GLPI
-- glpi1 : 172.17.4.124
-- glpi2 : 172.17.4.125
-- HAProxy GLPI : 172.17.4.12
-
-## Cluster Zabbix
-- zabbix1 : 172.17.4.134
-- zabbix2 : 172.17.4.135
-- HAProxy Zabbix : 172.17.4.13
+# 1. Adressage réseau utilisé
+## Cluster web
+- web1 : 172.17.4.124
+- web2 : 172.17.4.125
+- haproxyweb : 172.17.4.12
 
 ---
 
-# 3. Préparation des machines GLPI et Zabbix
+# 2. Préparation des machines
 MariaDB est déjà installé via LAMP.
 Ajouter uniquement Galera :
 sudo apt update
@@ -42,102 +29,54 @@ ls /usr/lib/galera/libgalera_smm.so
 
 ---
 
-# 4. Configuration du cluster GLPI
-Éditer sur glpi1 et glpi2 :
+# 3. Configuration du cluster
+Éditer sur web1 et web2 :
 sudo nano /etc/mysql/mariadb.conf.d/60-galera.cnf
 
-## 4.1 Configuration commune GLPI
+## 3.1 Configuration commune web
 [galera]
 wsrep_on=ON
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
 
-wsrep_cluster_name="galera_glpi"
+wsrep_cluster_name="galera_web"
 wsrep_cluster_address="gcomm://172.17.4.124,172.17.4.125"
 
 binlog_format=ROW
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
 
-## 4.2 Configuration spécifique GLPI
-### glpi1
-wsrep_node_name="glpi1"
+Configuration spécifique web
+### web1
+wsrep_node_name="web1"
 wsrep_node_address="172.17.4.124"
 
-### glpi2
-wsrep_node_name="glpi2"
+### web2
+wsrep_node_name="web2"
 wsrep_node_address="172.17.4.125"
 
 ---
 
-# 5. Démarrage du cluster GLPI
+# 4. Démarrage du cluster
 
-## 5.1 Bootstrap sur glpi1
+## 4.1 Bootstrap sur web1
 sudo galera_new_cluster
 
-## 5.2 Démarrage glpi2
+## 4.2 Démarrage web2
 sudo systemctl start mariadb
 
 ---
 
-# 6. Test du cluster GLPI
+# 5. Test du cluster
 
-Sur glpi1 :
-CREATE DATABASE test_glpi;
+Sur web1 :
+CREATE DATABASE test_web;
 
-Sur glpi2 :
-SHOW DATABASES LIKE 'test_glpi';
-
----
-
-# 7. Configuration du cluster Zabbix
-
-Éditer sur zabbix1 et zabbix2 :
-sudo nano /etc/mysql/mariadb.conf.d/60-galera.cnf
-
-## 7.1 Configuration commune Zabbix
-[galera]
-wsrep_on=ON
-wsrep_provider=/usr/lib/galera/libgalera_smm.so
-
-wsrep_cluster_name="galera_zabbix"
-wsrep_cluster_address="gcomm://172.17.4.134,172.17.4.135"
-
-binlog_format=ROW
-default_storage_engine=InnoDB
-innodb_autoinc_lock_mode=2
-
-## 7.2 Configuration spécifique Zabbix
-
-### zabbix1
-wsrep_node_name="zabbix1"
-wsrep_node_address="172.17.4.134"
-
-### zabbix2
-wsrep_node_name="zabbix2"
-wsrep_node_address="172.17.4.135"
+Sur web2 :
+SHOW DATABASES LIKE 'test_web';
 
 ---
 
-# 8. Démarrage du cluster Zabbix
-
-## 8.1 Bootstrap sur zabbix1
-sudo galera_new_cluster
-
-## 8.2 Démarrage zabbix2
-sudo systemctl start mariadb
-
----
-
-# 9. Test du cluster Zabbix
-Sur zabbix1 :
-CREATE DATABASE test_zabbix;
-
-Sur zabbix2 :
-SHOW DATABASES LIKE 'test_zabbix';
-
----
-
-# 10. Vérifications générales
+# 6. Vérifications générales
 
 Sur chaque nœud :
 SHOW VARIABLES LIKE 'wsrep_on';
@@ -156,32 +95,10 @@ Valeurs attendues :
 
 ---
 
-# 11. HAProxy GLPI et Zabbix
-
-Aucune modification nécessaire.
-Les HAProxy continuent d’équilibrer uniquement le trafic HTTP.
-
-- HAProxy GLPI → glpi1 + glpi2
-- HAProxy Zabbix → zabbix1 + zabbix2
-
-MariaDB n’est pas traversé par HAProxy.
-
----
-
-# 12. Bonnes pratiques
+# 7. Bonnes pratiques
 
 - Toujours démarrer un seul nœud à la fois
 - Toujours booter le cluster via 'galera_new_cluster'
-- Ne jamais mélanger GLPI et Zabbix dans un même cluster
 - Sauvegardes régulières (Galera ≠ backup)
 - Surveiller 'wsrep_cluster_size'
 
----
-
-# 13. Résultat final
-
-- GLPI est en haute disponibilité (web + base)
-- Zabbix est en haute disponibilité (web + base)
-- Les deux environnements sont totalement séparés
-- Les MariaDB locaux ne sont pas cassés
-- Les HAProxy continuent de fonctionner normalement
