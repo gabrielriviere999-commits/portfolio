@@ -152,13 +152,7 @@ sudo rm /var/www/glpi/install/install.php
 3. Valider
 
 
-13) Vérifications réseau
-ip a
-nslookup 172.20.0.145
-Nom de domaine retourné : glpigabrielwissam.btssio.lan
-
-
-14) Installation de l'agent GLPI sur Ubuntu/Debian
+13) Installation de l'agent GLPI sur Ubuntu/Debian
 1. Télécharger le script installateur officiel
 Le projet GLPI fournit un installateur Perl compatible Debian/Ubuntu.
 
