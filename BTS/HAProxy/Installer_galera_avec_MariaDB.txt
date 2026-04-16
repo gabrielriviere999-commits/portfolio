@@ -45,7 +45,7 @@ binlog_format=ROW
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
 
-Configuration spécifique web
+###Configuration spécifique web
 ### web1
 wsrep_node_name="web1"
 wsrep_node_address="172.17.4.124"
@@ -78,7 +78,7 @@ SHOW DATABASES LIKE 'test_web';
 
 # 6. Vérifications générales
 
-Sur chaque nœud :
+Sur chaque noeud :
 SHOW VARIABLES LIKE 'wsrep_on';
 SHOW STATUS LIKE 'wsrep_cluster_size';
 SHOW STATUS LIKE 'wsrep_cluster_status';
@@ -97,7 +97,7 @@ Valeurs attendues :
 
 # 7. Bonnes pratiques
 
-- Toujours démarrer un seul nœud à la fois
+- Toujours démarrer un seul noeud à la fois
 - Toujours booter le cluster via 'galera_new_cluster'
 - Sauvegardes régulières (Galera ≠ backup)
 - Surveiller 'wsrep_cluster_size'
