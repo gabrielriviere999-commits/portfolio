@@ -75,6 +75,7 @@ pour démarrer le cluster.
 ---
 
 # 5. Test du cluster
+mariabd -u root -p
 Sur web1 :
 CREATE DATABASE test_web;
 
