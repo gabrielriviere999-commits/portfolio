@@ -1,10 +1,9 @@
-Documentation Cluster Galera MariaDB
+# Documentation Cluster Galera MariaDB
 web1 et web2
 
 ---
 
 Chaque cluster assure :
-
 - Réplication synchrone
 - Haute disponibilité
 
@@ -21,6 +20,7 @@ Chaque cluster assure :
 # 2. Préparation des machines
 MariaDB est déjà installé via LAMP.
 Ajouter uniquement Galera :
+
 sudo apt update
 sudo apt install galera-4 -y
 
@@ -45,7 +45,9 @@ binlog_format=ROW
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
 
-###Configuration spécifique web
+wsrep_sst_method=rsync
+
+## 3.2 Configuration spécifique web
 ### web1
 wsrep_node_name="web1"
 wsrep_node_address="172.17.4.124"
@@ -57,7 +59,8 @@ wsrep_node_address="172.17.4.125"
 ---
 
 # 4. Démarrage du cluster
-mysql -u root -p
+Avant tout bootstrap, arrêter MariaDB :
+sudo systemctl stop mariadb
 
 ## 4.1 Bootstrap sur web1
 sudo galera_new_cluster
@@ -65,10 +68,13 @@ sudo galera_new_cluster
 ## 4.2 Démarrage web2
 sudo systemctl start mariadb
 
+⚠️ Ne jamais utiliser :
+systemctl restart mariadb
+pour démarrer le cluster.
+
 ---
 
 # 5. Test du cluster
-
 Sur web1 :
 CREATE DATABASE test_web;
 
@@ -78,7 +84,6 @@ SHOW DATABASES LIKE 'test_web';
 ---
 
 # 6. Vérifications générales
-
 Sur chaque noeud :
 SHOW VARIABLES LIKE 'wsrep_on';
 SHOW STATUS LIKE 'wsrep_cluster_size';
@@ -87,7 +92,6 @@ SHOW STATUS LIKE 'wsrep_local_state_comment';
 SHOW STATUS LIKE 'wsrep_ready';
 
 Valeurs attendues :
-
 - wsrep_on = ON
 - wsrep_cluster_size = 2
 - wsrep_cluster_status = Primary
@@ -96,10 +100,25 @@ Valeurs attendues :
 
 ---
 
-# 7. Bonnes pratiques
+# 7. Firewall (si UFW activé)
+sudo ufw allow 3306/tcp
+sudo ufw allow 4567/tcp
+sudo ufw allow 4568/tcp
+sudo ufw allow 4444/tcp
 
+---
+
+# 8. Logs utiles
+journalctl -u mariadb -n 100
+
+---
+
+# 9. Bonnes pratiques
 - Toujours démarrer un seul noeud à la fois
 - Toujours booter le cluster via 'galera_new_cluster'
 - Sauvegardes régulières (Galera ≠ backup)
 - Surveiller 'wsrep_cluster_size'
+- Ne jamais mélanger plusieurs services dans un même cluster
 
+⚠️ Cluster 2 noeuds = risque de split-brain
+→ Ajouter un 3eme noeud ou un arbitrateur (garbd) recommandé.
