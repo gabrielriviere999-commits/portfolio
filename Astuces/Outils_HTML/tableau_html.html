@@ -455,6 +455,25 @@ function applyColor(col) {
   }
 }
 
+document.getElementById('applyHexColor').onclick = function () {
+  var col = document.getElementById('hexColorInput').value;
+
+  // enlever espaces
+  col = col.replace(/^\s+|\s+$/g, "");
+
+  // ajouter # si besoin
+  if (/^[0-9A-Fa-f]{6}$/.test(col)) {
+    col = "#" + col;
+  }
+
+  // valider format final
+  if (!/^#[0-9A-Fa-f]{6}$/.test(col)) {
+    return;
+  }
+
+  // appliquer selon mode
+  applyColor(col);
+};
 /* ============================
    EPAISSEUR
 ============================ */
