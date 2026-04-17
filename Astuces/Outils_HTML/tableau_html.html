@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tableau HTML</title>
 <style>
-/* --- GLOBAL --- */
 body {
   font-family: system-ui, sans-serif;
   margin: 0;
@@ -13,30 +12,29 @@ body {
   background: #C0C0C0;
 }
 
-/* --- TOOLBAR --- */
+/* Toolbar Win98 */
 .toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
+  display: block;
   padding: 6px;
   background: #c0c0c0;
   border: 2px solid;
   border-color: #fff #404040 #404040 #fff;
+  margin-bottom: 10px;
 }
 
-/* --- BOUTONS --- */
+.toolbar button {
+  margin: 2px;
+}
+
+/* Boutons Win98 */
 button {
   background: #d4d0c8;
   border: 2px solid;
   border-color: #fff #404040 #404040 #fff;
   padding: 4px 8px;
+  font-family: "MS Sans Serif", sans-serif;
   font-size: 12px;
   cursor: pointer;
-}
-
-button:hover {
-  background: #E0E0E0;
 }
 
 button:active,
@@ -45,14 +43,14 @@ button.active {
   background: #c0c0c0;
 }
 
-/* --- TABLEAU --- */
+/* TABLEAU */
 table {
   border-collapse: collapse;
   background: #fff;
   border: 2px solid #000;
 }
 
-table td {
+td {
   border: 1px solid #000;
   padding: 6px;
 }
@@ -62,25 +60,24 @@ td.selected {
   outline-offset: -2px;
 }
 
-/* --- PALETTE --- */
 .palette {
-  display: flex;
-  gap: 4px;
-  align-items: center;
+  display: block;
 }
 
 .palette .color {
+  display: inline-block;
   width: 22px;
   height: 22px;
   border: 1px solid #444;
+  margin-right: 4px;
+  margin-bottom: 4px;
   cursor: pointer;
 }
 
-/* --- INPUT HEX --- */
+/* HEX INPUT */
 .hexInputBox {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  display: block;
+  margin-top: 6px;
 }
 
 #hexColorInput {
@@ -89,7 +86,7 @@ td.selected {
   font-family: monospace;
 }
 
-/* --- CODE BOX --- */
+/* CODE BOX */
 #codeBox {
   width: 100%;
   height: 200px;
@@ -187,29 +184,81 @@ td.selected {
 <button id="copyCode">Copier le code</button>
 
 <script>
+/* ============================
+   POLYFILLS
+============================ */
+
+// matches()
+if (!Element.prototype.matches) {
+  Element.prototype.matches =
+    Element.prototype.msMatchesSelector ||
+    Element.prototype.webkitMatchesSelector ||
+    function(selector) {
+      var nodes = (this.parentNode || document).querySelectorAll(selector);
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i] === this) return true;
+      }
+      return false;
+    };
+}
+
+// closest()
+function closest(el, selector) {
+  while (el && el.nodeType === 1) {
+    if (el.matches(selector)) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+// addClass / removeClass
+function addClass(el, cls) {
+  if (el.className.indexOf(cls) === -1) {
+    el.className += " " + cls;
+  }
+}
+
+function removeClass(el, cls) {
+  el.className = el.className.replace(cls, "").replace("  ", " ");
+}
+
+// NodeList loop helper
+function forEachNode(list, fn) {
+  for (var i = 0; i < list.length; i++) fn(list[i], i);
+}
+
+/* ============================
+   VARIABLES
+============================ */
+
 var table = document.getElementById('editorTable');
 var selectedCells = [];
+var colorMode = "text";
 
-/* -------------------------
+/* ============================
    SÉLECTION MULTIPLE
-------------------------- */
-table.addEventListener('click', function (e) {
-  if (e.target && e.target.nodeName === 'TD') {
+============================ */
 
-    if (document.getElementById('multiSelectMode').checked) {
-      toggleSelect(e.target);
+table.addEventListener('click', function(e) {
+  var t = e.target;
+  if (t && t.nodeName === 'TD') {
+
+    var multi = document.getElementById('multiSelectMode').checked;
+
+    if (multi) {
+      toggleSelect(t);
     } else {
       clearSelection();
-      selectCell(e.target);
+      selectCell(t);
     }
-
   }
 });
 
 document.addEventListener('click', function(e) {
-  var isCell   = e.target && e.target.nodeName === 'TD';
-  var isTable  = e.target.closest && e.target.closest('#editorTable');
-  var isTools  = e.target.closest && e.target.closest('.toolbar');
+  var t = e.target;
+  var isCell = t && t.nodeName === 'TD';
+  var isTable = closest(t, '#editorTable');
+  var isTools = closest(t, '.toolbar');
 
   if (!isCell && !isTable && !isTools) {
     clearSelection();
@@ -217,14 +266,15 @@ document.addEventListener('click', function(e) {
 });
 
 function selectCell(cell) {
-  cell.classList.add('selected');
+  addClass(cell, "selected");
   selectedCells.push(cell);
 }
 
 function toggleSelect(cell) {
-  if (cell.classList.contains('selected')) {
-    cell.classList.remove('selected');
-    selectedCells.splice(selectedCells.indexOf(cell), 1);
+  if (cell.className.indexOf("selected") !== -1) {
+    removeClass(cell, "selected");
+    var idx = selectedCells.indexOf(cell);
+    if (idx !== -1) selectedCells.splice(idx, 1);
   } else {
     selectCell(cell);
   }
@@ -232,9 +282,7 @@ function toggleSelect(cell) {
 
 function clearSelection() {
   for (var i = 0; i < selectedCells.length; i++) {
-    if (selectedCells[i]) {
-      selectedCells[i].classList.remove('selected');
-    }
+    removeClass(selectedCells[i], "selected");
   }
   selectedCells = [];
 }
@@ -248,14 +296,16 @@ function getCellPosition(cell) {
   return { rowIndex: cell.parentNode.rowIndex, cellIndex: cell.cellIndex };
 }
 
-/* -------------------------
+/* ============================
    LIGNES
-------------------------- */
-document.getElementById('addRowAbove').onclick = function () {
+============================ */
+
+document.getElementById('addRowAbove').onclick = function() {
   if (!selectedCells.length) return;
   var pos = getCellPosition(selectedCells[0]);
   var cols = getColumnCount();
   var newRow = table.insertRow(pos.rowIndex);
+
   for (var i = 0; i < cols; i++) {
     var c = newRow.insertCell(i);
     c.contentEditable = "true";
@@ -263,11 +313,12 @@ document.getElementById('addRowAbove').onclick = function () {
   }
 };
 
-document.getElementById('addRowBelow').onclick = function () {
+document.getElementById('addRowBelow').onclick = function() {
   if (!selectedCells.length) return;
   var pos = getCellPosition(selectedCells[0]);
   var cols = getColumnCount();
   var newRow = table.insertRow(pos.rowIndex + 1);
+
   for (var i = 0; i < cols; i++) {
     var c = newRow.insertCell(i);
     c.contentEditable = "true";
@@ -275,19 +326,21 @@ document.getElementById('addRowBelow').onclick = function () {
   }
 };
 
-document.getElementById('delRow').onclick = function () {
+document.getElementById('delRow').onclick = function() {
   if (!selectedCells.length) return;
   var pos = getCellPosition(selectedCells[0]);
   if (table.rows.length > 1) table.deleteRow(pos.rowIndex);
   clearSelection();
 };
 
-/* -------------------------
+/* ============================
    COLONNES
-------------------------- */
-document.getElementById('addColLeft').onclick = function () {
+============================ */
+
+document.getElementById('addColLeft').onclick = function() {
   if (!selectedCells.length) return;
   var pos = getCellPosition(selectedCells[0]);
+
   for (var r = 0; r < table.rows.length; r++) {
     var c = table.rows[r].insertCell(pos.cellIndex);
     c.contentEditable = "true";
@@ -295,9 +348,10 @@ document.getElementById('addColLeft').onclick = function () {
   }
 };
 
-document.getElementById('addColRight').onclick = function () {
+document.getElementById('addColRight').onclick = function() {
   if (!selectedCells.length) return;
   var pos = getCellPosition(selectedCells[0]);
+
   for (var r = 0; r < table.rows.length; r++) {
     var c = table.rows[r].insertCell(pos.cellIndex + 1);
     c.contentEditable = "true";
@@ -305,168 +359,113 @@ document.getElementById('addColRight').onclick = function () {
   }
 };
 
-document.getElementById('delCol').onclick = function () {
+document.getElementById('delCol').onclick = function() {
   if (!selectedCells.length) return;
   var pos = getCellPosition(selectedCells[0]);
+
   for (var r = 0; r < table.rows.length; r++) {
     table.rows[r].deleteCell(pos.cellIndex);
   }
   clearSelection();
 };
 
-/* -------------------------
+/* ============================
    ALIGNEMENT
-------------------------- */
+============================ */
+
 var alignButtons = document.querySelectorAll('button[data-align]');
-for (var i = 0; i < alignButtons.length; i++) {
-  alignButtons[i].onclick = function () {
-    var align = this.getAttribute('data-align');
+forEachNode(alignButtons, function(btn) {
+  btn.onclick = function() {
+    var align = btn.getAttribute('data-align');
     for (var j = 0; j < selectedCells.length; j++) {
       selectedCells[j].style.textAlign = align;
     }
   };
+});
+
+/* ============================
+   PALETTE + MODES
+============================ */
+
+var modeButtons = document.querySelectorAll('#colorModes button');
+forEachNode(modeButtons, function(btn) {
+  btn.onclick = function() {
+    colorMode = btn.getAttribute('data-mode');
+
+    forEachNode(modeButtons, function(b) {
+      removeClass(b, "active");
+    });
+
+    addClass(btn, "active");
+  };
+});
+
+var paletteColors = document.querySelectorAll('#colorPalette .color');
+forEachNode(paletteColors, function(el) {
+  el.onclick = function() {
+    var col = el.getAttribute('data-col');
+    applyColor(col);
+  };
+});
+
+function applyColor(col) {
+  var r, c2;
+
+  if (colorMode === "text") {
+    if (selectedCells.length > 0) {
+      for (var i = 0; i < selectedCells.length; i++) {
+        selectedCells[i].style.color = col;
+      }
+    } else {
+      for (r = 0; r < table.rows.length; r++) {
+        for (c2 = 0; c2 < table.rows[r].cells.length; c2++) {
+          table.rows[r].cells[c2].style.color = col;
+        }
+      }
+    }
+  }
+
+  else if (colorMode === "bg") {
+    if (selectedCells.length > 0) {
+      for (var i2 = 0; i2 < selectedCells.length; i2++) {
+        selectedCells[i2].style.backgroundColor = col;
+      }
+    } else {
+      for (r = 0; r < table.rows.length; r++) {
+        for (c2 = 0; c2 < table.rows[r].cells.length; c2++) {
+          table.rows[r].cells[c2].style.backgroundColor = col;
+        }
+      }
+    }
+  }
+
+  else if (colorMode === "border") {
+    if (selectedCells.length > 0) {
+      for (var i3 = 0; i3 < selectedCells.length; i3++) {
+        selectedCells[i3].style.borderColor = col;
+      }
+    } else {
+      for (r = 0; r < table.rows.length; r++) {
+        for (c2 = 0; c2 < table.rows[r].cells.length; c2++) {
+          table.rows[r].cells[c2].style.borderColor = col;
+        }
+      }
+    }
+    table.style.borderColor = col;
+  }
 }
 
-/* -------------------------
-   PALETTE + MODES
-------------------------- */
-var colorMode = "text";
-
-document.querySelectorAll('#colorModes button').forEach(function(btn) {
-  btn.onclick = function() {
-    colorMode = this.getAttribute('data-mode');
-  };
-});
-
-document.querySelectorAll('#colorModes button').forEach(function(btn) {
-  btn.classList.add("win98-btn");
-
-  btn.onclick = function() {
-    colorMode = this.getAttribute('data-mode');
-
-    // retirer l'état actif des autres boutons
-    document.querySelectorAll('#colorModes button').forEach(b => b.classList.remove("active"));
-
-    // activer celui-ci
-    this.classList.add("active");
-  };
-});
-
-document.querySelectorAll('#colorPalette .color').forEach(function(el) {
-  el.onclick = function() {
-    var col = this.getAttribute('data-col');
-
-    switch(colorMode) {
-
-case "text":
-  if (selectedCells.length > 0) {
-    selectedCells.forEach(c => c.style.color = col);
-  } else {
-    for (var r = 0; r < table.rows.length; r++) {
-      for (var c2 = 0; c2 < table.rows[r].cells.length; c2++) {
-        table.rows[r].cells[c2].style.color = col;
-      }
-    }
-  }
-  break;
-
-case "bg":
-  if (selectedCells.length > 0) {
-    selectedCells.forEach(c => c.style.backgroundColor = col);
-  } else {
-    for (var r = 0; r < table.rows.length; r++) {
-      for (var c2 = 0; c2 < table.rows[r].cells.length; c2++) {
-        table.rows[r].cells[c2].style.backgroundColor = col;
-      }
-    }
-  }
-  break;
-
-case "border":
-  if (selectedCells.length > 0) {
-    selectedCells.forEach(c => c.style.borderColor = col);
-  } else {
-    for (var r = 0; r < table.rows.length; r++) {
-      for (var c2 = 0; c2 < table.rows[r].cells.length; c2++) {
-        table.rows[r].cells[c2].style.borderColor = col;
-      }
-    }
-  }
-  table.style.borderColor = col;
-  break;
-    }
-  };
-});
-
-document.getElementById('applyHexColor').onclick = function () {
-  var col = document.getElementById('hexColorInput').value.trim();
-
-  // ajouter # si l'utilisateur ne l'a pas mis
-  if (col.match(/^[0-9A-Fa-f]{6}$/)) {
-    col = "#" + col;
-  }
-
-  // valider le format final
-  if (!col.match(/^#[0-9A-Fa-f]{6}$/)) {
-    return; // couleur invalide → on ignore
-  }
-
-  switch(colorMode) {
-
-    case "text":
-      if (selectedCells.length > 0) {
-        selectedCells.forEach(c => c.style.color = col);
-      } else {
-        for (var r = 0; r < table.rows.length; r++) {
-          for (var c2 = 0; c2 < table.rows[r].cells.length; c2++) {
-            table.rows[r].cells[c2].style.color = col;
-          }
-        }
-      }
-      break;
-
-    case "bg":
-      if (selectedCells.length > 0) {
-        selectedCells.forEach(c => c.style.backgroundColor = col);
-      } else {
-        for (var r = 0; r < table.rows.length; r++) {
-          for (var c2 = 0; c2 < table.rows[r].cells.length; c2++) {
-            table.rows[r].cells[c2].style.backgroundColor = col;
-          }
-        }
-      }
-      break;
-
-    case "border":
-      if (selectedCells.length > 0) {
-        selectedCells.forEach(c => c.style.borderColor = col);
-      } else {
-        for (var r = 0; r < table.rows.length; r++) {
-          for (var c2 = 0; c2 < table.rows[r].cells.length; c2++) {
-            table.rows[r].cells[c2].style.borderColor = col;
-          }
-        }
-      }
-      table.style.borderColor = col;
-      break;
-  }
-};
-
-/* -------------------------
+/* ============================
    EPAISSEUR
-------------------------- */
+============================ */
 
-document.getElementById('borderWidth').onchange = function () {
+document.getElementById('borderWidth').onchange = function() {
   var w = this.value;
-
-  // couleur actuelle (si aucune → noir)
   var col = table.style.borderColor || "#000";
 
-  // appliquer au tableau
   table.style.borderWidth = w;
   table.style.borderColor = col;
 
-  // appliquer aux cellules
   for (var r = 0; r < table.rows.length; r++) {
     for (var c = 0; c < table.rows[r].cells.length; c++) {
       table.rows[r].cells[c].style.borderWidth = w;
@@ -475,12 +474,12 @@ document.getElementById('borderWidth').onchange = function () {
   }
 };
 
-/* -------------------------
-   CODE HTML
-------------------------- */
+/* ============================
+   EXPORT HTML
+============================ */
+
 function updateCodeBox() {
   var clone = table.cloneNode(true);
-
   clone.removeAttribute("id");
 
   for (var r = 0; r < clone.rows.length; r++) {
@@ -488,13 +487,13 @@ function updateCodeBox() {
       var cell = clone.rows[r].cells[c];
 
       cell.removeAttribute("contenteditable");
-      cell.classList.remove("selected");
+      removeClass(cell, "selected");
 
-      // Bordure complète forcée
-      cell.style.border = "1px solid " + (cell.style.borderColor || "#000");
+      // Bordure inline pour compatibilité externe
+      var col = cell.style.borderColor || "#000";
+      cell.style.border = "1px solid " + col;
 
-      // supprimer class="" si vide
-      if (!cell.className.trim()) cell.removeAttribute("class");
+      if (!cell.className.replace(" ", "")) cell.removeAttribute("class");
     }
   }
 
@@ -503,7 +502,11 @@ function updateCodeBox() {
 
 document.getElementById('generateCode').onclick = updateCodeBox;
 
-document.getElementById('updateFromCode').onclick = function () {
+/* ============================
+   IMPORT HTML
+============================ */
+
+document.getElementById('updateFromCode').onclick = function() {
   var code = document.getElementById('codeBox').value;
   var container = document.createElement('div');
   container.innerHTML = code;
@@ -514,7 +517,6 @@ document.getElementById('updateFromCode').onclick = function () {
     table.parentNode.replaceChild(newTable, table);
     table = newTable;
     selectedCells = [];
-
     rebindTableEvents();
   }
 };
@@ -526,20 +528,25 @@ function rebindTableEvents() {
     }
   }
 
-  table.addEventListener('click', function (e) {
-    if (e.target && e.target.nodeName === 'TD') {
+  table.addEventListener('click', function(e) {
+    var t = e.target;
+    if (t && t.nodeName === 'TD') {
+      var multi = document.getElementById('multiSelectMode').checked;
 
-      if (document.getElementById('multiSelectMode').checked) {
-        toggleSelect(e.target);
-      } else {
+      if (multi) toggleSelect(t);
+      else {
         clearSelection();
-        selectCell(e.target);
+        selectCell(t);
       }
     }
   });
 }
 
-document.getElementById('copyCode').onclick = function (e) {
+/* ============================
+   COPIE
+============================ */
+
+document.getElementById('copyCode').onclick = function(e) {
   var code = document.getElementById('codeBox');
 
   var temp = document.createElement("textarea");
