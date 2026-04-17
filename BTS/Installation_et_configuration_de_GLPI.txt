@@ -121,7 +121,7 @@ sudo systemctl restart apache2
 
 
 11) Installation GLPI via interface web
-Accéder : 172.20.0.105
+Accéder : 172.17.4.105
 1. Continuer → Installer
 2. Vérification des extensions : OK
 3. Installer LDAP si nécessaire :

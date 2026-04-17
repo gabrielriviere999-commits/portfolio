@@ -160,7 +160,7 @@ Dans le navigateur :
 http://adresse_ip_serveur/zabbix
 
 Exemple :
-http://172.20.0.106/zabbix
+http://172.17.4.106/zabbix
 
 Choisissez la langue : Français
 
@@ -169,7 +169,7 @@ Choisissez la langue : Français
 XI. Finaliser la configuration via l'interface Web
 
 Aller sur :
-http://172.20.0.106/zabbix
+http://172.17.4.106/zabbix
 
 Cliquer sur Next step à chaque étape.
 
@@ -206,8 +206,8 @@ sudo apt install zabbix-agent2
 
 3. Configurer l'agent
 sudo nano /etc/zabbix/zabbix_agent2.conf
-Server=172.20.0.106
-ServerActive=172.20.0.106
+Server=172.17.4.106
+ServerActive=172.17.4.106
 Hostname=debian #Nom de la machine cliente, commande hostname
 
 4. Démarrer et activer l'agent
