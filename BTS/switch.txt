@@ -1,7 +1,7 @@
 Switch#show run
 Building configuration...
 
-Current configuration : 4486 bytes
+Current configuration : 4700 bytes
 !
 version 12.2
 no service pad
@@ -171,7 +171,7 @@ interface Vlan24
  ip address 172.17.4.2 255.255.255.0
 !
 interface Vlan100
- no ip address
+ ip address 192.168.100.2 255.255.255.0
  spanning-tree portfast
 !
 interface Vlan200
@@ -181,9 +181,14 @@ interface Vlan200
 interface Vlan300
  no ip address
 !
-ip default-gateway 172.17.4.254
+ip default-gateway 192.168.100.254
 ip http server
 ip http secure-server
+snmp-server group ZBXGRP v3 priv read ZBXVIEW
+snmp-server view ZBXVIEW iso included
+snmp-server location groupe4-switch
+snmp-server contact admin@groupe4.lan
+snmp ifmib ifindex persist
 !
 line con 0
 line vty 0 4
