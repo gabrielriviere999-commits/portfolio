@@ -187,10 +187,10 @@ sudo nano /etc/netplan/50-cloud-init.yaml</pre>
     ens18:
       dhcp4: false
       dhcp6: false
-      addresses: [172.20.0.117/24] #IP haproxyweb réseau internet
+      addresses: [172.17.4.117/24] #IP haproxyweb réseau internet
       routes:
         - to: 0.0.0.0/0
-          via: 172.20.0.254 #passerelle
+          via: 172.17.4.254 #passerelle
           metric: 100
       nameservers:
         addresses:
@@ -593,8 +593,8 @@ sudo netfilter-persistent save</pre>
 
     <p>Depuis un navigateur de la machine physique :</p>
 
-    <div class="figure">http://172.20.0.117
-http://172.20.0.117/stats</div>
+    <div class="figure">http://172.17.4.117
+http://172.17.4.117/stats</div>
 
     <p>La première URL permet d'accéder au service web équilibré, la seconde à la page de statistiques HAProxy (<code>stats uri /stats</code>).</p>
 
