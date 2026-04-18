@@ -95,6 +95,11 @@ td.selected {
   margin-top: 10px;
   font-family: monospace;
 }
+
+#editorTable td {
+  min-width: 40px;
+  height: 25px;
+}
 </style>
 </head>
 <body>
@@ -158,25 +163,7 @@ td.selected {
   </label>
 </div>
 
-<table id="editorTable" style="border-collapse:collapse; border:1px solid #000;">
-  <tbody>
-    <tr>
-      <td contenteditable="true">Cellule 1,1</td>
-      <td contenteditable="true">Cellule 1,2</td>
-      <td contenteditable="true">Cellule 1,3</td>
-    </tr>
-    <tr>
-      <td contenteditable="true">Cellule 2,1</td>
-      <td contenteditable="true">Cellule 2,2</td>
-      <td contenteditable="true">Cellule 2,3</td>
-    </tr>
-    <tr>
-      <td contenteditable="true">Cellule 3,1</td>
-      <td contenteditable="true">Cellule 3,2</td>
-      <td contenteditable="true">Cellule 3,3</td>
-    </tr>
-  </tbody>
-</table>
+<table id="editorTable" style="border-collapse:collapse; border:1px solid #000;"><tbody><tr><td contenteditable="true">Cellule 1,1</td><td contenteditable="true">Cellule 1,2</td><td contenteditable="true">Cellule 1,3</td></tr><tr><td contenteditable="true">Cellule 2,1</td><td contenteditable="true">Cellule 2,2</td><td contenteditable="true">Cellule 2,3</td></tr><tr><td contenteditable="true">Cellule 3,1</td><td contenteditable="true">Cellule 3,2</td><td contenteditable="true">Cellule 3,3</td></tr></tbody></table>
 
 <!-- CODE HTML -->
 <h3>Code du tableau</h3>
@@ -311,7 +298,6 @@ document.getElementById('addRowAbove').onclick = function() {
   for (var i = 0; i < cols; i++) {
     var c = newRow.insertCell(i);
     c.contentEditable = "true";
-    c.innerHTML = "&nbsp;";
   }
 };
 
@@ -324,7 +310,6 @@ document.getElementById('addRowBelow').onclick = function() {
   for (var i = 0; i < cols; i++) {
     var c = newRow.insertCell(i);
     c.contentEditable = "true";
-    c.innerHTML = "&nbsp;";
   }
 };
 
@@ -346,7 +331,6 @@ document.getElementById('addColLeft').onclick = function() {
   for (var r = 0; r < table.rows.length; r++) {
     var c = table.rows[r].insertCell(pos.cellIndex);
     c.contentEditable = "true";
-    c.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   }
 };
 
@@ -357,7 +341,6 @@ document.getElementById('addColRight').onclick = function() {
   for (var r = 0; r < table.rows.length; r++) {
     var c = table.rows[r].insertCell(pos.cellIndex + 1);
     c.contentEditable = "true";
-    c.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   }
 };
 
@@ -503,6 +486,8 @@ function updateCodeBox() {
   var clone = table.cloneNode(true);
   clone.removeAttribute("id");
 
+  removeEmptyTextNodes(clone);
+
   for (var r = 0; r < clone.rows.length; r++) {
     for (var c = 0; c < clone.rows[r].cells.length; c++) {
       var cell = clone.rows[r].cells[c];
@@ -510,7 +495,6 @@ function updateCodeBox() {
       cell.removeAttribute("contenteditable");
       removeClass(cell, "selected");
 
-      // Bordure inline pour compatibilité externe
       var col = cell.style.borderColor || "#000";
       cell.style.border = "1px solid " + col;
 
@@ -518,7 +502,86 @@ function updateCodeBox() {
     }
   }
 
-  document.getElementById('codeBox').value = clone.outerHTML;
+  var html = clone.outerHTML;
+
+function removeEmptyTextNodes(node) {
+  var child = node.firstChild;
+  while (child) {
+    var next = child.nextSibling;
+
+    // nœud texte contenant uniquement espaces / retours à la ligne
+    if (child.nodeType === 3 && !child.nodeValue.replace(/\s+/g, "")) {
+      node.removeChild(child);
+    } else if (child.nodeType === 1) {
+      removeEmptyTextNodes(child);
+    }
+
+    child = next;
+  }
+}
+
+  var html = clone.outerHTML;
+  // BEAUTIFIER
+  html = beautifyHTML(html);
+
+  document.getElementById('codeBox').value = html;
+}
+
+function beautifyHTML(html) {
+  var result = "";
+  var indent = 0;
+  var i = 0;
+
+  while (i < html.length) {
+
+    // Cas spécial : <td> sur une seule ligne
+    if (
+      html.substr(i, 4).toLowerCase() === "<td " ||
+      html.substr(i, 3).toLowerCase() === "<td>"
+    ) {
+      result += "\n" + repeat("  ", indent);
+
+      // recopier <td ...>
+      while (i < html.length && html[i] !== ">") {
+        result += html[i++];
+      }
+      result += ">"; i++;
+
+      // recopier contenu jusqu'à </td>
+      while (i < html.length && html.substr(i, 5).toLowerCase() !== "</td>") {
+        result += html[i++];
+      }
+
+      // recopier </td>
+      result += "</td>";
+      i += 5;
+
+      continue;
+    }
+
+    // Balise fermante
+    if (html[i] === "<" && html[i+1] === "/") {
+      indent--;
+      result += "\n" + repeat("  ", indent);
+    }
+
+    // Balise ouvrante
+    else if (html[i] === "<") {
+      result += "\n" + repeat("  ", indent);
+      indent++;
+    }
+
+    // recopier balise ou texte
+    result += html[i++];
+  }
+
+  return result.replace(/^\n/, "");
+}
+
+function repeat(str, count) {
+  var out = "";
+  for (var i = 0; i < count; i++) out += str;
+  return out;
 }
 
 document.getElementById('generateCode').onclick = updateCodeBox;
