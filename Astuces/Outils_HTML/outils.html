@@ -11,11 +11,11 @@ a {
   white-space:normal;
   max-width:100%;
   font-size:18px;
+  text-decoration: none;
 }
+a:hover { text-decoration: underline; }
 ul { margin:0; padding-left:1.2em; list-style-position:outside; }
 li { margin:4px 0; font-size:18px; }
-li.folder::before { content:'[Dossier] '; color:#555; }
-h1 { font-size:22px; }
 
 /* Logo ASCII */
 .logo {
@@ -28,9 +28,24 @@ h1 { font-size:22px; }
   display: table;
   color: #33FF33;
 }
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px;
+    font-size: 14px;
+    font-family: sans-serif;
+    color: black;
+    background-color: white;
+    border: 2px solid #808080;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    outline: none;
+}
 </style>
 </head><body>
-<h1>Outils</h1>
+<h3>Outils</h3>
+<input type="text" id="filter" placeholder="Filtrer les outils..." style="width:100%; padding:6px; font-size:18px; margin-bottom:10px;">
 <ul>
 <li><a href="tableau_ascii.html">Tableau ASCII</a></li>
 <li><a href="tableau_html.html">Tableau HTML</a></li>
@@ -55,4 +70,26 @@ h1 { font-size:22px; }
 | X | X | X | X | X |
 +---+---+---+---+---+</pre>
 
+<script>
+(function () {
+    var input = document.getElementById("filter");
+    var list = document.getElementsByTagName("li");
+
+    input.onkeyup = function () {
+        var q = input.value.toLowerCase();
+        var i, text;
+
+        for (i = 0; i < list.length; i++) {
+            text = list[i].innerText || list[i].textContent || "";
+            text = text.toLowerCase();
+
+            if (text.indexOf(q) !== -1) {
+                list[i].style.display = "";
+            } else {
+                list[i].style.display = "none";
+            }
+        }
+    };
+})();
+</script>
 </body></html>
