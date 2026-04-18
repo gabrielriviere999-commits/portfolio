@@ -23,6 +23,11 @@ generate_index() {
         echo "  white-space:normal;"
         echo "  max-width:100%;"
         echo "  font-size:18px;"
+        echo "  text-decoration: none;"
+        echo "}"
+
+        echo "a:hover {"
+        echo "  text-decoration: underline;"
         echo "}"
 
         # Puces propres
