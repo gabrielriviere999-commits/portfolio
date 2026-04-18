@@ -43,6 +43,8 @@ button.active {
   background: #c0c0c0;
 }
 
+button:hover { background:#E0E0E0; }
+
 /* TABLEAU */
 table {
   border-collapse: collapse;
@@ -179,9 +181,9 @@ td.selected {
 <!-- CODE HTML -->
 <h3>Code du tableau</h3>
 <button id="generateCode">Générer le code</button>
+<button id="copyCode">Copier le code</button>
 <textarea id="codeBox"></textarea>
 <button id="updateFromCode">Mettre à jour le tableau</button>
-<button id="copyCode">Copier le code</button>
 
 <script>
 /* ============================
@@ -579,7 +581,7 @@ document.getElementById('copyCode').onclick = function(e) {
 
   var btn = e.target;
   var old = btn.textContent;
-  btn.textContent = "Copié !";
+  btn.textContent = "Code copié !";
 
   setTimeout(function() {
     btn.textContent = old;
