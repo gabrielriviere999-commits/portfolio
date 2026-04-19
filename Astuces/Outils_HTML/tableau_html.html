@@ -736,13 +736,23 @@ document.getElementById('updateFromCode').onclick = function() {
   if (document.getElementById('cleanLibreOffice').checked) {
       code = cleanLibreOfficeHTML(code);
   }
+
   var container = document.createElement('div');
   container.innerHTML = code;
 
   var newTable = container.querySelector('table');
-  // Récupérer le style global importé
   var importedStyle = container.querySelector("style");
 
+  // 🔥 1. Remplacer la table AVANT de mettre à jour les variables CSS
+  if (newTable) {
+    newTable.id = "editorTable";
+    table.parentNode.replaceChild(newTable, table);
+    table = newTable;
+    selectedCells = [];
+    rebindTableEvents();
+  }
+
+  // 🔥 2. Maintenant appliquer les styles globaux
   if (importedStyle) {
     var css = importedStyle.textContent;
 
@@ -762,7 +772,7 @@ document.getElementById('updateFromCode').onclick = function() {
       globalStyles.borderColor = globalBorderColor;
       document.documentElement.style.setProperty("--cell-border-color", globalBorderColor);
       document.documentElement.style.setProperty("--table-border-color", globalBorderColor);
-      }
+    }
 
     // Couleur texte globale
     var tMatch = css.match(/color:\s*(#[0-9A-Fa-f]{6})/);
@@ -784,13 +794,6 @@ document.getElementById('updateFromCode').onclick = function() {
         globalStyles.textAlign = aMatch[1];
         document.documentElement.style.setProperty("--global-text-align", globalStyles.textAlign);
     }
-  }
-  if (newTable) {
-    newTable.id = "editorTable";
-    table.parentNode.replaceChild(newTable, table);
-    table = newTable;
-    selectedCells = [];
-    rebindTableEvents();
   }
 };
 
