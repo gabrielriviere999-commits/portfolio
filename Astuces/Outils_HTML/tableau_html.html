@@ -186,6 +186,7 @@ td.selected {
 <button id="copyCode">Copier le code</button>
 <textarea id="codeBox" wrap="off"></textarea>
 <button id="updateFromCode">Mettre à jour le tableau</button>
+<label><input type="checkbox" id="cleanLibreOffice">Nettoyer LibreOffice</label>
 
 <script>
 /* ============================
@@ -668,8 +669,75 @@ document.getElementById('generateCode').onclick = updateCodeBox;
    IMPORT HTML
 ============================ */
 
+function cleanLibreOfficeHTML(html) {
+
+  var container = document.createElement("div");
+  container.innerHTML = html;
+
+  var table = container.querySelector("table");
+  if (!table) return html;
+
+  var all = table.querySelectorAll("*");
+
+  // 1. Supprimer classes LibreOffice
+  all.forEach(function(el) {
+    el.removeAttribute("class");
+  });
+
+  // 2. Supprimer balises parasites MAIS garder <br>, <b>, <i>, <u>, <strong>, <em>
+  var garbageTags = ["span", "font", "p"]; 
+  garbageTags.forEach(function(tag) {
+    var nodes = table.querySelectorAll(tag);
+    nodes.forEach(function(n) {
+      while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n);
+      n.remove();
+    });
+  });
+
+  // 3. Convertir align="center" → style="text-align:center"
+  all.forEach(function(el) {
+    var a = el.getAttribute("align");
+    if (a) {
+      el.style.textAlign = a;
+      el.removeAttribute("align");
+    }
+  });
+
+  // 4. Supprimer attributs inutiles
+  all.forEach(function(el) {
+    el.removeAttribute("valign");
+    el.removeAttribute("width");
+    el.removeAttribute("height");
+    el.removeAttribute("bgcolor");
+    el.removeAttribute("border");
+    el.removeAttribute("cellpadding");
+    el.removeAttribute("cellspacing");
+  });
+
+  // 5. Supprimer bordures inline (ton éditeur gère ça globalement)
+  all.forEach(function(el) {
+    el.style.border = "";
+    el.style.borderColor = "";
+    el.style.borderWidth = "";
+  });
+
+  // 6. Supprimer styles vides
+  all.forEach(function(el) {
+    if (el.getAttribute("style") === "") {
+      el.removeAttribute("style");
+    }
+  });
+
+  return table.outerHTML;
+}
+
 document.getElementById('updateFromCode').onclick = function() {
   var code = document.getElementById('codeBox').value;
+
+  // Nettoyage LibreOffice seulement si la case est cochée
+  if (document.getElementById('cleanLibreOffice').checked) {
+      code = cleanLibreOfficeHTML(code);
+  }
   var container = document.createElement('div');
   container.innerHTML = code;
 
