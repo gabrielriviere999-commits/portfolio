@@ -61,6 +61,8 @@ button.active {
 
 button:hover { background:#E0E0E0; }
 
+label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical-align: middle; }
+
 /* TABLEAU */
 table {
   border-collapse: collapse;
@@ -135,10 +137,7 @@ td.selected {
   <button data-align="right">Droite</button>
 |
   <!-- Sélection multiple -->
-  <label>
-    <input type="checkbox" id="multiSelectMode">
-    Sélection multiple
-  </label>
+  <label><input type="checkbox" id="multiSelectMode">Sélection multiple</label>
 
   <!-- Modes d’application -->
   <div id="colorModes">
