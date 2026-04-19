@@ -292,6 +292,13 @@ function getCellPosition(cell) {
 function getSelectedCells() {
   return selectedCells;
 }
+
+function getRealCell(el) {
+  while (el && el.nodeName !== 'TD' && el.nodeName !== 'TABLE') {
+    el = el.parentNode;
+  }
+  return (el && el.nodeName === 'TD') ? el : null;
+}
 /* ============================
    LIGNES
 ============================ */
@@ -621,14 +628,16 @@ function rebindTableEvents() {
 
   table.addEventListener('click', function(e) {
     var t = e.target;
-    if (t && t.nodeName === 'TD') {
-      var multi = document.getElementById('multiSelectMode').checked;
+    var cell = getRealCell(t);
+    if (!cell) return;
 
-      if (multi) toggleSelect(t);
-      else {
-        clearSelection();
-        selectCell(t);
-      }
+    var multi = document.getElementById('multiSelectMode').checked;
+
+    if (multi) {
+      toggleSelect(cell);
+    } else {
+      clearSelection();
+      selectCell(cell);
     }
   });
 }
