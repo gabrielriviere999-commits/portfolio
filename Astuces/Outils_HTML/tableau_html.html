@@ -697,26 +697,27 @@ document.getElementById('updateFromCode').onclick = function() {
       document.documentElement.style.setProperty("--cell-border-color", globalBorderColor);
       document.documentElement.style.setProperty("--table-border-color", globalBorderColor);
       }
-// Couleur texte globale
-var tMatch = css.match(/color:\s*(#[0-9A-Fa-f]{6})/);
-if (tMatch) {
-    globalStyles.textColor = tMatch[1];
-    document.documentElement.style.setProperty("--global-text-color", globalStyles.textColor);
-}
 
-// Fond global
-var bgMatch = css.match(/background-color:\s*(#[0-9A-Fa-f]{6})/);
-if (bgMatch) {
-    globalStyles.bgColor = bgMatch[1];
-    document.documentElement.style.setProperty("--global-bg-color", globalStyles.bgColor);
-}
+    // Couleur texte globale
+    var tMatch = css.match(/color:\s*(#[0-9A-Fa-f]{6})/);
+    if (tMatch) {
+        globalStyles.textColor = tMatch[1];
+        document.documentElement.style.setProperty("--global-text-color", globalStyles.textColor);
+    }
 
-// Alignement global
-var aMatch = css.match(/text-align:\s*(left|center|right)/);
-if (aMatch) {
-    globalStyles.textAlign = aMatch[1];
-    document.documentElement.style.setProperty("--global-text-align", globalStyles.textAlign);
-}
+    // Fond global
+    var bgMatch = css.match(/background-color:\s*(#[0-9A-Fa-f]{6})/);
+    if (bgMatch) {
+        globalStyles.bgColor = bgMatch[1];
+        document.documentElement.style.setProperty("--global-bg-color", globalStyles.bgColor);
+    }
+
+    // Alignement global
+    var aMatch = css.match(/text-align:\s*(left|center|right)/);
+    if (aMatch) {
+        globalStyles.textAlign = aMatch[1];
+        document.documentElement.style.setProperty("--global-text-align", globalStyles.textAlign);
+    }
   }
   if (newTable) {
     newTable.id = "editorTable";
