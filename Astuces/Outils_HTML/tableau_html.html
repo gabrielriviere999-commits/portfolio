@@ -743,7 +743,7 @@ document.getElementById('updateFromCode').onclick = function() {
   var newTable = container.querySelector('table');
   var importedStyle = container.querySelector("style");
 
-  // 🔥 1. Remplacer la table AVANT de mettre à jour les variables CSS
+  // 1. Remplacer la table AVANT de mettre à jour les variables CSS
   if (newTable) {
     newTable.id = "editorTable";
     table.parentNode.replaceChild(newTable, table);
@@ -752,9 +752,41 @@ document.getElementById('updateFromCode').onclick = function() {
     rebindTableEvents();
   }
 
-  // 🔥 2. Maintenant appliquer les styles globaux
+  // 2. Maintenant appliquer les styles globaux
   if (importedStyle) {
     var css = importedStyle.textContent;
+    // RESET automatique si la propriété n'existe plus dans le <style>
+    // Reset border width
+    if (!css.includes("border:")) {
+        document.documentElement.style.removeProperty("--cell-border-width");
+        document.documentElement.style.removeProperty("--table-border-width");
+        globalStyles.borderWidth = "";
+    }
+
+    // Reset border color
+    if (!css.includes("solid")) {
+        document.documentElement.style.removeProperty("--cell-border-color");
+        document.documentElement.style.removeProperty("--table-border-color");
+        globalStyles.borderColor = "";
+    }
+
+    // Reset text color
+    if (!css.includes("color:")) {
+        document.documentElement.style.removeProperty("--global-text-color");
+        globalStyles.textColor = "";
+    }
+
+    // Reset background color
+    if (!css.includes("background-color:")) {
+        document.documentElement.style.removeProperty("--global-bg-color");
+        globalStyles.bgColor = "";
+    }
+
+    // Reset alignement
+    if (!css.includes("text-align:")) {
+        document.documentElement.style.removeProperty("--global-text-align");
+        globalStyles.textAlign = "";
+    }
 
     // Extraire épaisseur
     var wMatch = css.match(/border:\s*([0-9]+px)/);
