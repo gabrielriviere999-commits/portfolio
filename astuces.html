@@ -688,9 +688,8 @@ var supportsTransform = 'transform' in document.body.style;
 if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
 }
-</script>
 
-<script>
+
 function downloadFile(select) {
     var file = select.value;
     if (!file) return;
@@ -714,9 +713,8 @@ function downloadFile(select) {
     // Réinitialise le menu
     select.value = "";
 }
-</script>
 
-<script>
+
 var slideIndex = {
   Linux: 0,
   Android: 0
@@ -782,9 +780,8 @@ function showSlides(n, group) {
         holder.dataset.loaded = "1";
     }
 }
-</script>
 
-<script>
+
 function openFullscreen(group) {
     var index = slideIndex[group] || 1;
     var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
@@ -819,9 +816,8 @@ function openFullscreen(group) {
 
     console.log("Aucun contenu ouvrable trouvé dans cette slide");
 }
-</script>
 
-<script>
+
 function downloadSlide(group) {
     var index = slideIndex[group] || 1;
     var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
