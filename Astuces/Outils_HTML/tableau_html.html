@@ -114,6 +114,10 @@ td.selected {
   <button id="addColLeft">+ Colonne à gauche</button>
   <button id="addColRight">+ Colonne à droite</button>
   <button id="delCol">- Supprimer colonne</button>
+ 
+  <!-- Fusionner/défusionner -->
+  <button id="mergeCellsBtn">Fusionner</button>
+  <button id="unmergeCellsBtn">Défusionner</button>
 
   <!-- Alignement -->
   <button data-align="left">Gauche</button>
@@ -285,6 +289,9 @@ function getCellPosition(cell) {
   return { rowIndex: cell.parentNode.rowIndex, cellIndex: cell.cellIndex };
 }
 
+function getSelectedCells() {
+  return selectedCells;
+}
 /* ============================
    LIGNES
 ============================ */
@@ -650,6 +657,147 @@ document.getElementById('copyCode').onclick = function(e) {
     btn.textContent = old;
   }, 800);
 };
+
+// ===============================
+// MODULE AUTONOME FUSION / DEFUSION
+// ===============================
+
+// 1. Construire une matrice interne du tableau
+function buildMatrix(table) {
+    var matrix = [];
+    var r, c, row, cell, colIndex, rowSpan, colSpan, rs, cs;
+
+    for (r = 0; r < table.rows.length; r++) {
+        row = table.rows[r];
+        matrix[r] = [];
+        colIndex = 0;
+
+        for (c = 0; c < row.cells.length; c++) {
+            cell = row.cells[c];
+
+            while (matrix[r][colIndex]) {
+                colIndex++;
+            }
+
+            rowSpan = cell.rowSpan || 1;
+            colSpan = cell.colSpan || 1;
+
+            for (rs = 0; rs < rowSpan; rs++) {
+                for (cs = 0; cs < colSpan; cs++) {
+                    if (!matrix[r + rs]) matrix[r + rs] = [];
+                    matrix[r + rs][colIndex + cs] = cell;
+                }
+            }
+
+            colIndex += colSpan;
+        }
+    }
+
+    return matrix;
+}
+
+// 2. Vérifier si la sélection forme un rectangle
+function isRectangularSelection(cells, matrix) {
+    var positions = [];
+    var r, c;
+
+    for (r = 0; r < matrix.length; r++) {
+        for (c = 0; c < matrix[r].length; c++) {
+            if (cells.indexOf(matrix[r][c]) !== -1) {
+                positions.push({ r: r, c: c });
+            }
+        }
+    }
+
+    if (positions.length === 0) return false;
+
+    var minR = positions[0].r;
+    var maxR = positions[0].r;
+    var minC = positions[0].c;
+    var maxC = positions[0].c;
+
+    for (var i = 1; i < positions.length; i++) {
+        if (positions[i].r < minR) minR = positions[i].r;
+        if (positions[i].r > maxR) maxR = positions[i].r;
+        if (positions[i].c < minC) minC = positions[i].c;
+        if (positions[i].c > maxC) maxC = positions[i].c;
+    }
+
+    for (r = minR; r <= maxR; r++) {
+        for (c = minC; c <= maxC; c++) {
+            if (cells.indexOf(matrix[r][c]) === -1) return false;
+        }
+    }
+
+    return { minR: minR, maxR: maxR, minC: minC, maxC: maxC };
+}
+
+// 3. Fusionner
+function mergeSelectedCells() {
+    var cells = getSelectedCells();
+    if (!cells || cells.length < 2) return;
+
+    var matrix = buildMatrix(table);
+    var rect = isRectangularSelection(cells, matrix);
+    if (!rect) return;
+
+    var minR = rect.minR;
+    var maxR = rect.maxR;
+    var minC = rect.minC;
+    var maxC = rect.maxC;
+
+    var master = matrix[minR][minC];
+    master.rowSpan = (maxR - minR + 1);
+    master.colSpan = (maxC - minC + 1);
+    if (master.rowSpan === 1) master.removeAttribute("rowSpan");
+    if (master.colSpan === 1) master.removeAttribute("colSpan");
+
+    var r, c, cell;
+
+    for (r = minR; r <= maxR; r++) {
+        for (c = minC; c <= maxC; c++) {
+            cell = matrix[r][c];
+            if (cell !== master) {
+                cell.parentNode.removeChild(cell);
+            }
+        }
+    }
+}
+
+// 4. Défusionner
+function unmergeSelectedCells() {
+    var cells = getSelectedCells();
+    if (!cells || cells.length !== 1) return;
+
+    var cell = cells[0];
+    var rowSpan = cell.rowSpan;
+    var colSpan = cell.colSpan;
+
+    if (rowSpan === 1 && colSpan === 1) return;
+
+    var row = cell.parentNode;
+    var rowIndex = row.rowIndex;
+    var colIndex = cell.cellIndex;
+
+    cell.removeAttribute("rowSpan");
+    cell.removeAttribute("colSpan");
+
+    var r, c, newCell, targetRow;
+
+    for (r = 0; r < rowSpan; r++) {
+        targetRow = table.rows[rowIndex + r];
+        for (c = 0; c < colSpan; c++) {
+            if (r === 0 && c === 0) continue;
+
+            newCell = targetRow.insertCell(colIndex + c);
+            newCell.contentEditable = "true";
+        }
+    }
+}
+
+// 5. Brancher les boutons
+document.getElementById("mergeCellsBtn").onclick = mergeSelectedCells;
+document.getElementById("unmergeCellsBtn").onclick = unmergeSelectedCells;
 </script>
 
 </body>
