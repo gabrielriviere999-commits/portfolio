@@ -1,0 +1,23 @@
+Mots de passes
+glpi : vboxuser/changeme
+Interface web : glpi/glpi
+MariaDB : glpigw/GabrielWissamSQLGLPI
+
+zabbix : vboxuser/changeme
+Interface web : Admin/zabbix
+MariaDB : vboxuser/changeme
+
+haproxyweb : vboxuser/changeme
+web1 : vboxuser/changeme
+web2 : vboxuser/changeme
+MariaDB : root/changeme
+
+WinServer2025 : Administrateur/Groupe4Win2025
+DSRM : groupe4@2025
+
+fog : vboxuser/changeme
+Interface web : 
+
+guacamole : vboxuser/changeme
+MariaDB : guaca_gabriel/changeme
+Interface web : guacadmin/guacadmin
