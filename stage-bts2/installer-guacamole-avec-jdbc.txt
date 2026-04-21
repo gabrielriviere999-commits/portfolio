@@ -1,0 +1,255 @@
+# Documentation : Installation et Configuration d'Apache Guacamole avec JDBC sur Ubuntu 24.04 LTS
+
+## 0. Nettoyage
+[1] Arrêter les services
+sudo systemctl stop tomcat9 tomcat10 guacd
+
+[2] Supprimer Tomcat et Guacamole
+sudo apt purge tomcat* guacd -y
+sudo apt autoremove -y
+sudo rm -rf /opt/tomcat9 /opt/tomcat
+sudo rm -rf /etc/guacamole
+sudo rm -rf /var/lib/tomcat*/webapps/guacamole*
+sudo rm -rf /usr/share/tomcat*/webapps/guacamole*
+sudo rm -rf /etc/tomcat*/Catalina/localhost/guacamole.xml
+
+[3] Supprimer services systemd
+sudo rm -f /etc/systemd/system/tomcat9.service
+sudo rm -f /etc/systemd/system/guacd.service
+sudo rm -rf /etc/systemd/system/tomcat9.service.d
+sudo systemctl daemon-reexec
+
+[4] Supprimer MySQL
+sudo apt purge mysql-server* -y
+sudo apt autoremove -y
+# Si tu veux aussi supprimer la base :
+sudo mysql
+DROP DATABASE guacamole_db;
+DROP USER 'guacamole_user'@'localhost';
+EXIT;
+
+[5] Supprimer Java (optionnel si tu veux repartir de zéro)
+sudo apt purge openjdk-17-jre* openjdk-21-jre* -y
+sudo apt autoremove -y
+
+[6] Supprimer dépendances Guacamole
+sudo apt purge build-essential libcairo2-dev libjpeg-turbo8-dev libpng-dev \
+libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev freerdp2-dev \
+libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev libpulse-dev \
+libssl-dev libvorbis-dev libwebp-dev -y
+sudo apt autoremove -y
+
+[7] Nettoyer caches
+sudo apt clean
+
+[8] Vérifier qu'il ne reste rien
+dpkg -l | grep tomcat
+dpkg -l | grep guacamole
+dpkg -l | grep mysql
+dpkg -l | grep openjdk
+
+→ Aucun paquet en état "ii" ne doit apparaitre.
+→ Si "rc" reste, purge manuelle :
+sudo dpkg --purge <nom_du_paquet>
+
+[9] Vérifier processus
+ps aux | grep tomcat
+ps aux | grep guacd
+→ Aucun processus actif ne doit apparaitre.
+
+[10] Logs et PID résiduels
+sudo rm -rf /opt/tomcat9/logs/*
+sudo rm -f /opt/tomcat9/tomcat.pid
+
+[11] Répertoires de configuration MariaDB/MySQL
+sudo rm -rf /etc/mysql /var/lib/mysql
+
+[12] Vérification des utilisateurs système
+getent passwd guacd
+getent passwd tomcat
+et supprimer si nécessaire avec sudo userdel -r guacd
+
+---
+
+## 1. Installer Tomcat 9 manuellement
+
+cd /tmp
+wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.82/bin/apache-tomcat-9.0.82.tar.gz
+tar -xvzf apache-tomcat-9.0.82.tar.gz
+sudo mv apache-tomcat-9.0.82 /opt/tomcat9
+sudo ln -s /opt/tomcat9 /opt/tomcat
+
+### Créer le service systemd :
+sudo nano /etc/systemd/system/tomcat9.service
+[Unit]
+Description=Apache Tomcat 9
+After=network.target
+
+[Service]
+Type=forking
+Environment=JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+Environment=CATALINA_HOME=/opt/tomcat9
+Environment=CATALINA_BASE=/opt/tomcat9
+Environment=CATALINA_PID=/opt/tomcat9/tomcat.pid
+ExecStart=/opt/tomcat9/bin/startup.sh
+ExecStop=/opt/tomcat9/bin/shutdown.sh
+User=www-data
+Group=www-data
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+### Activer le service :
+sudo chown -R www-data:www-data /opt/tomcat9
+sudo chmod -R 755 /opt/tomcat9
+sudo systemctl daemon-reexec
+sudo systemctl enable tomcat9
+sudo systemctl start tomcat9
+
+---
+
+## 2. Installer les dépendances Guacamole Server
+
+sudo apt update
+sudo apt install build-essential libcairo2-dev libjpeg-turbo8-dev libpng-dev \
+libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev freerdp2-dev \
+libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev libpulse-dev \
+libssl-dev libvorbis-dev libwebp-dev openjdk-17-jdk -y
+
+## 3. Compiler et installer Guacamole Server
+
+cd /tmp
+wget https://downloads.apache.org/guacamole/1.5.5/source/guacamole-server-1.5.5.tar.gz
+tar -xvzf guacamole-server-1.5.5.tar.gz
+cd guacamole-server-1.5.5
+./configure
+make
+sudo make install
+sudo ldconfig
+
+### Créer le service systemd pour guacd :
+sudo nano /etc/systemd/system/guacd.service
+[Unit]
+Description=Guacamole proxy daemon (guacd)
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/guacd -f
+Restart=always
+User=guacd
+Group=guacd
+
+[Install]
+WantedBy=multi-user.target
+
+### Activer le service :
+sudo useradd -r -s /bin/false guacd   # si l'utilisateur n'existe pas
+sudo systemctl daemon-reexec
+sudo systemctl enable guacd
+sudo systemctl start guacd
+
+---
+
+## 4. Déploiement du client Guacamole
+1. Supprimer les anciens fichiers :
+sudo rm -rf /opt/tomcat9/webapps/guacamole*
+
+2. Télécharger le .war :
+cd /tmp
+wget https://downloads.apache.org/guacamole/1.5.5/binary/guacamole-1.5.5.war
+
+3. Copier dans Tomcat :
+sudo cp /tmp/guacamole-1.5.5.war /opt/tomcat9/webapps/guacamole.war
+
+4. Redémarrer Tomcat :
+sudo systemctl restart tomcat9
+
+👉 Vérifier que le dossier /opt/tomcat9/webapps/guacamole/ est créé et que l'interface est accessible via :
+http://<IP_SERVEUR>:8080/guacamole/
+
+---
+
+## 5. Installation de MariaDB
+sudo apt install mariadb-server
+sudo systemctl enable --now mariadb
+sudo mysql_secure_installation
+
+### Création de la base et de l'utilisateur
+CREATE DATABASE guacadb;
+CREATE USER 'guaca_nachos'@'localhost' IDENTIFIED BY 'TonMotDePasse';
+GRANT SELECT,INSERT,UPDATE,DELETE ON guacadb.* TO 'guaca_nachos'@'localhost';
+FLUSH PRIVILEGES;
+
+---
+
+## 6. Extension JDBC et Connecteur MySQL
+### Créer les dossiers :
+sudo mkdir -p /etc/guacamole/extensions
+sudo mkdir -p /etc/guacamole/lib
+
+### Télécharger et installer l'extension JDBC :
+cd /tmp
+wget https://downloads.apache.org/guacamole/1.5.5/binary/guacamole-auth-jdbc-1.5.5.tar.gz
+tar -xzf guacamole-auth-jdbc-1.5.5.tar.gz
+sudo cp guacamole-auth-jdbc-1.5.5/mysql/guacamole-auth-jdbc-mysql-1.5.5.jar /etc/guacamole/extensions/
+
+### Télécharger et installer le connecteur MySQL :
+cd /tmp
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-9.1.0.tar.gz
+tar -xzf mysql-connector-j-9.1.0.tar.gz
+sudo cp mysql-connector-j-9.1.0/mysql-connector-j-9.1.0.jar /etc/guacamole/lib/
+
+---
+
+## 7. Import du schéma SQL
+cd /tmp/guacamole-auth-jdbc-1.5.5/mysql/schema/
+cat *.sql | sudo mysql guacadb
+
+👉 Vérification :
+USE guacadb;
+SHOW TABLES;
+Tu dois voir 23 tables (guacamole_user, guacamole_connection, etc.).
+
+---
+
+## 8. Configuration de Guacamole
+sudo nano /etc/guacamole/guacamole.properties
+mysql-hostname: 127.0.0.1
+mysql-port: 3306
+mysql-database: guacadb
+mysql-username: guaca_nachos
+mysql-password: TonMotDePasse
+
+### Définir GUACAMOLE_HOME
+sudo mkdir -p /etc/systemd/system/tomcat9.service.d
+sudo nano /etc/systemd/system/tomcat9.service.d/guacamole.conf
+[Service]
+Environment=GUACAMOLE_HOME=/etc/guacamole
+
+---
+
+## 9. Redémarrage des services
+sudo systemctl daemon-reexec
+sudo systemctl restart tomcat9
+sudo systemctl restart guacd mariadb
+
+---
+
+## 10. Connexion par défaut
+Accéder à :
+http://<IP_SERVEUR>:8080/guacamole/
+
+Identifiants initiaux :  
+- Login : guacadmin
+- Mot de passe : guacadmin 
+
+⚠️ Change immédiatement ce mot de passe après la première connexion.
+
+---
+
+## 11. Étapes post-installation
+- Créer tes propres utilisateurs.
+- Ajouter des connexions RDP/SSH/VNC via l'interface web.
+- (Optionnel) Configurer un reverse proxy Nginx/Apache pour HTTPS.
+

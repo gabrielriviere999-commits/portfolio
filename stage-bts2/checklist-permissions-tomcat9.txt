@@ -1,0 +1,25 @@
+Checklist permissions Tomcat9
+# 1. Donner les droits complets à www-data sur tout Tomcat
+sudo chown -R www-data:www-data /opt/tomcat9
+
+# 2. Rendre les scripts exécutables
+sudo chmod +x /opt/tomcat9/bin/*.sh
+
+# 3. Créer et donner les droits sur le fichier PID
+sudo touch /opt/tomcat9/tomcat.pid
+sudo chown www-data:www-data /opt/tomcat9/tomcat.pid
+
+# 4. Créer et donner les droits sur le fichier de log catalina.out
+sudo touch /opt/tomcat9/logs/catalina.out
+sudo chown www-data:www-data /opt/tomcat9/logs/catalina.out
+
+# 5. Vérifier les répertoires nécessaires
+sudo chown -R www-data:www-data /opt/tomcat9/logs /opt/tomcat9/temp /opt/tomcat9/work /opt/tomcat9/webapps /opt/tomcat9/conf /opt/tomcat9/lib
+
+# 6. Ajuster les permissions pour lecture/écriture
+sudo chmod -R 770 /opt/tomcat9/logs /opt/tomcat9/temp /opt/tomcat9/work /opt/tomcat9/webapps
+sudo chmod -R 750 /opt/tomcat9/conf /opt/tomcat9/lib
+
+sudo systemctl daemon-reload
+sudo systemctl restart tomcat9
+sudo systemctl status tomcat9 --no-pager

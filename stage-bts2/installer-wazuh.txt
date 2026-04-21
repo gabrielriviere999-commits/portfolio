@@ -1,0 +1,99 @@
+# Documentation d'installation Wazuh 4.14
+Installation All‑in‑One sur Ubuntu 24.04
+
+# 1. Préparation du système
+Mettre à jour la machine
+sudo apt update && sudo apt upgrade -y
+
+
+# 2. Télécharger le script officiel Wazuh et installer
+curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
+
+Comme certaines versions d'Ubuntu ne sont pas officiellement supportées, on ignore la vérification et
+on force une installation propre.
+
+Signification :
+    • -i → ignore-check (ignore la vérification du système)
+    • -o → overwrite (écrase toute ancienne installation)
+    • -a → all-in-one (indexer + manager + dashboard)
+
+
+# 3. Fin de l'installation
+Le script installe automatiquement :
+    • Wazuh Indexer
+    • Wazuh Manager
+    • Wazuh Dashboard
+    • Les certificats
+    • Les services systemd
+
+À la fin, il affiche :
+User : admin
+Password : <mot_de_passe_généré>
+
+→ Conserver ce mot de passe, il sert pour la connexion au Dashboard.
+
+
+# 4. Accéder au Dashboard Wazuh
+Ouvrir un navigateur et accéder à :
+https://<ADRESSE_IP_DU_SERVEUR>
+ou
+https://<ADRESSE_IP_DU_SERVEUR>:443
+
+Ignorer l'avertissement SSL (certificat auto-signé).
+Identifiants :
+    • Utilisateur : admin
+    • Mot de passe : <mot_de_passe_généré>
+
+
+# 5. Vérifier les services
+sudo systemctl status wazuh-manager
+sudo systemctl status wazuh-indexer
+sudo systemctl status wazuh-dashboard
+
+Les trois doivent être active (running).
+
+
+# 6. Ajouter un agent (exemple Linux)
+Sur la machine cliente :
+curl -sO https://packages.wazuh.com/4.7/wazuh-agent-4.7.5.deb
+sudo dpkg -i wazuh-agent-4.7.5.deb
+
+Configurer l'adresse du manager :
+sudo nano /var/ossec/etc/ossec.conf
+
+Modifier :
+<address>MANAGER_IP</address>
+
+Par :
+<address><ADRESSE_IP_DU_SERVEUR></address>
+
+Aller à <vulnerability-detector>, remplacer <enabled>no<enabled> par<enabled>yes<enabled>
+
+Puis activer l'agent :
+sudo systemctl enable wazuh-agent
+sudo systemctl start wazuh-agent
+
+
+# 7. Valider l'agent dans le Dashboard
+Dans l'interface :
+Agents → Pending → Accept
+
+
+# 8. Résumé rapide
++-------+------------------------------------+
+| Étape | Action                             |
++-------+------------------------------------+
+| 1     | Mise à jour                        |
++-------+------------------------------------+
+| 2     | Télécharger le script et installer |
++-------+------------------------------------+
+| 3     | Récupérer le mot de passe admin    |
++-------+------------------------------------+
+| 4     | Accéder au dashboard               |
++-------+------------------------------------+
+| 5     | Vérifier les services              |
++-------+------------------------------------+
+| 6     | Installer un agent                 |
++-------+------------------------------------+
+| 7     | Valider l'agent                    |
++-------+------------------------------------+

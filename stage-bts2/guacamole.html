@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Guacamole</title>
+  <style>
+    body {
+      font-family: monospace;
+      font-size: 12px;
+      margin: 0;
+      padding: 0.5em;
+    }
+    .ascii {
+      white-space: pre;         /* conserve les retours à la ligne */
+      overflow-x: visible;
+    }
+  </style>
+</head>
+<body>
+<div class="ascii">
+Apache Guacamole est open source et est une application de bureau à distance, bastion de connexion.
+Elle ne nécessite pas de logiciel client, tout se passe sur le navigateur avec l'interface web HTML5
+intuitive.
+Les protocoles supportés par Guacamole :
++-------+--------------+---------------------------------------------+-------------------------------------------------+
+| Proto | Nom complet  | Utilité principale                          | Cas d'usage typique                             |
+| cole  |              |                                             |                                                 |
++-------+--------------+---------------------------------------------+-------------------------------------------------+
+| RDP   | Remote       | Permet de se connecter à un bureau Windows  | Administration de serveurs Windows, télétravail |
+|       | Desktop      | distant avec interface graphique complète.  | sur un poste Windows, accès aux applications    |
+|       | Protocol     |                                             | graphiques.                                     |
++-------+--------------+---------------------------------------------+-------------------------------------------------+
+| VNC   | Virtual      | Fournit un accès graphique générique à un   | Contrôle à distance de postes Linux, macOS ou   |
+|       | Network      | bureau distant, indépendant du système      | autres systèmes avec interface graphique.       |
+|       | Computing    | d'exploitation.                             |                                                 |
++-------+--------------+---------------------------------------------+-------------------------------------------------+
+| SSH   | Secure Shell | Connexion sécurisée en ligne de commande    | Administration de serveurs Linux/Unix,          |
+|       |              | (terminal) à un serveur ou poste distant.   | exécution de commandes, transfert sécurisé de   |
+|       |              |                                             | fichiers.                                       |
++-------+--------------+---------------------------------------------+-------------------------------------------------+
++-------+---------------------------------------------+---------------------------------------------+---------------------------------------------------+
+| Proto | Performance                                 | Sécurité                                    | Compatibilité                                     |
+| cole  |                                             |                                             |                                                   |
++-------+---------------------------------------------+---------------------------------------------+---------------------------------------------------+
+| RDP   | - Très performant sur Windows grâce à la    | - Supporte le chiffrement TLS.              | - Natif sur Windows.                              |
+|       | compression et optimisation graphique.      | - Vulnérable si mal configuré (exploits     | - Clients disponibles pour Linux/macOS mais moins |
+|       | - Bonne fluidité même sur connexions lentes.| connus sur anciennes versions).             | intégrés.                                         |
++-------+---------------------------------------------+---------------------------------------------+---------------------------------------------------+
+| VNC   | - Moins performant que RDP (transmet des    | - Sécurité limitée par défaut (souvent sans | - Très universel : fonctionne sur Windows, Linux, |
+|       | images brutes du bureau).                   | chiffrement).                               | macOS, et systèmes embarqués.                     |
+|       | - Peut être lent sur connexions faibles.    | - Peut être renforcé via tunnels SSH ou VPN.| - Large choix d'implémentations (RealVNC,         |
+|       |                                             |                                             | TightVNC, TigerVNC).                              |
++-------+---------------------------------------------+---------------------------------------------+---------------------------------------------------+
+| SSH   | - Très léger et rapide (texte uniquement).  | - Très sécurisé : chiffrement fort,         | - Compatible avec tous les systèmes Unix/Linux.   |
+|       | - Idéal pour administration système.        | authentification par clés publiques,        | - Clients disponibles sur Windows et macOS.       |
+|       |                                             | support MFA.                                | - Utilisé aussi pour tunnels et transferts (SCP,  |
+|       |                                             | - Standard de facto pour accès distant      | SFTP).                                            |
+|       |                                             | sécurisé.                                   |                                                   |
+|       |                                             |                                             |                                                   |
++-------+---------------------------------------------+---------------------------------------------+---------------------------------------------------+
+
+Guacamole est équipé de mécanismes d'authenfification robustes (SSO, OTP), qui permettent de sécuriser les
+connexions à distance. L'authentification à deux facteurs est disponible.
+
+Guacamole peut être intégré à des outils de gestion tels que LDAP (Lightweight Directory Access Protocol)
+ou Microsoft Active Directory pour simplifier la gestion des utilisateurs et des accès.
+
+---
+
+Un bastion est une solution d'intermédiation entre les utilisateurs (internes ou externes) et les systèmes
+critiques, les administrateurs, sous-traitants, prestataires ou techniciens doivent passer par lui pour
+accéder aux ressources.
+Il protège un réseau ou serveur en complément d'une solution de sécurité informatique globale, incluant
+firewall, SOC, EDR/XDR et MFA informatique.
++-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
+| Terme | Nom complet           | Définition                                           | Utilité principale             | Exemple d'usage                 |
+|       |                       |                                                      |                                |                                 |
++-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
+| Fire  | Pare-feu              | Système de sécurité réseau qui filtre le trafic      | Empêche les connexions non     | Bloquer l'accès d'une adresse   |
+| wall  |                       | entrant et sortant selon des règles prédéfinies.     | autorisées et protège contre   | IP suspecte à un serveur.       |
+|       |                       |                                                      | les attaques externes.         |                                 |
++-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
+| SOC   | Security Operations   | Équipe et infrastructure dédiées à la surveillance,  | Supervision continue de la     | Une banque surveille en temps   |
+|       | Center                | détection et réponse aux incidents de sécurité.      | sécurité informatique d'une    | réel ses systèmes pour détecter |
+|       |                       |                                                      | organisation.                  |  des intrusions.                |
++-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
+| EDR/  | Endpoint Detection &  | Outils de sécurité qui analysent et répondent aux    | Détection avancée des          | Bloquer un ransomware détecté   |
+| XDR   | Response / Extended   | menaces sur les terminaux (EDR) et de manière        | comportements suspects et      | sur un poste de travail et      |
+|       | Detection & Response  | élargie sur plusieurs vecteurs (XDR).                | réponse automatisée aux        | analyser sa propagation.        |
+|       |                       |                                                      | attaques.                      |                                 |
++-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
+| MFA   | Multi-Factor          | Méthode d'authentification qui combine plusieurs     | Renforce la sécurité des accès | Connexion à une messagerie      |
+|       | Authentication        | facteurs (mot de passe, SMS, biométrie, etc.).       | en réduisant le risque lié au  | nécessitant un mot de passe +   |
+|       |                       |                                                      | vol de mots de passe.          | code SMS.                       |
++-------+-----------------------+------------------------------------------------------+--------------------------------+---------------------------------+
++-------+--------------------------------------------------+-----------------------------------------------------------------------+
+| Terme | Avantages                                        | Limites                                                               |
++-------+--------------------------------------------------+-----------------------------------------------------------------------+
+| Fire  | - Filtrage efficace du trafic réseau             | - Ne protège pas contre les menaces internes                          |
+| wall  | - Protection de base contre les intrusions       | - Inefficace face aux attaques sophistiquées (malwares déjà présents) |
+|       | - Facile à configurer pour des règles simples    | - Peut ralentir le trafic si mal configuré                            |
++-------+--------------------------------------------------+-----------------------------------------------------------------------+
+| SOC   | - Surveillance continue 24/7                     | - Coût élevé (infrastructure + personnel)                             |
+|       | - Détection rapide des incidents                 | - Complexité organisationnelle                                        |
+|       | - Expertise humaine et outils avancés combinés   | - Peut générer trop d'alertes (fatigue des analystes)                 |
++-------+--------------------------------------------------+-----------------------------------------------------------------------+
+| EDR/  | - Détection comportementale avancée              | - Nécessite une bonne intégration avec les autres outils              |
+| XDR   | - Détection comportementale avancée              | - Risque de faux positifs qui perturbent les utilisateurs             |
+|       | - Réponse automatisée aux menaces                |                                                                       |
+|       | - Visibilité sur les terminaux et, pour XDR,     |                                                                       |
+|       | sur plusieurs vecteurs (réseau, cloud, email…)   |                                                                       |
++-------+--------------------------------------------------+-----------------------------------------------------------------------+
+| MFA   | - Renforce fortement la sécurité des accès       | - Peut être contraignant (temps supplémentaire à la connexion)        |
+|       | - Réduit le risque lié au vol de mots de passe   | - Si un facteur est compromis (ex. phishing de SMS), la sécurité est  |
+|       | - Facile à mettre en place pour les utilisateurs | réduite                                                               |
+|       |                                                  | - Nécessite une bonne adoption par les utilisateurs                   |
++-------+--------------------------------------------------+-----------------------------------------------------------------------+
+</div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+# Documentation : Installation et Configuration d'Apache Guacamole sans JDBC sur Ubuntu 24.04 LTS
+
+## 0. Nettoyage
+[1] Arrêter les services
+sudo systemctl stop tomcat9 tomcat10 guacd
+
+[2] Supprimer Tomcat et Guacamole
+sudo apt purge tomcat* guacd -y
+sudo apt autoremove -y
+sudo rm -rf /opt/tomcat9 /opt/tomcat
+sudo rm -rf /etc/guacamole
+sudo rm -rf /var/lib/tomcat*/webapps/guacamole*
+sudo rm -rf /usr/share/tomcat*/webapps/guacamole*
+sudo rm -rf /etc/tomcat*/Catalina/localhost/guacamole.xml
+
+[3] Supprimer services systemd
+sudo rm -f /etc/systemd/system/tomcat9.service
+sudo rm -f /etc/systemd/system/guacd.service
+sudo rm -rf /etc/systemd/system/tomcat9.service.d
+sudo systemctl daemon-reexec
+
+[4] Supprimer MySQL
+sudo apt purge mysql-server* -y
+sudo apt autoremove -y
+# Si tu veux aussi supprimer la base :
+sudo mysql
+DROP DATABASE guacamole_db;
+DROP USER 'guacamole_user'@'localhost';
+EXIT;
+
+[5] Supprimer Java (optionnel si tu veux repartir de zéro)
+sudo apt purge openjdk-17-jre* openjdk-21-jre* -y
+sudo apt autoremove -y
+
+[6] Supprimer dépendances Guacamole
+sudo apt purge build-essential libcairo2-dev libjpeg-turbo8-dev libpng-dev \
+libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev freerdp2-dev \
+libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev libpulse-dev \
+libssl-dev libvorbis-dev libwebp-dev -y
+sudo apt autoremove -y
+
+[7] Nettoyer caches
+sudo apt clean
+
+[8] Vérifier qu'il ne reste rien
+dpkg -l | grep tomcat
+dpkg -l | grep guacamole
+dpkg -l | grep mysql
+dpkg -l | grep openjdk
+
+→ Aucun paquet en état "ii" ne doit apparaitre.
+→ Si "rc" reste, purge manuelle :
+sudo dpkg --purge <nom_du_paquet>
+
+[9] Vérifier processus
+ps aux | grep tomcat
+ps aux | grep guacd
+→ Aucun processus actif ne doit apparaitre.
+
+[10] Logs et PID résiduels
+sudo rm -rf /opt/tomcat9/logs/*
+sudo rm -f /opt/tomcat9/tomcat.pid
+
+[11] Répertoires de configuration MariaDB/MySQL
+sudo rm -rf /etc/mysql /var/lib/mysql
+
+[12] Vérification des utilisateurs système
+getent passwd guacd
+getent passwd tomcat
+et supprimer si nécessaire avec sudo userdel -r guacd
+
+---
+
+## 1. Installer les dépendances
+sudo apt update
+sudo apt install build-essential libcairo2-dev libjpeg-turbo8-dev libpng-dev \
+libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev freerdp2-dev \
+libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev libpulse-dev \
+libssl-dev libvorbis-dev libwebp-dev openjdk-17-jdk -y
+
+⚠️ Ne pas installer Tomcat10 → on utilisera Tomcat9.
+
+---
+
+## 2. Installer Tomcat 9 manuellement
+cd /tmp
+wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.82/bin/apache-tomcat-9.0.82.tar.gz
+tar -xvzf apache-tomcat-9.0.82.tar.gz
+sudo mv apache-tomcat-9.0.82 /opt/tomcat9
+sudo ln -s /opt/tomcat9 /opt/tomcat
+
+---
+
+## 3. Créer un service systemd pour Tomcat9
+sudo nano /etc/systemd/system/tomcat9.service
+
+Contenu :
+[Unit]
+Description=Apache Tomcat 9
+After=network.target
+
+[Service]
+Type=forking
+
+Environment=JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+Environment=CATALINA_HOME=/opt/tomcat9
+Environment=CATALINA_BASE=/opt/tomcat9
+Environment=CATALINA_PID=/opt/tomcat9/tomcat.pid
+
+ExecStart=/opt/tomcat9/bin/startup.sh
+ExecStop=/opt/tomcat9/bin/shutdown.sh
+
+User=www-data
+Group=www-data
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+⚠️ Vérifie que 'JAVA_HOME' correspond bien à ton installation ('ls /usr/lib/jvm/' → 'java-17-openjdk-amd64').
+
+Applique les droits :
+sudo chown -R www-data:www-data /opt/tomcat9
+sudo chmod -R 755 /opt/tomcat9
+
+Recharge systemd :
+sudo systemctl daemon-reexec
+sudo systemctl enable tomcat9
+sudo systemctl start tomcat9
+
+Vérifie avec :
+ps aux | grep tomcat
+
+Tu dois voir '-Dcatalina.base=/opt/tomcat9' et '-Dcatalina.home=/opt/tomcat9'.
+
+---
+
+## 4. Installer Guacamole Server
+cd /tmp
+wget https://downloads.apache.org/guacamole/1.6.0/source/guacamole-server-1.6.0.tar.gz
+tar -xvzf guacamole-server-1.6.0.tar.gz
+cd guacamole-server-1.6.0
+./configure
+make
+sudo make install
+sudo ldconfig
+
+Créer un service systemd pour 'guacd' :
+sudo nano /etc/systemd/system/guacd.service
+[Unit]
+Description=Guacamole proxy daemon (guacd)
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/guacd -f
+Restart=always
+User=guacd
+Group=guacd
+
+[Install]
+WantedBy=multi-user.target
+
+si l'utilisateur guacd n'existe pas : sudo useradd -r -s /bin/false guacd
+sudo systemctl daemon-reexec
+sudo systemctl enable guacd
+sudo systemctl start guacd
+systemctl status guacd
+
+---
+
+## 5. Installer le client web
+cd /tmp
+wget https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-1.6.0.war
+sudo mv guacamole-1.6.0.war /opt/tomcat9/webapps/guacamole.war
+sudo systemctl restart tomcat9
+
+Vérifie :
+ls /opt/tomcat9/webapps/
+
+Tu dois voir :
+
+guacamole.war
+guacamole/
+ROOT
+
+---
+
+## 6. Configurer Guacamole
+sudo mkdir -p /etc/guacamole/extensions /etc/guacamole/lib
+
+sudo nano /etc/guacamole/guacamole.properties
+guacd-hostname: localhost
+guacd-port: 4822
+
+Définir la variable d'environnement :
+sudo mkdir -p /etc/systemd/system/tomcat9.service.d
+sudo nano /etc/systemd/system/tomcat9.service.d/guacamole.conf
+
+Contenu :
+[Service]
+Environment=GUACAMOLE_HOME=/etc/guacamole
+
+---
+
+## 7. Lancer Guacamole
+sudo systemctl daemon-reexec
+sudo systemctl enable guacd
+sudo systemctl start guacd
+sudo systemctl restart tomcat9
+
+---
+
+## 8. Comptes sans JDBC
+sudo nano /etc/guacamole/user-mapping.xml
+<user-mapping>
+    <authorize username="compteA" password="compteA" admin="true">
+        <connection name="Guacamole SSH">
+            <protocol>ssh</protocol>
+            <param name="hostname">127.0.0.1</param>
+            <param name="port">22</param>
+            <param name="username">guacamole</param>
+        </connection>
+    </authorize>
+    <authorize username="compteB" password="compteB" admin="true">
+        <connection name="Guacamole SSH">
+            <protocol>ssh</protocol>
+            <param name="hostname">127.0.0.1</param>
+            <param name="port">22</param>
+            <param name="username">guacamole</param>
+        </connection>
+    </authorize>
+
+    <authorize username="compteA2" password="compteA" admin="true">
+        <connection name="Debian SSH">
+            <protocol>ssh</protocol>
+            <param name="hostname">Adresse IP de la machine Debian</param>
+            <param name="port">22</param>
+            <param name="username">compteA</param>
+        </connection>
+    </authorize>
+    <authorize username="compteB2" password="compteB" admin="true">
+        <connection name="Debian SSH">
+            <protocol>ssh</protocol>
+            <param name="hostname">Adresse IP de la machine Debian</param>
+            <param name="port">22</param>
+            <param name="username">compteB</param>
+        </connection>
+    </authorize>    
+</user-mapping>
+
+---
+
+Accès : http://<IP_SERVEUR>:8080/guacamole/
+Sans JDBC :
+Pour la machine guacamole :
+compteA/compteA ou compteB/compteB
+puis le mot de passe de la machine guacamole.
+Pour la machine Debian :
+compteA2/compteA ou compteB2/compteB
+puis le mot de passe de la machine Debian.
+
+---
+
+## ✅ Résumé corrigé
+- Guacamole 1.6.0 n'est pas compatible avec Tomcat10 → utiliser Tomcat9.  
+- Ton erreur 404 venait du fait que Tomcat utilisait encore '/opt/tomcat3'.  
+- Corrige le service systemd pour pointer vers '/opt/tomcat9'.  
+- Vérifie que 'ps aux | grep tomcat' montre bien '-Dcatalina.base=/opt/tomcat9'.  
+- Ensuite, le '.war' sera déployé et '/guacamole/' accessible.
