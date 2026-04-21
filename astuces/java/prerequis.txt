@@ -1,0 +1,19 @@
+Installer le JDK/JRE
+
+Pour Linux :
+sudo apt install openjdk-17-jdk
+
+---
+
+Pour Windows :
+https://learn.microsoft.com/java/openjdk/download
+Choisir OpenJDK 17
+
+---
+
+Pour MacOS :
+Installer OpenJDK via Homebrew
+brew install openjdk@17
+
+Ajouter le lien symbolique
+sudo ln -sfn /usr/local/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk

@@ -1,0 +1,4 @@
+Libraries utilisées :
+
+qrcode.js - MIT - Kazuhiko Arase
+ZXing ES5 (compatibilité Windows XP) - Apache 2.0 - ZXing Team

@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau HTML</title>
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 10px;
+  background: #C0C0C0;
+  padding-top: 250px;
+}
+
+/* Toolbar Win98 */
+.toolbar {
+  display: block;
+  padding: 6px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  margin-bottom: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  max-height: 225px;
+  padding: 4px;
+  z-index: 9999
+}
+
+.toolbar.hidden {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.toolbar button {
+  margin: 2px;
+}
+
+/* Boutons Win98 */
+button {
+  background: #d4d0c8;
+  color: black;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  font-family: sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:active,
+button.active {
+  border-color: #404040 #fff #fff #404040;
+  background: #c0c0c0;
+}
+
+button:hover { background:#E0E0E0; }
+
+label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical-align: middle; }
+
+/* TABLEAU */
+table {
+  background: #fff;
+}
+
+td {
+  border: var(--cell-border-width, 1px) solid var(--cell-border-color, #000);
+  padding: 6px;
+  color: var(--global-text-color, inherit);
+  background-color: var(--global-bg-color, inherit);
+  text-align: var(--global-text-align, inherit);
+}
+
+td.selected {
+  outline: 5px solid #0078d7;
+  outline-offset: -2px;
+}
+
+.palette {
+  display: block;
+}
+
+.palette .color {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #444;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+#hexColorInput {
+  width: 80px;
+  padding: 4px;
+  font-family: monospace;
+}
+
+/* CODE BOX */
+#codeBox {
+  width: 100%;
+  height: 200px;
+  margin-top: 10px;
+  font-family: monospace;
+}
+
+#editorTable td {
+  min-width: 40px;
+  height: 25px;
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar" style="opacity: 0.8;">
+  <!-- Lignes -->
+  <button id="addRowAbove">↑ Ligne au-dessus</button>
+  <button id="addRowBelow">↓ Ligne en dessous</button>
+  <button id="delRow">X Supprimer ligne</button>
+|
+  <!-- Colonnes -->
+  <button id="addColLeft">← Colonne à gauche</button>
+  <button id="addColRight">→ Colonne à droite</button>
+  <button id="delCol">X Supprimer colonne</button>
+| 
+  <!-- Fusionner/défusionner -->
+  <button id="mergeCellsBtn">□ Fusionner</button>
+  <button id="unmergeCellsBtn">⊞ Défusionner</button>
+|
+  <!-- Alignement -->
+  <button data-align="left">Gauche</button>
+  <button data-align="center">Centre</button>
+  <button data-align="right">Droite</button>
+|
+  <!-- Sélection multiple -->
+  <label><input type="checkbox" id="multiSelectMode">Sélection multiple</label>
+
+  <!-- Modes d’application -->
+  <div id="colorModes">
+    <button data-mode="text">Texte</button>
+    <button data-mode="bg">Fond</button>
+    <button data-mode="border">Bordure</button>
+  <label>Épaisseur :
+    <select id="borderWidth">
+      <option value="1px" selected>1</option>
+      <option value="2px">2</option>
+      <option value="3px">3</option>
+      <option value="4px">4</option>
+      <option value="5px">5</option>
+      <option value="6px">6</option>
+      <option value="8px">8</option>
+      <option value="10px">10</option>
+    </select>
+  </label>
+  <button id="clearTdStyle">Effacer style</button>
+  </div>
+
+  <!-- Palette de couleurs -->
+  <div id="colorPalette" class="palette">
+    <div class="color" data-col="#000000" style="background:#000"></div>
+    <div class="color" data-col="#ffffff" style="background:#fff; border:1px solid #000"></div>
+    <div class="color" data-col="#ff0000" style="background:#f00"></div>
+    <div class="color" data-col="#00aa00" style="background:#0a0"></div>
+    <div class="color" data-col="#0000ff" style="background:#00f"></div>
+    <div class="color" data-col="#ff9900" style="background:#f90"></div>
+    <div class="color" data-col="#ffff00" style="background:#ff0"></div>
+    <input type="text" id="hexColorInput" placeholder="#RRGGBB" maxlength="7">
+  <button id="applyHexColor">OK</button>
+  </div>
+</div>
+
+<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
+
+<table id="editorTable" style="border-collapse:collapse;"><tbody><tr><td contenteditable="true">Cellule 1,1</td><td contenteditable="true">Cellule 1,2</td><td contenteditable="true">Cellule 1,3</td></tr><tr><td contenteditable="true">Cellule 2,1</td><td contenteditable="true">Cellule 2,2</td><td contenteditable="true">Cellule 2,3</td></tr><tr><td contenteditable="true">Cellule 3,1</td><td contenteditable="true">Cellule 3,2</td><td contenteditable="true">Cellule 3,3</td></tr></tbody></table>
+
+<!-- CODE HTML -->
+<h3>Code du tableau</h3>
+<button id="generateCode">Générer le code</button>
+<button id="copyCode">Copier le code</button>
+<textarea id="codeBox" wrap="off"></textarea>
+<button id="updateFromCode">Mettre à jour le tableau</button>
+<label><input type="checkbox" id="cleanLibreOffice">Nettoyer LibreOffice</label>
+
+<script>
+/* ============================
+   POLYFILLS
+============================ */
+
+// matches()
+if (!Element.prototype.matches) {
+  Element.prototype.matches =
+    Element.prototype.msMatchesSelector ||
+    Element.prototype.webkitMatchesSelector ||
+    function(selector) {
+      var nodes = (this.parentNode || document).querySelectorAll(selector);
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i] === this) return true;
+      }
+      return false;
+    };
+}
+
+// closest()
+function closest(el, selector) {
+  while (el && el.nodeType === 1) {
+    if (el.matches(selector)) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+// addClass / removeClass
+function addClass(el, cls) {
+  if (el.className.indexOf(cls) === -1) {
+    el.className += " " + cls;
+  }
+}
+
+function removeClass(el, cls) {
+  el.className = el.className.replace(cls, "").replace("  ", " ");
+}
+
+// NodeList loop helper
+function forEachNode(list, fn) {
+  for (var i = 0; i < list.length; i++) fn(list[i], i);
+}
+
+/* ============================
+   VARIABLES
+============================ */
+
+var table = document.getElementById('editorTable');
+var selectedCells = [];
+var colorMode = "text";
+var globalBorderColor = "#000";
+var globalBorderWidth = "1px";
+var globalStyles = {
+  textColor: "#000000",
+  bgColor: "",
+  textAlign: "",
+  borderColor: globalBorderColor,
+  borderWidth: globalBorderWidth
+};
+
+/* ============================
+   SÉLECTION MULTIPLE
+============================ */
+
+table.addEventListener('click', function(e) {
+  var t = e.target;
+  if (t && t.nodeName === 'TD') {
+
+    var multi = document.getElementById('multiSelectMode').checked;
+
+    if (multi) {
+      toggleSelect(t);
+    } else {
+      clearSelection();
+      selectCell(t);
+    }
+  }
+});
+
+document.addEventListener('click', function(e) {
+  var t = e.target;
+  var isCell = t && t.nodeName === 'TD';
+  var isTable = closest(t, '#editorTable');
+  var isTools = closest(t, '.toolbar');
+
+  if (!isCell && !isTable && !isTools) {
+    clearSelection();
+  }
+});
+
+function selectCell(cell) {
+  addClass(cell, "selected");
+  selectedCells.push(cell);
+}
+
+function toggleSelect(cell) {
+  if (cell.className.indexOf("selected") !== -1) {
+    removeClass(cell, "selected");
+    var idx = selectedCells.indexOf(cell);
+    if (idx !== -1) selectedCells.splice(idx, 1);
+  } else {
+    selectCell(cell);
+  }
+}
+
+function clearSelection() {
+  for (var i = 0; i < selectedCells.length; i++) {
+    removeClass(selectedCells[i], "selected");
+  }
+  selectedCells = [];
+}
+
+function getColumnCount() {
+  if (!table.rows.length) return 0;
+  return table.rows[0].cells.length;
+}
+
+function getCellPosition(cell) {
+  return { rowIndex: cell.parentNode.rowIndex, cellIndex: cell.cellIndex };
+}
+
+function getSelectedCells() {
+  return selectedCells;
+}
+
+function getRealCell(el) {
+  while (el && el.nodeName !== 'TD' && el.nodeName !== 'TABLE') {
+    el = el.parentNode;
+  }
+  return (el && el.nodeName === 'TD') ? el : null;
+}
+/* ============================
+   LIGNES
+============================ */
+
+document.getElementById('addRowAbove').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+  var cols = getColumnCount();
+  var newRow = table.insertRow(pos.rowIndex);
+
+  for (var i = 0; i < cols; i++) {
+    var c = newRow.insertCell(i);
+    c.contentEditable = "true";
+  }
+};
+
+document.getElementById('addRowBelow').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+  var cols = getColumnCount();
+  var newRow = table.insertRow(pos.rowIndex + 1);
+
+  for (var i = 0; i < cols; i++) {
+    var c = newRow.insertCell(i);
+    c.contentEditable = "true";
+  }
+};
+
+document.getElementById('delRow').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+  if (table.rows.length > 1) table.deleteRow(pos.rowIndex);
+  clearSelection();
+};
+
+/* ============================
+   COLONNES
+============================ */
+
+document.getElementById('addColLeft').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+
+  for (var r = 0; r < table.rows.length; r++) {
+    var c = table.rows[r].insertCell(pos.cellIndex);
+    c.contentEditable = "true";
+  }
+};
+
+document.getElementById('addColRight').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+
+  for (var r = 0; r < table.rows.length; r++) {
+    var c = table.rows[r].insertCell(pos.cellIndex + 1);
+    c.contentEditable = "true";
+  }
+};
+
+document.getElementById('delCol').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+
+  for (var r = 0; r < table.rows.length; r++) {
+    table.rows[r].deleteCell(pos.cellIndex);
+  }
+  clearSelection();
+};
+
+/* ============================
+   ALIGNEMENT
+============================ */
+
+var alignButtons = document.querySelectorAll('button[data-align]');
+forEachNode(alignButtons, function(btn) {
+  btn.onclick = function() {
+    var align = btn.getAttribute('data-align');
+    if (selectedCells.length > 0) {
+      for (var j = 0; j < selectedCells.length; j++) {
+        selectedCells[j].style.textAlign = align;
+      }
+    } else {
+      globalStyles.textAlign = align;
+      document.documentElement.style.setProperty("--global-text-align", align);
+    }
+  };
+});
+
+/* ============================
+   PALETTE + MODES
+============================ */
+
+var modeButtons = document.querySelectorAll('#colorModes button');
+forEachNode(modeButtons, function(btn) {
+  btn.onclick = function() {
+    colorMode = btn.getAttribute('data-mode');
+
+    forEachNode(modeButtons, function(b) {
+      removeClass(b, "active");
+    });
+
+    addClass(btn, "active");
+  };
+});
+
+var paletteColors = document.querySelectorAll('#colorPalette .color');
+forEachNode(paletteColors, function(el) {
+  el.onclick = function() {
+    var col = el.getAttribute('data-col');
+    applyColor(col);
+  };
+});
+
+function applyColor(col) {
+  var r, c2;
+
+if (colorMode === "text") {
+  if (selectedCells.length > 0) {
+    for (var i = 0; i < selectedCells.length; i++) {
+      selectedCells[i].style.color = col;
+      }
+     } else {
+        globalStyles.textColor = col;
+        document.documentElement.style.setProperty("--global-text-color", col);
+        }
+}
+
+else if (colorMode === "bg") {
+  if (selectedCells.length > 0) {
+    for (var i2 = 0; i2 < selectedCells.length; i2++) {
+      selectedCells[i2].style.backgroundColor = col;
+    }
+  } else {
+      globalStyles.bgColor = col;
+      document.documentElement.style.setProperty("--global-bg-color", col);
+    }
+}
+
+else if (colorMode === "border") {
+  globalBorderColor = col;
+  globalStyles.borderColor = col;
+
+  document.documentElement.style.setProperty("--cell-border-color", globalBorderColor);
+  document.documentElement.style.setProperty("--table-border-color", globalBorderColor);
+}
+}
+
+document.getElementById('applyHexColor').onclick = function () {
+  var col = document.getElementById('hexColorInput').value;
+
+  // enlever espaces
+  col = col.replace(/^\s+|\s+$/g, "");
+
+  // ajouter # si besoin
+  if (/^[0-9A-Fa-f]{6}$/.test(col)) {
+    col = "#" + col;
+  }
+
+  // valider format final
+  if (!/^#[0-9A-Fa-f]{6}$/.test(col)) {
+    return;
+  }
+
+  // appliquer selon mode
+  applyColor(col);
+};
+
+document.getElementById('clearTdStyle').onclick = function () {
+
+  // Si des cellules sont sélectionnées → effacer seulement celles-ci
+  if (selectedCells.length > 0) {
+
+    for (var i = 0; i < selectedCells.length; i++) {
+      var cell = selectedCells[i];
+
+      cell.style.color = "";
+      cell.style.backgroundColor = "";
+      cell.style.textAlign = "";
+      cell.style.fontWeight = "";
+      cell.style.fontStyle = "";
+      cell.style.textDecoration = "";
+      cell.style.border = "";
+      cell.style.borderColor = "";
+      cell.style.borderWidth = "";
+    }
+
+    return; // terminé
+  }
+
+  // Sinon → effacer TOUTES les cellules du tableau
+  for (var r = 0; r < table.rows.length; r++) {
+    for (var c = 0; c < table.rows[r].cells.length; c++) {
+
+      var cell = table.rows[r].cells[c];
+
+      cell.style.color = "";
+      cell.style.backgroundColor = "";
+      cell.style.textAlign = "";
+      cell.style.fontWeight = "";
+      cell.style.fontStyle = "";
+      cell.style.textDecoration = "";
+      cell.style.border = "";
+      cell.style.borderColor = "";
+      cell.style.borderWidth = "";
+    }
+  }
+};
+
+/* ============================
+   EPAISSEUR
+============================ */
+
+document.getElementById('borderWidth').onchange = function() {
+  globalBorderWidth = this.value;
+  globalStyles.borderWidth = globalBorderWidth;
+
+  // Mettre à jour l’éditeur en direct
+  document.documentElement.style.setProperty("--cell-border-width", globalBorderWidth);
+  document.documentElement.style.setProperty("--table-border-width", globalBorderWidth);
+};
+
+/* ============================
+   EXPORT HTML
+============================ */
+
+function updateCodeBox() {
+  var clone = table.cloneNode(true);
+  clone.removeAttribute("id");
+
+  removeEmptyTextNodes(clone);
+
+  for (var r = 0; r < clone.rows.length; r++) {
+    for (var c = 0; c < clone.rows[r].cells.length; c++) {
+      var cell = clone.rows[r].cells[c];
+
+      cell.removeAttribute("contenteditable");
+      removeClass(cell, "selected");
+
+      cell.style.border = "";
+      cell.style.borderColor = "";
+      cell.style.borderWidth = "";
+
+      if (!cell.className.replace(" ", "")) cell.removeAttribute("class");
+    }
+  }
+
+  var styleBlock = "<style>\n";
+
+  styleBlock += "td{border:" + globalStyles.borderWidth + " solid " + globalStyles.borderColor + ";}\n";
+
+  if (globalStyles.textColor)
+    styleBlock += "td{color:" + globalStyles.textColor + ";}\n";
+
+  if (globalStyles.bgColor)
+    styleBlock += "td{background-color:" + globalStyles.bgColor + ";}\n";
+
+  if (globalStyles.textAlign)
+    styleBlock += "td{text-align:" + globalStyles.textAlign + ";}\n";
+
+  styleBlock += "</style>\n";
+
+  var html = styleBlock + clone.outerHTML;
+  // BEAUTIFIER
+  html = beautifyHTML(html);
+
+  document.getElementById('codeBox').value = html;
+}
+
+function removeEmptyTextNodes(node) {
+  var child = node.firstChild;
+  while (child) {
+    var next = child.nextSibling;
+
+    // nœud texte contenant uniquement espaces / retours à la ligne
+    if (child.nodeType === 3 && !child.nodeValue.replace(/\s+/g, "")) {
+      node.removeChild(child);
+    } else if (child.nodeType === 1) {
+      removeEmptyTextNodes(child);
+    }
+
+    child = next;
+  }
+}
+
+function beautifyHTML(html) {
+  // Supprimer les retours internes avant </td>
+  html = html.replace(/>\s+<\/td>/g, "></td>");
+
+  var result = "";
+  var indent = 0;
+  var i = 0;
+
+  while (i < html.length) {
+
+    // Cas spécial : <td> ... </td> sur une seule ligne
+    if (html.substr(i, 3).toLowerCase() === "<td") {
+
+      // recopier <td ...>
+      while (i < html.length && html[i] !== ">") {
+        result += html[i++];
+      }
+      result += ">"; i++;
+
+      // recopier contenu jusqu'à </td>
+      while (i < html.length && html.substr(i, 5).toLowerCase() !== "</td>") {
+        // ignorer les retours internes
+        if (html[i] !== "\n" && html[i] !== "\r") {
+          result += html[i];
+        }
+        i++;
+      }
+
+      // recopier </td>
+      result += "</td>";
+      i += 5;
+
+      continue;
+    }
+
+    // Balise fermante
+    if (html[i] === "<" && html[i+1] === "/") {
+      indent--;
+      result += "\n" + repeat("  ", indent);
+    }
+
+    // Balise ouvrante
+    else if (html[i] === "<") {
+      result += "\n" + repeat("  ", indent);
+      indent++;
+    }
+
+    result += html[i++];
+  }
+
+  return result.replace(/^\n/, "");
+}
+
+function repeat(str, count) {
+  var out = "";
+  for (var i = 0; i < count; i++) out += str;
+  return out;
+}
+
+document.getElementById('generateCode').onclick = updateCodeBox;
+
+/* ============================
+   IMPORT HTML
+============================ */
+
+function cleanLibreOfficeHTML(html) {
+
+  var container = document.createElement("div");
+  container.innerHTML = html;
+
+  var table = container.querySelector("table");
+  if (!table) return html;
+
+  var all = table.querySelectorAll("*");
+
+  // 1. Supprimer classes LibreOffice
+  all.forEach(function(el) {
+    el.removeAttribute("class");
+  });
+
+  // 2. Supprimer balises parasites MAIS garder <br>, <b>, <i>, <u>, <strong>, <em>
+  var garbageTags = ["span", "font", "p"]; 
+  garbageTags.forEach(function(tag) {
+    var nodes = table.querySelectorAll(tag);
+    nodes.forEach(function(n) {
+      while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n);
+      n.remove();
+    });
+  });
+
+  // 3. Convertir align="center" → style="text-align:center"
+  all.forEach(function(el) {
+    var a = el.getAttribute("align");
+    if (a) {
+      el.style.textAlign = a;
+      el.removeAttribute("align");
+    }
+  });
+
+  // 4. Supprimer attributs inutiles
+  all.forEach(function(el) {
+    el.removeAttribute("valign");
+    el.removeAttribute("width");
+    el.removeAttribute("height");
+    el.removeAttribute("bgcolor");
+    el.removeAttribute("border");
+    el.removeAttribute("cellpadding");
+    el.removeAttribute("cellspacing");
+  });
+
+  // 5. Supprimer bordures inline (ton éditeur gère ça globalement)
+  all.forEach(function(el) {
+    el.style.border = "";
+    el.style.borderColor = "";
+    el.style.borderWidth = "";
+  });
+
+  // 6. Supprimer styles vides
+  all.forEach(function(el) {
+    if (el.getAttribute("style") === "") {
+      el.removeAttribute("style");
+    }
+  });
+
+  return table.outerHTML;
+}
+
+document.getElementById('updateFromCode').onclick = function() {
+  var code = document.getElementById('codeBox').value;
+
+  // Nettoyage LibreOffice seulement si la case est cochée
+  if (document.getElementById('cleanLibreOffice').checked) {
+      code = cleanLibreOfficeHTML(code);
+  }
+
+  var container = document.createElement('div');
+  container.innerHTML = code;
+
+  var newTable = container.querySelector('table');
+  var importedStyle = container.querySelector("style");
+
+  // 1. Remplacer la table AVANT de mettre à jour les variables CSS
+  if (newTable) {
+    newTable.id = "editorTable";
+    table.parentNode.replaceChild(newTable, table);
+    table = newTable;
+    selectedCells = [];
+    rebindTableEvents();
+  }
+
+  // 2. Maintenant appliquer les styles globaux
+  if (importedStyle) {
+    var css = importedStyle.textContent;
+    // RESET automatique si la propriété n'existe plus dans le <style>
+    // Reset border width
+    if (!css.includes("border:")) {
+        document.documentElement.style.removeProperty("--cell-border-width");
+        document.documentElement.style.removeProperty("--table-border-width");
+        globalStyles.borderWidth = "";
+    }
+
+    // Reset border color
+    if (!css.includes("solid")) {
+        document.documentElement.style.removeProperty("--cell-border-color");
+        document.documentElement.style.removeProperty("--table-border-color");
+        globalStyles.borderColor = "";
+    }
+
+    // Reset text color
+    if (!css.includes("color:")) {
+        document.documentElement.style.removeProperty("--global-text-color");
+        globalStyles.textColor = "";
+    }
+
+    // Reset background color
+    if (!css.includes("background-color:")) {
+        document.documentElement.style.removeProperty("--global-bg-color");
+        globalStyles.bgColor = "";
+    }
+
+    // Reset alignement
+    if (!css.includes("text-align:")) {
+        document.documentElement.style.removeProperty("--global-text-align");
+        globalStyles.textAlign = "";
+    }
+
+    // Extraire épaisseur
+    var wMatch = css.match(/border:\s*([0-9]+px)/);
+    if (wMatch) {
+      globalBorderWidth = wMatch[1];
+      globalStyles.borderWidth = globalBorderWidth;
+      document.documentElement.style.setProperty("--cell-border-width", globalBorderWidth);
+      document.documentElement.style.setProperty("--table-border-width", globalBorderWidth);
+    }
+
+    // Extraire couleur
+    var cMatch = css.match(/solid\s*(#[0-9A-Fa-f]{6})/);
+    if (cMatch) {
+      globalBorderColor = cMatch[1];
+      globalStyles.borderColor = globalBorderColor;
+      document.documentElement.style.setProperty("--cell-border-color", globalBorderColor);
+      document.documentElement.style.setProperty("--table-border-color", globalBorderColor);
+    }
+
+    // Couleur texte globale
+    var tMatch = css.match(/color:\s*(#[0-9A-Fa-f]{6})/);
+    if (tMatch) {
+        globalStyles.textColor = tMatch[1];
+        document.documentElement.style.setProperty("--global-text-color", globalStyles.textColor);
+    }
+
+    // Fond global
+    var bgMatch = css.match(/background-color:\s*(#[0-9A-Fa-f]{6})/);
+    if (bgMatch) {
+        globalStyles.bgColor = bgMatch[1];
+        document.documentElement.style.setProperty("--global-bg-color", globalStyles.bgColor);
+    }
+
+    // Alignement global
+    var aMatch = css.match(/text-align:\s*(left|center|right)/);
+    if (aMatch) {
+        globalStyles.textAlign = aMatch[1];
+        document.documentElement.style.setProperty("--global-text-align", globalStyles.textAlign);
+    }
+  }
+};
+
+function rebindTableEvents() {
+  for (var r = 0; r < table.rows.length; r++) {
+    for (var c = 0; c < table.rows[r].cells.length; c++) {
+      table.rows[r].cells[c].contentEditable = "true";
+    }
+  }
+
+  table.addEventListener('click', function(e) {
+    var t = e.target;
+    var cell = getRealCell(t);
+    if (!cell) return;
+
+    var multi = document.getElementById('multiSelectMode').checked;
+
+    if (multi) {
+      toggleSelect(cell);
+    } else {
+      clearSelection();
+      selectCell(cell);
+    }
+  });
+}
+
+/* ============================
+   COPIE
+============================ */
+
+document.getElementById('copyCode').onclick = function(e) {
+  var code = document.getElementById('codeBox');
+
+  var temp = document.createElement("textarea");
+  temp.value = code.value;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (err) {}
+
+  document.body.removeChild(temp);
+
+  var btn = e.target;
+  var old = btn.textContent;
+  btn.textContent = "Code copié !";
+
+  setTimeout(function() {
+    btn.textContent = old;
+  }, 800);
+};
+
+// ===============================
+// MODULE AUTONOME FUSION / DEFUSION
+// ===============================
+
+// 1. Construire une matrice interne du tableau
+function buildMatrix(table) {
+    var matrix = [];
+    var r, c, row, cell, colIndex, rowSpan, colSpan, rs, cs;
+
+    for (r = 0; r < table.rows.length; r++) {
+        row = table.rows[r];
+        matrix[r] = [];
+        colIndex = 0;
+
+        for (c = 0; c < row.cells.length; c++) {
+            cell = row.cells[c];
+
+            while (matrix[r][colIndex]) {
+                colIndex++;
+            }
+
+            rowSpan = cell.rowSpan || 1;
+            colSpan = cell.colSpan || 1;
+
+            for (rs = 0; rs < rowSpan; rs++) {
+                for (cs = 0; cs < colSpan; cs++) {
+                    if (!matrix[r + rs]) matrix[r + rs] = [];
+                    matrix[r + rs][colIndex + cs] = cell;
+                }
+            }
+
+            colIndex += colSpan;
+        }
+    }
+
+    return matrix;
+}
+
+// 2. Vérifier si la sélection forme un rectangle
+function isRectangularSelection(cells, matrix) {
+    var positions = [];
+    var r, c;
+
+    for (r = 0; r < matrix.length; r++) {
+        for (c = 0; c < matrix[r].length; c++) {
+            if (cells.indexOf(matrix[r][c]) !== -1) {
+                positions.push({ r: r, c: c });
+            }
+        }
+    }
+
+    if (positions.length === 0) return false;
+
+    var minR = positions[0].r;
+    var maxR = positions[0].r;
+    var minC = positions[0].c;
+    var maxC = positions[0].c;
+
+    for (var i = 1; i < positions.length; i++) {
+        if (positions[i].r < minR) minR = positions[i].r;
+        if (positions[i].r > maxR) maxR = positions[i].r;
+        if (positions[i].c < minC) minC = positions[i].c;
+        if (positions[i].c > maxC) maxC = positions[i].c;
+    }
+
+    for (r = minR; r <= maxR; r++) {
+        for (c = minC; c <= maxC; c++) {
+            if (cells.indexOf(matrix[r][c]) === -1) return false;
+        }
+    }
+
+    return { minR: minR, maxR: maxR, minC: minC, maxC: maxC };
+}
+
+// 3. Fusionner
+function mergeSelectedCells() {
+    var cells = getSelectedCells();
+    if (!cells || cells.length < 2) return;
+
+    var matrix = buildMatrix(table);
+    var rect = isRectangularSelection(cells, matrix);
+    if (!rect) return;
+
+    var minR = rect.minR;
+    var maxR = rect.maxR;
+    var minC = rect.minC;
+    var maxC = rect.maxC;
+
+    var master = matrix[minR][minC];
+    master.rowSpan = (maxR - minR + 1);
+    master.colSpan = (maxC - minC + 1);
+    if (master.rowSpan === 1) master.removeAttribute("rowSpan");
+    if (master.colSpan === 1) master.removeAttribute("colSpan");
+
+    var r, c, cell;
+
+    for (r = minR; r <= maxR; r++) {
+        for (c = minC; c <= maxC; c++) {
+            cell = matrix[r][c];
+            if (cell !== master) {
+                cell.parentNode.removeChild(cell);
+            }
+        }
+    }
+}
+
+// 4. Défusionner
+function unmergeSelectedCells() {
+    var cells = getSelectedCells();
+    if (!cells || cells.length !== 1) return;
+
+    var cell = cells[0];
+    var rowSpan = cell.rowSpan;
+    var colSpan = cell.colSpan;
+
+    if (rowSpan === 1 && colSpan === 1) return;
+
+    var row = cell.parentNode;
+    var rowIndex = row.rowIndex;
+    var colIndex = cell.cellIndex;
+
+    cell.removeAttribute("rowSpan");
+    cell.removeAttribute("colSpan");
+
+    var r, c, newCell, targetRow;
+
+    for (r = 0; r < rowSpan; r++) {
+        targetRow = table.rows[rowIndex + r];
+        for (c = 0; c < colSpan; c++) {
+            if (r === 0 && c === 0) continue;
+
+            newCell = targetRow.insertCell(colIndex + c);
+            newCell.contentEditable = "true";
+        }
+    }
+}
+
+// 5. Brancher les boutons
+document.getElementById("mergeCellsBtn").onclick = mergeSelectedCells;
+document.getElementById("unmergeCellsBtn").onclick = unmergeSelectedCells;
+
+
+var toolbar = document.getElementsByClassName('toolbar')[0];
+var toggleBtn = document.getElementById('toggleToolbarBtn');
+
+var toolbarVisible = true;
+
+toggleBtn.onmousedown = function(e) {
+  e = e || window.event;
+  e.cancelBubble = true;
+  if (e.stopPropagation) e.stopPropagation();
+};
+
+toggleBtn.onclick = function(e) {
+  e = e || window.event;
+  e.cancelBubble = true;
+  if (e.stopPropagation) e.stopPropagation();
+
+  toolbarVisible = !toolbarVisible;
+
+  if (toolbarVisible) {
+    toolbar.className = 'toolbar';
+  } else {
+    toolbar.className = 'toolbar hidden';
+  }
+};
+</script>
+
+</body>
+</html>

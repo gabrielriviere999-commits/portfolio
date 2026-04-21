@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+import subprocess
+import csv
+import sys
+import textwrap
+import shutil
+
+# 🔧 Séparateur CSV
+sep = ";"   # ",", "\t", etc.
+
+# 📐 LARGEUR MAXIMALE DU TABLEAU
+MAX_TABLE_WIDTH = 120   # jamais dépasser cette largeur
+
+
+def lire_lignes_csv(texte, sep=","):
+    reader = csv.reader(texte.splitlines(), delimiter=sep)
+    lignes = [list(row) for row in reader if row]
+
+    if not lignes:
+        return []
+
+    max_cols = max(len(l) for l in lignes)
+    return [l + [""] * (max_cols - len(l)) for l in lignes]
+
+
+def largeurs_colonnes(lignes):
+    return [
+        max(len(str(row[c])) for row in lignes)
+        for c in range(len(lignes[0]))
+    ]
+
+
+def ajuster_largeurs_dynamique(largeurs, max_width):
+    """Largeur dynamique : s'adapte au contenu, mais ≤ max_width"""
+    nb = len(largeurs)
+    bordures = 3 * nb + 1
+    espace = max_width - bordures
+
+    if espace <= nb:
+        return [1] * nb
+
+    total_naturel = sum(largeurs)
+
+    if total_naturel <= espace:
+        return largeurs[:]
+
+    nouvelles = [max(1, int(w * espace / total_naturel)) for w in largeurs]
+
+    diff = espace - sum(nouvelles)
+    i = 0
+    while diff != 0:
+        idx = i % nb
+        if diff > 0:
+            nouvelles[idx] += 1
+            diff -= 1
+        elif nouvelles[idx] > 1:
+            nouvelles[idx] -= 1
+            diff += 1
+        i += 1
+
+    return nouvelles
+
+
+def separateur_ligne(largeurs):
+    return "+" + "+".join("-" * (w + 2) for w in largeurs) + "+"
+
+
+def wrap_cell(cell, largeur):
+    texte = str(cell)
+    if not texte:
+        return [""]
+
+    words = texte.split(" ")
+    lines = []
+    current = ""
+
+    for w in words:
+
+        # --- Mot trop long : découpe par caractères ---
+        if len(w) > largeur:
+
+            # Si la ligne courante contient quelque chose → on la pousse
+            if current:
+                lines.append(current)
+                current = ""
+
+            start = 0
+            while start < len(w):
+                chunk = w[start:start+largeur]
+                start += largeur
+
+                # La dernière tranche devient la ligne courante
+                if start >= len(w):
+                    current = chunk
+                else:
+                    lines.append(chunk)
+
+            continue
+
+        # --- Mot normal ---
+        if not current:
+            current = w
+        elif len(current) + 1 + len(w) <= largeur:
+            current += " " + w
+        else:
+            lines.append(current)
+            current = w
+
+    if current:
+        lines.append(current)
+
+    return lines
+
+
+def generer_tableau(lignes, max_width):
+    if not lignes:
+        return ""
+
+    largeurs = largeurs_colonnes(lignes)
+    largeurs = ajuster_largeurs_dynamique(largeurs, max_width)
+
+    sep_line = separateur_ligne(largeurs)
+    resultat = [sep_line]
+
+    for ligne in lignes:
+        cellules = [
+            wrap_cell(cell, w)
+            for cell, w in zip(ligne, largeurs)
+        ]
+
+        hauteur = max(len(c) for c in cellules)
+
+        for i in range(hauteur):
+            row = "| "
+            for cell_lines, w in zip(cellules, largeurs):
+                texte = cell_lines[i] if i < len(cell_lines) else ""
+                row += texte.ljust(w) + " | "
+            resultat.append(row.rstrip())
+
+        resultat.append(sep_line)
+
+    return "\n".join(resultat)
+
+
+def get_clipboard():
+    if shutil.which("xclip"):
+        cmd = ["xclip", "-selection", "clipboard", "-o"]
+    elif shutil.which("xsel"):
+        cmd = ["xsel", "--clipboard", "--output"]
+    else:
+        print("❌ Aucun gestionnaire de presse-papier trouvé (installe xclip ou xsel)")
+        sys.exit(1)
+
+    try:
+        return subprocess.check_output(cmd).decode("utf-8")
+    except subprocess.CalledProcessError:
+        print("⚠️ Presse-papier vide.")
+        sys.exit(1)
+
+
+def set_clipboard(texte):
+    if shutil.which("xclip"):
+        cmd = ["xclip", "-selection", "clipboard", "-i"]
+    elif shutil.which("xsel"):
+        cmd = ["xsel", "--clipboard", "--input"]
+    else:
+        print("❌ Aucun gestionnaire de presse-papier trouvé (installe xclip ou xsel)")
+        sys.exit(1)
+
+    try:
+        subprocess.run(cmd, input=texte.encode("utf-8"), check=True)
+    except Exception as e:
+        print(f"❌ Impossible de copier dans le presse-papier : {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    texte = get_clipboard()
+    lignes = lire_lignes_csv(texte, sep=sep)
+    tableau = generer_tableau(lignes, MAX_TABLE_WIDTH)
+    set_clipboard(tableau)
+    print(f"✅ Tableau généré et copié dans le presse-papier (max {MAX_TABLE_WIDTH}).")

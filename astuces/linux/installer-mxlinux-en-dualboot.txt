@@ -1,0 +1,116 @@
+Voici une documentation complète pour t'aider à créer une partition de 50 Go sur
+Windows, même si l'outil de gestion des disques ne te propose qu'un espace réduit.
+Elle inclut les étapes pour désactiver les fichiers système qui bloquent la
+réduction du volume, sans installer de logiciel tiers.
+
+Créer une nouvelle partition de 50 Go sur un disque Windows, malgré une
+limitation apparente à 4 Go dans l'outil de gestion des disques.
+
+Étapes détaillées :
+1. Vérifier l'espace libre
+- Ouvre l'Explorateur de fichiers → clic droit sur le disque C: → Propriétés.
+- Vérifie que tu as bien au moins 50 Go d'espace libre.
+
+2. Désactiver les fichiers système bloquants
+Certains fichiers système ne peuvent pas être déplacés facilement, ce qui
+empêche Windows de réduire le volume.
+ a. Désactiver la veille prolongée (fichier hiberfil.sys)
+ - Ouvre Invite de commandes en tant qu'administrateur.
+ - Tape :
+   powercfg -h off
+ - Cela supprime le fichier hiberfil.sys, souvent très volumineux.
+ 
+ b. Désactiver la restauration du système
+ - Ouvre Panneau de configuration → Système → Protection du système.
+ - Sélectionne le disque C: → clique sur Configurer.
+ - Coche Désactiver la protection du système → Appliquer.
+
+ c. Désactiver le fichier d'échange (mémoire virtuelle)
+ - Ouvre Paramètres système avancés → onglet Avancé → section Performances →
+   Paramètres.
+ - Onglet Avancé → Mémoire virtuelle → Modifier.
+ - Décoche Gestion automatique → sélectionne le disque C: → coche Aucun fichier
+   d'échange → Définir → OK.
+   Redémarre ton PC après ces modifications pour libérer l'espace contigu.
+
+3. Réduire le volume avec "Gestion des disques"
+- Appuie sur Win + X → Gestion des disques.
+- Clic droit sur le disque C: → Réduire le volume.
+- Windows te proposera la taille maximale possible. Tu devrais maintenant
+pouvoir réduire jusqu'à 50 Go.
+- Une fois réduit, tu verras un espace non alloué.
+- Clic droit dessus → Nouveau volume simple → suis l'assistant pour créer ta partition.
+
+4. Réactiver les fonctions système (optionnel mais recommandé)
+ a. Veille prolongée
+ powercfg -h on
+ b. Restauration du système
+ - Retourne dans Protection du système → Configurer → coche Activer
+ la protection du système.
+ c. Fichier d'échange
+ - Retourne dans Mémoire virtuelle → coche Gestion automatique → OK.
+
+Astuce bonus : Défragmentation
+- Tape Défragmenter dans le menu Démarrer.
+- Lance l'outil sur le disque C: → clique sur Optimiser.
+Cela aide à regrouper les fichiers et libérer de l'espace contigu.
+
+Résultat attendu :
+Tu devrais maintenant pouvoir créer une partition de 50 Go sans installer de logiciel tiers.
+
+## Installation de MX Linux en dual-boot avec Windows (UEFI)
+
+### Objectif
+Installer MX Linux sur une partition dédiée, en mode UEFI, sans écraser
+Windows Boot Manager, afin de pouvoir choisir le système à démarrer via le BIOS/UEFI.
+
+### Prérequis
+Un PC avec Windows déjà installé en mode UEFI
+- Une partition libre ou non allouée d'au moins 20-60 Go
+- Une clé USB bootable avec MX Linux
+- Le BIOS configuré en mode UEFI (pas Legacy/CSM)
+
+### Étapes détaillées
+#### 1. Créer une partition pour MX Linux
+Depuis Windows :
+- Ouvre le Gestionnaire de disques
+- Réduis la partition Windows pour libérer de l'espace (ex. 60 Go)
+- Laisse cet espace non alloué (ne le formate pas)
+
+#### 2. Démarrer sur la clé USB MX Linux
+Redémarre le PC
+- Accède au menu de démarrage (souvent F12, F10 ou ESC)
+- Choisis la clé USB en mode UEFI
+
+#### 3. Lancer l'installation personnalisée
+Depuis le bureau MX Linux live, lance "Installer MX Linux"
+- Choisis "Installation personnalisée (Custom Install)"
+
+#### 4. Préparer les partitions
+Dans l'installateur ou via GParted :
+Partition racine / :
+- Sélectionne la partition de 60 Go
+- Formate-la en ext4
+- Point de montage : /
+- Coche "Aligner sur MiB" et "Partition primaire" si proposé
+Partition EFI (ESP) :
+- Repère la partition FAT32 de 100 Mo (souvent /dev/mmcblk0p1)
+- Ne la formate pas
+- Monte-la sur /boot/efi
+- Coche "Preserve FAT32" si proposé
+
+#### 5. Configurer GRUB
+Quand l'installateur demande où installer GRUB :
+- Choisis la partition Linux (ex. /dev/mmcblk0pX)
+- Ne choisis pas /dev/mmcblk0 (le disque entier)
+
+### Après l'installation
+#### 6. Redémarrer et accéder au BIOS/UEFI
+Appuie sur la touche de boot (F12, ESC, etc.)
+- Tu verras deux entrées :
+- Windows Boot Manager
+- MX Linux (GRUB)
+
+#### 7. Choisir le système à démarrer
+Tu peux démarrer manuellement l'un ou l'autre
+- Ou changer l'ordre de démarrage dans le BIOS

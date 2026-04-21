@@ -1,0 +1,111 @@
+==================
+   Applications
+==================
+
+TABLEAU ASCII
+-------------
+Une application qui permet de faire des tableaux comme ceux générés par MySQL
+par exemple.
+- écrivez votre texte séparé par des ; dans le champ tout en haut.
+- Puis appuyez sur "Convertir" pour générer le tableau, il apparait dans le champ
+tout en bas.
+- Cliquez sur "Copier" pour copier le texte dans votre presse papiers.
+- Le bouton "Effacer" efface ce que vous avez tappé dans le premier champ + le
+tableau généré.
+Vous pouvez changer le séparateur de données ainsi que la largeur maximale du
+tableau généré, lorsque le tableau atteint la largeur maximale, le texte passe
+à la ligne dans les cellules.
+Le bouton "Valeurs par défaut" permet de rétablir le séparateur et la largeur
+par défaut.
+Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Vous devez utiliser une police régulière dans l'application concernée comme monospace ou mono...
+ou regular... pour que le tableau soit affiché sans décalages lors de la lecture.
+
+
+ÉDITEUR DE TEXTE
+----------------
+Un éditeur de texte simple, léger et compatible avec les appareils anciens.
+Conçu pour être rapide, minimaliste et fiable, sans dépendances lourdes ni
+fonctionnalités superflues.
+
+Fonctionnalités principales :
+- Multi-onglets
+- Ouverture et sauvegarde via le sélecteur de fichiers Android
+- Recherche avec surlignage et navigation
+- Remplacement de texte
+- Dupliquer la ligne courante
+- Supprimer la ligne courante
+- Coller à la position exacte du curseur
+- Bouton pour aller directement en bas du fichier
+- Le bouton Style ouvre un menu qui permet de changer la taille et la
+couleur du texte et la transparence d'arrière plan
+- Compatibilité Android 4.1+
+
+Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
+- Ctrl + Z : Annuler
+- Ctrl + Y : Rétablir
+- Ctrl + A : Tout sélectionner
+- Ctrl + C : Copier
+- Ctrl + V : Coller
+- Ctrl + X : Couper
+- Ctrl + S : Sauvegarder (si supporté)
+- Ctrl + D : Dupliquer la ligne
+- Ctrl + Shift + D : Supprimer la ligne
+- Ctrl + F : Ouvrir le panneau rechercher/remplacer
+- Ctrl + G : Aller à l'occurence suivante
+- Ctrl + Shift + G : Aller à l'occurence précédente
+- Ctrl + R : Remplacer l'occurence active
+- Ctrl + Shift + R : Remplacer toutes les occurences
+- Flèches : Navigation
+- Shift + Flèches : Sélection
+
+Notes :
+- L'application lit et écrit en UTF-8.
+- Les caractères invalides apparaissent sous la forme du symbole �.
+- La taille de police suit les réglages du système.
+- Le défilement vertical peut être contrôlé via le bouton "↓".
+
+Auteur :
+Gabriel - Projet minimaliste, optimisé pour la compatibilité et la simplicité.
+
+
+Extraction Code Couleur
+-----------------------
+Permet d'extraire le code couleur à l'écran.
+Codes couleurs disponibles dans le bouton Formats : HEX, RGB, HSL, HSV, CMYK
+Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Cette application utilise PROJECT_MEDIA, pour accorder l'autorisation permanente :
+Commande adb : adb shell appops set com.gabriel.extractioncodecouleur PROJECT_MEDIA allow
+Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
+à l'application.
+
+Compatibilité : Android 5.0+
+
+
+Sélecteur Couleur
+-----------------
+Palette de couleurs qui montre le code en HEX, RGB, HSL, HSV.
+L'option alpha ne fonctionne que pour HEX.
+Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+
+
+OCR Écran
+---------
+Permet d'extraire le texte à l'écran.
+Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Cette application utilise PROJECT_MEDIA, pour accorder l'autorisation permanente :
+Commande adb : adb shell appops set com.gabriel.ocrecran PROJECT_MEDIA allow
+Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
+à l'application.
+
+Compatibilité : Android 5.0+
+
+
+Serveur HTTP
+------------
+Démarrer un serveur HTTP local.
+Pour vous connecter au serveur :
+Depuis votre serveur ou un autre appareil du réseau : http://ipserveur:8080
+
+Depuis votre serveur : http://ipserveur:8080 ou http://localhost:8080 ou http://127.0.0.1:8080
+ou http://0.0.0.0:8080
