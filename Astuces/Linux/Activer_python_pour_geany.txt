@@ -1,3 +1,0 @@
-Si l'exécution de code python dans geany ne fonctionne pas :
-sudo apt update
-sudo apt install python-is-python3
