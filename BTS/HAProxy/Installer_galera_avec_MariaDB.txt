@@ -11,9 +11,9 @@ Chaque cluster assure :
 
 # 1. Adressage réseau utilisé
 ## Cluster web
-- web1 : 172.17.4.124
-- web2 : 172.17.4.125
-- haproxyweb : 172.17.4.12
+- web1 : 172.17.4.14
+- web2 : 172.17.4.15
+- haproxyweb : 172.17.4.13
 
 ---
 
@@ -39,7 +39,7 @@ wsrep_on=ON
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
 
 wsrep_cluster_name="galera_web"
-wsrep_cluster_address="gcomm://172.17.4.124,172.17.4.125"
+wsrep_cluster_address="gcomm://172.17.4.14,172.17.4.15"
 
 binlog_format=ROW
 default_storage_engine=InnoDB
@@ -50,11 +50,11 @@ wsrep_sst_method=rsync
 ## 3.2 Configuration spécifique web
 ### web1
 wsrep_node_name="web1"
-wsrep_node_address="172.17.4.124"
+wsrep_node_address="172.17.4.14"
 
 ### web2
 wsrep_node_name="web2"
-wsrep_node_address="172.17.4.125"
+wsrep_node_address="172.17.4.15"
 
 ---
 

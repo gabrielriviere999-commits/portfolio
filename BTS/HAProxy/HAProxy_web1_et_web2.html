@@ -187,7 +187,7 @@ sudo nano /etc/netplan/50-cloud-init.yaml</pre>
     ens18:
       dhcp4: false
       dhcp6: false
-      addresses: [172.17.4.117/24] #IP haproxyweb réseau internet
+      addresses: [172.17.4.12/24] #IP haproxyweb réseau internet
       routes:
         - to: 0.0.0.0/0
           via: 172.17.4.254 #passerelle
@@ -197,7 +197,7 @@ sudo nano /etc/netplan/50-cloud-init.yaml</pre>
           - 8.8.8.8
           - 1.1.1.1
     ens19:
-      addresses: [172.17.4.12/24] #IP haproxyweb réseau interne
+      addresses: [172.17.4.13/24] #IP haproxyweb réseau interne
       dhcp4: false
       dhcp6: false</div>
 
@@ -230,16 +230,16 @@ sudo netplan apply</pre>
 backend http_back
         balance leastconn
         cookie SERVERID insert indirect nocache
-        server web1 172.17.4.124:80 cookie web1 check
-        server web2 172.17.4.125:80 cookie web2 check</div>
+        server web1 172.17.4.14:80 cookie web1 check
+        server web2 172.17.4.15:80 cookie web2 check</div>
 
     <p>Enregistrer avec <code>Ctrl+X</code>, puis <code>Y</code>, puis Entrée.</p>
 
     <h3>Tests de connectivité depuis HAProxy</h3>
 
     <div class="code-block">
-      <pre>ping 172.17.4.124
-ping 172.17.4.125
+      <pre>ping 172.17.4.14
+ping 172.17.4.15
 ping google.com</pre>
     </div>
 
@@ -276,7 +276,7 @@ sudo nano /etc/netplan/50-cloud-init.yaml</pre>
   version: 2
   ethernets:
     ens18:
-      addresses: [172.17.4.124/24]
+      addresses: [172.17.4.14/24]
       dhcp4: false
       dhcp6: false</div>
 
@@ -348,10 +348,10 @@ sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
   ethernets:
     ens18:
       addresses:
-        - 172.17.4.124/24 
+        - 172.17.4.14/24 
       routes:
         - to: 0.0.0.0/0
-          via: 172.17.4.12
+          via: 172.17.4.13
       nameservers:
         addresses:
           - 8.8.8.8
@@ -371,11 +371,11 @@ sudo netplan apply</pre>
           <th>Résultat attendu</th>
         </tr>
         <tr>
-          <td><code>ping 172.17.4.12</code></td>
+          <td><code>ping 172.17.4.13</code></td>
           <td># ping haproxyweb</td>
         </tr>
         <tr>
-          <td><code>ping 172.17.4.125</code></td>
+          <td><code>ping 172.17.4.15</code></td>
           <td># ping web2</td>
         </tr>
       </table>
@@ -414,7 +414,7 @@ sudo nano /etc/netplan/50-cloud-init.yaml</pre>
   version: 2
   ethernets:
     ens18:
-      addresses: [172.17.4.125/24]
+      addresses: [172.17.4.15/24]
       dhcp4: false
       dhcp6: false</div>
 
@@ -486,10 +486,10 @@ sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
   ethernets:
     ens18:
       addresses:
-        - 172.17.4.125/24
+        - 172.17.4.15/24
       routes:
         - to: 0.0.0.0/0
-          via: 172.17.4.12
+          via: 172.17.4.13
       nameservers:
         addresses:
           - 8.8.8.8
@@ -508,11 +508,11 @@ sudo netplan apply</pre>
           <th colspan="2">Test :</th>
         </tr>
         <tr>
-          <td><code>ping 172.17.4.12</code></td>
+          <td><code>ping 172.17.4.13</code></td>
           <td># ping haproxyweb</td>
         </tr>
         <tr>
-          <td><code>ping 172.17.4.124</code></td>
+          <td><code>ping 172.17.4.14</code></td>
           <td># ping web1</td>
         </tr>
       </table>
@@ -525,12 +525,12 @@ sudo netplan apply</pre>
     <h3>Route par défaut sur web1 et web2</h3>
 
     <div class="code-block">
-      <pre>sudo ip route add default via 172.17.4.12
+      <pre>sudo ip route add default via 172.17.4.13
 ip route</pre>
     </div>
 
     <p>Il doit y avoir :</p>
-    <div class="figure">default via 172.17.4.12 dev ens18</div>
+    <div class="figure">default via 172.17.4.13 dev ens18</div>
 
     <h3>Configuration du routage et du NAT sur HAProxy</h3>
 
@@ -593,8 +593,8 @@ sudo netfilter-persistent save</pre>
 
     <p>Depuis un navigateur de la machine physique :</p>
 
-    <div class="figure">http://172.17.4.117
-http://172.17.4.117/stats</div>
+    <div class="figure">http://172.17.4.12
+http://172.17.4.12/stats</div>
 
     <p>La première URL permet d'accéder au service web équilibré, la seconde à la page de statistiques HAProxy (<code>stats uri /stats</code>).</p>
 
