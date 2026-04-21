@@ -20,7 +20,7 @@ jobs:
           python-version: '3.x'
 
       - name: Exécuter le script Python
-        run: python3 make_search_index.py
+        run: python3 make-search-index.py
 
       - name: Commit du fichier docs.js généré
         run: |
