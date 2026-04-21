@@ -189,3 +189,14 @@ sudo systemctl status glpi-agent
 
 5. Forcer un inventaire immédiat (optionnel)
 sudo glpi-agent
+
+
+6. Pour désinstaller glpi-agent
+sudo apt remove --purge glpi-agent
+sudo systemctl stop glpi-agent
+sudo systemctl disable glpi-agent
+sudo rm -rf /etc/glpi-agent
+sudo rm -rf /var/lib/glpi-agent
+sudo rm -rf /var/log/glpi-agent
+which glpi-agent
+systemctl list-unit-files | grep glpi
