@@ -159,7 +159,7 @@ interface FastEthernet0/24
 !
 interface GigabitEthernet0/1
  switchport trunk native vlan 300
- switchport trunk allowed vlan 100,200,300
+ switchport trunk allowed vlan 24,100,200,300
  switchport mode trunk
  switchport nonegotiate
  spanning-tree portfast trunk
