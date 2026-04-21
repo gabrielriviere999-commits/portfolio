@@ -35,7 +35,7 @@ Fa0/24 → VLAN 200
 ---------------------------------
 - Mode trunk forcé
 - VLAN natif : 300
-- VLANs autorisés : 100, 200, 300
+- VLANs autorisés : 24, 100, 200, 300
 - PortFast trunk activé
 
 2.4 Interfaces VLAN (SVI)
