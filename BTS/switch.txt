@@ -1,7 +1,7 @@
 Switch#show run
 Building configuration...
 
-Current configuration : 4700 bytes
+Current configuration : 4749 bytes
 !
 version 12.2
 no service pad
@@ -154,13 +154,15 @@ interface FastEthernet0/23
  switchport mode access
 !
 interface FastEthernet0/24
+ switchport access vlan 200
+ switchport mode access
+!
+interface GigabitEthernet0/1
  switchport trunk native vlan 300
- switchport trunk allowed vlan 24,100,200,300
+ switchport trunk allowed vlan 100,200,300
  switchport mode trunk
  switchport nonegotiate
  spanning-tree portfast trunk
-!
-interface GigabitEthernet0/1
 !
 interface GigabitEthernet0/2
 !
