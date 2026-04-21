@@ -104,7 +104,7 @@ ip route 0.0.0.0 0.0.0.0 172.16.1.254
 --------
 - Groupe SNMP v3 : ZBXGRP
 - Communauté RO : zabbix-snmp
-- Hôte SNMP : 172.17.4.106
+- Hôte SNMP : 172.17.4.11
 
 ============================================================
  4. ACL (LISTES DE CONTRÔLE D’ACCÈS)

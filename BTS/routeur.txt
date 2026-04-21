@@ -160,7 +160,7 @@ snmp-server community zabbix-snmp RO
 snmp-server ifindex persist
 snmp-server location Groupe4
 snmp-server contact admin@groupe4.lan
-snmp-server host 172.17.4.106 private
+snmp-server host 172.17.4.11 private
 !
 control-plane
 !
