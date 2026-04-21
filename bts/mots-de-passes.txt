@@ -1,4 +1,4 @@
-Mots de passes
+MOTS DE PASSES
 glpi : vboxuser/changeme
 Interface web : glpi/glpi
 MariaDB : glpigw/GabrielWissamSQLGLPI
