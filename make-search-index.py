@@ -13,7 +13,7 @@ folder = "."
 output_file = "docs.js"
 
 TEXT_EXTENSIONS = (".html", ".txt")
-IGNORE_FILES = {output_file, "liste_fichiers.html"}
+IGNORE_FILES = {output_file, "liste-fichiers.html"}
 
 docs = []
 
