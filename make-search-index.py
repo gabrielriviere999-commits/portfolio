@@ -32,9 +32,15 @@ for root, dirs, files in os.walk(folder):
         # Si c'est un fichier texte → on extrait le contenu
         if f.endswith(TEXT_EXTENSIONS):
             try:
-                with open(path, encoding="utf-8") as file:
-                    content = file.read()
-                content = strip_tags(content)
+                if f.endswith(".html"):
+                    with open(path, encoding="utf-8") as file:
+                        content = file.read()
+                    content = strip_tags(content)
+
+                elif f.endswith(".txt"):
+                    with open(path, encoding="utf-8") as file:
+                        content = file.read()
+
             except Exception as e:
                 print("Erreur lecture", path, e)
                 content = ""
