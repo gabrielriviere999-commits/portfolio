@@ -11,6 +11,7 @@ haproxyweb : vboxuser/changeme
 web1 : vboxuser/changeme
 web2 : vboxuser/changeme
 MariaDB : root/changeme
+phpmyadmin/changeme
 
 WinServer2025 : Administrateur/Groupe4Win2025
 DSRM : groupe4@2025
