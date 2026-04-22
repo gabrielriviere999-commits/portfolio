@@ -693,6 +693,8 @@ function cleanLibreOfficeHTML(html) {
     el.removeAttribute("border");
     el.removeAttribute("cellpadding");
     el.removeAttribute("cellspacing");
+    el.removeAttribute("sdval");
+    el.removeAttribute("sdnum");
   });
 
   // 5. Supprimer bordures inline (ton éditeur gère ça globalement)
