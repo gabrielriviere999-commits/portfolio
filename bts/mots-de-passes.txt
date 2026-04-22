@@ -15,8 +15,8 @@ MariaDB : root/changeme
 WinServer2025 : Administrateur/Groupe4Win2025
 DSRM : groupe4@2025
 
-fog : vboxuser/changeme
-Interface web : 
+fog : fog/changeme
+Interface web : fog/password
 
 guacamole : vboxuser/changeme
 MariaDB : guaca_gabriel/changeme
