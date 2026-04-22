@@ -18,6 +18,7 @@ DSRM : groupe4@2025
 
 fog : fog/changeme
 Interface web : fog/password
+vmmaster : vboxuser/changeme
 
 guacamole : vboxuser/changeme
 MariaDB : guaca_gabriel/changeme
