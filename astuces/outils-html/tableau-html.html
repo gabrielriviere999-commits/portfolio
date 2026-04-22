@@ -493,16 +493,7 @@ document.getElementById('clearTdStyle').onclick = function () {
 
     for (var i = 0; i < selectedCells.length; i++) {
       var cell = selectedCells[i];
-
-      cell.style.color = "";
-      cell.style.backgroundColor = "";
-      cell.style.textAlign = "";
-      cell.style.fontWeight = "";
-      cell.style.fontStyle = "";
-      cell.style.textDecoration = "";
-      cell.style.border = "";
-      cell.style.borderColor = "";
-      cell.style.borderWidth = "";
+      cell.removeAttribute("style");
     }
 
     return; // terminé
@@ -513,16 +504,7 @@ document.getElementById('clearTdStyle').onclick = function () {
     for (var c = 0; c < table.rows[r].cells.length; c++) {
 
       var cell = table.rows[r].cells[c];
-
-      cell.style.color = "";
-      cell.style.backgroundColor = "";
-      cell.style.textAlign = "";
-      cell.style.fontWeight = "";
-      cell.style.fontStyle = "";
-      cell.style.textDecoration = "";
-      cell.style.border = "";
-      cell.style.borderColor = "";
-      cell.style.borderWidth = "";
+      cell.removeAttribute("style");
     }
   }
 };
