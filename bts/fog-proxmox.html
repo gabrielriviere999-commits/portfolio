@@ -278,7 +278,9 @@ requêtes PXE sans interférer avec le DHCP principal.
 
 <h3>2.1 Fichier /etc/dnsmasq.d/ltsp.conf</h3>
 <div class="code-block">
-<pre>sudo nano /etc/dnsmasq.d/ltsp.conf</pre>
+<pre>sudo apt update
+sudo apt install dnsmasq
+sudo nano /etc/dnsmasq.d/ltsp.conf</pre>
 </div>
 
 <div class="figure"># ProxyDHCP pour FOG - coexiste avec le DHCP du routeur
