@@ -9,7 +9,7 @@ sudo apt install ocrmypdf tesseract-ocr tesseract-ocr-fra
 - tesseract-ocr : moteur de reconnaissance optique
 - tesseract-ocr-fra : langue française pour Tesseract
 
-Télécharger le script dans Script → ocr_batch.sh
+Télécharger le script dans Script → ocr-batch.sh
 
 ---
 
