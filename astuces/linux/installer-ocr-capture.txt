@@ -11,7 +11,7 @@ sudo apt install flameshot tesseract-ocr tesseract-ocr-fra xclip
 Création du script OCR
 1. Ouvre un terminal
 2. Crée un fichier de script :
-nano ~/ocr_capture.sh
+nano ~/ocr-capture.sh
 3. Colle ce contenu :
  
 #!/bin/bash
@@ -20,11 +20,11 @@ tesseract /tmp/capture.png stdout -l fra | xclip -selection clipboard
 
 4. Enregistre avec Ctrl + O, puis quitte avec Ctrl + X
 5. Rends le script exécutable :
-chmod +x ~/ocr_capture.sh
+chmod +x ~/ocr-capture.sh
 
 Utilisation du script
 Lance simplement :
-~/ocr_capture.sh
+~/ocr-capture.sh
 - Une interface de sélection s'ouvre (Flameshot)
 - Tu sélectionnes une zone de l'écran
 - Le texte est extrait et copié automatiquement dans ton presse-papiers
@@ -35,7 +35,7 @@ Ajouter un raccourci clavier
 2. Clique sur Ajouter
 3. Remplis :
 Nom : OCR Capture
-Commande : /home/nom_utilisateur/ocr_capture.sh
+Commande : /home/nom_utilisateur/ocr-capture.sh
 Raccourci : par exemple Ctrl + Alt + O
 
 Résultat

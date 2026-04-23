@@ -25,11 +25,11 @@ Fonctionnement
 
 Utilisation
 1. Place tes fichiers PDF dans pdf_input
-2. Sauvegarde le script dans un fichier nommé ocr_batch.sh
+2. Sauvegarde le script dans un fichier nommé ocr-batch.sh
 3. Rends-le exécutable :
-chmod +x ocr_batch.sh
+chmod +x ocr-batch.sh
 4. Lance-le :
-./ocr_batch.sh
+./ocr-batch.sh
 
 Résultat
 Tu obtiendras dans pdf_output des fichiers PDF avec une couche texte OCR, consultables et
@@ -42,22 +42,22 @@ Tu peux ajouter ton script ocr_batch.sh au menu des applications de MX Linux en 
 Ajouter un script Bash au menu des applications MX Linux
 1. Crée un fichier .desktop
 Ouvre un terminal et tape :
-nano ~/.local/share/applications/ocr_batch.desktop
+nano ~/.local/share/applications/ocr-batch.desktop
 Colle ce contenu :
 
 [Desktop Entry]
 Type=Application
 Name=OCR Batch PDF
 Comment=Convertit tous les PDF du dossier en PDF texte OCR
-Exec=/home/nom_utilisateur/ocr_batch.sh
+Exec=/home/nom_utilisateur/ocr-batch.sh
 Icon=accessories-text-editor
 Terminal=true
 Categories=Utility;
 
-Remplace /home/nom_utilisateur/ocr_batch.sh par ton chemin
+Remplace /home/nom_utilisateur/ocr-batch.sh par ton chemin
 
 2. Rends le script exécutable
-chmod +x /home/nom_utilisateur/ocr_batch.sh
+chmod +x /home/nom_utilisateur/ocr-batch.sh
 
 3. Vérifie dans le menu
 - Ouvre le menu MX Linux

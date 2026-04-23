@@ -1,6 +1,6 @@
 Pour changer la rotation d'écran tout en gardant les bonnes positions pour l'écran tactile sur XFCE :
 (GNOME ou KDE n'ont pas besoin de ces scripts, aller dans les paramètres suffit.)
-Vous pouvez exécuter un des scripts rotate_X.sh, télécharger dans Script → change_rotation.zip
+Vous pouvez exécuter un des scripts rotate-X.sh, télécharger dans Script → change-rotation.zip
 
 Avant de l'éxécuter, il faut trouver le nom du SCREEN et TOUCH.
 Trouver le nom de l'écran (SCREEN) :
@@ -15,7 +15,7 @@ Exemple : ELAN9009:00 04F3:2EC1
 
 Pour exécuter les scripts :
 Ouvrir le terminal dans le dossier contenant les scripts
-chmod +x rotate_*.sh
+chmod +x rotate-*.sh
 Vous pouvez ajouter les fichiers à votre barre d'outils ou raccourcis clavier.
 Lors de la déconnexion/arrêt/redémarrage, tout redevient à la normale.
 

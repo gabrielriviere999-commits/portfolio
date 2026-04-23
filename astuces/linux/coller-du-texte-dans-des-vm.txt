@@ -2,11 +2,11 @@ Pour coller du texte dans une VM, il faut le coller en utilisant
 une méthode de frappe simulée.
 Installer xdotool
 Installer xclip ou xsel
-Créer un fichier coller_tapper_clipboard.sh
+Créer un fichier coller-tapper-clipboard.sh
 Coller le contenu de ce script ou le télécharger dans Script.
 
 Ouvrir un terminal :
-chmod +x coller_tapper_clipboard.sh
+chmod +x coller-tapper-clipboard.sh
 
 On peut ajouter ce fichier à la barre des tâches et/ou un raccourci clavier.
 Il faut copier le texte voulu dans le presse papier, puis exécuter le fichier
