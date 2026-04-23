@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Éditeur de fiches HTML</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      background: #C0C0C0;
+      padding-top: 200px;
+    }
+
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+.toolbar {
+  display: block;
+  padding: 6px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  margin-bottom: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  max-height: 225px;
+  padding: 4px;
+  z-index: 9999
+}
+
+.toolbar.hidden {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+button {
+  background: #d4d0c8;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  font-family: sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:active {
+  border-color: #404040 #fff #fff #404040;
+  background: #c0c0c0;
+}
+
+button:hover {
+  background: #e0e0e0;
+}
+
+    .layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .panel {
+      background: #ffffff;
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+
+    .panel h2 {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 3px;
+    }
+
+    .panel-editor {
+      flex: 1 1 50%;
+      min-width: 300px;
+    }
+
+    .panel-preview {
+      flex: 1 1 45%;
+      min-width: 280px;
+      max-height: 80vh;
+      overflow: auto;
+    }
+
+    textarea {
+      width: 100%;
+      height: 70vh;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      border: 1px solid #aaa;
+      padding: 6px;
+      resize: vertical;
+      white-space: pre;
+    }
+
+    iframe {
+      width: 100%;
+      height: 70vh;
+      border: 1px solid #aaa;
+      background: #fff;
+    }
+
+    .status {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #555;
+    }
+
+    .export-area {
+      margin-top: 8px;
+    }
+
+    .export-area textarea {
+      height: 150px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Éditeur HTML</h1>
+
+<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
+
+<div class="toolbar" style="opacity: 0.8;">
+  <button type="button" onclick="insertTemplate('page')">+ Page</button>
+  <button type="button" onclick="insertTemplate('h1')">+ H1</button>
+  <button type="button" onclick="insertTemplate('h2')">+ H2</button>
+  <button type="button" onclick="insertTemplate('h3')">+ H3</button>
+  <button type="button" onclick="insertTemplate('pagebreak')">+ Saut de page</button>
+|
+  <button type="button" onclick="insertTemplate('code')">+ Code block</button>
+  <button type="button" onclick="insertTemplate('figure')">+ Figure</button>
+  <button type="button" onclick="insertTemplate('note')">+ Note</button>
+  <button type="button" onclick="insertTemplate('table')">+ Tableau</button>
+|
+  <button type="button" onclick="insertList('ul')">UL</button>
+  <button type="button" onclick="insertList('ol')">OL</button>
+|
+  <button type="button" onclick="updatePreview()">Prévisualiser</button>
+  <button type="button" onclick="exportDocument()">Exporter</button>
+  <button type="button" onclick="copyExport()">Copier export</button>
+|
+<button class="btn-toggle" onclick="formatText(this, 'bold')">Gras</button>
+<button class="btn-toggle" onclick="formatText(this, 'italic')">Italique</button>
+<button class="btn-toggle" onclick="formatText(this, 'underline')">Souligné</button>
+
+<button class="btn-toggle" onclick="formatText(this, 'hiliteColor', 'yellow')">Surligner</button>
+
+<button class="btn-toggle" onclick="formatText(this, 'foreColor', '#ff0000')">Rouge</button>
+<button class="btn-toggle" onclick="formatText(this, 'foreColor', '#00aa00')">Vert</button>
+<button class="btn-toggle" onclick="formatText(this, 'foreColor', '#0000ff')">Bleu</button>
+|
+  <button class="align-btn" onclick="toggleAlign(this, 'left')">Gauche</button>
+  <button class="align-btn" onclick="toggleAlign(this, 'center')">Centre</button>
+  <button class="align-btn" onclick="toggleAlign(this, 'right')">Droite</button>
+</div>
+
+<div class="layout">
+  <div class="panel panel-editor">
+    <h2>Source HTML</h2>
+    <textarea id="editor"></textarea>
+    <div class="status" id="status">Prêt.</div>
+  </div>
+
+  <div class="panel panel-preview">
+    <h2>Prévisualisation</h2>
+    <iframe id="preview"></iframe>
+  </div>
+</div>
+
+<div class="panel export-area">
+  <h2>Export (HTML complet)</h2>
+  <textarea id="export"></textarea>
+</div>
+
+<script>
+  // Modèle de page
+  var baseTemplate =
+'<!DOCTYPE html>\n' +
+'<html lang="fr">\n' +
+'<head>\n' +
+'  <meta charset="UTF-8">\n' +
+'  <title>Titre du document</title>\n' +
+'  <style>\n' +
+'    * { box-sizing: border-box; }\n' +
+'    body { margin: 0; padding: 20px; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; }\n' +
+'    .page { max-width: 900px; margin: 0 auto 30px auto; padding: 20px 30px; border: 2px solid; }\n' +
+'    h1, h2, h3, h4 { font-weight: 600; margin-top: 1.2em; margin-bottom: 0.4em; }\n' +
+'    h1 { text-align: center; margin-top: 0; text-transform: uppercase; letter-spacing: 0.05em; }\n' +
+'    h2 { border-bottom: 1px solid #ccc; padding-bottom: 4px; }\n' +
+'    p { margin: 0.3em 0; }\n' +
+'    ul, ol { margin: 0.4em 0 0.4em 1.4em; }\n' +
+'    code { font-family: monospace; font-size: 0.95em; background-color: #f0f0f0; padding: 1px 3px; }\n' +
+'    pre { margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre; overflow-x: auto; }\n' +
+'    .code-block { margin: 0.6em 0; padding: 10px 12px; background-color: black; color: white; border: 1px solid #000; }\n' +
+'    .figure { margin: 0.8em 0; padding: 10px 12px; background-color: #E2E6F0; border: 1px solid; border-left-width: 4px; border-left-color: #2B4F81; font-family: monospace; font-size: 0.9em; white-space: pre; overflow-x: auto; }\n' +
+'    .section-title { font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1em; margin-bottom: 0.3em; }\n' +
+'    .note { margin: 0.6em 0; padding: 8px 10px; border-left: 4px solid #f0ad4e; background-color: #fff8e5; font-size: 0.95em; }\n' +
+'    .table-wrapper { margin: 0.8em 0; overflow-x: auto; }\n' +
+'    table { border-collapse: collapse; width: 100%; max-width: 100%; font-size: 0.95em; }\n' +
+'    th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; }\n' +
+'    th { font-weight: 600; }\n' +
+'    .page-break { margin: 20px auto; border: none; border-top: 2px dashed #000; max-width: 200px; }\n' +
+'  </style>\n' +
+'</head>\n' +
+'<body>\n\n' +
+'<div class="page">\n' +
+'  <h1>Titre principal</h1>\n' +
+'  <h2>Section 1</h2>\n' +
+'  <p>Texte d\'introduction...</p>\n' +
+'</div>\n\n' +
+'</body>\n' +
+'</html>\n';
+
+  var editor = document.getElementById('editor');
+  var preview = document.getElementById('preview');
+  var statusEl = document.getElementById('status');
+  var exportEl = document.getElementById('export');
+
+  // Initialisation
+  editor.value = baseTemplate;
+  updatePreview();
+
+  function setStatus(msg) {
+    statusEl.innerHTML = msg;
+  }
+
+  function insertAtCursor(text) {
+    var start, end, before, after;
+    editor.focus();
+    start = editor.selectionStart;
+    end = editor.selectionEnd;
+    before = editor.value.substring(0, start);
+    after = editor.value.substring(end, editor.value.length);
+    editor.value = before + text + after;
+    editor.selectionStart = editor.selectionEnd = start + text.length;
+  }
+
+function insertTemplate(type) {
+  var snippet = "";
+
+  if (type === 'page') {
+    snippet =
+'<div class="page">\n' +
+'  <h1>Titre de la page</h1>\n' +
+'  <h2>Sous-titre</h2>\n' +
+'  <p>Contenu...</p>\n' +
+'</div>\n';
+  } else if (type === 'h1') {
+    snippet = '<h1>Nouveau titre</h1>\n';
+  } else if (type === 'h2') {
+    snippet = '<h2>Titre de section</h2>\n';
+  } else if (type === 'h3') {
+    snippet = '<h3>Sous-section</h3>\n';
+  } else if (type === 'pagebreak') {
+    snippet = '<hr class="page-break">\n';
+  } else if (type === 'code') {
+    snippet =
+'<div class="code-block"><pre>commande --option\n</pre></div>\n';
+  } else if (type === 'figure') {
+    snippet =
+'<div class="figure">Texte monospaced\n</div>\n';
+  } else if (type === 'note') {
+    snippet =
+'<div class="note"><strong>Note :</strong> texte de la note.</div>\n';
+  } else if (type === 'table') {
+    snippet =
+'<div class="table-wrapper">\n' +
+'<table>\n' +
+'  <tbody>\n' +
+'    <tr><th>Colonne 1</th><th>Colonne 2</th></tr>\n' +
+'    <tr><td>Valeur 1</td><td>Valeur 2</td></tr>\n' +
+'  </tbody>\n' +
+'</table>\n' +
+'</div>\n';
+  }
+
+  // Vérifier si le curseur est dans l'aperçu
+  var doc = preview.contentDocument || preview.contentWindow.document;
+  doc.body.focus();
+  var sel = doc.getSelection();
+
+  if (sel && sel.rangeCount > 0 && sel.anchorNode) {
+    insertInPreview(snippet);
+  } else {
+    insertAtCursor(snippet);
+  }
+}
+
+  function updatePreview() {
+    var doc = preview.contentDocument || preview.contentWindow.document;
+    doc.open();
+    doc.write(editor.value);
+    doc.close();
+    enableWysiwyg();
+    setStatus('Prévisualisation mise à jour.');
+  }
+
+  function exportDocument() {
+    exportEl.value = editor.value;
+    setStatus('Document copié dans la zone Export. Tu peux le sauvegarder en .html.');
+  }
+
+function cleanExport(html) {
+  return html.replace(/contenteditable="true"/gi, "");
+}
+
+function copyExport() {
+  var texte = exportEl.value;
+
+  var temp = document.createElement("textarea");
+  temp.value = texte;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (e) {}
+
+  document.body.removeChild(temp);
+
+  setStatus("Export copié !");
+}
+
+function enableWysiwyg() {
+  var doc = preview.contentDocument || preview.contentWindow.document;
+
+  // Rendre l'aperçu éditable
+  doc.body.contentEditable = "true";
+
+  // Quand on tape dans l'aperçu → mise à jour du textarea
+  doc.body.onkeyup = function () {
+    editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+
+    setStatus("Modifié depuis l'aperçu.");
+  };
+}
+
+function insertInPreview(html) {
+  var doc = preview.contentDocument || preview.contentWindow.document;
+  var sel = doc.getSelection();
+
+  var range = sel.getRangeAt(0);
+  range.deleteContents();
+
+  // Créer un fragment HTML compatible vieux navigateurs
+  var div = doc.createElement("div");
+  div.innerHTML = html;
+
+  var frag = doc.createDocumentFragment();
+  while (div.firstChild) frag.appendChild(div.firstChild);
+
+  range.insertNode(frag);
+
+  // Replacer le curseur après l'insertion
+  sel.collapseToEnd();
+
+  // Mettre à jour le textarea
+  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+
+  setStatus("Élément inséré dans l'aperçu.");
+}
+
+function insertList(type) {
+  var doc = preview.contentDocument || preview.contentWindow.document;
+  doc.body.focus();
+  var sel = doc.getSelection();
+
+  // Si curseur dans l'aperçu → insertion WYSIWYG
+  if (sel && sel.rangeCount > 0 && sel.anchorNode) {
+    insertListPreview(type);
+    return;
+  }
+
+  // Sinon → insertion dans le textarea
+  insertListTextarea(type);
+}
+
+function insertListPreview(type) {
+  var doc = preview.contentDocument || preview.contentWindow.document;
+  var sel = doc.getSelection();
+  var range = sel.getRangeAt(0);
+
+  var list = doc.createElement(type);
+  var li = doc.createElement("li");
+  li.appendChild(doc.createTextNode("Élément"));
+  list.appendChild(li);
+
+  range.insertNode(list);
+  sel.collapse(li, 1);
+
+  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+  setStatus("Liste " + type.toUpperCase() + " insérée dans l'aperçu.");
+}
+
+function insertListTextarea(type) {
+  var start = editor.selectionStart;
+  var end = editor.selectionEnd;
+
+  var list =
+"<" + type + ">\n" +
+"  <li>Élément</li>\n" +
+"</" + type + ">\n";
+
+  editor.value =
+    editor.value.substring(0, start) +
+    list +
+    editor.value.substring(end);
+
+  editor.selectionStart = start;
+  editor.selectionEnd = start + list.length;
+
+  setStatus("Liste " + type.toUpperCase() + " insérée dans le code.");
+  updatePreview();
+}
+
+function prettyHTML(html) {
+  return html.replace(/></g, ">\n<");
+}
+
+function formatText(btn, cmd, value) {
+  var doc = preview.contentDocument || preview.contentWindow.document;
+  doc.body.focus();
+
+  // Si bouton déjà actif → désactiver
+  if (btn.className.indexOf("active") !== -1) {
+    btn.className = btn.className.replace(" active", "");
+
+    // Désactivation du style
+    if (cmd === "hiliteColor") {
+      doc.execCommand("hiliteColor", false, "transparent");
+    }
+
+    if (cmd === "foreColor") {
+      doc.execCommand("foreColor", false, "#000000");
+    }
+
+    if (cmd === "bold" || cmd === "italic" || cmd === "underline") {
+      doc.execCommand(cmd, false, null);
+    }
+
+  } else {
+    // Activer
+    btn.className += " active";
+    doc.execCommand(cmd, false, value);
+  }
+
+  // Mise à jour du textarea
+  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+  setStatus("Format appliqué : " + cmd);
+}
+
+function toggleAlign(btn, align) {
+  var doc = preview.contentDocument || preview.contentWindow.document;
+
+  // Garder le focus dans l'aperçu
+  doc.body.focus();
+
+  // Désactiver tous les boutons d'alignement
+  var buttons = document.querySelectorAll(".align-btn");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].className = buttons[i].className.replace(" active", "");
+  }
+
+  // Si bouton déjà actif → retour à gauche SANS STYLE
+  if (btn.className.indexOf("active") !== -1) {
+    btn.className = btn.className.replace(" active", "");
+
+    // execCommand remet à gauche mais peut ajouter un style
+    doc.execCommand("justifyLeft", false, null);
+
+    // On nettoie tout
+    removeAlignmentStyles(doc);
+
+  } else {
+    // Activer bouton
+    btn.className += " active";
+
+    if (align === "center") doc.execCommand("justifyCenter", false, null);
+    if (align === "right") doc.execCommand("justifyRight", false, null);
+
+    if (align === "left") {
+      doc.execCommand("justifyLeft", false, null);
+      removeAlignmentStyles(doc); // IMPORTANT
+    }
+  }
+
+  // Mise à jour du textarea
+  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+  setStatus("Alignement : " + align);
+}
+
+function removeAlignmentStyles(doc) {
+  var all = doc.body.getElementsByTagName("*");
+  for (var i = 0; i < all.length; i++) {
+    var el = all[i];
+
+    // Supprimer style="text-align: left|center|right|justify"
+    if (el.style && el.style.textAlign) {
+      el.style.textAlign = "";
+    }
+
+    // Supprimer align="left|center|right|justify"
+    if (el.getAttribute("align")) {
+      el.removeAttribute("align");
+    }
+  }
+}
+
+
+var toolbar = document.getElementsByClassName('toolbar')[0];
+var toggleBtn = document.getElementById('toggleToolbarBtn');
+
+var toolbarVisible = true;
+
+toggleBtn.onclick = function(e) {
+  e = e || window.event;
+  e.cancelBubble = true;
+  if (e.stopPropagation) e.stopPropagation();
+
+  // Remettre le focus dans l'aperçu
+  var doc = preview.contentDocument || preview.contentWindow.document;
+  doc.body.focus();
+
+  toolbarVisible = !toolbarVisible;
+
+  if (toolbarVisible) {
+    toolbar.className = 'toolbar';
+  } else {
+    toolbar.className = 'toolbar hidden';
+  }
+};
+</script>
+
+</body>
+</html>
