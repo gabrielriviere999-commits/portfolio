@@ -432,11 +432,13 @@ shutdown -h now</div>
 <hr class="page-break">
 <h2>Partie 5 - Vérifications post-déploiement</h2>
 <p>Sur le clone après premier boot :</p>
-<div class="figure">cat /etc/machine-id # doit differer du master
+<div class="code-block">
+<pre>cat /etc/machine-id # doit differer du master
 ls -la /etc/ssh/ssh_host_* # doit avoir la date du jour
 hostname # a changer si identique au master
 sudo hostnamectl set-hostname clone01
-sudo reboot</div>
+sudo reboot<pre>
+</div>
 
 <hr class="page-break">
 <h2>Partie 6 - Dépannage</h2>
