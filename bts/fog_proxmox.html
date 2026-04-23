@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>FOG + Proxmox</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto 30px auto;
+      padding: 20px 30px;
+      border: 2px solid;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 600;
+      margin-top: 1.2em;
+      margin-bottom: 0.4em;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }i
+
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+
+    p {
+      margin: 0.3em 0;
+    }
+
+    ul, ol {
+      margin: 0.4em 0 0.4em 1.4em;
+    }
+
+    code {
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
+      font-size: 0.95em;
+      background-color: #f0f0f0;
+      padding: 1px 3px;
+    }
+
+    pre {
+      margin: 0;
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
+      font-size: 0.9em;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .code-block {
+      margin: 0.6em 0;
+      padding: 10px 12px;
+      background-color: black;
+      color: white;
+      border: 1px solid #000;
+    }
+
+    .figure {
+      margin: 0.8em 0;
+      padding: 10px 12px;
+      background-color: #E2E6F0;
+      border: 1px solid;
+      border-left-width: 4px;
+      border-left-color: #2B4F81;
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
+      font-size: 0.9em;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .section-title {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 1em;
+      margin-bottom: 0.3em;
+    }
+
+    .note {
+      margin: 0.6em 0;
+      padding: 8px 10px;
+      border-left: 4px solid #f0ad4e;
+      background-color: #fff8e5;
+      font-size: 0.95em;
+    }
+
+    .table-wrapper {
+      margin: 0.8em 0;
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 100%;
+      font-size: 0.95em;
+    }
+
+    th, td {
+      border: 1px solid #999;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+    }
+
+    .page-break {
+      margin: 20px auto;
+      border: none;
+      border-top: 2px dashed #bbb;
+      max-width: 200px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .inline-title {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+<h1>FOG + Proxmox</h1>
+
+<h2>Architecture cible</h2>
+<ul>
+<li>Serveur FOG : Debian 12 - IP 172.17.4.16</li>
+<li>DHCP : assuré par le routeur (pas par le serveur FOG)</li>
+<li>Méthode PXE : proxyDHCP via dnsmasq sur le serveur FOG</li>
+<li>VM clients : Proxmox (BIOS legacy / SeaBIOS)</li>
+</ul>
+
+<hr class="page-break">
+
+<h2>Partie 1 - Installation du serveur FOG</h2>
+
+<h3>1.1 Configuration IP statique</h3>
+<p>Le serveur FOG doit avoir une IP fixe pour que les clients PXE puissent toujours le joindre.</p>
+
+<div class="code-block">
+<pre>sudo nano /etc/network/interfaces</pre>
+</div>
+<p>Contenu à adapter selon votre réseau :</p>
+<div class="figure">auto eth0
+iface eth0 inet static
+    address 172.17.4.16
+    netmask 255.255.254.0
+    gateway 172.17.4.254
+    dns-nameservers 172.17.4.2</div>
+
+<p>Redémarrer le réseau :</p>
+<div class="code-block">
+<pre>sudo systemctl restart networking</pre>
+</div>
+
+<p>Vérifier :</p>
+
+<div class="code-block">
+<pre>ip a
+ping -c 2 8.8.8.8</pre>
+</div>
+
+<h3>1.2 Installation de FOG</h3>
+
+<div class="code-block">
+<pre>apt update apt
+install -y git
+cd /root git clone https://github.com/FOGProject/fogproject.git
+cd fogproject/bin
+sudo ./installfog.sh</pre>
+</div>
+
+<h3>1.3 Réponses à donner au script d’installation</h3>
+<h4>Écran 1 - Choix de la distribution</h4>
+<table class="table-wrapper">
+  <tbody>
+    <tr><td>Question</td><td>Réponse</td>
+    </tr>
+    <tr><td>What version of Linux would you like to run the installation for?</td><td>2 (Debian Based Linux)</td>
+    </tr>
+    <tr><td>What type of installation would you like to do?</td><td>n (Normal Server)</td>
+    </tr>
+    <tr><td>Would you like to change the default network interface from eth0 ?</td><td>y</td>
+    </tr>
+    <tr><td>What network interface would you like to use?</td><td>eth0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Écran 2 - Configuration DHCP</h4>
+<table class="table-wrapper">
+  <tbody>
+    <tr><td>Question</td><td>Réponse</td>
+    </tr>
+    <tr><td>Would you like to setup a router address for the DHCP server ?</td><td>n</td>
+    </tr>
+    <tr><td>Would you like DHCP to handle DNS ?</td><td>n</td>
+    </tr>
+    <tr><td>Would you like to use the FOG server for DHCP service ?</td><td>n</td>
+    </tr>
+    <tr><td>Would you like to install the additional language packs ?</td><td>n</td>
+    </tr>
+  </tbody>
+</table>
+<p>Important : réponses n aux 3 questions DHCP car c’est votre routeur qui gère le DHCP, pas FOG.</p>
+
+<h4>Écran 3 - HTTPS et hostname</h4>
+<table class="table-wrapper">
+  <tbody>
+    <tr><td>Question</td><td>Réponse</td>
+    </tr>
+    <tr><td>Would you like to enable secure HTTPS on your FOG server ?</td><td>n</td>
+    </tr>
+    <tr><td>Would you like to change it? (hostname)</td><td>n</td>
+    </tr>
+    <tr><td>Are you sure you wish to continue?</td><td>y</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>1.4 Finalisation de la base de données</h3>
+<p>À la fin de l’installation, le script affiche :
+<div class="figure">You still need to install/update your database schema.
+http://10.0.9.9/fog/management
+Press [Enter] key when database is updated/installed.</div>
+<pre>
+Avant d’appuyer sur Entrée dans la console :
+1. Ouvrir un navigateur
+2. Aller sur : http://IP_DU_SERVEUR_FOG/fog/management
+3. Cliquer sur le bouton bleu Install/Update Now
+4. Attendre la fin de la mise à jour de la base
+5. Retourner dans la console et appuyer sur Entrée
+</pre>
+
+<h3>1.5 Premier accès à l’interface FOG</h3>
+<p>URL : http://172.17.4.16/fog/management</p>
+<p>Identifiants :</p>
+<ul>
+<li>Identifiant : fog</li>
+<li>Mot de passe : password</li>
+</ul>
+<p>Recommandation : le mot de passe par défaut est changeme à la première connexion, à modifier en password (Users → fog → Change Password).</p>
+
+<hr class="page-break">
+
+<h2>Partie 2 - Configuration proxyDHCP</h2>
+<p>
+Cette étape est indispensable car le DHCP est géré par le routeur.
+dnsmasq en mode proxyDHCP permet à FOG de répondre uniquement aux
+requêtes PXE sans interférer avec le DHCP principal.
+</p>
+
+<h3>2.1 Fichier /etc/dnsmasq.d/ltsp.conf</h3>
+<div class="code-block">
+<pre>sudo nano /etc/dnsmasq.d/ltsp.conf</pre>
+</div>
+
+<div class="figure"># ProxyDHCP pour FOG - coexiste avec le DHCP du routeur
+log-dhcp
+
+# Mode proxy sur le réseau 172.17.4.0/24
+dhcp-range=172.17.4.0,proxy,255.255.255.0
+
+# Détection BIOS / UEFI
+dhcp-match=set:bios,option:client-arch,0
+dhcp-boot=tag:bios,undionly.kpxe,,172.17.4.16
+
+dhcp-match=set:efi32,option:client-arch,6
+dhcp-boot=tag:efi32,i386-efi/ipxe.efi,,172.17.4.16
+
+dhcp-match=set:efibc,option:client-arch,7
+dhcp-boot=tag:efibc,ipxe.efi,,172.17.4.16
+
+dhcp-match=set:efi64,option:client-arch,9
+dhcp-boot=tag:efi64,ipxe.efi,,172.17.4.16
+
+# Menu PXE
+pxe-service=tag:bios,X86PC,"FOG PXE Boot (BIOS)",undionly.kpxe,172.17.4.16
+pxe-service=tag:efi64,X86-64_EFI,"FOG PXE Boot (UEFI)",ipxe.efi,172.17.4.16</div>
+
+<p>Important : ne pas mettre port=0 pour garder la fonction DNS de dnsmasq active.</p>
+
+<h3>2.2 Redémarrer dnsmasq</h3>
+<div class="code-block">
+<pre>sudo dnsmasq --test
+sudo systemctl restart dnsmasq
+sudo ss -tulpn | grep -E ':53|:67|:69'</pre>
+</div>
+<p>Les 3 ports doivent être ouverts : 53 (DNS), 67 (proxyDHCP), 69 (TFTP).</p>
+
+<hr class="page-break">
+
+<h2>Partie 3 - Paramètres VM Proxmox</h2>
+<table class="table-wrapper">
+  <tbody>
+    <tr><td>Paramètre</td><td>Valeur</td>
+    </tr>
+    <tr><td>BIOS</td><td>SeaBIOS (legacy</td>
+    </tr>
+    <tr><td>Machine</td><td>q35</td>
+    </tr>
+    <tr><td>Disque</td><td>20 Go minimum</td>
+    </tr>
+    <tr><td>Carte réseau</td><td>Intel E1000</td>
+    </tr>
+    <tr><td>Bridge</td><td>même que FOG (vmbr2 avec tag 24)</td>
+    </tr>
+    <tr><td>Ordre de boot</td><td>net0 en premier</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="page-break">
+
+<h2>Partie 4 - Workflow FOG</h2>
+<h3>4.1 Préparer la VM master</h3>
+<ul>
+<li>Installer Debian 12 (partitionnement : tout dans une seule partition, pas de LVM/LUKS)</li>
+<li>Réseau en DHCP (jamais en IP fixe)</li>
+<li>Installer et configurer tout ce qu’on veut dans les clones</li>
+</ul>
+
+<h3>4.2 Enregistrer la VM dans FOG</h3>
+<ul>
+<li>Démarrer la VM en PXE</li>
+<li>Menu FOG → Quick Registration and Inventory</li>
+<li>La VM apparaît dans FOG → menu Hosts</li>
+</ul>
+
+<h3>4.3 Créer l'image</h3>
+<p>Dans l'interface web FOG :</p>
+<ul>
+<li>Menu Images → Create New Image</li>
+<li>Nom : masterdeb</li>
+<li>Operating System : Linux</li>
+<li>Image Type : Single Disk - Resizable</li>
+<li>Partition : Everything</li>
+</ul>
+
+<h3>4.4 Associer image au host</h3>
+<p>Dans l'interface web FOG :</p>
+<ul>
+<li>Hosts → cliquer sur le host</li>
+<li>Host Image = masterdeb</li>
+<li>Host Bios Exit Type = SANBOOT</li>
+<li>Update</li>
+</ul>
+
+<h3>4.5 Généraliser la VM master</h3>
+<p>Créer le script /root/generalize.sh sur la VM master :2</p>
+<div class="code-block">
+<pre>sudo nano /root/generalize.sh</pre>
+</div>
+
+<div class="figure">#!/bin/bash
+echo "=== Suppression des cles SSH host ==="
+rm -v /etc/ssh/ssh_host_*
+
+echo "=== Reinitialisation du machine-id ==="
+truncate -s 0 /etc/machine-id
+rm -f /var/lib/dbus/machine-id
+ln -s /etc/machine-id /var/lib/dbus/machine-id
+
+echo "=== Nettoyage des logs ==="
+journalctl --rotate
+journalctl --vacuum-time=1s
+
+echo "=== Nettoyage apt ==="
+apt clean apt
+autoremove -y
+
+echo "=== Vidage de /tmp ==="
+rm -rf /tmp/*
+
+echo "=== Extinction ==="
+sleep 5
+shutdown -h now</div>
+<p>Rendre exécutable :</p>
+<div class="code-block">
+<pre>sudo chmod +x /root/generalize.sh</pre>
+</div>
+
+<h3>4.6 Généraliser la VM master</h3>
+<p>Dans FOG :</p>
+<ul>
+<li>Hosts → host master → Basic Tasks → Capture</li>
+<li>Décocher Wake on lan</li>
+<li>Schedule instant → Task</li>
+</ul>
+
+<p>Sur la VM master</p>
+<div class="code-block">
+<pre>sudo /root/generalize.sh</pre>
+</div>
+<p>La VM s’éteint. La redémarrer (avec net0 en premier) → capture automatique. Durée : 1545 min.</p>
+
+<h3>4.7 Déployer sur une nouvelle VM</h3>
+<ul>
+<li>Créer une VM Proxmox vide (mêmes caractéristiques, disque ≥ master)</li>
+<li>Démarrer en PXE → Quick Registration</li>
+<li>Dans FOG : associer masterdeb à ce nouveau host</li>
+<li>Basic Tasks → Deploy → Task</li>
+<li>Redémarrer la VM → déploiement automatique</li>
+</ul>
+
+<hr class="page-break">
+<h2>Partie 5 - Vérifications post-déploiement</h2>
+<p>Sur le clone après premier boot :</p>
+<div class="figure">cat /etc/machine-id # doit differer du master
+ls -la /etc/ssh/ssh_host_* # doit avoir la date du jour
+hostname # a changer si identique au master
+sudo hostnamectl set-hostname clone01
+sudo reboot</div>
+
+<hr class="page-break">
+<h2>Partie 6 - Dépannage</h2>
+<p>La VM ne boot pas en PXE</p>
+<ul>
+<li>Vérifier : net0 en premier dans l’ordre de boot Proxmox</li>
+<li>VM sur le même bridge/VLAN que le serveur FOG</li>
+<li>Logs : sudo journalctl -u dnsmasq -f pendant le boot</li>
+</ul>
+
+<p>Menu iPXE s’affiche mais pas de tâche</p>
+<ul>
+<li>Vérifier dans FOG → Tasks que la tâche est Queued</li>
+<li>Vérifier que Bios Exit Type = SANBOOT</li>
+</ul>
+
+<p>Capture/Deploy échoue</p>
+<ul>
+<li>Vérifier espace disque sur FOG : df -h /images</li>
+<li>Logs : sudo journalctl -u tftpd-hpa -f</li>
+</ul>
+
+<p>Vérifier ports ouverts sur FOG</p>
+<div class="code-block">
+<pre>sudo ss -tulpn | grep -E ':53|:67|:69'</pre>
+</div>
+
+<hr class="page-break">
+<p>Fichiers importants</p>
+<table class="table-wrapper">
+  <tbody>
+    <tr><td>Chemin</td><td>Contenu</td>
+    </tr>
+    <tr><td>/etc/network/interfaces</td><td>Config réseau du serveur FOG</td>
+    </tr>
+    <tr><td>/etc/dnsmasq.d/ltsp.conf</td><td>Config proxyDHCP</td>
+    </tr>
+    <tr><td>/images/masterdeb/</td><td>Images capturées</td>
+    </tr>
+    <tr><td>/var/log/fog/</td><td>Logs FOG</td>
+    </tr>
+    <tr><td>/root/generalize.sh</td><td>Script de généralisation (sur la VM master)</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="page-break">
+<p>URLs et identifiants</p>
+<table class="table-wrapper">
+  <tbody>
+    <tr><td>Ressource</td><td>Valeur</td>
+    </tr>
+    <tr><td>Interface web FOG</td><td>http://172.17.4.16/fog/management</td>
+    </tr>
+    <tr><td>Identifiant par défaut</td><td>fog</td>
+    </tr>
+    <tr><td>Mot de passe</td><td>password</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</body>
+</html>
