@@ -1,0 +1,40 @@
+Installer un serveur FTP :
+sudo apt update && sudo apt upgrade -y
+sudo apt install vsftpd -y
+sudo systemctl enable --now vsftpd
+
+Sauvegarder la configuration :
+sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
+
+Modifier la configuration :
+sudo nano /etc/vsftpd.conf
+
+Ajouter ou modifier les lignes suivantes :
+anonymous_enable=NO # désactive l'accès anonyme
+local_enable=YES # autorise les utilisateurs locaux
+write_enable=YES # permet l'upload et la modification de fichiers
+chroot_local_user=YES # enferme chaque utilisateur dans son dossier personnel
+pasv_enable=YES # active le mode passif (important derrière un pare-feu)
+pasv_min_port=30000
+pasv_max_port=31000
+
+Création d'utilisateurs FTP :
+sudo adduser ftpuser1
+
+Si le pare-feu UFW est utilisé :
+sudo ufw allow 21/tcp
+sudo ufw allow 30000:31000/tcp
+
+Corriger les permisions du dossier personnel :
+sudo chown root:root /home/ftpuser1
+sudo chmod 755 /home/ftpuser1
+
+Créer un dossier où l'utilisateur pourra écrire :
+sudo mkdir /home/ftpuser1/ftp
+sudo chown ftpuser1:ftpuser1 /home/ftpuser1/ftp
+
+Redémarrer le service :
+sudo systemctl restart vsftpd
+
+Pour se connecter :
+ftp ftpuser1@adresseip
