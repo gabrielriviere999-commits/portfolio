@@ -373,7 +373,7 @@ sudo ss -tulpn | grep -E ':53|:67|:69'</pre>
 </ul>
 
 <h3>4.5 Généraliser la VM master</h3>
-<p>Créer le script /root/generalize.sh sur la VM master :2</p>
+<p>Créer le script /root/generalize.sh sur la VM master :</p>
 <div class="code-block">
 <pre>sudo nano /root/generalize.sh</pre>
 </div>
@@ -414,7 +414,7 @@ shutdown -h now</div>
 <li>Schedule instant → Task</li>
 </ul>
 
-<p>Sur la VM master</p>
+<p>Sur la VM master :</p>
 <div class="code-block">
 <pre>sudo /root/generalize.sh</pre>
 </div>
@@ -459,7 +459,7 @@ sudo reboot</div>
 <li>Logs : sudo journalctl -u tftpd-hpa -f</li>
 </ul>
 
-<p>Vérifier ports ouverts sur FOG</p>
+<p>Vérifier les ports ouverts sur FOG :</p>
 <div class="code-block">
 <pre>sudo ss -tulpn | grep -E ':53|:67|:69'</pre>
 </div>
