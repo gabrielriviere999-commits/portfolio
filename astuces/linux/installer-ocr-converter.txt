@@ -37,7 +37,7 @@ sélectionnables.
 
 ---
 
-Tu peux ajouter ton script ocr_batch.sh au menu des applications de MX Linux en créant un fichier .desktop
+Tu peux ajouter ton script ocr-batch.sh au menu des applications de MX Linux en créant un fichier .desktop
 
 Ajouter un script Bash au menu des applications MX Linux
 1. Crée un fichier .desktop
