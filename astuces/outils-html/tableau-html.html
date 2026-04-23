@@ -141,7 +141,7 @@ td.selected {
   <!-- Sélection multiple -->
   <label><input type="checkbox" id="multiSelectMode">Sélection multiple</label>
 
-  <!-- Modes d’application -->
+  <!-- Modes d'application -->
   <div id="colorModes">
     <button data-mode="text">Texte</button>
     <button data-mode="bg">Fond</button>
@@ -517,7 +517,7 @@ document.getElementById('borderWidth').onchange = function() {
   globalBorderWidth = this.value;
   globalStyles.borderWidth = globalBorderWidth;
 
-  // Mettre à jour l’éditeur en direct
+  // Mettre à jour l'éditeur en direct
   document.documentElement.style.setProperty("--cell-border-width", globalBorderWidth);
   document.documentElement.style.setProperty("--table-border-width", globalBorderWidth);
 };
