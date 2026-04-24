@@ -148,7 +148,6 @@ button:hover {
   <button type="button" onclick="insertTemplate('code')">+ Code block</button>
   <button type="button" onclick="insertTemplate('figure')">+ Figure</button>
   <button type="button" onclick="insertTemplate('note')">+ Note</button>
-  <button type="button" onclick="insertTemplate('table')">+ Tableau</button>
 |
   <button type="button" onclick="insertList('ul')">UL</button>
   <button type="button" onclick="insertList('ol')">OL</button>
@@ -213,10 +212,7 @@ button:hover {
 '    .figure { margin: 0.8em 0; padding: 10px 12px; background-color: #E2E6F0; border: 1px solid; border-left-width: 4px; border-left-color: #2B4F81; font-family: monospace; font-size: 0.9em; white-space: pre; overflow-x: auto; }\n' +
 '    .section-title { font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1em; margin-bottom: 0.3em; }\n' +
 '    .note { margin: 0.6em 0; padding: 8px 10px; border-left: 4px solid #f0ad4e; background-color: #fff8e5; font-size: 0.95em; }\n' +
-'    .table-wrapper { margin: 0.8em 0; overflow-x: auto; }\n' +
-'    table { border-collapse: collapse; width: 100%; max-width: 100%; font-size: 0.95em; }\n' +
-'    th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; }\n' +
-'    th { font-weight: 600; }\n' +
+'    table { border-collapse: collapse; width: 100%; max-width: 100%; }\n' +
 '    .page-break { margin: 20px auto; border: none; border-top: 2px dashed #000; max-width: 200px; }\n' +
 '  </style>\n' +
 '</head>\n' +
@@ -280,16 +276,6 @@ function insertTemplate(type) {
   } else if (type === 'note') {
     snippet =
 '<div class="note"><strong>Note :</strong> texte de la note.</div>\n';
-  } else if (type === 'table') {
-    snippet =
-'<div class="table-wrapper">\n' +
-'<table>\n' +
-'  <tbody>\n' +
-'    <tr><th>Colonne 1</th><th>Colonne 2</th></tr>\n' +
-'    <tr><td>Valeur 1</td><td>Valeur 2</td></tr>\n' +
-'  </tbody>\n' +
-'</table>\n' +
-'</div>\n';
   }
 
   // Vérifier si le curseur est dans l'aperçu
