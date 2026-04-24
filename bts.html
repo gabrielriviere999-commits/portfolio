@@ -319,6 +319,7 @@ body {
 <p style="font-size:80px;"></p>
 <h1>BTS</h1>
 
+<div id="tableau-synthese-e5-2025">
 <style>td{border:2px solid #000;color:#000000;height:50px}</style>
 <table style="border-collapse:collapse;">
   <tbody>
@@ -374,11 +375,12 @@ body {
     </tr>
   </tbody>
 </table>
+</div>
 
 <p></p>
-<a href="accueil/tableau-synthese-e5-2025.ods" class="win98-btn-bleu" download>télécharger tableau-synthese-e5-2025.ods</a>
+<button class="win98-btn-bleu" onclick="downloadZone('tableau-synthese-e5-2025', 'tableau-synthese-e5-2025.html')">Télécharger tableau-synthese-e5-2025.html</button>
 <p></p>
-<a href="veille-technologique/veille-technologique-les-logiciels-libres-pour-linux.html" class="win98-btn-bleu">veille technologique</a>
+<a href="veille-technologique/veille-technologique-les-logiciels-libres-pour-linux.html" class="win98-btn-bleu">Veille technologique</a>
 <br><br><hr>
 <h2>Infrastructure</h2>
 <div class="slideshow-container" data-group="infrastructure">
@@ -659,6 +661,29 @@ function downloadSlide(group) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+
+function downloadZone(zoneId, filename) {
+    var element = document.getElementById(zoneId);
+    if (!element) return;
+
+    var content = element.innerHTML;
+
+    var html =
+        "<html><head><meta charset='UTF-8'></head><body>" +
+        content +
+        "</body></html>";
+
+    var blob = new Blob([html], { type: "text/html" });
+    var url = URL.createObjectURL(blob);
+
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
 }
 </script>
 </main>
