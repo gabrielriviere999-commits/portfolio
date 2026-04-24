@@ -186,6 +186,8 @@ td.selected {
 <textarea id="codeBox" wrap="off"></textarea>
 <button id="updateFromCode">Mettre à jour le tableau</button>
 <label><input type="checkbox" id="cleanLibreOffice">Nettoyer LibreOffice</label>
+<button id="importHtmlFile">Importer HTML</button>
+<input type="file" id="htmlFileInput" accept=".html,.htm" style="display:none;">
 
 <script>
 /* ============================
@@ -836,6 +838,59 @@ function rebindTableEvents() {
     }
   });
 }
+
+document.getElementById("importHtmlFile").onclick = function () {
+    document.getElementById("htmlFileInput").click();
+};
+
+document.getElementById("htmlFileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var content = e.target.result;
+
+        // Nettoyage LibreOffice si activé
+        if (document.getElementById("cleanLibreOffice").checked) {
+            content = cleanLibreOfficeHTML(content);
+        }
+
+        // Mettre le code dans la zone texte
+        document.getElementById("codeBox").value = content;
+
+        // Mettre à jour le tableau
+        updateTableFromCode(content);
+    };
+
+    reader.readAsText(file);
+});
+
+var codeBox = document.getElementById("codeBox");
+
+codeBox.addEventListener("dragover", function(e) {
+    e.preventDefault();
+});
+
+codeBox.addEventListener("drop", function(e) {
+    e.preventDefault();
+    var file = e.dataTransfer.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var content = e.target.result;
+
+        if (document.getElementById("cleanLibreOffice").checked) {
+            content = cleanLibreOfficeHTML(content);
+        }
+
+        codeBox.value = content;
+        updateTableFromCode(content);
+    };
+
+    reader.readAsText(file);
+});
 
 /* ============================
    COPIE
