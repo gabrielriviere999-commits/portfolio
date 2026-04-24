@@ -137,22 +137,24 @@ button:hover {
 <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
 
 <div class="toolbar" style="opacity: 0.8;">
-  <button type="button" onclick="insertTemplate('page')">+ Page</button>
-  <button type="button" onclick="insertTemplate('h1')">+ H1</button>
-  <button type="button" onclick="insertTemplate('h2')">+ H2</button>
-  <button type="button" onclick="insertTemplate('h3')">+ H3</button>
-  <button type="button" onclick="insertTemplate('pagebreak')">+ Saut de page</button>
+<button type="button" onclick="insertTemplate('page')">+ Page</button>
+<button type="button" onclick="insertTemplate('h1')">+ H1</button>
+<button type="button" onclick="insertTemplate('h2')">+ H2</button>
+<button type="button" onclick="insertTemplate('h3')">+ H3</button>
+<button type="button" onclick="insertTemplate('pagebreak')">+ Saut de page</button>
 |
-  <button type="button" onclick="insertTemplate('code')">+ Code block</button>
-  <button type="button" onclick="insertTemplate('figure')">+ Figure</button>
-  <button type="button" onclick="insertTemplate('note')">+ Note</button>
+<button type="button" onclick="insertTemplate('code')">+ Code block</button>
+<button type="button" onclick="insertTemplate('figure')">+ Figure</button>
+<button type="button" onclick="insertTemplate('note')">+ Note</button>
 |
-  <button type="button" onclick="insertList('ul')">UL</button>
-  <button type="button" onclick="insertList('ol')">OL</button>
+<button type="button" onclick="insertList('ul')">UL</button>
+<button type="button" onclick="insertList('ol')">OL</button>
 |
-  <button type="button" onclick="updatePreview()">Prévisualiser</button>
-  <button type="button" onclick="exportDocument()">Exporter</button>
-  <button type="button" onclick="copyExport()">Copier export</button>
+<button type="button" onclick="updatePreview()">Prévisualiser</button>
+<button type="button" onclick="exportDocument()">Exporter</button>
+<button type="button" onclick="copyExport()">Copier export</button>
+<button id="importHtmlFile">Importer HTML</button>
+<input type="file" id="htmlFileInput" accept=".html,.htm" style="display:none;">
 |
 <button class="btn-toggle" onclick="formatText(this, 'bold')">Gras</button>
 <button class="btn-toggle" onclick="formatText(this, 'italic')">Italique</button>
@@ -164,9 +166,9 @@ button:hover {
 <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#00aa00')">Vert</button>
 <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#0000ff')">Bleu</button>
 |
-  <button class="align-btn" onclick="toggleAlign(this, 'left')">Gauche</button>
-  <button class="align-btn" onclick="toggleAlign(this, 'center')">Centre</button>
-  <button class="align-btn" onclick="toggleAlign(this, 'right')">Droite</button>
+<button class="align-btn" onclick="toggleAlign(this, 'left')">Gauche</button>
+<button class="align-btn" onclick="toggleAlign(this, 'center')">Centre</button>
+<button class="align-btn" onclick="toggleAlign(this, 'right')">Droite</button>
 </div>
 
 <div class="layout">
@@ -320,6 +322,61 @@ function copyExport() {
 
   setStatus("Export copié !");
 }
+
+document.getElementById("importHtmlFile").onclick = function () {
+    document.getElementById("htmlFileInput").click();
+};
+
+document.getElementById("htmlFileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var content = e.target.result;
+
+        // Si un jour tu ajoutes un nettoyage LibreOffice
+        if (document.getElementById("cleanLibreOffice") &&
+            document.getElementById("cleanLibreOffice").checked) {
+            content = cleanLibreOfficeHTML(content);
+        }
+
+        // Mettre le code dans TON textarea
+        editor.value = content;
+
+        // Mettre à jour l'aperçu
+        updatePreview();
+    };
+
+    reader.readAsText(file);
+});
+
+var codeBox = editor;
+
+codeBox.addEventListener("dragover", function(e) {
+    e.preventDefault();
+});
+
+codeBox.addEventListener("drop", function(e) {
+    e.preventDefault();
+    var file = e.dataTransfer.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var content = e.target.result;
+
+        if (document.getElementById("cleanLibreOffice") &&
+            document.getElementById("cleanLibreOffice").checked) {
+            content = cleanLibreOfficeHTML(content);
+        }
+
+        editor.value = content;
+        updatePreview();
+    };
+
+    reader.readAsText(file);
+});
 
 function enableWysiwyg() {
   var doc = preview.contentDocument || preview.contentWindow.document;
