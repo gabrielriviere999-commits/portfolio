@@ -321,487 +321,74 @@ function getRealCell(el) {
   }
   return (el && el.nodeName === 'TD') ? el : null;
 }
-
-/* =======================
-   MOTEUR MATRICIEL ACTIF
-========================== */
-
-var MatrixEngine = (function () {
-
-    function build(table) {
-        var matrix = [];
-        var maxCols = 0;
-
-        for (var r = 0; r < table.rows.length; r++) {
-            var row = table.rows[r];
-            if (!matrix[r]) matrix[r] = [];
-
-            var colIndex = 0;
-
-            for (var c = 0; c < row.cells.length; c++) {
-                var cell = row.cells[c];
-
-                while (matrix[r][colIndex]) colIndex++;
-
-                var rs = cell.rowSpan || 1;
-                var cs = cell.colSpan || 1;
-
-                for (var rr = 0; rr < rs; rr++) {
-                    if (!matrix[r + rr]) matrix[r + rr] = [];
-                    for (var cc = 0; cc < cs; cc++) {
-                        matrix[r + rr][colIndex + cc] = {
-                            master: cell,
-                            isMaster: (rr === 0 && cc === 0)
-                        };
-                    }
-                }
-
-                colIndex += cs;
-                if (colIndex > maxCols) maxCols = colIndex;
-            }
-        }
-
-        return { matrix: matrix, rows: matrix.length, cols: maxCols };
-    }
-
-    function matrixToDOM(matrixObj) {
-        var matrix = matrixObj.matrix;
-        var rows = matrixObj.rows;
-        var cols = matrixObj.cols;
-
-        var newTable = document.createElement("table");
-        newTable.style.borderCollapse = "collapse";
-        newTable.id = "editorTable";
-
-        for (var r = 0; r < rows; r++) {
-            var tr = newTable.insertRow(-1);
-
-            for (var c = 0; c < cols; c++) {
-                var info = matrix[r][c];
-                if (!info || !info.isMaster) continue;
-
-                var td = info.master.cloneNode(true);
-                td.removeAttribute("rowSpan");
-                td.removeAttribute("colSpan");
-
-                var rs = 1;
-                while (r + rs < rows && matrix[r + rs][c] && matrix[r + rs][c].master === info.master) rs++;
-                if (rs > 1) td.rowSpan = rs;
-
-                var cs = 1;
-                while (c + cs < cols && matrix[r][c + cs] && matrix[r][c + cs].master === info.master) cs++;
-                if (cs > 1) td.colSpan = cs;
-
-                td.contentEditable = "true";
-                tr.appendChild(td);
-            }
-        }
-
-        return newTable;
-    }
-
-    function insertRow(matrixObj, rowIndex) {
-        var cols = matrixObj.cols;
-        var matrix = matrixObj.matrix;
-        var newRow = [];
-
-        for (var c = 0; c < cols; c++) {
-            var above = matrix[rowIndex - 1] ? matrix[rowIndex - 1][c] : null;
-            var below = matrix[rowIndex] ? matrix[rowIndex][c] : null;
-
-            if (above && below && above.master === below.master) {
-                newRow[c] = { master: above.master, isMaster: false };
-            } else {
-                var td = document.createElement("td");
-                td.contentEditable = "true";
-                newRow[c] = { master: td, isMaster: true };
-            }
-        }
-
-        matrix.splice(rowIndex, 0, newRow);
-        matrixObj.rows++;
-    }
-
-    function insertCol(matrixObj, colIndex) {
-        var rows = matrixObj.rows;
-        var matrix = matrixObj.matrix;
-
-        for (var r = 0; r < rows; r++) {
-            var left = matrix[r][colIndex - 1];
-            var right = matrix[r][colIndex];
-
-            if (left && right && left.master === right.master) {
-                matrix[r].splice(colIndex, 0, { master: left.master, isMaster: false });
-            } else {
-                var td = document.createElement("td");
-                td.contentEditable = "true";
-                matrix[r].splice(colIndex, 0, { master: td, isMaster: true });
-            }
-        }
-
-        matrixObj.cols++;
-    }
-
-    function deleteRow(matrixObj, rowIndex) {
-        matrixObj.matrix.splice(rowIndex, 1);
-        matrixObj.rows--;
-    }
-
-    function deleteCol(matrixObj, colIndex) {
-        for (var r = 0; r < matrixObj.rows; r++) {
-            matrixObj.matrix[r].splice(colIndex, 1);
-        }
-        matrixObj.cols--;
-    }
-
-    return {
-        build: build,
-        toDOM: matrixToDOM,
-        insertRow: insertRow,
-        insertCol: insertCol,
-        deleteRow: deleteRow,
-        deleteCol: deleteCol
-    };
-})();
-
-/* ============================================================
-   SÉLECTION : SAUVEGARDE / RESTAURATION / NETTOYAGE
-============================================================ */
-
-function getSelectedMatrixPositions(table, selectedCells) {
-    var m = MatrixEngine.build(table).matrix;
-    var positions = [];
-
-    for (var r = 0; r < m.length; r++) {
-        for (var c = 0; c < m[r].length; c++) {
-            if (selectedCells.indexOf(m[r][c].master) !== -1) {
-                positions.push({ r: r, c: c });
-            }
-        }
-    }
-
-    return positions;
-}
-
-function restoreSelectionFromMatrixPositions(table, positions) {
-    var m = MatrixEngine.build(table).matrix;
-    selectedCells = [];
-
-    for (var i = 0; i < positions.length; i++) {
-        var pos = positions[i];
-        if (!m[pos.r] || !m[pos.r][pos.c]) continue;
-        var cell = m[pos.r][pos.c].master;
-
-        cell.classList.add("selected");
-        selectedCells.push(cell);
-    }
-}
-
-function clearAllSelectedClasses(table) {
-    var tds = table.getElementsByTagName("td");
-    for (var i = 0; i < tds.length; i++) {
-        tds[i].classList.remove("selected");
-    }
-}
-
-/* ============================================================
-   AJUSTEMENT DES COORDONNÉES APRÈS INSERT / DELETE
-============================================================ */
-
-function adjustPositionsForRowInsert(positions, rowIndex) {
-    for (var i = 0; i < positions.length; i++) {
-        if (positions[i].r >= rowIndex) {
-            positions[i].r++;
-        }
-    }
-}
-
-function adjustPositionsForRowDelete(positions, rowIndex) {
-    for (var i = 0; i < positions.length; i++) {
-        if (positions[i].r > rowIndex) {
-            positions[i].r--;
-        }
-    }
-}
-
-function adjustPositionsForColInsert(positions, colIndex) {
-    for (var i = 0; i < positions.length; i++) {
-        if (positions[i].c >= colIndex) {
-            positions[i].c++;
-        }
-    }
-}
-
-function adjustPositionsForColDelete(positions, colIndex) {
-    for (var i = 0; i < positions.length; i++) {
-        if (positions[i].c > colIndex) {
-            positions[i].c--;
-        }
-    }
-}
-
 /* ============================
    LIGNES
 ============================ */
 
-document.getElementById('addRowAbove').onclick = function () {
-    if (!selectedCells.length) return;
+document.getElementById('addRowAbove').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+  var cols = getColumnCount();
+  var newRow = table.insertRow(pos.rowIndex);
 
-    var pos = getCellPosition(selectedCells[0]);
-    var saved = getSelectedMatrixPositions(table, selectedCells);
-    adjustPositionsForRowInsert(saved, pos.rowIndex);
-
-    var m = MatrixEngine.build(table);
-    MatrixEngine.insertRow(m, pos.rowIndex);
-
-    var newTable = MatrixEngine.toDOM(m);
-    table.parentNode.replaceChild(newTable, table);
-    table = newTable;
-
-    rebindTableEvents();
-    clearAllSelectedClasses(table);
-    restoreSelectionFromMatrixPositions(table, saved);
+  for (var i = 0; i < cols; i++) {
+    var c = newRow.insertCell(i);
+    c.contentEditable = "true";
+  }
 };
 
-document.getElementById('addRowBelow').onclick = function () {
-    if (!selectedCells.length) return;
+document.getElementById('addRowBelow').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+  var cols = getColumnCount();
+  var newRow = table.insertRow(pos.rowIndex + 1);
 
-    var pos = getCellPosition(selectedCells[0]);
-    var saved = getSelectedMatrixPositions(table, selectedCells);
-    adjustPositionsForRowInsert(saved, pos.rowIndex + 1);
-
-    var m = MatrixEngine.build(table);
-    MatrixEngine.insertRow(m, pos.rowIndex + 1);
-
-    var newTable = MatrixEngine.toDOM(m);
-    table.parentNode.replaceChild(newTable, table);
-    table = newTable;
-
-    rebindTableEvents();
-    clearAllSelectedClasses(table);
-    restoreSelectionFromMatrixPositions(table, saved);
+  for (var i = 0; i < cols; i++) {
+    var c = newRow.insertCell(i);
+    c.contentEditable = "true";
+  }
 };
 
-document.getElementById('delRow').onclick = function () {
-    if (!selectedCells.length) return;
-
-    var pos = getCellPosition(selectedCells[0]);
-    var saved = getSelectedMatrixPositions(table, selectedCells);
-    adjustPositionsForRowDelete(saved, pos.rowIndex);
-
-    var m = MatrixEngine.build(table);
-    MatrixEngine.deleteRow(m, pos.rowIndex);
-
-    var newTable = MatrixEngine.toDOM(m);
-    table.parentNode.replaceChild(newTable, table);
-    table = newTable;
-
-    rebindTableEvents();
-    clearAllSelectedClasses(table);
-    restoreSelectionFromMatrixPositions(table, saved);
+document.getElementById('delRow').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
+  if (table.rows.length > 1) table.deleteRow(pos.rowIndex);
+  clearSelection();
 };
 
 /* ============================
    COLONNES
 ============================ */
 
-document.getElementById('addColLeft').onclick = function () {
-    if (!selectedCells.length) return;
+document.getElementById('addColLeft').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
 
-    var pos = getCellPosition(selectedCells[0]);
-    var saved = getSelectedMatrixPositions(table, selectedCells);
-    adjustPositionsForColInsert(saved, pos.cellIndex);
-
-    var m = MatrixEngine.build(table);
-    MatrixEngine.insertCol(m, pos.cellIndex);
-
-    var newTable = MatrixEngine.toDOM(m);
-    table.parentNode.replaceChild(newTable, table);
-    table = newTable;
-
-    rebindTableEvents();
-    clearAllSelectedClasses(table);
-    restoreSelectionFromMatrixPositions(table, saved);
+  for (var r = 0; r < table.rows.length; r++) {
+    var c = table.rows[r].insertCell(pos.cellIndex);
+    c.contentEditable = "true";
+  }
 };
 
-document.getElementById('addColRight').onclick = function () {
-    if (!selectedCells.length) return;
+document.getElementById('addColRight').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
 
-    var pos = getCellPosition(selectedCells[0]);
-    var saved = getSelectedMatrixPositions(table, selectedCells);
-    adjustPositionsForColInsert(saved, pos.cellIndex + 1);
-
-    var m = MatrixEngine.build(table);
-    MatrixEngine.insertCol(m, pos.cellIndex + 1);
-
-    var newTable = MatrixEngine.toDOM(m);
-    table.parentNode.replaceChild(newTable, table);
-    table = newTable;
-
-    rebindTableEvents();
-    clearAllSelectedClasses(table);
-    restoreSelectionFromMatrixPositions(table, saved);
+  for (var r = 0; r < table.rows.length; r++) {
+    var c = table.rows[r].insertCell(pos.cellIndex + 1);
+    c.contentEditable = "true";
+  }
 };
 
-document.getElementById('delCol').onclick = function () {
-    if (!selectedCells.length) return;
+document.getElementById('delCol').onclick = function() {
+  if (!selectedCells.length) return;
+  var pos = getCellPosition(selectedCells[0]);
 
-    var pos = getCellPosition(selectedCells[0]);
-    var saved = getSelectedMatrixPositions(table, selectedCells);
-    adjustPositionsForColDelete(saved, pos.cellIndex);
-
-    var m = MatrixEngine.build(table);
-    MatrixEngine.deleteCol(m, pos.cellIndex);
-
-    var newTable = MatrixEngine.toDOM(m);
-    table.parentNode.replaceChild(newTable, table);
-    table = newTable;
-
-    rebindTableEvents();
-    clearAllSelectedClasses(table);
-    restoreSelectionFromMatrixPositions(table, saved);
+  for (var r = 0; r < table.rows.length; r++) {
+    table.rows[r].deleteCell(pos.cellIndex);
+  }
+  clearSelection();
 };
-
-// ===============================
-// MODULE AUTONOME FUSION / DEFUSION
-// ===============================
-
-// 1. Construire une matrice interne du tableau
-function buildMatrix(table) {
-    var matrix = [];
-    var r, c, row, cell, colIndex, rowSpan, colSpan, rs, cs;
-
-    for (r = 0; r < table.rows.length; r++) {
-        row = table.rows[r];
-        matrix[r] = [];
-        colIndex = 0;
-
-        for (c = 0; c < row.cells.length; c++) {
-            cell = row.cells[c];
-
-            while (matrix[r][colIndex]) {
-                colIndex++;
-            }
-
-            rowSpan = cell.rowSpan || 1;
-            colSpan = cell.colSpan || 1;
-
-            for (rs = 0; rs < rowSpan; rs++) {
-                for (cs = 0; cs < colSpan; cs++) {
-                    if (!matrix[r + rs]) matrix[r + rs] = [];
-                    matrix[r + rs][colIndex + cs] = cell;
-                }
-            }
-
-            colIndex += colSpan;
-        }
-    }
-
-    return matrix;
-}
-
-// 2. Vérifier si la sélection forme un rectangle
-function isRectangularSelection(cells, matrix) {
-    var positions = [];
-    var r, c;
-
-    for (r = 0; r < matrix.length; r++) {
-        for (c = 0; c < matrix[r].length; c++) {
-            if (cells.indexOf(matrix[r][c]) !== -1) {
-                positions.push({ r: r, c: c });
-            }
-        }
-    }
-
-    if (positions.length === 0) return false;
-
-    var minR = positions[0].r;
-    var maxR = positions[0].r;
-    var minC = positions[0].c;
-    var maxC = positions[0].c;
-
-    for (var i = 1; i < positions.length; i++) {
-        if (positions[i].r < minR) minR = positions[i].r;
-        if (positions[i].r > maxR) maxR = positions[i].r;
-        if (positions[i].c < minC) minC = positions[i].c;
-        if (positions[i].c > maxC) maxC = positions[i].c;
-    }
-
-    for (r = minR; r <= maxR; r++) {
-        for (c = minC; c <= maxC; c++) {
-            if (cells.indexOf(matrix[r][c]) === -1) return false;
-        }
-    }
-
-    return { minR: minR, maxR: maxR, minC: minC, maxC: maxC };
-}
-
-// 3. Fusionner
-function mergeSelectedCells() {
-    var cells = getSelectedCells();
-    if (!cells || cells.length < 2) return;
-
-    var matrix = buildMatrix(table);
-    var rect = isRectangularSelection(cells, matrix);
-    if (!rect) return;
-
-    var minR = rect.minR;
-    var maxR = rect.maxR;
-    var minC = rect.minC;
-    var maxC = rect.maxC;
-
-    var master = matrix[minR][minC];
-    master.rowSpan = (maxR - minR + 1);
-    master.colSpan = (maxC - minC + 1);
-    if (master.rowSpan === 1) master.removeAttribute("rowSpan");
-    if (master.colSpan === 1) master.removeAttribute("colSpan");
-
-    var r, c, cell;
-
-    for (r = minR; r <= maxR; r++) {
-        for (c = minC; c <= maxC; c++) {
-            cell = matrix[r][c];
-            if (cell !== master) {
-                cell.parentNode.removeChild(cell);
-            }
-        }
-    }
-}
-
-// 4. Défusionner
-function unmergeSelectedCells() {
-    var cells = getSelectedCells();
-    if (!cells || cells.length !== 1) return;
-
-    var cell = cells[0];
-    var rowSpan = cell.rowSpan;
-    var colSpan = cell.colSpan;
-
-    if (rowSpan === 1 && colSpan === 1) return;
-
-    var row = cell.parentNode;
-    var rowIndex = row.rowIndex;
-    var colIndex = cell.cellIndex;
-
-    cell.removeAttribute("rowSpan");
-    cell.removeAttribute("colSpan");
-
-    var r, c, newCell, targetRow;
-
-    for (r = 0; r < rowSpan; r++) {
-        targetRow = table.rows[rowIndex + r];
-        for (c = 0; c < colSpan; c++) {
-            if (r === 0 && c === 0) continue;
-
-            newCell = targetRow.insertCell(colIndex + c);
-            newCell.contentEditable = "true";
-        }
-    }
-}
-
-// 5. Brancher les boutons
-document.getElementById("mergeCellsBtn").onclick = mergeSelectedCells;
-document.getElementById("unmergeCellsBtn").onclick = unmergeSelectedCells;
 
 /* ============================
    ALIGNEMENT
@@ -1329,6 +916,148 @@ document.getElementById('copyCode').onclick = function(e) {
     btn.textContent = old;
   }, 800);
 };
+
+// ===============================
+// MODULE AUTONOME FUSION / DEFUSION
+// ===============================
+
+// 1. Construire une matrice interne du tableau
+function buildMatrix(table) {
+    var matrix = [];
+    var r, c, row, cell, colIndex, rowSpan, colSpan, rs, cs;
+
+    for (r = 0; r < table.rows.length; r++) {
+        row = table.rows[r];
+        matrix[r] = [];
+        colIndex = 0;
+
+        for (c = 0; c < row.cells.length; c++) {
+            cell = row.cells[c];
+
+            while (matrix[r][colIndex]) {
+                colIndex++;
+            }
+
+            rowSpan = cell.rowSpan || 1;
+            colSpan = cell.colSpan || 1;
+
+            for (rs = 0; rs < rowSpan; rs++) {
+                for (cs = 0; cs < colSpan; cs++) {
+                    if (!matrix[r + rs]) matrix[r + rs] = [];
+                    matrix[r + rs][colIndex + cs] = cell;
+                }
+            }
+
+            colIndex += colSpan;
+        }
+    }
+
+    return matrix;
+}
+
+// 2. Vérifier si la sélection forme un rectangle
+function isRectangularSelection(cells, matrix) {
+    var positions = [];
+    var r, c;
+
+    for (r = 0; r < matrix.length; r++) {
+        for (c = 0; c < matrix[r].length; c++) {
+            if (cells.indexOf(matrix[r][c]) !== -1) {
+                positions.push({ r: r, c: c });
+            }
+        }
+    }
+
+    if (positions.length === 0) return false;
+
+    var minR = positions[0].r;
+    var maxR = positions[0].r;
+    var minC = positions[0].c;
+    var maxC = positions[0].c;
+
+    for (var i = 1; i < positions.length; i++) {
+        if (positions[i].r < minR) minR = positions[i].r;
+        if (positions[i].r > maxR) maxR = positions[i].r;
+        if (positions[i].c < minC) minC = positions[i].c;
+        if (positions[i].c > maxC) maxC = positions[i].c;
+    }
+
+    for (r = minR; r <= maxR; r++) {
+        for (c = minC; c <= maxC; c++) {
+            if (cells.indexOf(matrix[r][c]) === -1) return false;
+        }
+    }
+
+    return { minR: minR, maxR: maxR, minC: minC, maxC: maxC };
+}
+
+// 3. Fusionner
+function mergeSelectedCells() {
+    var cells = getSelectedCells();
+    if (!cells || cells.length < 2) return;
+
+    var matrix = buildMatrix(table);
+    var rect = isRectangularSelection(cells, matrix);
+    if (!rect) return;
+
+    var minR = rect.minR;
+    var maxR = rect.maxR;
+    var minC = rect.minC;
+    var maxC = rect.maxC;
+
+    var master = matrix[minR][minC];
+    master.rowSpan = (maxR - minR + 1);
+    master.colSpan = (maxC - minC + 1);
+    if (master.rowSpan === 1) master.removeAttribute("rowSpan");
+    if (master.colSpan === 1) master.removeAttribute("colSpan");
+
+    var r, c, cell;
+
+    for (r = minR; r <= maxR; r++) {
+        for (c = minC; c <= maxC; c++) {
+            cell = matrix[r][c];
+            if (cell !== master) {
+                cell.parentNode.removeChild(cell);
+            }
+        }
+    }
+}
+
+// 4. Défusionner
+function unmergeSelectedCells() {
+    var cells = getSelectedCells();
+    if (!cells || cells.length !== 1) return;
+
+    var cell = cells[0];
+    var rowSpan = cell.rowSpan;
+    var colSpan = cell.colSpan;
+
+    if (rowSpan === 1 && colSpan === 1) return;
+
+    var row = cell.parentNode;
+    var rowIndex = row.rowIndex;
+    var colIndex = cell.cellIndex;
+
+    cell.removeAttribute("rowSpan");
+    cell.removeAttribute("colSpan");
+
+    var r, c, newCell, targetRow;
+
+    for (r = 0; r < rowSpan; r++) {
+        targetRow = table.rows[rowIndex + r];
+        for (c = 0; c < colSpan; c++) {
+            if (r === 0 && c === 0) continue;
+
+            newCell = targetRow.insertCell(colIndex + c);
+            newCell.contentEditable = "true";
+        }
+    }
+}
+
+// 5. Brancher les boutons
+document.getElementById("mergeCellsBtn").onclick = mergeSelectedCells;
+document.getElementById("unmergeCellsBtn").onclick = unmergeSelectedCells;
+
 
 var toolbar = document.getElementsByClassName('toolbar')[0];
 var toggleBtn = document.getElementById('toggleToolbarBtn');
