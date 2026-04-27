@@ -1,3 +1,6 @@
+Repo : https://github.com/gabrielriviere999-commits/portfolio
+Site : https://gabrielriviere999-commits.github.io/portfolio
+
 🌐 Français
 
 Sur ce site, vous trouverez principalement des fichiers txt, html, pdf organisés sous forme de galeries.
