@@ -268,7 +268,7 @@ var qrDiv = document.getElementById("qrcode");
 
 function drawQRImage(img) {
 
-  /* === 1) Charger l’image originale du QR === */
+  /* === 1) Charger l'image originale du QR === */
   var canvas = document.createElement("canvas");
   canvas.width = img.width;
   canvas.height = img.height;
@@ -309,7 +309,7 @@ function drawQRImage(img) {
   var cctx = cropped.getContext("2d");
   cctx.drawImage(canvas, minX, minY, newW, newH, 0, 0, newW, newH);
 
-  /* === 3) Recoloration + opacité sur l’image déjà rognée === */
+  /* === 3) Recoloration + opacité sur l'image déjà rognée === */
   var recolor = cctx.getImageData(0, 0, newW, newH);
   var d = recolor.data;
 
