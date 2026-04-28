@@ -56,7 +56,7 @@ pre {
     overflow-x: auto
 }
 
-/* Style général des boutons d’onglets */
+/* Style général des boutons d'onglets */
 .tab button, .tab span {
     font-family: monospace;
     font-size: 14px;
@@ -810,7 +810,7 @@ function showSlides(n, group) {
         counter.textContent = slideIndex[group] + " / " + total;
     }
 
-    // Création dynamique de l’iframe
+    // Création dynamique de l'iframe
     var holder = current.querySelector(".iframe-holder");
     if (holder && !holder.dataset.loaded) {
         var iframe = document.createElement("iframe");
@@ -890,7 +890,7 @@ function downloadSlide(group) {
         return;
     }
 
-    // Création d’un lien invisible pour forcer le téléchargement
+    // Création d'un lien invisible pour forcer le téléchargement
     var a = document.createElement("a");
     a.href = url;
     a.download = url.split('/').pop(); // nom du fichier
