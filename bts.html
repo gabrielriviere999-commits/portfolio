@@ -274,6 +274,16 @@ body {
     .slide iframe:not([src$=".pdf"]) { zoom: 0.5; }
     .tableau { zoom: 0.4;}
 }
+
+summary {
+    cursor: pointer;
+    border: 2px solid #808080;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    padding: 4px;
+    font-size: 20px;
+    font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -318,9 +328,11 @@ body {
 <!-- Contenu -->
 <p style="font-size:80px;"></p>
 <h1>BTS</h1>
+<details><summary>Tableau de synthèse</summary>
 <div data-include="accueil/tableau-synthese-e5-2025.html" class="tableau"></div>
 <p></p>
 <a class="win98-btn-bleu" href="accueil/tableau-synthese-e5-2025.html" download>Télécharger tableau-synthese-e5-2025.html</a>
+</details>
 <p></p>
 <a href="veille-technologique/veille-technologique-les-logiciels-libres-pour-linux.html" class="win98-btn-bleu">Veille technologique</a>
 <br><br><hr>
