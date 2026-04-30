@@ -272,7 +272,14 @@ body {
 /* --- Mode mobile --- */
 @media screen and (max-width: 720px) {
     .slide iframe:not([src$=".pdf"]) { zoom: 0.5; }
-    .tableau { zoom: 0.4;}
+    .tableau { zoom: 0.4; }
+}
+
+/* --- Bouton de téléchargement --- */
+select {
+    height: 40px;
+    line-height: 40px;
+    color: brown;
 }
 
 summary {
@@ -337,6 +344,7 @@ summary {
 <a href="veille-technologique/veille-technologique-les-logiciels-libres-pour-linux.html" class="win98-btn-bleu">Veille technologique</a>
 <br><br><hr>
 <h2>Infrastructure</h2>
+<select class="slide-select" data-group="infrastructure"><option value="" disabled selected>- choisir une slide -</option></select>
 <div class="slideshow-container" data-group="infrastructure">
 
     <div class="slide" data-group="infrastructure">
@@ -422,6 +430,7 @@ summary {
 </div>
 <br>
 <h2>HAProxy</h2>
+<select class="slide-select" data-group="haproxy"><option value="" disabled selected>- choisir une slide -</option></select>
 <div class="slideshow-container" data-group="haproxy">
 
     <div class="slide" data-group="haproxy">
@@ -528,6 +537,12 @@ function showSlides(n, group) {
         counter.textContent = slideIndex[group] + " / " + total;
     }
 
+    // Synchroniser le select
+    var select = document.querySelector('.slide-select[data-group="' + group + '"]');
+    if (select && slideIndex[group] > 0) {
+        select.value = slideIndex[group];
+    }
+
     // Création dynamique de l'iframe
     var holder = current.querySelector(".iframe-holder");
     if (holder && !holder.dataset.loaded) {
@@ -616,6 +631,62 @@ function downloadSlide(group) {
     a.click();
     document.body.removeChild(a);
 }
+
+
+function initAllSelects() {
+    var selects = document.querySelectorAll(".slide-select");
+
+    for (var s = 0; s < selects.length; s++) {
+        (function (select) {
+            var group = select.getAttribute("data-group");
+            var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
+
+            for (var i = 0; i < slides.length; i++) {
+
+                var file = null;
+
+                // 1) iframe-holder (HTML, TXT, PDF…)
+                var holder = slides[i].querySelector(".iframe-holder");
+                if (holder) {
+                    file = holder.getAttribute("data-src");
+                }
+
+                // 2) image (JPG, PNG…)
+                if (!file) {
+                    var img = slides[i].querySelector("img[data-src]");
+                    if (img) file = img.getAttribute("data-src");
+                }
+
+                // 3) vidéo
+                if (!file) {
+                    var video = slides[i].querySelector("video[data-src]");
+                    if (video) file = video.getAttribute("data-src");
+                }
+
+                // Création de l’option
+                var opt = document.createElement("option");
+                opt.value = i + 1;
+
+                if (file) {
+                    opt.text = file.split("/").pop(); // nom du fichier
+                } else {
+                    opt.text = "Slide " + (i + 1);
+                }
+
+                select.appendChild(opt);
+            }
+
+            // Quand on change → aller à la slide
+            select.onchange = function () {
+                if (this.value !== "") {
+                    currentSlide(parseInt(this.value, 10), group);
+                }
+            };
+        })(selects[s]);
+    }
+}
+
+initAllSelects();
 
 
 (function () {

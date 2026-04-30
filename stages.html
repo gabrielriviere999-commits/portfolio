@@ -258,6 +258,13 @@ pre {
     .slide iframe:not([src$=".pdf"]) { zoom: 0.5; }
 }
 
+/* --- Bouton de téléchargement --- */
+select {
+    height: 40px;
+    line-height: 40px;
+    color: brown;
+}
+
 /* --- Arborescence --- */
 summary {
     cursor: pointer;
@@ -658,6 +665,7 @@ Mercredi 11 février 2026 : Installation de Wazuh Indexer + Manager + Dashboard 
 
 Lundi 16 - Vendredi 20 février 2026 : Réinstallation de Wazuh à la bonne version à échoué, alors réinstallation de Wazuh avec Docker.
 </pre>
+<select class="slide-select" data-group="stage-bts2"><option value="" disabled selected>- choisir une slide -</option></select>
 <div class="slideshow-container" data-group="stage-bts2">
 
     <div class="slide" data-group="stage-bts2">
@@ -810,6 +818,12 @@ function showSlides(n, group) {
         counter.textContent = slideIndex[group] + " / " + total;
     }
 
+    // Synchroniser le select
+    var select = document.querySelector('.slide-select[data-group="' + group + '"]');
+    if (select && slideIndex[group] > 0) {
+        select.value = slideIndex[group];
+    }
+
     // Création dynamique de l'iframe
     var holder = current.querySelector(".iframe-holder");
     if (holder && !holder.dataset.loaded) {
@@ -898,6 +912,62 @@ function downloadSlide(group) {
     a.click();
     document.body.removeChild(a);
 }
+
+
+function initAllSelects() {
+    var selects = document.querySelectorAll(".slide-select");
+
+    for (var s = 0; s < selects.length; s++) {
+        (function (select) {
+            var group = select.getAttribute("data-group");
+            var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
+
+            for (var i = 0; i < slides.length; i++) {
+
+                var file = null;
+
+                // 1) iframe-holder (HTML, TXT, PDF…)
+                var holder = slides[i].querySelector(".iframe-holder");
+                if (holder) {
+                    file = holder.getAttribute("data-src");
+                }
+
+                // 2) image (JPG, PNG…)
+                if (!file) {
+                    var img = slides[i].querySelector("img[data-src]");
+                    if (img) file = img.getAttribute("data-src");
+                }
+
+                // 3) vidéo
+                if (!file) {
+                    var video = slides[i].querySelector("video[data-src]");
+                    if (video) file = video.getAttribute("data-src");
+                }
+
+                // Création de l’option
+                var opt = document.createElement("option");
+                opt.value = i + 1;
+
+                if (file) {
+                    opt.text = file.split("/").pop(); // nom du fichier
+                } else {
+                    opt.text = "Slide " + (i + 1);
+                }
+
+                select.appendChild(opt);
+            }
+
+            // Quand on change → aller à la slide
+            select.onchange = function () {
+                if (this.value !== "") {
+                    currentSlide(parseInt(this.value, 10), group);
+                }
+            };
+        })(selects[s]);
+    }
+}
+
+initAllSelects();
 </script>
 </main>
 </body>
