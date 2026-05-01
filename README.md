@@ -1,9 +1,7 @@
 - Repo : https://github.com/gabrielriviere999-commits/portfolio
 - Site : https://gabrielriviere999-commits.github.io/portfolio
 
-🌐 Français
-
-Sur ce site, vous trouverez principalement des fichiers txt, html, pdf organisés sous forme de galeries.
+Sur ce site, vous trouverez des fichiers organisés sous forme de galeries.
 - Pour voir les fichiers, vous pouvez cliquer sur le bouton < ou >
 - Pour voir le fichier dans un nouvel onglet, cliquez sur le bouton □
 - Pour télécharger le fichier, cliquez sur le bouton ↓
@@ -17,22 +15,20 @@ Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 Le bouton Q sert à lancer la recherche de fichiers.
 
 Le bouton tab? sert à aller vers un onglet du site, utile sur petits écrans.
-
----
-
-🌐 English
-
-On this site, you will find mainly txt, html, pdf files organized in the form of galleries.
-- To see the files, you can click on the button < or >
-- To see the file in a new tab, click on the button □
-- To download the file, click on the button ↓
-
-To display the site menu, click on the top left button ≡ :
-- Rechercher : opens the file search page.
-- Rechercher (nouvel onglet) : opens the file search page in a new browser tab.
-- Liste des fichiers : opens the file browser page.
-- Soutenir le site : opens the donation page.
-
-The Q button is used to launch the file search.
-
-The tab? button is used to go to a tab of the site, useful on small screens
+```text
+Plan du site :
+portfolio/
+├── Accueil/    ← Page d'accueil avec le CV
+├── BTS/
+│   ├── Tableau de synthèse
+│   ├── Veille technologique
+│   └── Documentations de l'infrastructure
+├── Stages/
+└── Astuces/
+    ├── Page pour soutenir le site via Paypal/
+    ├── Documentations pour s'initier à Linux
+    ├── Scripts et applications pour Linux
+    ├── Applications pour android
+    ├── Scripts pour Windows et autres (non maintenu)
+    └── Outils HTML    ← Outils utilisables dans le navigateur sans installation
+```
