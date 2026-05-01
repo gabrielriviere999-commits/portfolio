@@ -25,6 +25,8 @@ portfolio/
 │   ├── Veille technologique
 │   └── Documentations de l'infrastructure
 ├── Stages/
+│   ├── Activités faites en stages
+│   └── Documentations du stage BTS2
 └── Astuces/
     ├── Page pour soutenir le site via Paypal/
     ├── Documentations pour s'initier à Linux
