@@ -28,7 +28,7 @@ portfolio/
 │   ├── Activités faites en stages
 │   └── Documentations du stage de BTS2
 └── Astuces/
-    ├── Page pour soutenir le site via PayPal
+    ├── Lien pour soutenir le site via PayPal
     ├── Documentations pour s'initier à Linux
     ├── Scripts et applications pour Linux
     ├── Applications pour Android
