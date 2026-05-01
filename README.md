@@ -16,7 +16,7 @@ Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 Le bouton Q sert à lancer la recherche de fichiers.
 
 Le bouton tab? sert à aller vers un onglet du site, utile sur petits écrans.
-## Plan du site
+## Carte du site
 ```
 portfolio/
 ├── Accueil/    ← Page d'accueil avec le CV
