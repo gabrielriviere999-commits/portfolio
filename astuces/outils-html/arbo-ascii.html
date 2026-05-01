@@ -183,7 +183,7 @@ function copyTreeColored(btn) {
     var finalHtml =
         '<style>\n' +
         'pre.tree{font-family:monospace;white-space:pre;background:black;padding:5px}\n' +
-        'pre.tree .root{color:#0f0;}\n' +      // racine vert
+        'pre.tree .root{color:#4af;}\n' +      // racine bleue
         'pre.tree .folder{color:#4af;}\n' +    // dossiers bleu
         'pre.tree .file{color:#0f0;}\n' +      // fichiers vert
         'pre.tree .ascii{color:#0f0;}\n' +     // symboles ASCII vert
@@ -415,7 +415,7 @@ function buildAscii(node, prefix, pathArr) {
 
     // racine
     if (pathArr.length === 0) {
-        out += node.name + "\n";
+        out += '<span class="folder" onclick="enterFolder(\'\')">' + node.name + '</span>\n';
     }
 
     // construire liste entries (dossiers puis fichiers)
