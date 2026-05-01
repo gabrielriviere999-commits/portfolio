@@ -169,9 +169,6 @@ function copyTreeColored(btn) {
     // 2. Supprimer les onclick=""
     html = html.replace(/ onclick="[^"]*"/g, "");
 
-    // 3. Ajouter class="root" sur la première ligne
-    html = html.replace(/^(.*)$/m, '<span class="root">$1</span>');
-
     // 4. Ajouter class="file" sur les fichiers (pas de slash final)
     html = html.replace(/├── ([^<]*[^\/])</g, '├── <span class="file">$1</span><');
     html = html.replace(/└── ([^<]*[^\/])</g, '└── <span class="file">$1</span><');
@@ -183,7 +180,6 @@ function copyTreeColored(btn) {
     var finalHtml =
         '<style>\n' +
         'pre.tree{font-family:monospace;white-space:pre;background:black;padding:5px}\n' +
-        'pre.tree .root{color:#4af;}\n' +      // racine bleue
         'pre.tree .folder{color:#4af;}\n' +    // dossiers bleu
         'pre.tree .file{color:#0f0;}\n' +      // fichiers vert
         'pre.tree .ascii{color:#0f0;}\n' +     // symboles ASCII vert
