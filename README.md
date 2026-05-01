@@ -26,12 +26,12 @@ portfolio/
 │   └── Documentations de l'infrastructure
 ├── Stages/
 │   ├── Activités faites en stages
-│   └── Documentations du stage BTS2
+│   └── Documentations du stage de BTS2
 └── Astuces/
     ├── Page pour soutenir le site via PayPal
     ├── Documentations pour s'initier à Linux
     ├── Scripts et applications pour Linux
-    ├── Applications pour android
+    ├── Applications pour Android
     ├── Scripts pour Windows et autres (non maintenu)
     └── Outils HTML    ← Outils utilisables dans le navigateur sans installation
 ```
