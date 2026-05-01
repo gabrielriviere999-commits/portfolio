@@ -57,6 +57,7 @@ button:hover { background:#E0E0E0; }
         <button onclick="addFile()">+ Fichier</button>
         <button onclick="goUp()">← Remonter</button>
         <button onclick="copyTree(this)">Copier</button>
+        <button onclick="copyTreeColored(this)">Copier arborescence colorée</button>
     </div>
 
     <p>Dossier courant : <span id="currentPath"></span></p>
@@ -157,6 +158,53 @@ function copyTree(btn) {
     setTimeout(function () {
         btn.innerHTML = old;
     }, 800);
+}
+
+function copyTreeColored(btn) {
+    var html = document.getElementById("ascii").innerHTML;
+
+    // 1. Supprimer les boutons [C][R][X]
+    html = html.replace(/<span class="action"[^>]*>.*?<\/span>/g, "");
+
+    // 2. Supprimer les onclick=""
+    html = html.replace(/ onclick="[^"]*"/g, "");
+
+    // 3. Ajouter class="root" sur la première ligne
+    html = html.replace(/^(.*)$/m, '<span class="root">$1</span>');
+
+    // 4. Ajouter class="file" sur les fichiers (pas de slash final)
+    html = html.replace(/├── ([^<]*[^\/])</g, '├── <span class="file">$1</span><');
+    html = html.replace(/└── ([^<]*[^\/])</g, '└── <span class="file">$1</span><');
+
+    // 5. Colorer les symboles ASCII en vert
+    html = html.replace(/(├──|└──|│)/g, '<span class="ascii">$1</span>');
+
+    // 6. Générer le bloc HTML complet
+    var finalHtml =
+        '<style>\n' +
+        'pre.tree{font-family:monospace;white-space:pre;background:black;padding:5px}\n' +
+        'pre.tree .root{color:#0f0;}\n' +      // racine vert
+        'pre.tree .folder{color:#4af;}\n' +    // dossiers bleu
+        'pre.tree .file{color:#0f0;}\n' +      // fichiers vert
+        'pre.tree .ascii{color:#0f0;}\n' +     // symboles ASCII vert
+        '</style>\n' +
+        '<pre class="tree">\n' +
+        html +
+        '</pre>';
+
+    // 7. Copier dans un textarea invisible
+    var textarea = document.createElement("textarea");
+    textarea.value = finalHtml;
+    document.body.appendChild(textarea);
+
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+
+    // 8. Feedback visuel
+    var old = btn.innerHTML;
+    btn.innerHTML = "Copié !";
+    setTimeout(function () { btn.innerHTML = old; }, 800);
 }
 
 function restoreTree() {
