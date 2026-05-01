@@ -122,7 +122,7 @@ function addFolder() {
     var node = getNodeByPath(currentPath);
     var name = prompt("Nom du dossier :");
     if (!name) return;
-    node.folders.push({ name: name, folders: [], files: [] });
+    node.folders.push({ name: name, comment: "", folders: [], files: [] });
     render();
 }
 
@@ -130,7 +130,7 @@ function addFile() {
     var node = getNodeByPath(currentPath);
     var name = prompt("Nom du fichier :");
     if (!name) return;
-    node.files.push(name);
+    node.files.push({ name: name, comment: "" });
     render();
 }
 
@@ -176,13 +176,12 @@ function restoreTree() {
         var line = lines[i].replace(/\r/g, "");
         if (line === "") continue;
 
-        // --- 1. Calculer indentation réelle (groupes de 4 espaces ou │   )
+        // --- 1. Indentation (groupes de 4 espaces ou │   )
         var indent = 0;
         var pos = 0;
 
         while (true) {
             var block = line.substr(pos, 4);
-
             if (block === "│   " || block === "    ") {
                 indent++;
                 pos += 4;
@@ -191,40 +190,50 @@ function restoreTree() {
             }
         }
 
-        // --- 2. Nettoyer les symboles ├── et └──
+        // --- 2. Nettoyer ├── et └──
         var clean = line.substr(pos);
         clean = clean.replace(/^├──\s*/, "");
         clean = clean.replace(/^└──\s*/, "");
 
-        // --- 3. Racine
+        // --- 3. Séparer nom et commentaire
+        var comment = "";
+        var arrowPos = clean.indexOf("←");
+
+        if (arrowPos !== -1) {
+            comment = clean.substring(arrowPos + 1);
+            comment = comment.replace(/^\s+/, ""); // trim left
+            clean = clean.substring(0, arrowPos);
+            clean = clean.replace(/\s+$/, ""); // trim right
+        }
+
+        // --- 4. Racine
         if (newRoot === null) {
             if (clean.charAt(clean.length - 1) !== "/") clean += "/";
-            newRoot = { name: clean, folders: [], files: [] };
+            newRoot = { name: clean, comment: comment, folders: [], files: [] };
 
-            // IMPORTANT : indent = -1 pour que la racine ne soit jamais poppée
             stack.push({ node: newRoot, indent: -1 });
             continue;
         }
 
-        // --- 4. Trouver le parent
+        // --- 5. Trouver parent
         while (stack.length > 0 && stack[stack.length - 1].indent >= indent) {
             stack.pop();
         }
 
         var parent = stack[stack.length - 1].node;
 
-        // --- 5. Dossier ou fichier ?
+        // --- 6. Dossier ou fichier ?
         if (clean.charAt(clean.length - 1) === "/") {
             var folderName = clean.substring(0, clean.length - 1);
-            var folder = { name: folderName, folders: [], files: [] };
+            var folder = { name: folderName, comment: comment, folders: [], files: [] };
             parent.folders.push(folder);
             stack.push({ node: folder, indent: indent });
         } else {
-            parent.files.push(clean);
+            parent.files.push({ name: clean, comment: comment });
         }
     }
 
-    // --- 6. Remplacer l'arbre actuel
+    // --- 7. Remplacer l'arbre actuel
     root = newRoot;
     currentPath = [];
 
@@ -300,6 +309,24 @@ function deleteFile(pathStr, fileIndex) {
     render();
 }
 
+function editCommentFolder(pathStr) {
+    var pathArr = stringToPath(pathStr);
+    var node = getNodeByPath(pathArr);
+    var c = prompt("Commentaire :", node.comment || "");
+    if (c === null) return;
+    node.comment = c;
+    render();
+}
+
+function editCommentFile(pathStr, fileIndex) {
+    var pathArr = stringToPath(pathStr);
+    var node = getNodeByPath(pathArr);
+    var c = prompt("Commentaire :", node.files[fileIndex].comment || "");
+    if (c === null) return;
+    node.files[fileIndex].comment = c;
+    render();
+}
+
 // --- Rendu ---
 function render() {
     var node = root;
@@ -356,6 +383,7 @@ function buildAscii(node, prefix, pathArr) {
         var branch = last ? "└── " : "├── ";
 
         if (entry.type === "folder") {
+
             var childPath = cloneArray(pathArr);
             childPath.push(entry.index);
             var pathStr = pathToString(childPath);
@@ -364,15 +392,22 @@ function buildAscii(node, prefix, pathArr) {
             out += prefix + branch +
                 '<span class="folder" onclick="enterFolder(\'' + pathStr + '\')">' +
                 child.name + '/</span>' +
+                (child.comment ? ' <span style="color:#888">← ' + child.comment + '</span>' : '') +
+                '<span class="action" onclick="editCommentFolder(\'' + pathStr + '\')">[C]</span>' +
                 '<span class="action" onclick="renameFolder(\'' + pathStr + '\')">[R]</span>' +
                 '<span class="action" onclick="deleteFolder(\'' + pathStr + '\')">[X]</span>' +
                 "\n";
 
             out += buildAscii(child, prefix + (last ? "    " : "│   "), childPath);
-        } else {
+        }
+
+        else {
             var filePathStr = pathToString(pathArr);
-            var fileName = node.files[entry.index];
-            out += prefix + branch + fileName +
+            var file = node.files[entry.index];
+
+            out += prefix + branch + file.name +
+                (file.comment ? ' <span style="color:#888">← ' + file.comment + '</span>' : '') +
+                '<span class="action" onclick="editCommentFile(\'' + filePathStr + '\',' + entry.index + ')">[C]</span>' +
                 '<span class="action" onclick="renameFile(\'' + filePathStr + '\',' + entry.index + ')">[R]</span>' +
                 '<span class="action" onclick="deleteFile(\'' + filePathStr + '\',' + entry.index + ')">[X]</span>' +
                 "\n";
@@ -405,13 +440,18 @@ function buildAsciiText(node, prefix, pathArr) {
 
         if (entry.type === "folder") {
             var child = node.folders[entry.index];
-            out += prefix + branch + child.name + "/\n";
+            out += prefix + branch + child.name + "/" +
+                   (child.comment ? "    ← " + child.comment : "") +
+                   "\n";
 
             var childPath = pathArr.concat([entry.index]);
             out += buildAsciiText(child, prefix + (last ? "    " : "│   "), childPath);
 
         } else {
-            out += prefix + branch + node.files[entry.index] + "\n";
+            var file = node.files[entry.index];
+            out += prefix + branch + file.name +
+                   (file.comment ? "    ← " + file.comment : "") +
+                   "\n";
         }
     }
 
