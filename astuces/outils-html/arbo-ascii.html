@@ -169,14 +169,14 @@ function copyTreeColored(btn) {
     // 2. Supprimer les onclick=""
     html = html.replace(/ onclick="[^"]*"/g, "");
 
-    // 4. Ajouter class="file" sur les fichiers (pas de slash final)
+    // 3. Ajouter class="file" sur les fichiers (pas de slash final)
     html = html.replace(/├── ([^<]*[^\/])</g, '├── <span class="file">$1</span><');
     html = html.replace(/└── ([^<]*[^\/])</g, '└── <span class="file">$1</span><');
 
-    // 5. Colorer les symboles ASCII en vert
+    // 4. Colorer les symboles ASCII en vert
     html = html.replace(/(├──|└──|│)/g, '<span class="ascii">$1</span>');
 
-    // 6. Générer le bloc HTML complet
+    // 5. Générer le bloc HTML complet
     var finalHtml =
         '<style>\n' +
         'pre.tree{font-family:monospace;white-space:pre;background:black;padding:5px}\n' +
@@ -188,7 +188,7 @@ function copyTreeColored(btn) {
         html +
         '</pre>';
 
-    // 7. Copier dans un textarea invisible
+    // 6. Copier dans un textarea invisible
     var textarea = document.createElement("textarea");
     textarea.value = finalHtml;
     document.body.appendChild(textarea);
@@ -197,7 +197,7 @@ function copyTreeColored(btn) {
     document.execCommand("copy");
     document.body.removeChild(textarea);
 
-    // 8. Feedback visuel
+    // 7. Feedback visuel
     var old = btn.innerHTML;
     btn.innerHTML = "Arborescence colorée copiée !";
     setTimeout(function () { btn.innerHTML = old; }, 800);
