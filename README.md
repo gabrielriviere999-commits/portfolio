@@ -1,3 +1,4 @@
+# Portfolio
 - Repo : https://github.com/gabrielriviere999-commits/portfolio
 - Site : https://gabrielriviere999-commits.github.io/portfolio
 
@@ -15,8 +16,8 @@ Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 Le bouton Q sert à lancer la recherche de fichiers.
 
 Le bouton tab? sert à aller vers un onglet du site, utile sur petits écrans.
-```text
-Plan du site :
+## Plan du site
+```
 portfolio/
 ├── Accueil/    ← Page d'accueil avec le CV
 ├── BTS/
