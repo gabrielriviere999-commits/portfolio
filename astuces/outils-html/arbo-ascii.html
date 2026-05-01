@@ -294,10 +294,12 @@ function deleteFolder(pathStr) {
 function renameFile(pathStr, fileIndex) {
     var pathArr = stringToPath(pathStr);
     var node = getNodeByPath(pathArr);
-    var oldName = node.files[fileIndex];
-    var name = prompt("Nouveau nom :", oldName);
+    var file = node.files[fileIndex];
+
+    var name = prompt("Nouveau nom :", file.name);
     if (!name) return;
-    node.files[fileIndex] = name;
+
+    file.name = name;
     render();
 }
 
