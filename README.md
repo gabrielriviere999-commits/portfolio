@@ -18,7 +18,7 @@ Le bouton Q sert à lancer la recherche de fichiers.
 Le bouton tab? sert à aller vers un onglet du site, utile sur petits écrans.
 ## Carte du site
 ```
-portfolio/
+Portfolio/
 ├── Accueil/    ← Page d'accueil avec le CV
 ├── BTS/
 │   ├── Tableau de synthèse
