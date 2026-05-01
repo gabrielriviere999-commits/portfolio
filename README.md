@@ -9,7 +9,6 @@ Sur ce site, vous trouverez des fichiers organisés sous forme de galeries.
 
 Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Rechercher : ouvre la page de recherche de fichiers.
-- Rechercher (nouvel onglet) : ouvre la page de recherche de fichiers dans un nouvel onglet du navigateur.
 - Liste des fichiers : ouvre la page d'explorateur de fichiers.
 - Soutenir le site : ouvre la page de dons.
 
