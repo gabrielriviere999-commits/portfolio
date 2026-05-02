@@ -3,13 +3,12 @@
 - Site : https://gabrielriviere999-commits.github.io/portfolio
 
 Sur ce site, vous trouverez des fichiers organisés sous forme de galeries :
-- Pour voir les fichiers, vous pouvez cliquer sur le bouton < ou >
+- Pour voir le fichier, cliquez sur le bouton < ou >, miniature ou - Choisir une slide -
 - Pour voir le fichier dans un nouvel onglet, cliquez sur le bouton □
 - Pour télécharger le fichier, cliquez sur le bouton ↓
 
 Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Rechercher : ouvre la page de recherche de fichiers
-- Rechercher (nouvel onglet) : ouvre la page de recherche de fichiers dans un nouvel onglet du navigateur
 - Liste des fichiers : ouvre la page d'explorateur de fichiers
 - Soutenir le site : ouvre la page de dons
 
