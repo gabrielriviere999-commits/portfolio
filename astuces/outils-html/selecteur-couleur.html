@@ -396,14 +396,14 @@ svArea.addEventListener("touchstart", function(e){
     dragging = true;
     var t = e.touches[0];
     moveSVFromPoint(t.clientX, t.clientY);
-}, {passive:false});
+});
 
 document.addEventListener("touchmove", function(e){
     if(!dragging) return;
     e.preventDefault();
     var t = e.touches[0];
     moveSVFromPoint(t.clientX, t.clientY);
-}, {passive:false});
+});
 
 document.addEventListener("touchend", function(){
     dragging = false;
@@ -580,26 +580,24 @@ hsvInput.oninput=function(){
     updateUI();
 };
 
-var buttons=document.getElementsByClassName("win98-btn");
-for(var i=0;i<buttons.length;i++){
-    buttons[i].onclick=function(){
-        var type=this.getAttribute("data-copy");
-        var text="";
-        if(type==="hex") text=hexInput.value;
-        if(type==="rgb") text=rgbInput.value;
-        if(type==="hsl") text=hslInput.value;
-        if(type==="hsv") text=hsvInput.value;
+var buttons = document.getElementsByClassName("win98-btn");
+for (var i = 0; i < buttons.length; i++) {
+    buttons[i].onclick = function () {
+        var type = this.getAttribute("data-copy");
+        var text = "";
 
-        if(navigator.clipboard){
-            navigator.clipboard.writeText(text);
-        } else {
-            var t=document.createElement("textarea");
-            t.value=text;
-            document.body.appendChild(t);
-            t.select();
-            document.execCommand("copy");
-            document.body.removeChild(t);
-        }
+        if (type === "hex") text = hexInput.value;
+        if (type === "rgb") text = rgbInput.value;
+        if (type === "hsl") text = hslInput.value;
+        if (type === "hsv") text = hsvInput.value;
+
+        // Méthode universelle compatible 3DS
+        var t = document.createElement("textarea");
+        t.value = text;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand("copy");
+        document.body.removeChild(t);
     };
 }
 
