@@ -537,16 +537,30 @@ hsvInput.onblur=function(){lockHsv=false;updateUI();};
 hexInput.oninput=function(){
     var p=parseHex(this.value);
     if(!p) return;
+
     r=p.r; g=p.g; b=p.b;
     if(p.a!==null) a=clamp(p.a/255,0,1);
+
+    var hsv = rgbToHsv(r,g,b);
+    h = hsv.h;
+    s = hsv.s/100;
+    v = hsv.v/100;
+
     updateUI();
 };
 
 rgbInput.oninput=function(){
     var p=parseRgb(this.value);
     if(!p) return;
+
     r=p.r; g=p.g; b=p.b;
     if(p.a!==null) a=clamp(p.a,0,1);
+
+    var hsv = rgbToHsv(r,g,b);
+    h = hsv.h;
+    s = hsv.s/100;
+    v = hsv.v/100;
+
     updateUI();
 };
 
