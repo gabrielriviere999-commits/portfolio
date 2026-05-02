@@ -464,9 +464,9 @@ function moveSVBy(dx, dy){
 function startHold(dx, dy){
     moveSVBy(dx, dy); // premier mouvement immédiat
 
-    hold = setInterval(() => {
+    hold = setInterval(function(){
         moveSVBy(dx, dy);
-    }, 60); // vitesse de répétition
+    }, 60);
 }
 
 // stoppe la répétition
@@ -477,16 +477,20 @@ function stopHold(){
 
 // lie un bouton aux actions souris + tactile
 function bindHoldButton(btn, dx, dy){
+
     // souris
-    btn.addEventListener("mousedown", () => startHold(dx, dy));
+    btn.addEventListener("mousedown", function(){
+        startHold(dx, dy);
+    });
+
     btn.addEventListener("mouseup", stopHold);
     btn.addEventListener("mouseleave", stopHold);
 
-    // tactile
-    btn.addEventListener("touchstart", (e) => {
+    // tactile (sans passive:false)
+    btn.addEventListener("touchstart", function(e){
         e.preventDefault();
         startHold(dx, dy);
-    }, {passive:false});
+    });
 
     btn.addEventListener("touchend", stopHold);
 }
