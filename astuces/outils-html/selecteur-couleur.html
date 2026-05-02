@@ -83,6 +83,8 @@ body {
     transform:translate(-50%,-50%);
 }
 
+.sv-button {width:40px;height:40px;font-size:24px;}
+
 input[type=range] {
     width:100%;
     margin:4px 0;
@@ -106,10 +108,10 @@ label {
     </div>
 
 <div id="sv-controls">
-    <button id="sv-left" class="win98-btn">←</button>
-    <button id="sv-right" class="win98-btn">→</button>
-    <button id="sv-up" class="win98-btn">↑</button>
-    <button id="sv-down" class="win98-btn">↓</button>
+    <button id="sv-left" class="win98-btn" style="width:40px;height:40px;font-size:24px;">←</button>
+    <button id="sv-right" class="win98-btn" style="width:40px;height:40px;font-size:24px;">→</button>
+    <button id="sv-up" class="win98-btn" style="width:40px;height:40px;font-size:24px;">↑</button>
+    <button id="sv-down" class="win98-btn" style="width:40px;height:40px;font-size:24px;">↓</button>
 </div>
 
     <label>Teinte (H)</label>
@@ -445,7 +447,7 @@ document.addEventListener("keydown", function(e){
 });
 
 var step = 0.005;
-var hold = null;
+var holdIntervals = {};
 
 // moteur unique
 function moveSVBy(dx, dy){
@@ -460,39 +462,49 @@ function moveSVBy(dx, dy){
     updateUI();
 }
 
-// démarre la répétition
-function startHold(dx, dy){
-    moveSVBy(dx, dy); // premier mouvement immédiat
+function startHold(btnId, dx, dy){
+    // si déjà en cours → ne pas doubler
+    if (holdIntervals[btnId]) return;
 
-    hold = setInterval(function(){
+    // premier mouvement
+    moveSVBy(dx, dy);
+
+    // interval propre à CE bouton
+    holdIntervals[btnId] = setInterval(function(){
         moveSVBy(dx, dy);
     }, 60);
 }
 
-// stoppe la répétition
-function stopHold(){
-    clearInterval(hold);
-    hold = null;
+function stopHold(btnId){
+    if (holdIntervals[btnId]) {
+        clearInterval(holdIntervals[btnId]);
+        holdIntervals[btnId] = null;
+    }
 }
 
-// lie un bouton aux actions souris + tactile
 function bindHoldButton(btn, dx, dy){
+    var id = btn.id;
 
-    // souris
     btn.addEventListener("mousedown", function(){
-        startHold(dx, dy);
+        startHold(id, dx, dy);
     });
 
-    btn.addEventListener("mouseup", stopHold);
-    btn.addEventListener("mouseleave", stopHold);
+    btn.addEventListener("mouseup", function(){
+        stopHold(id);
+    });
 
-    // tactile (sans passive:false)
+    btn.addEventListener("mouseleave", function(){
+        stopHold(id);
+    });
+
     btn.addEventListener("touchstart", function(e){
         e.preventDefault();
-        startHold(dx, dy);
+        startHold(id, dx, dy);
     });
 
-    btn.addEventListener("touchend", stopHold);
+    btn.addEventListener("touchend", function(){
+        stopHold(id);
+    });
 }
 
 // --- liaison des 4 boutons ---
