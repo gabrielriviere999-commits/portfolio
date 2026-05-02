@@ -9,6 +9,7 @@ Sur ce site, vous trouverez des fichiers organisés sous forme de galeries.
 
 Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Rechercher : ouvre la page de recherche de fichiers.
+- Rechercher (nouvel onglet) : ouvre la page de recherche de fichiers dans un nouvel onglet du navigateur.
 - Liste des fichiers : ouvre la page d'explorateur de fichiers.
 - Soutenir le site : ouvre la page de dons.
 
@@ -18,7 +19,8 @@ Le bouton tab? sert à aller vers un onglet du site, utile sur petits écrans.
 ## Carte du site
 ```
 Portfolio/
-├── Accueil/    ← Page d'accueil avec le CV
+├── Accueil/
+│   └── CV
 ├── BTS/
 │   ├── Tableau de synthèse
 │   ├── Veille technologique
