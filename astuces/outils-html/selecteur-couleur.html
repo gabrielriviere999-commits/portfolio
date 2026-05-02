@@ -99,11 +99,18 @@ label {
 
     <div id="preview"></div>
 
-    <div id="sv-area">
+    <div id="sv-area" tabindex="0">
         <div id="sv-white"></div>
         <div id="sv-black"></div>
         <div id="sv-cursor"></div>
     </div>
+
+<div id="sv-controls">
+    <button id="sv-left" class="win98-btn">←</button>
+    <button id="sv-right" class="win98-btn">→</button>
+    <button id="sv-up" class="win98-btn">↑</button>
+    <button id="sv-down" class="win98-btn">↓</button>
+</div>
 
     <label>Teinte (H)</label>
     <input id="h-range" type="range" min="0" max="360" value="0"><br><br>
@@ -401,6 +408,94 @@ document.addEventListener("touchmove", function(e){
 document.addEventListener("touchend", function(){
     dragging = false;
 });
+
+document.addEventListener("keydown", function(e){
+
+    // Ne bouger que si le carré a le focus
+    if (document.activeElement !== svArea) return;
+
+    var step = 0.005;
+    var changed = false;
+
+    if(e.key === "ArrowLeft"){
+        s = clamp(s - step, 0, 1);
+        changed = true;
+    }
+    else if(e.key === "ArrowRight"){
+        s = clamp(s + step, 0, 1);
+        changed = true;
+    }
+    else if(e.key === "ArrowUp"){
+        v = clamp(v + step, 0, 1);
+        changed = true;
+    }
+    else if(e.key === "ArrowDown"){
+        v = clamp(v - step, 0, 1);
+        changed = true;
+    }
+
+    if(!changed) return;
+
+    var rgb = hsvToRgb(h, s * 100, v * 100);
+    r = rgb.r;
+    g = rgb.g;
+    b = rgb.b;
+
+    updateUI();
+});
+
+var step = 0.005;
+var hold = null;
+
+// moteur unique
+function moveSVBy(dx, dy){
+    s = clamp(s + dx, 0, 1);
+    v = clamp(v + dy, 0, 1);
+
+    var rgb = hsvToRgb(h, s * 100, v * 100);
+    r = rgb.r;
+    g = rgb.g;
+    b = rgb.b;
+
+    updateUI();
+}
+
+// démarre la répétition
+function startHold(dx, dy){
+    moveSVBy(dx, dy); // premier mouvement immédiat
+
+    hold = setInterval(() => {
+        moveSVBy(dx, dy);
+    }, 60); // vitesse de répétition
+}
+
+// stoppe la répétition
+function stopHold(){
+    clearInterval(hold);
+    hold = null;
+}
+
+// lie un bouton aux actions souris + tactile
+function bindHoldButton(btn, dx, dy){
+    // souris
+    btn.addEventListener("mousedown", () => startHold(dx, dy));
+    btn.addEventListener("mouseup", stopHold);
+    btn.addEventListener("mouseleave", stopHold);
+
+    // tactile
+    btn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        startHold(dx, dy);
+    }, {passive:false});
+
+    btn.addEventListener("touchend", stopHold);
+}
+
+// --- liaison des 4 boutons ---
+bindHoldButton(document.getElementById("sv-left"),  -step, 0);
+bindHoldButton(document.getElementById("sv-right"),  step, 0);
+bindHoldButton(document.getElementById("sv-up"),     0,    step);
+bindHoldButton(document.getElementById("sv-down"),   0,   -step);
 
 hRange.oninput=function(){
     h=parseInt(this.value,10);
