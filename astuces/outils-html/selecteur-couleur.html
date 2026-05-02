@@ -320,7 +320,6 @@ function updateUI(){
     preview.style.background="rgba("+r+","+g+","+b+","+alphaValue+")";
 
     var hsv=rgbToHsv(r,g,b);
-    s=hsv.s/100; v=hsv.v/100;
 
     var pure=hsvToRgb(h,100,100);
     svArea.style.background="rgb("+pure.r+","+pure.g+","+pure.b+")";
