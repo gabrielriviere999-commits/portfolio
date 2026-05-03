@@ -612,6 +612,7 @@ hsvInput.oninput=function(){
 var buttons = document.getElementsByClassName("win98-btn");
 for (var i = 0; i < buttons.length; i++) {
     buttons[i].onclick = function () {
+		var btn = this;
         var type = this.getAttribute("data-copy");
         var text = "";
 
@@ -620,13 +621,20 @@ for (var i = 0; i < buttons.length; i++) {
         if (type === "hsl") text = hslInput.value;
         if (type === "hsv") text = hsvInput.value;
 
-        // Méthode universelle compatible 3DS
         var t = document.createElement("textarea");
         t.value = text;
         document.body.appendChild(t);
         t.select();
         document.execCommand("copy");
         document.body.removeChild(t);
+
+        // --- FEEDBACK VISUEL ---
+        var old = btn.textContent;
+        btn.textContent = "Copié !";
+
+        setTimeout(function () {
+            btn.textContent = old;
+        }, 700);
     };
 }
 
