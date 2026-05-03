@@ -11,6 +11,7 @@ body {
     font-size: 20px;
     background: #C0C0C0;
     width:1230px;
+    padding-top: 20px;
 }
 
 /* --- Win98 controls --- */
@@ -145,6 +146,23 @@ button:hover { background:#E0E0E0; }
     min-width: 140px;
 }
 
+.toolbar {
+  display: block;
+  padding: 6px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  margin-bottom: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  max-height: 225px;
+  padding: 4px;
+  z-index: 9999
+}
+
 /* --- Mode mobile --- */
 @media screen and (max-width: 720px) {
     body, button, #dropzone, #info, input { font-size: 50px; }
@@ -155,6 +173,14 @@ button:hover { background:#E0E0E0; }
 </head>
 <body>
         <h2>Extracteur couleur</h2>
+<div class="toolbar" style="opacity: 0.8;">
+<button onclick="scrollUp()">↑</button>
+<button onclick="scrollDown()">↓</button>
+<button onclick="copyText('hexValue', this)">HEX</button>
+<button onclick="copyText('rgbValue', this)">RGB</button>
+<button onclick="copyText('hslValue', this)">HSL</button>
+<button onclick="copyText('hsvValue', this)">HSV</button>
+</div>
 
         <div class="win98-box">
             Image
@@ -478,6 +504,14 @@ canvas.ontouchend = function(e){
     hideLoupe();
     e.preventDefault();
 };
+
+function scrollUp(){
+    window.scrollBy(0, -100);
+}
+
+function scrollDown(){
+    window.scrollBy(0, 100);
+}
 </script>
 
 </body>
