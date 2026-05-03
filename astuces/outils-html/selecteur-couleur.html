@@ -130,19 +130,19 @@ label {
 
     <label>HEX :</label>
     <input id="hex-input" class="win98-input" type="text" value="#FF0000FF">
-    <button class="win98-btn" data-copy="hex">Copier</button><br>
+    <button class="copy-btn win98-btn" data-copy="hex">Copier</button><br>
 
     <label>RGB :</label>
     <input id="rgb-input" class="win98-input" type="text" value="255,0,0,1">
-    <button class="win98-btn" data-copy="rgb">Copier</button><br>
+    <button class="copy-btn win98-btn" data-copy="rgb">Copier</button><br>
 
     <label>HSL :</label>
     <input id="hsl-input" class="win98-input" type="text" value="0,100%,50%,1">
-    <button class="win98-btn" data-copy="hsl">Copier</button><br>
+    <button class="copy-btn win98-btn" data-copy="hsl">Copier</button><br>
 
     <label>HSV :</label>
     <input id="hsv-input" class="win98-input" type="text" value="0,100%,100%,1">
-    <button class="win98-btn" data-copy="hsv">Copier</button><br>
+    <button class="copy-btn win98-btn" data-copy="hsv">Copier</button><br>
 
 </div>
 
@@ -609,9 +609,10 @@ hsvInput.oninput=function(){
     updateUI();
 };
 
-var buttons = document.getElementsByClassName("win98-btn");
+var buttons = document.getElementsByClassName("copy-btn");
 for (var i = 0; i < buttons.length; i++) {
     buttons[i].onclick = function () {
+		var btn = this;
         var type = this.getAttribute("data-copy");
         var text = "";
 
@@ -626,6 +627,14 @@ for (var i = 0; i < buttons.length; i++) {
         t.select();
         document.execCommand("copy");
         document.body.removeChild(t);
+
+        // --- FEEDBACK VISUEL ---
+        var old = btn.textContent;
+        btn.textContent = "Copié !";
+
+        setTimeout(function () {
+            btn.textContent = old;
+        }, 700);
     };
 }
 
