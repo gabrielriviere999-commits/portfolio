@@ -469,10 +469,10 @@ function startHold(btnId, dx, dy){
     // premier mouvement
     moveSVBy(dx, dy);
 
-    // interval propre à CE bouton
+    // interval propre à ce bouton
     holdIntervals[btnId] = setInterval(function(){
         moveSVBy(dx, dy);
-    }, 60);
+    }, 100);
 }
 
 function stopHold(btnId){
