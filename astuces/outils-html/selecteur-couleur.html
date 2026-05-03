@@ -118,7 +118,8 @@ label {
 </div>
 
     <label>Teinte (H)</label>
-    <input id="h-range" type="range" min="0" max="360" value="0"><br><br>
+    <input id="h-range" type="range" min="0" max="360" value="0">
+    <canvas id="h-bar" width="340" height="12"></canvas><br><br>
 
     <label><input type="checkbox" id="alpha-toggle"> Alpha</label><br>
 
@@ -636,6 +637,22 @@ for (var i = 0; i < buttons.length; i++) {
         }, 700);
     };
 }
+
+var hBar = document.getElementById("h-bar");
+var hCtx = hBar.getContext("2d");
+
+function drawHueBar(){
+    var w = hBar.width;
+    var h = hBar.height;
+
+    for (var x = 0; x < w; x++) {
+        var hue = (x / w) * 360;
+        var rgb = hsvToRgb(hue, 100, 100);
+        hCtx.fillStyle = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
+        hCtx.fillRect(x, 0, 1, h);
+    }
+}
+drawHueBar();
 
 updateUI();
 </script>
