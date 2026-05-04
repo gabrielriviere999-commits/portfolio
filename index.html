@@ -65,7 +65,7 @@ body {
 }
 
 /* Style général des boutons d'onglets */
-.tab-button span {
+.tab-button {
     font-family: monospace;
     font-size: 14px;
     padding: 6px 12px;
@@ -81,14 +81,24 @@ body {
 }
 
 /* Hover */
-.tab-button span:hover {
+.tab-button:hover {
     background-color: #D8D8D8;
 }
 
 /* Bouton actif */
-.tab-button span.active {
-    border-color: #808080 #FFFFFF #FFFFFF #808080;
+.tab-button-active {
+    font-family: monospace;
+    font-size: 14px;
+    padding: 6px 12px;
     background-color: #B0B0B0;
+    border: 2px solid;
+    border-color: #808080 #FFFFFF #FFFFFF #808080;
+    cursor: pointer;
+    box-sizing: border-box;
+    color: black;
+    padding: 10px 12px;
+    opacity: 0.8;
+    vertical-align: middle;
 }
 
 .tab-button, .win98-select {
@@ -175,10 +185,10 @@ body {
             <option value="stages.html">Stages</option>
             <option value="astuces.html">Astuces</option>
         </select></a>
-    <a class="tab-button"><span class="active">Accueil</span></a>
-    <a class="tab-button" href="bts.html"><span>BTS</span></a>
-    <a class="tab-button" href="stages.html"><span>Stages</span></a>
-    <a class="tab-button" href="astuces.html"><span>Astuces</span></a>
+    <a class="tab-button-active">Accueil</a>
+    <a class="tab-button" href="bts.html">BTS</a>
+    <a class="tab-button" href="stages.html">Stages</a>
+    <a class="tab-button" href="astuces.html">Astuces</a>
 </div>
 
 <!-- Contenu -->
