@@ -74,9 +74,9 @@ body {
     padding: 2px;
     top: 0;
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 3px;
+    white-space: nowrap;
+    overflow-x: auto;
+    font-size: 0px;
 }
 
 .navbar.hide {
@@ -88,18 +88,8 @@ body {
     top: 0 !important;
 }
 
-/* --- Onglets --- */
-.tab {
-    display: flex;
-    align-items: center;
-    margin-top: 0;
-    width: 100%;
-    white-space: nowrap;
-    overflow-x: auto
-}
-
 /* Style général des boutons d'onglets */
-.tab button, .tab span {
+.tab-button span {
     font-family: monospace;
     font-size: 14px;
     padding: 6px 12px;
@@ -107,39 +97,29 @@ body {
     border: 2px solid;
     border-color: #FFFFFF #808080 #808080 #FFFFFF;
     cursor: pointer;
-    margin-right: 2px;
     box-sizing: border-box;
     color: black;
-}
-
-/* Ajustement spécial pour les onglets dans la navbar (meilleur rendu Win98) */
-.navbar .tab button, .navbar .tab span {
     padding: 10px 12px;
     opacity: 0.8;
+    vertical-align: middle;
 }
 
 /* Hover */
-.tab button:hover, .tab span:hover {
+.tab-button span:hover {
     background-color: #D8D8D8;
 }
 
 /* Bouton actif */
-.tab button.active, .tab span.active {
+.tab-button span.active {
     border-color: #808080 #FFFFFF #FFFFFF #808080;
     background-color: #B0B0B0;
 }
 
-.tab span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.tab a, .win98-select {
+.tab-button, .win98-select {
     text-decoration: none;
 }
 
-.tab a:focus, .win98-select:focus, .tab button:focus {
+.tab-button:focus, .win98-select:focus {
 	filter: brightness(0.8)
 }
 
@@ -278,7 +258,6 @@ body {
 }
 
 .slide-buttons {
-    display: flex;
     gap: 10px;
     pointer-events: none;
 }
@@ -331,19 +310,17 @@ select {
     <option value="donations.html">Soutenir le site</option>
 </select>
 <a href="search.html" class="win98-select">Q</a>
-    <div class="tab">
-		<a><select class="win98-select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex = 0;">
+		<select class="win98-select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex = 0;">
             <option value="">tab?</option>
             <option value="index.html">Accueil</option>
             <option value="bts.html">BTS</option>
             <option value="stages.html">Stages</option>
             <option disabled="astuces.html">Astuces</option>
-        </select></a>
-    <a href="index.html"><span>Accueil</span></a>
-    <a href="bts.html"><span>BTS</span></a>
-    <a href="stages.html"><span>Stages</span></a>
-    <a><span class="active">Astuces</span></a>
-    </div>
+        </select>
+    <a class="tab-button" href="index.html"><span>Accueil</span></a>
+    <a class="tab-button" href="bts.html"><span>BTS</span></a>
+    <a class="tab-button" href="stages.html"><span>Stages</span></a>
+    <a class="tab-button"><span class="active">Astuces</span></a>
 </div>
 
 <!-- Contenu -->
