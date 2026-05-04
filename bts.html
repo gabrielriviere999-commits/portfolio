@@ -43,7 +43,9 @@ body {
 
 /* --- Barre de navigation --- */
 .navbar {
-    background-color: rgba(0, 0, 0, .2);
+    background-color: #C0C0C0;
+    border: 2px solid;
+    border-color: #fff #404040 #404040 #fff;
     position: fixed;
     z-index: 1000;
     padding: 2px;
@@ -67,37 +69,25 @@ body {
 .tab-button {
     font-family: monospace;
     font-size: 14px;
-    padding: 6px 12px;
+    padding: 8px 10px;
     background-color: #C0C0C0;
     border: 2px solid;
     border-color: #FFFFFF #808080 #808080 #FFFFFF;
     cursor: pointer;
     box-sizing: border-box;
     color: black;
-    padding: 10px 12px;
-    opacity: 0.8;
     vertical-align: middle;
 }
 
 /* Hover */
-.tab-button:hover {
+.tab-button:hover:not(.tab-button-active) {
     background-color: #D8D8D8;
 }
 
 /* Bouton actif */
 .tab-button-active {
-    font-family: monospace;
-    font-size: 14px;
-    padding: 6px 12px;
     background-color: #B0B0B0;
-    border: 2px solid;
     border-color: #808080 #FFFFFF #FFFFFF #808080;
-    cursor: pointer;
-    box-sizing: border-box;
-    color: black;
-    padding: 10px 12px;
-    opacity: 0.8;
-    vertical-align: middle;
 }
 
 .tab-button, .win98-select {
@@ -113,7 +103,6 @@ body {
     font-family: monospace;
     font-size: 14px;
     background-color: #C0C0C0;
-    opacity: 0.8;
     border: 2px solid;
     border-color: #FFFFFF #808080 #808080 #FFFFFF;
     color: black;
@@ -121,8 +110,8 @@ body {
     box-sizing: border-box;
 
     /* Forme carrée */
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     padding: 0;
     margin: 0;
     margin-right: 2px;
@@ -134,7 +123,7 @@ body {
 
     /* Centrage du symbole */
     text-align: center;
-    line-height: 36px;
+    line-height: 32px;
 
     /* Empêche les décalages */
     display: inline-block;
@@ -314,7 +303,7 @@ summary {
             <option value="astuces.html">Astuces</option>
         </select>
     <a class="tab-button" href="index.html">Accueil</a>
-    <a class="tab-button-active">BTS</a>
+    <a class="tab-button tab-button-active">BTS</a>
     <a class="tab-button" href="stages.html">Stages</a>
     <a class="tab-button" href="astuces.html">Astuces</a>
 </div>
