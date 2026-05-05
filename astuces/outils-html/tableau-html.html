@@ -1076,11 +1076,11 @@ function cleanLibreOfficeHTML(html) {
   // 2. Supprimer balises parasites MAIS garder <br>, <b>, <i>, <u>, <strong>, <em>
   var garbageTags = ["span", "font", "p"]; 
   garbageTags.forEach(function(tag) {
-    var nodes = table.querySelectorAll(tag);
-  forEachNode(nodes, function(n) {
-      while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n);
-      n.parentNode.removeChild(n);
-  });
+      var nodes = table.querySelectorAll(tag);
+      forEachNode(nodes, function(n) {
+          while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n);
+          n.parentNode.removeChild(n);
+      });
   });
 
   // 3. Convertir align="center" → style="text-align:center"
