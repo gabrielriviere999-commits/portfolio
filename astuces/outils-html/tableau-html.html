@@ -1069,54 +1069,54 @@ function cleanLibreOfficeHTML(html) {
   var all = table.querySelectorAll("*");
 
   // 1. Supprimer classes LibreOffice
-  all.forEach(function(el) {
-    el.removeAttribute("class");
+  forEachNode(all, function(el) {
+      el.removeAttribute("class");
   });
 
   // 2. Supprimer balises parasites MAIS garder <br>, <b>, <i>, <u>, <strong>, <em>
   var garbageTags = ["span", "font", "p"]; 
   garbageTags.forEach(function(tag) {
     var nodes = table.querySelectorAll(tag);
-    nodes.forEach(function(n) {
+  forEachNode(nodes, function(n) {
       while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n);
-      n.remove();
-    });
+      n.parentNode.removeChild(n);
+  });
   });
 
   // 3. Convertir align="center" → style="text-align:center"
-  all.forEach(function(el) {
-    var a = el.getAttribute("align");
-    if (a) {
-      el.style.textAlign = a;
-      el.removeAttribute("align");
-    }
+  forEachNode(all, function(el) {
+      var a = el.getAttribute("align");
+      if (a) {
+          el.style.textAlign = a;
+          el.removeAttribute("align");
+      }
   });
 
   // 4. Supprimer attributs inutiles
-  all.forEach(function(el) {
-    el.removeAttribute("valign");
-    el.removeAttribute("width");
-    el.removeAttribute("height");
-    el.removeAttribute("bgcolor");
-    el.removeAttribute("border");
-    el.removeAttribute("cellpadding");
-    el.removeAttribute("cellspacing");
-    el.removeAttribute("sdval");
-    el.removeAttribute("sdnum");
+  forEachNode(all, function(el) {
+      el.removeAttribute("valign");
+      el.removeAttribute("width");
+      el.removeAttribute("height");
+      el.removeAttribute("bgcolor");
+      el.removeAttribute("border");
+      el.removeAttribute("cellpadding");
+      el.removeAttribute("cellspacing");
+      el.removeAttribute("sdval");
+      el.removeAttribute("sdnum");
   });
 
   // 5. Supprimer bordures inline
-  all.forEach(function(el) {
-    el.style.border = "";
-    el.style.borderColor = "";
-    el.style.borderWidth = "";
+  forEachNode(all, function(el) {
+      el.style.border = "";
+      el.style.borderColor = "";
+      el.style.borderWidth = "";
   });
 
   // 6. Supprimer styles vides
-  all.forEach(function(el) {
-    if (el.getAttribute("style") === "") {
-      el.removeAttribute("style");
-    }
+  forEachNode(all, function(el) {
+      if (el.getAttribute("style") === "") {
+          el.removeAttribute("style");
+      }
   });
 
   return table.outerHTML;
