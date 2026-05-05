@@ -169,38 +169,50 @@ function copyTreeColored(btn) {
     // 2. Supprimer les onclick=""
     html = html.replace(/ onclick="[^"]*"/g, "");
 
-    // 3. Ajouter class="file" sur les fichiers (pas de slash final)
-    html = html.replace(/├── ([^<]*[^\/])</g, '├── <span class="file">$1</span><');
-    html = html.replace(/└── ([^<]*[^\/])</g, '└── <span class="file">$1</span><');
+    // 3. Sauvegarder les commentaires
+    var comments = [];
+    html = html.replace(/<span style="color:#888">.*?<\/span>/g, function(m){
+        comments.push(m);
+        return "§COMMENT§";
+    });
 
-    // 4. Colorer les symboles ASCII en vert
+    // 4. Colorer les symboles ASCII
     html = html.replace(/(├──|└──|│)/g, '<span class="ascii">$1</span>');
 
-    // 5. Générer le bloc HTML complet
+    // 5. Colorer les fichiers (sans toucher aux espaces)
+    html = html.replace(
+        /(<span class="ascii">├──<\/span>|<span class="ascii">└──<\/span>)(?!\s*<span class="folder">)\s*([^<\n][^<\n]*)/g,
+        '$1 <span class="file">$2</span>'
+    );
+
+    // 6. Restaurer les commentaires
+    var i = 0;
+    html = html.replace(/§COMMENT§/g, () => comments[i++]);
+
+    // 7. Générer le bloc HTML complet
     var finalHtml =
         '<style>\n' +
         'pre.tree{font-family:monospace;white-space:pre;background:black;padding:5px;overflow-x:auto;}\n' +
-        'pre.tree .folder{color:#4af;}\n' +    // dossiers bleu
-        'pre.tree .file{color:#0f0;}\n' +      // fichiers vert
-        'pre.tree .ascii{color:#0f0;}\n' +     // symboles ASCII vert
+        'pre.tree .folder{color:#4af;}\n' +
+        'pre.tree .file{color:#0f0;}\n' +
+        'pre.tree .ascii{color:#0f0;}\n' +
         '</style>\n' +
         '<pre class="tree">\n' +
         html +
         '</pre>';
 
-    // 6. Copier dans un textarea invisible
+    // 8. Copier
     var textarea = document.createElement("textarea");
     textarea.value = finalHtml;
     document.body.appendChild(textarea);
-
     textarea.select();
     document.execCommand("copy");
     document.body.removeChild(textarea);
 
-    // 7. Feedback visuel
+    // 9. Feedback
     var old = btn.innerHTML;
     btn.innerHTML = "Arborescence colorée copiée !";
-    setTimeout(function () { btn.innerHTML = old; }, 800);
+    setTimeout(() => btn.innerHTML = old, 800);
 }
 
 function restoreTree() {
