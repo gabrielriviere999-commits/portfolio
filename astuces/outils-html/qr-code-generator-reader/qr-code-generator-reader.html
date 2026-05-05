@@ -66,7 +66,14 @@ input:hover {
   width: 24px;
   height: 24px;
   border: 2px inset #808080;
-  background: black;
+}
+
+#qrPreview {
+background-color:black;
+}
+
+#bgPreview {
+background-color:white;
 }
 
 .hex-input {
@@ -81,7 +88,6 @@ input:hover {
 
 .palette {
   margin-top: 6px;
-  opacity: 0;
 }
 
 .palette div {
@@ -139,6 +145,8 @@ input[type="file"]:active {
   background: #000000;
   border: 2px inset #808080;
 }
+
+
 </style>
 </head>
 <body>
@@ -160,14 +168,14 @@ input[type="file"]:active {
     </div>
 
     <div class="palette">
-      <div data-col="#000000"></div>
-      <div data-col="#FFFFFF"></div>
-      <div data-col="#FF0000"></div>
-      <div data-col="#00FF00"></div>
-      <div data-col="#0000FF"></div>
-      <div data-col="#FFFF00"></div>
-      <div data-col="#FF00FF"></div>
-      <div data-col="#00FFFF"></div>
+      <div data-col="#000000" style="background:#000"></div>
+      <div data-col="#FFFFFF" style="background:#fff"></div>
+      <div data-col="#FF0000" style="background:#f00"></div>
+      <div data-col="#00FF00" style="background:#0f0"></div>
+      <div data-col="#0000FF" style="background:#00f"></div>
+      <div data-col="#FFFF00" style="background:#ff0"></div>
+      <div data-col="#FF00FF" style="background:#f0f"></div>
+      <div data-col="#00FFFF" style="background:#0ff"></div>
     </div>
   </div>
 
@@ -180,14 +188,14 @@ input[type="file"]:active {
     </div>
 
     <div class="palette">
-      <div data-col="#FFFFFF"></div>
-      <div data-col="#000000"></div>
-      <div data-col="#CCCCCC"></div>
-      <div data-col="#808080"></div>
-      <div data-col="#FFAAAA"></div>
-      <div data-col="#AAFFAA"></div>
-      <div data-col="#AAAAFF"></div>
-      <div data-col="#FFFFAA"></div>
+      <div data-col="#FFFFFF" style="background:#fff"></div>
+      <div data-col="#000000" style="background:#000"></div>
+      <div data-col="#CCCCCC" style="background:#ccc"></div>
+      <div data-col="#808080" style="background:#808080"></div>
+      <div data-col="#FFAAAA" style="background:#faa"></div>
+      <div data-col="#AAFFAA" style="background:#afa"></div>
+      <div data-col="#AAAAFF" style="background:#aaf"></div>
+      <div data-col="#FFFFAA" style="background:#ffa"></div>
     </div>
 
     <label>Opacité du fond :</label>
