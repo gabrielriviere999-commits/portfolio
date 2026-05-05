@@ -556,7 +556,6 @@ function initColorPicker(hexInputId, previewId, callback, skipInit) {
   var items = palette.querySelectorAll("div");
 
   for (var i = 0; i < items.length; i++) {
-    items[i].style.background = items[i].dataset.col;
     items[i].onclick = function () {
       applyColor(this.dataset.col);
     };
@@ -564,7 +563,6 @@ function initColorPicker(hexInputId, previewId, callback, skipInit) {
 
   // Ne déclenche pas generateQR au chargement
   applyColor(input.value, false);
-  palette.style.opacity = "1";
 }
 
 var bgSlider = document.getElementById("bgOpacity");
