@@ -169,25 +169,40 @@ function copyTreeColored(btn) {
     // 2. Supprimer les onclick=""
     html = html.replace(/ onclick="[^"]*"/g, "");
 
-    // 3. Sauvegarder les commentaires
+    // 3. Sauvegarder les commentaires (ES3)
     var comments = [];
-    html = html.replace(/<span style="color:#888">.*?<\/span>/g, function(m){
+    html = html.replace(/<span style="color:#888">[\s\S]*?<\/span>/g, function(m){
         comments.push(m);
         return "§COMMENT§";
     });
 
-    // 4. Colorer les symboles ASCII
-    html = html.replace(/(├──|└──|│)/g, '<span class="ascii">$1</span>');
+    // 4. Colorer les symboles ASCII (ES3 OK)
+    html = html.replace(/├──/g, '<span class="ascii">├──</span>');
+    html = html.replace(/└──/g, '<span class="ascii">└──</span>');
+    html = html.replace(/│/g,   '<span class="ascii">│</span>');
 
-    // 5. Colorer les fichiers (sans toucher aux espaces)
+    // 5. Colorer les fichiers (ES3, sans lookahead)
+    //    Règle : si après le symbole ASCII il n'y a PAS <span class="folder">
+    //    alors c'est un fichier → ajouter un espace + <span class="file">
     html = html.replace(
-        /(<span class="ascii">├──<\/span>|<span class="ascii">└──<\/span>)(?!\s*<span class="folder">)\s*([^<\n][^<\n]*)/g,
-        '$1 <span class="file">$2</span>'
+        /(<span class="ascii">(?:├──|└──)<\/span>)(\s*)([^<\n][^<\n]*)/g,
+        function(_, ascii, spaces, name) {
+
+            // Si c'est un dossier → NE PAS toucher
+            if (name.indexOf('<span class="folder">') === 0) {
+                return ascii + spaces + name;
+            }
+
+            // Sinon → fichier → ajouter un espace obligatoire
+            return ascii + ' <span class="file">' + name + '</span>';
+        }
     );
 
     // 6. Restaurer les commentaires
     var i = 0;
-    html = html.replace(/§COMMENT§/g, () => comments[i++]);
+    html = html.replace(/§COMMENT§/g, function(){
+        return comments[i++];
+    });
 
     // 7. Générer le bloc HTML complet
     var finalHtml =
@@ -201,7 +216,7 @@ function copyTreeColored(btn) {
         html +
         '</pre>';
 
-    // 8. Copier
+    // 8. Copier (ES3)
     var textarea = document.createElement("textarea");
     textarea.value = finalHtml;
     document.body.appendChild(textarea);
@@ -212,7 +227,7 @@ function copyTreeColored(btn) {
     // 9. Feedback
     var old = btn.innerHTML;
     btn.innerHTML = "Arborescence colorée copiée !";
-    setTimeout(() => btn.innerHTML = old, 800);
+    setTimeout(function () { btn.innerHTML = old; }, 800);
 }
 
 function restoreTree() {
