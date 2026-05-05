@@ -207,6 +207,7 @@ input[type="file"]:active {
 
   <button id="export-png">Exporter PNG</button>
   <button id="export-jpg">Exporter JPG</button>
+  <button id="export-svg">Exporter SVG</button>
 </div>
 
 <div class="section">
@@ -237,6 +238,8 @@ input[type="file"]:active {
 <script src="qrcode.js"></script>
 
 <script>
+var qr = null;
+
 /* ============================
    UTF‑8 / Base64
 ============================ */
@@ -352,7 +355,7 @@ function generateQR() {
   var value = text.value.trim();
   qrDiv.innerHTML = "";
 
-  var qr = qrcode(0, 'H');
+  qr = qrcode(0, 'H');
   qr.addData(value, 'Byte');
   qr.make();
 
@@ -407,6 +410,52 @@ function download(filename, dataUrl) {
   document.body.removeChild(a);
 }
 
+document.getElementById("export-svg").onclick = function () {
+  if (!qr) {
+    alert("Aucun QR à exporter.");
+    return;
+  }
+
+  var count = qr.getModuleCount();
+  var cell = 10;
+  var size = count * cell;
+
+  // Couleurs choisies par l’utilisateur
+  var fg = document.getElementById("qrColor").value;
+  var bg = document.getElementById("bgColor").value;
+  var bgOpacity = parseFloat(document.getElementById("bgOpacity").value);
+
+  // Convertir opacité en 0–1 pour SVG
+  var bgOpacitySVG = bgOpacity;
+
+  // Début du SVG
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">';
+
+  // Fond
+  svg += '<rect width="100%" height="100%" fill="' + bg + '" fill-opacity="' + bgOpacitySVG + '"/>';
+
+  // Modules QR
+  for (var y = 0; y < count; y++) {
+    for (var x = 0; x < count; x++) {
+      if (qr.isDark(y, x)) {
+        svg += '<rect x="' + (x * cell) + '" y="' + (y * cell) + '" width="' + cell + '" height="' + cell + '" fill="' + fg + '"/>';
+      }
+    }
+  }
+
+  svg += '</svg>';
+
+  // Téléchargement
+  var blob = new Blob([svg], { type: "image/svg+xml" });
+  var url = URL.createObjectURL(blob);
+
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "qr-code.svg";
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
 /* ============================
    DÉCODAGE FICHIER
 ============================ */
