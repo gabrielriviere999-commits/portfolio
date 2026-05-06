@@ -170,7 +170,10 @@ td.selected {
     <div class="color" data-col="#ff9900" style="background:#f90"></div>
     <div class="color" data-col="#ffff00" style="background:#ff0"></div>
     <input type="text" id="hexColorInput" placeholder="#RRGGBB" maxlength="7">
-  <button id="applyHexColor">OK</button>
+  <button id="applyHexColor">OK</button>|
+  <label for="importTableId">ID tableau :</label>
+  <input id="importTableId" type="text" value="tableau1">
+  <button id="applyTableId">Appliquer l'ID au code</button>
   </div>
 </div>
 
@@ -1227,6 +1230,28 @@ document.getElementById('updateFromCode').onclick = function() {
         document.documentElement.style.setProperty("--global-text-align", globalStyles.textAlign);
     }
   }
+};
+
+function applyIdEverywhere(newId) {
+    var box = document.getElementById("codeBox");
+    var code = box.value;
+
+    // 1. Mettre l'ID dans <table>
+    if (code.indexOf('id="') !== -1) {
+        code = code.replace(/id="[^"]*"/, 'id="' + newId + '"');
+    } else {
+        code = code.replace("<table", '<table id="' + newId + '"');
+    }
+
+    // 2. Mettre l'ID devant chaque td dans le <style>
+    code = code.replace(/td\s*\{/g, "#" + newId + " td{");
+
+    box.value = code;
+}
+
+document.getElementById("applyTableId").onclick = function() {
+    var wantedId = document.getElementById("importTableId").value;
+    applyIdEverywhere(wantedId);
 };
 
 function rebindTableEvents() {
