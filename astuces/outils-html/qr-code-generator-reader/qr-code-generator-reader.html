@@ -419,30 +419,19 @@ function download(filename, dataUrl) {
 }
 
 document.getElementById("export-svg").onclick = function () {
-  if (!qr) {
-    alert("Aucun QR à exporter.");
-    return;
-  }
+  if (!qr) return;
 
   var count = qr.getModuleCount();
   var cell = 10;
   var size = count * cell;
 
-  // Couleurs choisies par l’utilisateur
   var fg = document.getElementById("qrColor").value;
   var bg = document.getElementById("bgColor").value;
   var bgOpacity = parseFloat(document.getElementById("bgOpacity").value);
 
-  // Convertir opacité en 0–1 pour SVG
-  var bgOpacitySVG = bgOpacity;
-
-  // Début du SVG
   var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">';
+  svg += '<rect width="100%" height="100%" fill="' + bg + '" fill-opacity="' + bgOpacity + '"/>';
 
-  // Fond
-  svg += '<rect width="100%" height="100%" fill="' + bg + '" fill-opacity="' + bgOpacitySVG + '"/>';
-
-  // Modules QR
   for (var y = 0; y < count; y++) {
     for (var x = 0; x < count; x++) {
       if (qr.isDark(y, x)) {
@@ -453,7 +442,6 @@ document.getElementById("export-svg").onclick = function () {
 
   svg += '</svg>';
 
-  // Téléchargement
   var blob = new Blob([svg], { type: "image/svg+xml" });
   var url = URL.createObjectURL(blob);
 
