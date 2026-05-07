@@ -1,0 +1,134 @@
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Titre du document</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 20px; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
+    .page { max-width: 900px; margin: 0 auto 30px; padding: 20px 30px; border: 2px solid; }
+    h1, h2, h3, h4 { font-weight: 600; margin-top: 1.2em; margin-bottom: 0.4em; }
+    h1 { text-align: center; margin-top: 0; }
+    h2 { border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+    p { margin: 0.3em 0; white-space: pre-wrap; overflow-wrap: break-word;}
+    code { font-family: monospace; font-size: 0.9em; background-color: #f0f0f0; padding: 1px 3px; }
+    pre { margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre; overflow-x: auto; }
+    .code-block { margin: 0.6em 0; padding: 10px 12px; background-color: black; color: white; border: 1px solid #000; }
+    .figure { margin: 0.8em 0; padding: 10px 12px; background-color: #E2E6F0; border: 1px solid; border-left-width: 4px; border-left-color: #2B4F81; font-family: monospace; font-size: 0.9em; white-space: pre; overflow-x: auto; }
+    .section-title { font-weight: 600; margin-top: 1em; margin-bottom: 0.3em; }
+    .note { margin: 0.6em 0; padding: 8px 10px; border-left: 4px solid #f0ad4e; background-color: #fff8e5; font-size: 0.9em; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.9em; }
+    .page-break { margin: 20px auto; border: none; border-top: 2px dashed #000; max-width: 200px; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <h1>Notice : Tableau HTML</h1>
+  <h2>Barre d'outils</h2>
+<style>
+#tableau1 td{border:1px solid #000;}
+#tableau1 td{color:#000000;}
+#tableau1 td{background-color:#B4C7DC;}
+</style>
+<table id="tableau1" style="border-collapse: collapse;">
+  <tbody>
+    <tr>
+<td style="background-color: rgb(114, 159, 207);">Bouton</td>
+<td style="background-color: rgb(114, 159, 207);">Utilité</td>
+    </tr>
+    <tr>
+<td>Ligne au-dessus</td>
+<td rowspan="6">
+<div>Dimensions du tableau.</div>
+</td>
+    </tr>
+    <tr>
+<td>Ligne en dessous</td>
+    </tr>
+    <tr>
+<td>Supprimer ligne</td>
+    </tr>
+    <tr>
+<td>Colonne à gauche</td>
+    </tr>
+    <tr>
+<td>Colonne à droite</td>
+    </tr>
+    <tr>
+<td>Supprimer colonne</td>
+    </tr>
+    <tr>
+<td>Fusionner</td>
+<td>La sélection multiple doit être activée pour pouvoir fusionner des cellules.</td>
+    </tr>
+    <tr>
+<td>Défusionner</td>
+<td>Il n'est pas possible de défusionner à plusieurs endroits en même temps.</td>
+    </tr>
+    <tr>
+<td>Gauche</td>
+<td rowspan="3">Changer l'alignement du texte, si aucune cellule n'est sélectionnée, le texte de toutes les cellules sera changé de façon globale.</td>
+    </tr>
+    <tr>
+<td>Centre</td>
+    </tr>
+    <tr>
+<td>Droite</td>
+    </tr>
+    <tr>
+<td>Texte</td>
+<td rowspan="2">Changer la couleur du texte et/ou du fond, si aucune cellule n'est sélectionnée, toutes les cellules seront affectées de façon globale.</td>
+    </tr>
+    <tr>
+<td>Fond</td>
+    </tr>
+    <tr>
+<td>Bordure</td>
+<td>Changer la couleur de la bordure du tableau.</td>
+    </tr>
+    <tr>
+<td>Épaisseur</td>
+<td>Changer l'épaisseur de la bordure du tableau.</td>
+    </tr>
+    <tr>
+<td>Effacer style</td>
+<td>Effacer l'alignement et les couleurs, si aucune cellule n'est sélectionnée, le style de toutes les cellules seront effacées, sauf le style global.</td>
+    </tr>
+  </tbody>
+</table>
+<div class="note">
+<b>Note :</b> Sur certains navigateurs modernes, pour passer à la ligne sans&nbsp; créer de div, juste &lt;br&gt;, il faut faire shift + entrée.</div>
+
+<h2>Code du tableau</h2>
+<ul>
+<li>Pour que le code du tableau s'affiche, cliquer sur <b>Générer le code</b>.</li>
+<li>Pour copier le code du tableau, cliquer sur <b>Copier le code</b>.</li>
+<li>Pour éviter les conflits de styles globaux lors de l'utilisation de 
+plusieurs tableaux dans une même page HTML, il faut définir un ID pour 
+chaque tableau, pour rechanger d'ID, il faut d'abord regénérer le code.</li>
+<li>Pour afficher le tableau à partir du code, cliquer sur <b>Mettre à jour le tableau</b>.</li>
+<li>Pour nettoyer un tableau HTML exporté par LibreOffice Calc, cliquer sur <b>Importer HTML</b> ou faire glisser le fichier dans la zone du code, puis cocher <b>Nettoyer LibreOffice</b>, puis <b>Mettre à jour le tableau</b>, <b>Générer le code</b>, <b>Mettre à jour le tableau</b>.</li>
+</ul>
+<ul>
+</ul>
+<h3>Tableau sans ID :</h3>
+<div class="code-block">
+<pre>&lt;style&gt;<br>td{border:1px solid #000;}<br>td{color:#000000;}<br>
+<br>&lt;/style&gt;<br>
+<br>&lt;table style="border-collapse:collapse;"&gt;<br>  &lt;tbody&gt;<br>    &lt;tr&gt;&lt;td&gt;Cellule 1,1&lt;/td&gt;&lt;td&gt;Cellule 1,2&lt;/td&gt;&lt;td&gt;Cellule 1,3&lt;/td&gt;<br>    &lt;/tr&gt;<br>    &lt;tr&gt;&lt;td&gt;Cellule 2,1&lt;/td&gt;&lt;td&gt;Cellule 2,2&lt;/td&gt;&lt;td&gt;Cellule 2,3&lt;/td&gt;<br>    &lt;/tr&gt;<br>    &lt;tr&gt;&lt;td&gt;Cellule 3,1&lt;/td&gt;&lt;td&gt;Cellule 3,2&lt;/td&gt;&lt;td&gt;Cellule 3,3&lt;/td&gt;<br>    &lt;/tr&gt;<br>  &lt;/tbody&gt;<br>&lt;/table&gt;</pre>
+</div>
+<h3>Tableau avec ID :</h3>
+<div class="code-block">
+<pre>&lt;style&gt;<br>#tableau1 td{border:1px solid #000;}<br>#tableau1 td{color:#000000;}<br>
+<br>&lt;/style&gt;<br>
+<br>&lt;table id="tableau1" style="border-collapse:collapse;"&gt;<br>  &lt;tbody&gt;<br>    &lt;tr&gt;&lt;td&gt;Cellule 1,1&lt;/td&gt;&lt;td&gt;Cellule 1,2&lt;/td&gt;&lt;td&gt;Cellule 1,3&lt;/td&gt;<br>    &lt;/tr&gt;<br>    &lt;tr&gt;&lt;td&gt;Cellule 2,1&lt;/td&gt;&lt;td&gt;Cellule 2,2&lt;/td&gt;&lt;td&gt;Cellule 2,3&lt;/td&gt;<br>    &lt;/tr&gt;<br>    &lt;tr&gt;&lt;td&gt;Cellule 3,1&lt;/td&gt;&lt;td&gt;Cellule 3,2&lt;/td&gt;&lt;td&gt;Cellule 3,3&lt;/td&gt;<br>    &lt;/tr&gt;<br>  &lt;/tbody&gt;<br>&lt;/table&gt;</pre>
+</div>
+<div class="note">
+<b>Note :</b> Lors du changement d'ID, il faut cliquer sur <b>Générer le tableau</b> puis <b>Appliquer l'ID au code</b> car sinon les classes entre les balises &lt;style&gt;&lt;/style&gt; seront accumulées.<br>
+<div class="code-block">
+<pre>&lt;style&gt;<br>#tableau1 #tableau2 td{border:1px solid #000;}<br>#tableau1 #tableau2 td{color:#000000;}<br>
+<br>&lt;/style&gt;</pre>
+</div>
+</div>
+</div>
+</body>
+</html>
