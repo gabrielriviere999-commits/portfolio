@@ -27,6 +27,7 @@ button:active {
 }
 
 button:hover { background:#E0E0E0; }
+
 #ascii {
     background: #111;
     color: #0f0;
@@ -41,6 +42,7 @@ button:hover { background:#E0E0E0; }
     cursor: pointer;
     text-decoration: underline;
 }
+.comment { color: #888; }
 .action {
     color: #fa4;
     cursor: pointer;
@@ -67,7 +69,7 @@ button:hover { background:#E0E0E0; }
     <button onclick="restoreTree()">Restaurer</button>
 
 <script>
-// --- Données (ES3) ---
+// --- Données ---
 var root = { name: "racine/", folders: [], files: [] };
 // chemin courant sous forme d'indices de dossiers : [] = racine, [0] = premier dossier, etc.
 var currentPath = [];
@@ -169,19 +171,19 @@ function copyTreeColored(btn) {
     // 2. Supprimer les onclick=""
     html = html.replace(/ onclick="[^"]*"/g, "");
 
-    // 3. Sauvegarder les commentaires (ES3)
+    // 3. Sauvegarder les commentaires
     var comments = [];
-    html = html.replace(/<span style="color:#888">[\s\S]*?<\/span>/g, function(m){
+    html = html.replace(/<span class="comment">[\s\S]*?<\/span>/g, function(m){
         comments.push(m);
         return "§COMMENT§";
     });
 
-    // 4. Colorer les symboles ASCII (ES3 OK)
+    // 4. Colorer les symboles ASCII
     html = html.replace(/├──/g, '<span class="ascii">├──</span>');
     html = html.replace(/└──/g, '<span class="ascii">└──</span>');
     html = html.replace(/│/g,   '<span class="ascii">│</span>');
 
-    // 5. Colorer les fichiers (ES3, sans lookahead)
+    // 5. Colorer les fichiers
     //    Règle : si après le symbole ASCII il n'y a PAS <span class="folder">
     //    alors c'est un fichier → ajouter un espace + <span class="file">
     html = html.replace(
@@ -211,12 +213,13 @@ function copyTreeColored(btn) {
         'pre.tree .folder{color:#4af;}\n' +
         'pre.tree .file{color:#0f0;}\n' +
         'pre.tree .ascii{color:#0f0;}\n' +
+        'pre.tree .comment{color:#888;}\n' +
         '</style>\n' +
         '<pre class="tree">\n' +
         html +
         '</pre>';
 
-    // 8. Copier (ES3)
+    // 8. Copier
     var textarea = document.createElement("textarea");
     textarea.value = finalHtml;
     document.body.appendChild(textarea);
@@ -465,7 +468,7 @@ function buildAscii(node, prefix, pathArr) {
             out += prefix + branch +
                 '<span class="folder" onclick="enterFolder(\'' + pathStr + '\')">' +
                 child.name + '/</span>' +
-                (child.comment ? ' <span style="color:#888">← ' + child.comment + '</span>' : '') +
+                (child.comment ? ' <span class="comment">← ' + child.comment + '</span>' : '') +
                 '<span class="action" onclick="editCommentFolder(\'' + pathStr + '\')">[C]</span>' +
                 '<span class="action" onclick="renameFolder(\'' + pathStr + '\')">[R]</span>' +
                 '<span class="action" onclick="deleteFolder(\'' + pathStr + '\')">[X]</span>' +
@@ -479,7 +482,7 @@ function buildAscii(node, prefix, pathArr) {
             var file = node.files[entry.index];
 
             out += prefix + branch + file.name +
-                (file.comment ? ' <span style="color:#888">← ' + file.comment + '</span>' : '') +
+                (file.comment ? ' <span class="comment">← ' + file.comment + '</span>' : '') +
                 '<span class="action" onclick="editCommentFile(\'' + filePathStr + '\',' + entry.index + ')">[C]</span>' +
                 '<span class="action" onclick="renameFile(\'' + filePathStr + '\',' + entry.index + ')">[R]</span>' +
                 '<span class="action" onclick="deleteFile(\'' + filePathStr + '\',' + entry.index + ')">[X]</span>' +
