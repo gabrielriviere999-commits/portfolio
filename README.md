@@ -32,5 +32,5 @@ Portfolio/
     ├── Documentations pour s'initier à Linux
     ├── Scripts et applications pour Linux
     ├── Applications pour Android
-    └── Outils HTML    ← Outils utilisables dans le navigateur sans installation
+    └── Outils HTML ← Outils utilisables dans le navigateur sans installation
 ```
