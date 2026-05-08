@@ -195,8 +195,18 @@ function copyTreeColored(btn) {
                 return ascii + spaces + name;
             }
 
-            // Sinon → fichier → ajouter un espace obligatoire
-            return ascii + ' <span class="file">' + name + '</span>';
+            // Si c'est un commentaire → NE PAS toucher
+            if (name.indexOf('<span class="comment">') === 0) {
+                return ascii + spaces + name;
+            }
+
+            // Si c'est vide → NE PAS ajouter d'espace
+            if (name.replace(/\s+/g, "") === "") {
+                return ascii + spaces + name;
+            }
+
+            // Sinon → fichier
+            return ascii + spaces + '<span class="file">' + name + '</span>';
         }
     );
 
