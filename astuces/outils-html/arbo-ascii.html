@@ -527,7 +527,7 @@ function buildAsciiText(node, prefix, pathArr) {
         if (entry.type === "folder") {
             var child = node.folders[entry.index];
             out += prefix + branch + child.name + "/" +
-                   (child.comment ? "    ← " + child.comment : "") +
+                   (child.comment ? " ← " + child.comment : "") +
                    "\n";
 
             var childPath = pathArr.concat([entry.index]);
@@ -536,7 +536,7 @@ function buildAsciiText(node, prefix, pathArr) {
         } else {
             var file = node.files[entry.index];
             out += prefix + branch + file.name +
-                   (file.comment ? "    ← " + file.comment : "") +
+                   (file.comment ? " ← " + file.comment : "") +
                    "\n";
         }
     }
