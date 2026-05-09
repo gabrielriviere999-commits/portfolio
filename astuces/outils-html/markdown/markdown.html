@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Éditeur Markdown (.md)</title>
+
+<style>
+/* --- Style Win98 --- */
+body {
+  background:#C0C0C0;
+  font-family:system-ui, sans-serif;
+  margin:0;
+  padding:10px;
+  padding-top: 200px;
+}
+
+.toolbar {
+  display: block;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  margin-bottom: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  max-height: 225px;
+  padding: 4px;
+  z-index: 9999;
+}
+
+.toolbar.hidden {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+button {
+  background:#d4d0c8;
+  border:2px solid;
+  border-color:#fff #404040 #404040 #fff;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+}
+button:active {
+  border-color:#404040 #fff #fff #404040;
+  background:#c0c0c0;
+}
+button:hover { background:#E0E0E0; }
+
+textarea { width: 100%; height: 200px; font-family: monospace; }
+</style>
+</head>
+
+<body>
+
+<div class="toolbar" style="opacity: 0.8;">
+
+  <!-- Titres -->
+  <button data-md="# ">H1</button>
+  <button data-md="## ">H2</button>
+  <button data-md="### ">H3</button>
+  <button data-md="#### ">H4</button>
+  <button data-md="##### ">H5</button>
+  <button data-md="###### ">H6</button>
+|
+  <!-- Texte -->
+  <button data-md="**texte**">Gras</button>
+  <button data-md="*texte*">Italique</button>
+  <button data-md="~~texte~~">Barré</button>
+|
+  <!-- Code -->
+  <button data-md="`code`">Code</button>
+  <button data-md="CODEBLOCK">Bloc</button>
+|
+  <!-- Structure -->
+  <button data-md="- ">Liste</button>
+  <button data-md="> ">Citation</button>
+  <button data-md="---">HR</button>
+|
+  <!-- Liens -->
+  <button data-md="[texte](url)">Lien</button>
+|
+  <button onclick="copyMd(event)">Copier</button>
+</div>
+
+<textarea id="md-input" wrap="off"></textarea>
+
+<div id="preview" style="
+  margin-top:10px;
+  padding:10px;
+  background:white;
+  border:2px solid #fff;
+  border-color:#fff #404040 #404040 #fff;
+  font-family:system-ui, sans-serif;
+  overflow-x:auto;
+"></div>
+
+<a href="credits.txt">À propos de la librarie / Crédits</a>
+
+<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
+
+<script src="marked.min.js"></script>
+<script>
+/* --- Sécurisation Marked --- */
+var markedOK = false;
+try {
+  markedOK = (window.marked && typeof marked.parse === "function");
+} catch(e) {
+  markedOK = false;
+}
+
+/* --- Fallback Markdown --- */
+function convertLinks(html) {
+  var result = "";
+  var i = 0;
+
+  while (i < html.length) {
+    // Cherche [
+    var startText = html.indexOf("[", i);
+    if (startText === -1) {
+      result += html.substring(i);
+      break;
+    }
+
+    // Ajoute tout ce qui est avant [
+    result += html.substring(i, startText);
+
+    // Cherche ]
+    var endText = html.indexOf("]", startText);
+    if (endText === -1) {
+      result += html.substring(startText);
+      break;
+    }
+
+    // Cherche (
+    if (html.charAt(endText + 1) !== "(") {
+      // Pas un lien Markdown → on copie tel quel
+      result += html.substring(startText, endText + 1);
+      i = endText + 1;
+      continue;
+    }
+
+    var startUrl = endText + 2;
+    var endUrl = html.indexOf(")", startUrl);
+    if (endUrl === -1) {
+      result += html.substring(startText);
+      break;
+    }
+
+    // Extraction
+    var text = html.substring(startText + 1, endText);
+    var url  = html.substring(startUrl, endUrl);
+
+    // Remplacement
+    result += '<a href="' + url + '" target="_blank">' + text + '</a>';
+
+    // Continue après )
+    i = endUrl + 1;
+  }
+
+  return result;
+}
+
+function fallbackMarkdown(md) {
+  var html = md;
+
+  // Titres
+  html = html.replace(/^###### (.*)$/gm, "<h6>$1</h6>");
+  html = html.replace(/^##### (.*)$/gm, "<h5>$1</h5>");
+  html = html.replace(/^#### (.*)$/gm, "<h4>$1</h4>");
+  html = html.replace(/^### (.*)$/gm, "<h3>$1</h3>");
+  html = html.replace(/^## (.*)$/gm, "<h2>$1</h2>");
+  html = html.replace(/^# (.*)$/gm, "<h1>$1</h1>");
+
+  // HR
+  html = html.replace(/^---$/gm, "<hr>");
+
+  // Gras / italique
+  html = html.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+  html = html.replace(/\*(.*?)\*/g, "<i>$1</i>");
+  html = html.replace(/~~(.*?)~~/g, "<s>$1</s>");
+
+  // Citation
+  html = html.replace(/^> (.*)$/gm, "<blockquote>$1</blockquote>");
+
+  // Liste
+  html = html.replace(/^- (.*)$/gm, "<li>$1</li>");
+
+  // Bloc de code
+  html = html.replace(/```([\s\S]*?)```/gm, "<pre><code>$1</code></pre>");
+
+  // Code inline
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  // Liens
+  html = convertLinks(html);
+
+  return html;
+}
+
+/* --- Insertion --- */
+function insertAtCursor(textarea, text) {
+  try {
+    var start = textarea.selectionStart;
+    var end   = textarea.selectionEnd;
+
+    if (start === undefined || end === undefined) throw "no-selection";
+
+    var value = textarea.value;
+    textarea.value =
+      value.substring(0, start) + text + value.substring(end);
+
+    textarea.selectionStart = textarea.selectionEnd = start + text.length;
+  } catch(e) {
+    // fallback
+    textarea.value += text;
+  }
+}
+
+/* --- Mise à jour de l'aperçu --- */
+function updatePreview() {
+  var md = document.getElementById("md-input").value;
+  var preview = document.getElementById("preview");
+
+  try {
+    if (markedOK) {
+      preview.innerHTML = marked.parse(md);
+    } else {
+      preview.innerHTML = fallbackMarkdown(md);
+    }
+  } catch(e) {
+    // Sécurité ultime : rien ne plante
+    preview.innerHTML = fallbackMarkdown(md);
+  }
+}
+
+/* --- Toolbar (sans querySelectorAll) --- */
+function initToolbar() {
+  var toolbar = document.getElementsByClassName("toolbar")[0];
+  var buttons = toolbar.getElementsByTagName("button");
+  var textarea = document.getElementById("md-input");
+
+  for (var i = 0; i < buttons.length; i++) {
+    (function(btn) {
+      var mdText = btn.getAttribute("data-md");
+      if (!mdText) return;
+
+      btn.onclick = function() {
+        if (mdText === "CODEBLOCK") {
+          mdText = "```\ncode\n```\n";
+        }
+        insertAtCursor(textarea, mdText);
+        textarea.focus();
+        updatePreview();
+      };
+    })(buttons[i]);
+  }
+}
+
+/* --- pas d'input → keyup --- */
+var mdInput = document.getElementById("md-input");
+mdInput.onkeyup = updatePreview;
+
+/* --- Toggle toolbar --- */
+var toolbar = document.getElementsByClassName('toolbar')[0];
+var toggleBtn = document.getElementById('toggleToolbarBtn');
+var toolbarVisible = true;
+
+toggleBtn.onclick = function(e) {
+  e.stopPropagation();
+  toolbarVisible = !toolbarVisible;
+  toolbar.className = toolbarVisible ? 'toolbar' : 'toolbar hidden';
+};
+
+/* --- Init --- */
+window.onload = function() {
+  initToolbar();
+  updatePreview();
+};
+</script>
+
+</body>
+</html>
