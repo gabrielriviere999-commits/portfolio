@@ -79,6 +79,7 @@ textarea { width: 100%; height: 200px; font-family: monospace; }
 |
   <!-- Structure -->
   <button data-md="- ">Liste</button>
+  <button data-md="1. ">Liste num</button>
   <button data-md="> ">Citation</button>
   <button data-md="---">HR</button>
 |
@@ -190,6 +191,9 @@ function fallbackMarkdown(md) {
 
   // Liste
   html = html.replace(/^- (.*)$/gm, "<li>$1</li>");
+
+  // Listes numérotées
+  html = html.replace(/^\d+\. (.*)$/gm, "<li>$1</li>");
 
   // Bloc de code
   html = html.replace(/```([\s\S]*?)```/gm, "<pre><code>$1</code></pre>");
