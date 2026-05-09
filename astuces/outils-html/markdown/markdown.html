@@ -286,6 +286,28 @@ window.onload = function() {
   initToolbar();
   updatePreview();
 };
+
+/* --- Copier --- */
+function copyMd(e) {
+  var code = document.getElementById('md-input');
+
+  var temp = document.createElement("textarea");
+  temp.value = code.value;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (err) {}
+
+  document.body.removeChild(temp);
+
+  var btn = e.target;
+  var old = btn.textContent;
+  btn.textContent = "Copié !";
+
+  setTimeout(function() {
+    btn.textContent = old;
+  }, 800);
+}
 </script>
 
 </body>
