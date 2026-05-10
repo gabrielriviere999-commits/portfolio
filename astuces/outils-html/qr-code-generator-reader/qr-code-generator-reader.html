@@ -157,7 +157,7 @@ input[type="file"]:active {
   <h2>Générer un QR Code</h2>
 
   <label for="text">Texte / Numéro</label>
-  <textarea id="text"></textarea>
+  <textarea id="text" wrap="off"></textarea>
 
   <!-- === COLOR PICKER QR === -->
   <div class="color-picker">
@@ -225,7 +225,7 @@ input[type="file"]:active {
   <canvas id="canvas-file" style="display:none;"></canvas>
 
   <pre id="decode-file" style="
-    white-space: pre-wrap;
+    overflow-x:auto;
     background:#FFFFFF;
     padding:10px;
     border:2px inset #808080;
