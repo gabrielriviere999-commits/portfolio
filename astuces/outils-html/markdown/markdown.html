@@ -177,7 +177,7 @@ function wrapSelection(textarea, before, after) {
     textarea.selectionEnd   = start + before.length + selected.length;
 
   } catch(e) {
-    // 3DS fallback : insertion brute
+    // fallback : insertion brute
     textarea.value += before + after;
   }
 }
