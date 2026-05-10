@@ -116,98 +116,6 @@ try {
   markedOK = false;
 }
 
-/* --- Fallback Markdown --- */
-function convertLinks(html) {
-  var result = "";
-  var i = 0;
-
-  while (i < html.length) {
-    // Cherche [
-    var startText = html.indexOf("[", i);
-    if (startText === -1) {
-      result += html.substring(i);
-      break;
-    }
-
-    // Ajoute tout ce qui est avant [
-    result += html.substring(i, startText);
-
-    // Cherche ]
-    var endText = html.indexOf("]", startText);
-    if (endText === -1) {
-      result += html.substring(startText);
-      break;
-    }
-
-    // Cherche (
-    if (html.charAt(endText + 1) !== "(") {
-      // Pas un lien Markdown → on copie tel quel
-      result += html.substring(startText, endText + 1);
-      i = endText + 1;
-      continue;
-    }
-
-    var startUrl = endText + 2;
-    var endUrl = html.indexOf(")", startUrl);
-    if (endUrl === -1) {
-      result += html.substring(startText);
-      break;
-    }
-
-    // Extraction
-    var text = html.substring(startText + 1, endText);
-    var url  = html.substring(startUrl, endUrl);
-
-    // Remplacement
-    result += '<a href="' + url + '" target="_blank">' + text + '</a>';
-
-    // Continue après )
-    i = endUrl + 1;
-  }
-
-  return result;
-}
-
-function fallbackMarkdown(md) {
-  var html = md;
-
-  // Titres
-  html = html.replace(/^###### (.*)$/gm, "<h6>$1</h6>");
-  html = html.replace(/^##### (.*)$/gm, "<h5>$1</h5>");
-  html = html.replace(/^#### (.*)$/gm, "<h4>$1</h4>");
-  html = html.replace(/^### (.*)$/gm, "<h3>$1</h3>");
-  html = html.replace(/^## (.*)$/gm, "<h2>$1</h2>");
-  html = html.replace(/^# (.*)$/gm, "<h1>$1</h1>");
-
-  // HR
-  html = html.replace(/^---$/gm, "<hr>");
-
-  // Gras / italique
-  html = html.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-  html = html.replace(/\*(.*?)\*/g, "<i>$1</i>");
-  html = html.replace(/~~(.*?)~~/g, "<s>$1</s>");
-
-  // Citation
-  html = html.replace(/^> (.*)$/gm, "<blockquote>$1</blockquote>");
-
-  // Liste
-  html = html.replace(/^- (.*)$/gm, "<li>$1</li>");
-
-  // Listes numérotées
-  html = html.replace(/^\d+\. (.*)$/gm, "<li>$1</li>");
-
-  // Bloc de code
-  html = html.replace(/```([\s\S]*?)```/gm, "<pre><code>$1</code></pre>");
-
-  // Code inline
-  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
-
-  // Liens
-  html = convertLinks(html);
-
-  return html;
-}
-
 /* --- Insertion --- */
 function insertAtCursor(textarea, text) {
   try {
@@ -233,14 +141,10 @@ function updatePreview() {
   var preview = document.getElementById("preview");
 
   try {
-    if (markedOK) {
-      preview.innerHTML = marked.parse(md);
-    } else {
-      preview.innerHTML = fallbackMarkdown(md);
-    }
+    preview.innerHTML = marked.parse(md);
   } catch(e) {
-    // Sécurité ultime : rien ne plante
-    preview.innerHTML = fallbackMarkdown(md);
+    // Sécurité : on affiche le texte brut si Marked plante
+    preview.textContent = md;
   }
 }
 
