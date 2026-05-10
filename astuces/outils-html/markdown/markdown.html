@@ -148,7 +148,40 @@ function updatePreview() {
   }
 }
 
-/* --- Toolbar (sans querySelectorAll) --- */
+/* --- Toolbar --- */
+function wrapSelection(textarea, before, after) {
+  try {
+    var start = textarea.selectionStart;
+    var end   = textarea.selectionEnd;
+
+    if (start === undefined || end === undefined) throw "no-selection";
+
+    var value = textarea.value;
+    var selected = value.substring(start, end);
+
+    // Si rien n'est sélectionné → insertion normale
+    if (start === end) {
+      textarea.value =
+        value.substring(0, start) + before + after + value.substring(end);
+      textarea.selectionStart = textarea.selectionEnd = start + before.length;
+      return;
+    }
+
+    // Sinon → on entoure la sélection
+    textarea.value =
+      value.substring(0, start) +
+      before + selected + after +
+      value.substring(end);
+
+    textarea.selectionStart = start + before.length;
+    textarea.selectionEnd   = start + before.length + selected.length;
+
+  } catch(e) {
+    // 3DS fallback : insertion brute
+    textarea.value += before + after;
+  }
+}
+
 function initToolbar() {
   var toolbar = document.getElementsByClassName("toolbar")[0];
   var buttons = toolbar.getElementsByTagName("button");
@@ -163,7 +196,18 @@ function initToolbar() {
         if (mdText === "CODEBLOCK") {
           mdText = "```\ncode\n```\n";
         }
-        insertAtCursor(textarea, mdText);
+        if (mdText === "**texte**") {
+          wrapSelection(textarea, "**", "**");
+        }
+        else if (mdText === "*texte*") {
+          wrapSelection(textarea, "*", "*");
+        }
+        else if (mdText === "~~texte~~") {
+          wrapSelection(textarea, "~~", "~~");
+        }
+        else {
+          insertAtCursor(textarea, mdText);
+        }
         textarea.focus();
         updatePreview();
       };
