@@ -12,7 +12,6 @@ body {
   font-family:system-ui, sans-serif;
   margin:0;
   padding:10px;
-  padding-top: 200px;
 }
 
 .toolbar {
@@ -21,7 +20,6 @@ body {
   border: 2px solid;
   border-color: #fff #404040 #404040 #fff;
   margin-bottom: 10px;
-  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -29,13 +27,6 @@ body {
   max-height: 225px;
   padding: 4px;
   z-index: 9999;
-}
-
-.toolbar.hidden {
-  visibility: hidden;
-  height: 0;
-  padding: 0;
-  overflow: hidden;
 }
 
 button {
@@ -53,13 +44,13 @@ button:active {
 }
 button:hover { background:#E0E0E0; }
 
-textarea { width: 100%; height: 200px; font-family: monospace; }
+textarea { width: 100%; height: 500px; font-family: monospace; }
 </style>
 </head>
 
 <body>
 
-<div class="toolbar" style="opacity: 0.8;">
+<div class="toolbar">
 
   <!-- Titres -->
   <button data-md="# ">H1</button>
@@ -92,8 +83,6 @@ textarea { width: 100%; height: 200px; font-family: monospace; }
 
 <h2>Markdown</h2>
 <textarea id="md-input" wrap="off"></textarea>
-
-<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
 
 <script>
 /* --- Insertion --- */
@@ -176,17 +165,6 @@ function initToolbar() {
     })(buttons[i]);
   }
 }
-
-/* --- Toggle toolbar --- */
-var toolbar = document.getElementsByClassName('toolbar')[0];
-var toggleBtn = document.getElementById('toggleToolbarBtn');
-var toolbarVisible = true;
-
-toggleBtn.onclick = function(e) {
-  e.stopPropagation();
-  toolbarVisible = !toolbarVisible;
-  toolbar.className = toolbarVisible ? 'toolbar' : 'toolbar hidden';
-};
 
 /* --- Init --- */
 window.onload = function() {
