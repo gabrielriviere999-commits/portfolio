@@ -1,4 +1,0 @@
-Library utilisée :
-
-marked v15.0.12 - MIT - Christopher Jeffrey
-https://cdn.jsdelivr.net/npm/marked/marked.min.js
