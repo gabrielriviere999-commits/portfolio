@@ -68,6 +68,7 @@ Notes :
 
 Compatibilité : Android 4.4+
 
+
 Extraction Code Couleur
 -----------------------
 Permet d'extraire le code couleur à l'écran.
