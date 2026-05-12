@@ -9,7 +9,6 @@ Sur ce site, vous trouverez des fichiers organisés sous forme de galeries :
 
 Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - Rechercher : ouvre la page de recherche de fichiers
-- Liste des fichiers : ouvre la page d'explorateur de fichiers
 - Soutenir le site : ouvre la page de dons
 
 Le bouton Q sert à lancer la recherche de fichiers.
@@ -32,5 +31,5 @@ Portfolio/
     ├── Documentations pour s'initier à Linux
     ├── Scripts et applications pour Linux
     ├── Applications pour Android
-    └── Outils HTML ← Outils utilisables dans le navigateur sans installation
+    └── Outils HTML    ← Outils utilisables dans le navigateur sans installation
 ```
