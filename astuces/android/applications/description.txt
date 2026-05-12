@@ -17,9 +17,11 @@ tableau généré, lorsque le tableau atteint la largeur maximale, le texte pass
 à la ligne dans les cellules.
 Le bouton "Valeurs par défaut" permet de rétablir le séparateur et la largeur
 par défaut.
-Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Vous pouvez la lancer depuis les réglages rapides ou l'écran d'accueil.
 Vous devez utiliser une police régulière dans l'application concernée comme monospace ou mono...
 ou regular... pour que le tableau soit affiché sans décalages lors de la lecture.
+
+Compatibilité : Android 4.0.1+
 
 
 ÉDITEUR DE TEXTE
@@ -36,14 +38,14 @@ Fonctionnalités principales :
 - Dupliquer la ligne courante
 - Supprimer la ligne courante
 - Coller à la position exacte du curseur
-- Bouton pour aller directement en bas du fichier
+- Boutons ↓ et ↑ pour aller tout en bas ou en haut du fichier
 - Le bouton Style ouvre un menu qui permet de changer la taille et la
 couleur du texte et la transparence d'arrière plan
-- Compatibilité Android 4.1+
+- Compatibilité Android 4.4+
 
 Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
 - Ctrl + Z : Annuler
-- Ctrl + Y : Rétablir
+- Ctrl + Y ou Ctrl + Shift + Z : Rétablir
 - Ctrl + A : Tout sélectionner
 - Ctrl + C : Copier
 - Ctrl + V : Coller
@@ -63,17 +65,14 @@ Notes :
 - L'application lit et écrit en UTF-8.
 - Les caractères invalides apparaissent sous la forme du symbole �.
 - La taille de police suit les réglages du système.
-- Le défilement vertical peut être contrôlé via le bouton "↓".
 
-Auteur :
-Gabriel - Projet minimaliste, optimisé pour la compatibilité et la simplicité.
-
+Compatibilité : Android 4.4+
 
 Extraction Code Couleur
 -----------------------
 Permet d'extraire le code couleur à l'écran.
 Codes couleurs disponibles dans le bouton Formats : HEX, RGB, HSL, HSV, CMYK
-Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Vous pouvez la lancer depuis les réglages rapides ou l'écran d'accueil.
 Cette application utilise PROJECT_MEDIA, pour accorder l'autorisation permanente :
 Commande adb : adb shell appops set com.gabriel.extractioncodecouleur PROJECT_MEDIA allow
 Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
@@ -86,13 +85,15 @@ Sélecteur Couleur
 -----------------
 Palette de couleurs qui montre le code en HEX, RGB, HSL, HSV.
 L'option alpha ne fonctionne que pour HEX.
-Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Vous pouvez la lancer depuis les réglages rapides ou l'écran d'accueil.
+
+Compatibilité : Android 4.0.1+
 
 
 OCR Écran
 ---------
 Permet d'extraire le texte à l'écran.
-Vous pouvez la lancer par la quick tile ou l'écran d'accueil.
+Vous pouvez la lancer depuis les réglages rapides ou l'écran d'accueil.
 Cette application utilise PROJECT_MEDIA, pour accorder l'autorisation permanente :
 Commande adb : adb shell appops set com.gabriel.ocrecran PROJECT_MEDIA allow
 Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
