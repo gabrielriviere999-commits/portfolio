@@ -41,7 +41,6 @@ Fonctionnalités principales :
 - Boutons ↓ et ↑ pour aller tout en bas ou en haut du fichier
 - Le bouton Style ouvre un menu qui permet de changer la taille et la
 couleur du texte et la transparence d'arrière plan
-- Compatibilité Android 4.4+
 
 Raccourcis clavier (clavier physique ou Unexpected Keyboard) :
 - Ctrl + Z : Annuler
