@@ -1,0 +1,4 @@
+Library utilisée :
+
+Tesseract.js - Apache 2.0
+https://github.com/naptha/tesseract.js

@@ -183,10 +183,7 @@ button:hover { background:#E0E0E0; }
 </div>
 
         <div class="win98-box">
-            Image
-            <div id="dropzone">
-                Glissez-déposez une image ici<br>
-                ou<br>
+            <div id="dropzone">Glissez-déposez une image ici ou
                 <input type="file" id="fileInput" accept="image/*">
             </div>
             <div id="canvasWrapper">
@@ -201,7 +198,6 @@ button:hover { background:#E0E0E0; }
         <div id="cross" class="cross" style="display:none;"></div>
 
         <div class="win98-box">
-            Couleur
             <div id="info">
                 <div class="line">
                     <div id="preview"></div>
@@ -263,6 +259,7 @@ function prevent(e) {
 }
 
 /* --- Drag & Drop --- */
+dropzone.onclick = function(){ fileInput.click(); };
 dropzone.ondragover = function(e){ prevent(e); dropzone.className = "hover"; };
 dropzone.ondragenter = function(e){ prevent(e); dropzone.className = "hover"; };
 dropzone.ondragleave = function(e){ prevent(e); dropzone.className = ""; };
