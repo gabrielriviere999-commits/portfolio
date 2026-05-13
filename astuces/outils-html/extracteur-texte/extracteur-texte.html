@@ -218,7 +218,7 @@ function runOCR(){
     }
 
     // Taille max pour accélérer l'OCR
-    var maxSize = 900;
+    var maxSize = 1600;
     var scale = Math.min(maxSize / selW, maxSize / selH, 1);
 
     var newW = Math.floor(selW * scale);
@@ -237,7 +237,7 @@ function runOCR(){
     var d = imgData.data;
     for (var i = 0; i < d.length; i += 4) {
         var v = (d[i] + d[i+1] + d[i+2]) / 3;
-        var bw = v < 140 ? 0 : 255;
+        var bw = v < 180 ? 0 : 255;
         d[i] = d[i+1] = d[i+2] = bw;
     }
     tctx.putImageData(imgData, 0, 0);
