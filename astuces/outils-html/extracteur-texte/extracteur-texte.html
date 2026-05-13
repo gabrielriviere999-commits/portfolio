@@ -217,22 +217,43 @@ function runOCR(){
         return;
     }
 
+    // Taille max pour accélérer l'OCR
+    var maxSize = 900;
+    var scale = Math.min(maxSize / selW, maxSize / selH, 1);
+
+    var newW = Math.floor(selW * scale);
+    var newH = Math.floor(selH * scale);
+
     var temp = document.createElement("canvas");
-    temp.width = selW;
-    temp.height = selH;
+    temp.width = newW;
+    temp.height = newH;
     var tctx = temp.getContext("2d");
 
-    tctx.drawImage(canvas, selX, selY, selW, selH, 0, 0, selW, selH);
+    // Redimensionnement
+    tctx.drawImage(canvas, selX, selY, selW, selH, 0, 0, newW, newH);
+
+    // Noir & blanc (accélère beaucoup)
+    var imgData = tctx.getImageData(0, 0, newW, newH);
+    var d = imgData.data;
+    for (var i = 0; i < d.length; i += 4) {
+        var v = (d[i] + d[i+1] + d[i+2]) / 3;
+        var bw = v < 140 ? 0 : 255;
+        d[i] = d[i+1] = d[i+2] = bw;
+    }
+    tctx.putImageData(imgData, 0, 0);
 
     document.getElementById("ocrOutput").textContent = "Analyse en cours...";
 
-    Tesseract.recognize(temp, 'eng')
-    .then(function(result){
-        document.getElementById("ocrOutput").textContent = result.data.text;
-    })
-    .catch(function(err){
-        document.getElementById("ocrOutput").textContent = "Erreur OCR : " + err;
-    });
+    // Lancer l'OCR dans un timeout pour libérer l'UI
+    setTimeout(function(){
+        Tesseract.recognize(temp, 'eng')
+        .then(function(result){
+            document.getElementById("ocrOutput").textContent = result.data.text;
+        })
+        .catch(function(err){
+            document.getElementById("ocrOutput").textContent = "Erreur OCR : " + err;
+        });
+    }, 50);
 }
 
 /* --- Évènements souris --- */
