@@ -751,8 +751,11 @@ function hasFileLikeExtension(name) {
 }
 
 function importTreeFromText() {
-    var txt = prompt("Collez ici la sortie de 'tree -a --noreport -N -F'");
-    if (!txt) return;
+    var txt = document.getElementById("importBox").value;
+    if (!txt) {
+        alert("Le champ de texte est vide.");
+        return;
+    }
 
     var newRoot = importTreeUniversal(txt);
     root = newRoot;
