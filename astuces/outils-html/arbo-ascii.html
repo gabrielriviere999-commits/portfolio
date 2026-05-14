@@ -6,8 +6,9 @@
 <title>Arborescence ASCII</title>
 <style>
 body {
-    font-family: monospace;
-    background: #C0C0C0;
+  font-family: monospace;
+  background: #C0C0C0;
+  padding-top: 120px;
 }
 
 button {
@@ -48,21 +49,44 @@ button:hover { background:#E0E0E0; }
     cursor: pointer;
     margin-left: 5px;
 }
+
+.toolbar {
+  display: block;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  max-height: 225px;
+  padding: 4px;
+  z-index: 9999;
+}
+
+.toolbar.hidden {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
 </style>
 </head>
 <body>
     <h2>Arborescence ASCII</h2>
 
-    <div>
+
+    <div class="toolbar" style="opacity: 0.8;">
         <button onclick="renameRoot()">Renommer racine</button>
         <button onclick="addFolder()">+ Dossier</button>
         <button onclick="addFile()">+ Fichier</button>
         <button onclick="goUp()">← Remonter</button>
         <button onclick="copyTree(this)">Copier texte</button>
         <button onclick="copyTreeColored(this)">Copier HTML couleur</button>
+        <p>Dossier courant : <span id="currentPath"></span></p>
     </div>
-
-    <p>Dossier courant : <span id="currentPath"></span></p>
+<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
 
     <div id="ascii"></div><br>
     <textarea id="importBox" style="width:100%;height:200px;" wrap="off"></textarea>
@@ -342,10 +366,11 @@ function renameFolder(pathStr) {
 
 function deleteFolder(pathStr) {
     var pathArr = stringToPath(pathStr);
-    if (!confirm("Supprimer ce dossier et tout son contenu ?")) return;
+    var node = getNodeByPath(pathArr);
+
+    if (!confirm('Supprimer le dossier "' + node.name + '" et tout son contenu ?')) return;
 
     if (pathArr.length === 0) {
-        // racine : on ne la supprime pas
         alert("Impossible de supprimer la racine.");
         return;
     }
@@ -356,7 +381,6 @@ function deleteFolder(pathStr) {
 
     parent.folders.splice(idx, 1);
 
-    // si le dossier courant était dedans, on remonte
     if (currentPath.length >= pathArr.length) {
         var same = true;
         var i;
@@ -390,7 +414,10 @@ function renameFile(pathStr, fileIndex) {
 function deleteFile(pathStr, fileIndex) {
     var pathArr = stringToPath(pathStr);
     var node = getNodeByPath(pathArr);
-    if (!confirm("Supprimer ce fichier ?")) return;
+    var file = node.files[fileIndex];
+
+    if (!confirm('Supprimer le fichier "' + file.name + '" ?')) return;
+
     node.files.splice(fileIndex, 1);
     render();
 }
@@ -545,6 +572,32 @@ function buildAsciiText(node, prefix, pathArr) {
 }
 
 render();
+
+// --- Toolbar ---
+var toolbar = document.getElementsByClassName('toolbar')[0];
+var toggleBtn = document.getElementById('toggleToolbarBtn');
+
+var toolbarVisible = true;
+
+toggleBtn.onmousedown = function(e) {
+  e = e || window.event;
+  e.cancelBubble = true;
+  if (e.stopPropagation) e.stopPropagation();
+};
+
+toggleBtn.onclick = function(e) {
+  e = e || window.event;
+  e.cancelBubble = true;
+  if (e.stopPropagation) e.stopPropagation();
+
+  toolbarVisible = !toolbarVisible;
+
+  if (toolbarVisible) {
+    toolbar.className = 'toolbar';
+  } else {
+    toolbar.className = 'toolbar hidden';
+  }
+};
 </script>
 
 </body>
