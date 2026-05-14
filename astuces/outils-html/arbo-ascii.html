@@ -91,6 +91,7 @@ button:hover { background:#E0E0E0; }
     <div id="ascii"></div><br>
     <textarea id="importBox" style="width:100%;height:200px;" wrap="off"></textarea>
     <button onclick="restoreTree()">Mettre à jour à partir du texte</button>
+    <button onclick="importTreeFromText()">Importer (commande tree)</button>
 
 <script>
 // --- Données ---
@@ -598,6 +599,166 @@ toggleBtn.onclick = function(e) {
     toolbar.className = 'toolbar hidden';
   }
 };
+
+// Parseur universel pour sortie "tree"
+// Entrée : texte brut de `tree` (avec ou sans -F)
+// Sortie : { name, folders, files, comment }
+
+function importTreeUniversal(text) {
+    // Normaliser les espaces insécables
+    text = text.replace(/\u00A0/g, " ");
+
+    var lines = text.split(/\r?\n/);
+    if (lines.length === 0) {
+        return { name: "/", folders: [], files: [], comment: "" };
+    }
+
+    // 1) Déterminer le nom de la racine
+    var first = trimLeft(lines[0]);
+    if (first === "." || first === "./") {
+        first = "/";
+    }
+    first = stripTreeSuffix(first); // enlève /, *, @, etc.
+    var root = { name: first, folders: [], files: [], comment: "" };
+
+    // Pile des niveaux
+    var stack = [root];
+
+    var i;
+    for (i = 1; i < lines.length; i++) {
+        var line = lines[i];
+        if (!line || !trim(line)) continue;
+
+        // Ignorer les lignes de résumé éventuelles
+        if (/^\d+\s+directories?,\s+\d+\s+files?/.test(trim(line))) {
+            continue;
+        }
+
+        // 2) Calculer le niveau d'indentation
+        var indentInfo = getTreeIndentLevel(line);
+        var level = indentInfo.level;
+        var content = indentInfo.content;
+
+        if (!content) continue;
+
+        // 3) Nettoyer le préfixe ├── / └──
+        content = content.replace(/^[├└]\──\s*/, "");
+        content = trim(content);
+
+        if (!content) continue;
+
+        // 4) Déterminer si dossier ou fichier (avec -F ou heuristique)
+        var isDir = false;
+        var rawName = content;
+
+        // Si -F : dossier = nom finissant par /
+        if (rawName.charAt(rawName.length - 1) === "/") {
+            isDir = true;
+            rawName = rawName.substring(0, rawName.length - 1);
+        } else {
+            // Heuristique : si pas de point et pas d'extension évidente → plutôt dossier
+            // mais on reste prudent : on laisse comme fichier si ça ressemble à un fichier
+            if (!hasFileLikeExtension(rawName)) {
+                isDir = true;
+            }
+        }
+
+        rawName = stripTreeSuffix(rawName); // enlève *, @, |, = éventuels
+
+        // 5) Ajuster la pile pour correspondre au niveau
+        while (stack.length > level + 1) {
+            stack.pop();
+        }
+        var parent = stack[stack.length - 1];
+
+        if (isDir) {
+            var folder = { name: rawName, folders: [], files: [], comment: "" };
+            parent.folders.push(folder);
+            stack.push(folder);
+        } else {
+            parent.files.push({ name: rawName, comment: "" });
+        }
+    }
+
+    return root;
+}
+
+// --------- Helpers ES3 compatibles ---------
+
+function trim(str) {
+    return str.replace(/^\s+|\s+$/g, "");
+}
+
+function trimLeft(str) {
+    return str.replace(/^\s+/, "");
+}
+
+// Détecter indentation et contenu utile d'une ligne "tree"
+function getTreeIndentLevel(line) {
+    var i = 0;
+    var level = 0;
+    var len = line.length;
+
+    // On parcourt les blocs "│   " ou "    "
+    while (i < len) {
+        var ch = line.charAt(i);
+        if (ch === " " || ch === "│" || ch === "│") {
+            // On regarde par blocs de 4 colonnes
+            var block = line.substr(i, 4);
+            if (block.indexOf("├") !== -1 || block.indexOf("└") !== -1) {
+                break;
+            }
+            i += 4;
+            level++;
+        } else if (ch === "├" || ch === "└") {
+            break;
+        } else {
+            i++;
+        }
+    }
+
+    // Sauter les espaces restants avant le symbole
+    while (i < len && (line.charAt(i) === " " || line.charAt(i) === "│")) {
+        i++;
+    }
+
+    // Si on tombe sur ├ ou └, on laisse le reste pour le nettoyage
+    if (i < len && (line.charAt(i) === "├" || line.charAt(i) === "└")) {
+        // on laisse tel quel, le nettoyage se fera après
+    }
+
+    return {
+        level: level,
+        content: line.substr(i)
+    };
+}
+
+// Enlever les suffixes de `tree -F` : *, @, |, =
+function stripTreeSuffix(name) {
+    var last = name.charAt(name.length - 1);
+    if (last === "*" || last === "@" || last === "|" || last === "=") {
+        return name.substring(0, name.length - 1);
+    }
+    return name;
+}
+
+// Heuristique simple : ressemble à un fichier si contient un point après le premier caractère
+function hasFileLikeExtension(name) {
+    var dot = name.indexOf(".");
+    if (dot <= 0) return false;
+    // on considère que quelque chose comme "README.md" ou "index.html" est un fichier
+    return true;
+}
+
+function importTreeFromText() {
+    var txt = prompt("Collez ici la sortie de 'tree -a --noreport -N -F'");
+    if (!txt) return;
+
+    var newRoot = importTreeUniversal(txt);
+    root = newRoot;
+    currentPath = [];
+    render();
+}
 </script>
 
 </body>
