@@ -76,7 +76,6 @@ button:hover { background:#E0E0E0; }
 <body>
     <h2>Arborescence ASCII</h2>
 
-
     <div class="toolbar" style="opacity: 0.8;">
         <button onclick="renameRoot()">Renommer racine</button>
         <button onclick="addFolder()">+ Dossier</button>
@@ -601,7 +600,7 @@ toggleBtn.onclick = function(e) {
 };
 
 // Parseur universel pour sortie "tree"
-// Entrée : texte brut de `tree` (avec ou sans -F)
+// Entrée : texte brut de "tree" (avec ou sans -F)
 // Sortie : { name, folders, files, comment }
 
 function importTreeUniversal(text) {
@@ -733,7 +732,7 @@ function getTreeIndentLevel(line) {
     };
 }
 
-// Enlever les suffixes de `tree -F` : *, @, |, =
+// Enlever les suffixes de "tree -F" : *, @, |, =
 function stripTreeSuffix(name) {
     var last = name.charAt(name.length - 1);
     if (last === "*" || last === "@" || last === "|" || last === "=") {
