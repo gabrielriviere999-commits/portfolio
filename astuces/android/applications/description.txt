@@ -118,3 +118,13 @@ Créer un fichier docs.js comme index de recherche pour la page search.html
 Ajouter un chemin comme /storage/emulated/0/Documents
 
 Compatibilité : Android 4.0.1+
+
+
+Arbo
+----
+Génèrer une arborescence de dossiers et fichiers dans un fichier HTML.
+Les couleurs des éléments peuvent être changés.
+Le nom de la racine peut être changée.
+Ajouter un chemin comme /storage/emulated/0/Documents
+
+Compatibilité : Android 4.0.1+
