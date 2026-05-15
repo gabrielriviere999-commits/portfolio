@@ -87,7 +87,7 @@ Palette de couleurs qui montre le code en HEX, RGB, HSL, HSV.
 L'option alpha ne fonctionne que pour HEX.
 Vous pouvez la lancer depuis les réglages rapides ou l'écran d'accueil.
 
-Compatibilité : Android 4.0.1+
+Compatibilité : Android 4.1+
 
 
 OCR Écran
