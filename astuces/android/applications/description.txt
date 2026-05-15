@@ -110,3 +110,9 @@ Depuis votre serveur ou un autre appareil du réseau : http://ipserveur:8080
 
 Depuis votre serveur : http://ipserveur:8080 ou http://localhost:8080 ou http://127.0.0.1:8080
 ou http://0.0.0.0:8080
+
+
+Indexeur
+--------
+Créer un fichier docs.js comme index de recherche pour la page search.html
+Ajouter un chemin comme /storage/emulated/0/Documents
