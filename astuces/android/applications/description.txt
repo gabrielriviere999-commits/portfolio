@@ -116,3 +116,5 @@ Indexeur
 --------
 Créer un fichier docs.js comme index de recherche pour la page search.html
 Ajouter un chemin comme /storage/emulated/0/Documents
+
+Compatibilité : Android 4.0.1+
