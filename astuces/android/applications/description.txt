@@ -2,7 +2,7 @@
    Applications
 ==================
 
-TABLEAU ASCII
+Tableau ASCII
 -------------
 Une application qui permet de faire des tableaux comme ceux générés par MySQL
 par exemple.
@@ -24,7 +24,7 @@ ou regular... pour que le tableau soit affiché sans décalages lors de la lectu
 Compatibilité : Android 4.0.1+
 
 
-ÉDITEUR DE TEXTE
+Éditeur de texte
 ----------------
 Un éditeur de texte simple, léger et compatible avec les appareils anciens.
 Conçu pour être rapide, minimaliste et fiable, sans dépendances lourdes ni
