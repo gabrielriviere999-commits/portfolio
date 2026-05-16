@@ -11,7 +11,7 @@ EXCLUDE_DIRS = {
 }
 
 EXCLUDE_FILES = {
-    ".gitignore", ".gitattributes"
+    ".gitignore", ".gitattributes", "arbo.html"
 }
 
 def build_tree(path):
