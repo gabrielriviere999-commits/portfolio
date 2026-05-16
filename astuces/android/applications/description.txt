@@ -122,7 +122,7 @@ Compatibilité : Android 4.0.1+
 
 Arbo
 ----
-Génèrer une arborescence de dossiers et fichiers dans un fichier HTML.
+Génèrer une arborescence de dossiers et fichiers dans un fichier arbo.html
 Les couleurs des éléments peuvent être changés.
 Le nom de la racine peut être changée.
 Chaque fichier est un lien menant vers lui.
