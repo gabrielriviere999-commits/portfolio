@@ -125,7 +125,7 @@ Arbo
 Génèrer une arborescence de dossiers et fichiers dans un fichier arbo.html
 Les couleurs des éléments peuvent être changés.
 Le nom de la racine peut être changée.
-Chaque fichier est un lien menant vers lui.
+Chaque fichier est un lien menant vers lui, une flèche à droite pour le télécharger.
 Ajouter un chemin comme /storage/emulated/0/Documents
 
 Compatibilité : Android 4.0.1+
