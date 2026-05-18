@@ -253,11 +253,6 @@ function copyTreeColored(btn) {
     textarea.select();
     document.execCommand("copy");
     document.body.removeChild(textarea);
-
-    // 9. Feedback
-    var old = btn.innerHTML;
-    btn.innerHTML = "HTML couleur copié !";
-    setTimeout(function () { btn.innerHTML = old; }, 800);
 }
 
 function restoreTree() {
