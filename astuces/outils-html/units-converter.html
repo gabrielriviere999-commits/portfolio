@@ -172,7 +172,6 @@
 <p>
   Résultat : <strong id="result">—</strong>
   <button id="copyBtn">Copier</button>
-  <span id="copyFeedback" style="margin-left:10px; color:green; display:none;">Copié !</span>
 </p>
 
 <script>
@@ -1283,7 +1282,7 @@ document.getElementById("inputValue").oninput = convert;
 })();
 
 // ===============================
-// 11. COPIE + FEEDBACK
+// 11. COPIER
 // ===============================
 document.getElementById("copyBtn").onclick = function () {
   var text = document.getElementById("result").innerHTML;
