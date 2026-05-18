@@ -126,9 +126,7 @@ Génèrer une arborescence de dossiers et fichiers dans un fichier arbo.html
 Les couleurs des éléments peuvent être changés.
 Le nom de la racine peut être changée.
 Chaque fichier est un lien menant vers lui, une flèche à droite pour le télécharger.
-Ajouter un chemin comme /storage/emulated/0/Documents
+Ajouter un chemin comme /storage/emulated/0/Documents puis le sélectionner.
 Fonctions export/import de l'ensemble des profils dans le fichier /storage/emulated/0/arbo-profils.json
-
-Note : Après l'import, relancer l'application, après avoir ajouté un chemin, recliquer dessus ou relancer.
 
 Compatibilité : Android 4.0.1+
