@@ -510,14 +510,6 @@ document.getElementById("copy-btn").onclick = function () {
   temp.select();
   document.execCommand("copy");
   document.body.removeChild(temp);
-
-  var btn = event.target;
-  var old = btn.textContent;
-  btn.textContent = "Copié !";
-
-  setTimeout(function() {
-    btn.textContent = old;
-  }, 800);
 };
 
 function initColorPicker(hexInputId, previewId, callback, skipInit) {
