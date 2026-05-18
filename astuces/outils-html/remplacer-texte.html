@@ -232,15 +232,6 @@ function copier() {
   try { document.execCommand("copy"); } catch (e) {}
 
   document.body.removeChild(temp);
-
-  // --- Feedback visuel ---
-  var btn = event.target;
-  var old = btn.textContent;
-  btn.textContent = "Copié !";
-
-  setTimeout(function() {
-    btn.textContent = old;
-  }, 800);
 }
 
 // Bouton Effacer tout

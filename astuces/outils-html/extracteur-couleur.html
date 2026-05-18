@@ -321,10 +321,6 @@ function copyText(id, btn){
     t.select();
     document.execCommand("copy");
     document.body.removeChild(t);
-
-    var old = btn.innerHTML;
-    btn.innerHTML = "Copié !";
-    setTimeout(function(){ btn.innerHTML = old; }, 700);
 }
 
 /* --- Conversions couleurs --- */

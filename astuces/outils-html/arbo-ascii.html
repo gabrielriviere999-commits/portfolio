@@ -177,14 +177,6 @@ function copyTree(btn) {
     textarea.select();
     document.execCommand("copy");
     document.body.removeChild(textarea);
-
-    // --- Feedback visuel propre et compatible ---
-    var old = btn.innerHTML;
-    btn.innerHTML = "Texte copié !";
-
-    setTimeout(function () {
-        btn.innerHTML = old;
-    }, 800);
 }
 
 function copyTreeColored(btn) {

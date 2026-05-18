@@ -1301,15 +1301,6 @@ document.getElementById("copyBtn").onclick = function () {
 
   // Supprimer le textarea
   document.body.removeChild(temp);
-
-  // Feedback visuel
-  var btn = event.target;
-  var old = btn.textContent;
-  btn.textContent = "Copié !";
-
-  setTimeout(function() {
-    btn.textContent = old;
-  }, 800);
 };
 
 document.getElementById("inputValue").value = "1";

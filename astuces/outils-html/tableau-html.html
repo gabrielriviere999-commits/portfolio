@@ -1324,14 +1324,6 @@ document.getElementById('copyCode').onclick = function(e) {
   try { document.execCommand("copy"); } catch (err) {}
 
   document.body.removeChild(temp);
-
-  var btn = e.target;
-  var old = btn.textContent;
-  btn.textContent = "Code copié !";
-
-  setTimeout(function() {
-    btn.textContent = old;
-  }, 800);
 };
 
 var toolbar = document.getElementsByClassName('toolbar')[0];

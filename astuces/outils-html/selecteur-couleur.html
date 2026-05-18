@@ -626,13 +626,6 @@ for (var i = 0; i < buttons.length; i++) {
         t.select();
         document.execCommand("copy");
         document.body.removeChild(t);
-
-        var old = btn.textContent;
-        btn.textContent = "Copié !";
-
-        setTimeout(function () {
-            btn.textContent = old;
-        }, 700);
     };
 }
 
