@@ -127,5 +127,7 @@ Les couleurs des éléments peuvent être changés.
 Le nom de la racine peut être changée.
 Chaque fichier est un lien menant vers lui, une flèche à droite pour le télécharger.
 Ajouter un chemin comme /storage/emulated/0/Documents
+Fonctions export/import de l'ensemble des profils dans le fichier /storage/emulated/0/arbo-profils.json
+Après ajout de chemin ou import, cliquer sur le chemin pour l'afficher correctement. 
 
 Compatibilité : Android 4.0.1+
