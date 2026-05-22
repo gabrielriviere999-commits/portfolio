@@ -103,12 +103,12 @@ def generate_html(tree, nb_folders, nb_files):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Arborescence</title>
 <style>
-body{{background:black;color:yellow;font-family:monospace;}}
+body{{background:black;color:#0f0;font-family:monospace;}}
 pre.tree{{white-space:pre;padding:5px;}}
-.folder{{color:red;}}
-.file{{color:orange;text-decoration:none;}}
+.folder{{color:#4af;}}
+.file{{color:#0f0;text-decoration:none;}}
 .file:hover{{text-decoration:underline;}}
-.ascii{{color:yellow;}}
+.ascii{{color:#0f0;}}
 .download{{display:inline-block;width:12px;height:12px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M10 7 V19 M5 13 L10 19 L15 13' stroke='cyan' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center;background-size:contain;}}
 </style>
 </head>
