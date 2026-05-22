@@ -186,15 +186,20 @@ function renderDiff(diff) {
   var summary = document.getElementById("summary");
   container.innerHTML = "";
 
-  var diffCount = 0;
+  var changedLines = {}; // ← on stocke les lignes modifiées
 
   for (var i = 0; i < diff.length; i++) {
     var entry = diff[i];
 
-    if (entry.type === "added" || entry.type === "removed") {
-      diffCount++;
+    // Comptage correct : on marque la ligne comme modifiée
+    if (entry.type === "added" && entry.bIndex != null) {
+        changedLines[entry.bIndex] = true;
+    }
+    if (entry.type === "removed" && entry.aIndex != null) {
+        changedLines[entry.aIndex] = true;
     }
 
+    // Rendu visuel
     var div = document.createElement("div");
     div.className = "line " + entry.type;
 
@@ -222,12 +227,16 @@ function renderDiff(diff) {
     container.appendChild(div);
   }
 
+  // Maintenant on compte les lignes modifiées
+  var diffCount = 0;
+  for (var k in changedLines) diffCount++;
+
   // Résumé
   if (diffCount === 0) {
     summary.innerHTML = "Identique";
     summary.style.color = "green";
   } else {
-    summary.innerHTML = diffCount + " lignes différentes";
+    summary.innerHTML = diffCount + " ligne" + (diffCount > 1 ? "s" : "") + " différente" + (diffCount > 1 ? "s" : "");
     summary.style.color = "red";
   }
 }
