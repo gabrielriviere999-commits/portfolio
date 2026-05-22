@@ -76,16 +76,16 @@ padding-left: 1em;
 </head>
 <body>
 <main>
-  <p style="font-size:14px;">Vous pouvez rechercher les noms ou les contenus des fichiers texte et .html mais uniquement les noms pour les .pdf et autres fichiers.</p>
-  <input id="search" onkeyup="doSearch()" placeholder="Rechercher..." aria-label="Champ de recherche">
-  <div id="count" style="margin: 0.5em 0; font-family: sans-serif;"></div>
-  <div id="results"></div>
+<p style="font-size:14px;">Vous pouvez rechercher les noms ou les contenus des fichiers texte et .html mais uniquement les noms pour les .pdf et autres fichiers.</p>
+<input id="search" onkeyup="doSearch()" placeholder="Rechercher..." aria-label="Champ de recherche">
+<div id="count" style="margin: 0.5em 0; font-family: sans-serif;"></div>
+<div id="results"></div>
 
-  <!-- Inclusion automatique de l'index généré -->
-  <script src="docs.js"></script>
+<!-- Inclusion automatique de l'index généré -->
+<script src="docs.js"></script>
 
-  <script>
-  console.log(docs); // Debug : vérifier que docs est bien chargé
+<script>
+console.log(docs); // Debug : vérifier que docs est bien chargé
 
 function doSearch() {
   var q = document.getElementById("search").value.toLowerCase();
@@ -130,7 +130,7 @@ window.onload = function() {
         c > 0 ? c + " résultat(s)" : "Aucun résultat";
   }
 };
-  </script>
+</script>
 </main>
 </body>
 </html>
