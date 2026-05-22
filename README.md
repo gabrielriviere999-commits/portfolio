@@ -7,9 +7,7 @@ Sur ce site, vous trouverez des fichiers organisés sous forme de galeries :
 - Pour voir le fichier dans un nouvel onglet, cliquez sur le bouton □
 - Pour télécharger le fichier, cliquez sur le bouton ↓
 
-Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
-- Rechercher : ouvre la page de recherche de fichiers
-- Soutenir le site : ouvre la page de dons
+Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche.
 
 Le bouton Q sert à lancer la recherche de fichiers.
 
