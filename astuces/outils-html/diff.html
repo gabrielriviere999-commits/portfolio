@@ -96,6 +96,7 @@ button:hover {
 
 <button onclick="compare()">Comparer</button>
 
+<div id="summary" style="margin-top:10px; font-weight:bold;"></div>
 <div id="result"></div>
 
 <script>
@@ -182,10 +183,17 @@ function simpleLineDiff(aLines, bLines) {
 
 function renderDiff(diff) {
   var container = document.getElementById("result");
+  var summary = document.getElementById("summary");
   container.innerHTML = "";
+
+  var diffCount = 0;
 
   for (var i = 0; i < diff.length; i++) {
     var entry = diff[i];
+
+    if (entry.type === "added" || entry.type === "removed") {
+      diffCount++;
+    }
 
     var div = document.createElement("div");
     div.className = "line " + entry.type;
@@ -212,6 +220,15 @@ function renderDiff(diff) {
     div.appendChild(ln);
     div.appendChild(content);
     container.appendChild(div);
+  }
+
+  // Résumé
+  if (diffCount === 0) {
+    summary.innerHTML = "Identique";
+    summary.style.color = "green";
+  } else {
+    summary.innerHTML = diffCount + " lignes différentes";
+    summary.style.color = "red";
   }
 }
 
