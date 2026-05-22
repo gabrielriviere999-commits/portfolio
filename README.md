@@ -7,7 +7,10 @@ Sur ce site, vous trouverez des fichiers organisés sous forme de galeries :
 - Pour voir le fichier dans un nouvel onglet, cliquez sur le bouton □
 - Pour télécharger le fichier, cliquez sur le bouton ↓
 
-Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche.
+Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
+- [Rechercher](https://gabrielriviere999-commits.github.io/portfolio/search.html)
+- [Arborescence](https://gabrielriviere999-commits.github.io/portfolio/arbo.html)
+- [Soutenir le site](https://gabrielriviere999-commits.github.io/portfolio/donations.html)
 
 Le bouton Q sert à lancer la recherche de fichiers.
 
