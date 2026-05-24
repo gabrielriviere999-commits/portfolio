@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camembert SVG</title>
+<style>
+body {
+  font-family: sans-serif;
+  padding: 10px;
+  background: #C0C0C0;
+}
+
+button {
+  background: #d4d0c8;
+  color: black;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  font-family: sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:active {
+  border-color: #404040 #fff #fff #404040;
+  background: #c0c0c0;
+}
+
+button:hover { background:#E0E0E0; }
+
+/* Conteneur principal en tableau */
+.layout {
+  display: table;
+  width: 100%;
+  border-spacing: 10px;
+}
+
+/* Colonnes */
+.left, .right {
+  display: table-cell;
+  vertical-align: top;
+  width: 50%;
+}
+
+/* Tableaux */
+table {
+  width: 100;
+  border-collapse: collapse;
+}
+
+td, th {
+  border-bottom: 1px solid #ccc;
+  padding: 4px;
+  font-size: 13px;
+}
+
+input[type=text], input[type=number] {
+  width: 100%;
+}
+
+#preview svg {
+  max-width: 100%;
+  height: auto;
+}
+
+textarea {
+  width: 100%;
+  height: 200px;
+}
+
+/* Légende */
+.pie-legend {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.pie-legend li {
+  margin: 3px 0;
+  display: block;
+}
+
+.pie-legend span {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+</style>
+</head>
+<body>
+<h2>Parts</h2>
+<table id="tbl">
+  <thead>
+    <tr><th style="width:100px">Label</th><th style="width:20px">Valeur</th><th style="width:60px";>Couleur</th><th></th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<button id="addBtn">Ajouter une part</button>
+<button id="validateBtn">Valider</button>
+<p></p>
+<label>Taille du camembert : <input type="number" id="pieSize" value="200" style="width:40px;"></label>
+
+<div class="left">
+  <h2>Aperçu</h2>
+  <div id="preview"></div>
+</div>
+
+<div class="right">
+  <h2>Code SVG</h2>
+  <button id="copyBtn">Copier</button>
+  <button id="importBtn">Importer</button>
+  <textarea id="code"></textarea>
+</div>
+
+<script>
+// ------------------------------
+// Données
+// ------------------------------
+var slices = [
+  { label: "A", value: 40, color: "#e74c3c" },
+  { label: "B", value: 30, color: "#3498db" },
+  { label: "C", value: 20, color: "#2ecc71" }
+];
+
+var tblBody = document.getElementById("tbl").getElementsByTagName("tbody")[0];
+var preview = document.getElementById("preview");
+var codeArea = document.getElementById("code");
+var pieSize = 200;
+
+// ------------------------------
+// Construction du tableau
+// ------------------------------
+function rebuildTable() {
+  tblBody.innerHTML = "";
+
+  // Calcul du total pour afficher les pourcentages
+  var total = 0;
+  for (var t = 0; t < slices.length; t++) total += slices[t].value;
+
+  for (var i = 0; i < slices.length; i++) {
+    var s = slices[i];
+    var tr = document.createElement("tr");
+
+    // ------------------------------
+    // LABEL
+    // ------------------------------
+    var td1 = document.createElement("td");
+    var inp1 = document.createElement("input");
+    inp1.type = "text";
+    inp1.value = s.label;
+    inp1.oninput = function(index){ return function(){
+      slices[index].label = this.value;
+    }}(i);
+    td1.appendChild(inp1);
+    tr.appendChild(td1);
+
+    // ------------------------------
+    // POURCENTAGE
+    // ------------------------------
+    var td2 = document.createElement("td");
+    var inp2 = document.createElement("input");
+    inp2.type = "text";
+
+    var pct = total > 0 ? (s.value / total) * 100 : 0;
+    pct = Math.round(pct * 10) / 10;
+    inp2.value = pct + "%";
+
+    inp2.oninput = function(index){ return function(){
+      var raw = this.value.replace("%","").replace(",",".");
+      var p = parseFloat(raw);
+      if (isNaN(p) || p < 0) p = 0;
+      if (p > 100) p = 100;
+
+      // Valeur brute = pourcentage
+      slices[index].value = p;
+    }}(i);
+
+    td2.appendChild(inp2);
+    tr.appendChild(td2);
+
+    // ------------------------------
+    // COULEUR (HEX)
+    // ------------------------------
+    var td3 = document.createElement("td");
+    var inp3 = document.createElement("input");
+    inp3.type = "text";
+    inp3.value = s.color;
+    inp3.maxLength = 7;
+
+    inp3.oninput = function(index){ return function(){
+      var v = this.value.trim();
+
+      if (v.match(/^[0-9A-Fa-f]{6}$/)) v = "#" + v;
+
+      if (v.match(/^#[0-9A-Fa-f]{6}$/)) {
+        slices[index].color = v;
+      }
+    }}(i);
+
+    td3.appendChild(inp3);
+    tr.appendChild(td3);
+
+    // ------------------------------
+    // BOUTONS ↑ ↓ ✕
+    // ------------------------------
+    var td4 = document.createElement("td");
+
+    // ↑
+    var upBtn = document.createElement("button");
+    upBtn.innerHTML = "↑";
+    upBtn.onclick = function(index){ return function(){
+      if (index > 0) {
+        var tmp = slices[index - 1];
+        slices[index - 1] = slices[index];
+        slices[index] = tmp;
+        renderPie();
+        rebuildTable();
+      }
+    }}(i);
+    td4.appendChild(upBtn);
+
+    // ↓
+    var downBtn = document.createElement("button");
+    downBtn.innerHTML = "↓";
+    downBtn.onclick = function(index){ return function(){
+      if (index < slices.length - 1) {
+        var tmp = slices[index + 1];
+        slices[index + 1] = slices[index];
+        slices[index] = tmp;
+        renderPie();
+        rebuildTable();
+      }
+    }}(i);
+    td4.appendChild(downBtn);
+
+    // ✕
+    var delBtn = document.createElement("button");
+    delBtn.innerHTML = "✕";
+    delBtn.onclick = function(index){ return function(){
+      slices.splice(index,1);
+      renderPie();
+      rebuildTable();
+    }}(i);
+    td4.appendChild(delBtn);
+
+    tr.appendChild(td4);
+
+    // ------------------------------
+    tblBody.appendChild(tr);
+  }
+}
+
+document.getElementById("addBtn").onclick = function() {
+  slices.push({
+    label: "Nouvelle",
+    value: 10,
+    color: "#"+("000000"+Math.floor(Math.random()*16777215).toString(16)).slice(-6)
+  });
+  renderPie();
+  rebuildTable();
+};
+
+document.getElementById("validateBtn").onclick = function() {
+  renderPie();
+  rebuildTable();
+};
+
+document.getElementById("pieSize").oninput = function() {
+  var v = parseInt(this.value, 10);
+  if (isNaN(v) || v < 50) v = 50;
+  if (v > 800) v = 800;
+  pieSize = v;
+};
+
+// ------------------------------
+// Génération du SVG + LÉGENDE
+// ------------------------------
+function renderPie() {
+  var total = 0;
+  for (var i = 0; i < slices.length; i++) total += slices[i].value;
+
+  if (total <= 0) {
+    preview.innerHTML = "<em>Aucune donnée</em>";
+    codeArea.value = "";
+    return;
+  }
+
+  // Taille dynamique
+  var size = pieSize;
+  var cx = size / 2;
+  var cy = size / 2;
+  var r  = (size / 2) - 10;
+
+  var angle = -Math.PI / 2;
+
+  // SVG début
+  var svg = '<svg width="'+size+'" height="'+(size+ (slices.length*20)+20)+'" '+
+            'viewBox="0 0 '+size+' '+(size+ (slices.length*20)+20)+'" '+
+            'xmlns="http://www.w3.org/2000/svg">';
+
+  // ------------------------------
+  // PARTIES DU CAMEMBERT
+  // ------------------------------
+  if (slices.length === 1) {
+    // Cas spécial : cercle complet
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+slices[0].color+'">' +
+           '<title>'+escapeHtml(slices[0].label)+' (100%)</title>' +
+           '</circle>';
+  } else {
+    for (var i = 0; i < slices.length; i++) {
+      var s = slices[i];
+      var a = (s.value / total) * Math.PI * 2;
+
+      var x1 = cx + r * Math.cos(angle);
+      var y1 = cy + r * Math.sin(angle);
+      var x2 = cx + r * Math.cos(angle + a);
+      var y2 = cy + r * Math.sin(angle + a);
+
+      var large = a > Math.PI ? 1 : 0;
+
+      var d = "M "+cx+" "+cy+
+              " L "+x1+" "+y1+
+              " A "+r+" "+r+" 0 "+large+" 1 "+x2+" "+y2+
+              " Z";
+
+      var pct = (s.value / total) * 100;
+      pct = Math.round(pct * 10) / 10;
+
+      svg += '<path fill="'+s.color+'" d="'+d+'">' +
+             '<title>'+escapeHtml(s.label)+' ('+pct+'%)</title>' +
+             '</path>';
+
+      angle += a;
+    }
+  }
+
+  // ------------------------------
+  // LÉGENDE DANS LE SVG
+  // ------------------------------
+  var legendY = size + 15;
+
+  for (var i = 0; i < slices.length; i++) {
+    var s = slices[i];
+    var pct = (s.value / total) * 100;
+    pct = Math.round(pct * 10) / 10;
+
+    // Point coloré
+    svg += '<circle cx="10" cy="'+legendY+'" r="6" fill="'+s.color+'"></circle>';
+
+    // Texte
+    svg += '<text x="25" y="'+(legendY+4)+'" font-size="12" font-family="sans-serif">'+
+           escapeHtml(s.label)+' - '+pct+'%'+
+           '</text>';
+
+    legendY += 20;
+  }
+
+  svg += "</svg>";
+
+  preview.innerHTML = svg;
+  codeArea.value = svg;
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ------------------------------
+// Import depuis le SVG + légende
+// ------------------------------
+document.getElementById("importBtn").onclick = function() {
+  var txt = codeArea.value;
+  if (!txt) return;
+
+  preview.innerHTML = txt;
+
+  var div = document.createElement("div");
+  div.innerHTML = txt;
+
+  var paths = div.getElementsByTagName("path");
+  var newSlices = [];
+
+  for (var i = 0; i < paths.length; i++) {
+    var p = paths[i];
+    var color = p.getAttribute("fill");
+
+    var title = p.getElementsByTagName("title")[0];
+    var raw = title ? title.textContent : "Part";
+    var label = raw;
+    var pct = 0;
+
+    // Format attendu : "Label (40%)"
+    var pos1 = raw.lastIndexOf("(");
+    var pos2 = raw.lastIndexOf("%)");
+
+    if (pos1 !== -1 && pos2 !== -1) {
+      label = raw.substring(0, pos1 - 1);
+      pct = parseFloat(raw.substring(pos1 + 1, pos2));
+    }
+
+    // Valeur brute reconstruite (total = 100)
+    var value = pct;
+
+    newSlices.push({
+      label: label,
+      value: isNaN(value) ? 0 : value,
+      color: color || "#cccccc"
+    });
+  }
+
+  slices = newSlices;
+  rebuildTable();
+  renderPie();
+};
+
+// ------------------------------
+// Copier
+// ------------------------------
+document.getElementById("copyBtn").onclick = function(e) {
+  var txt = codeArea.value;
+
+  var temp = document.createElement("textarea");
+  temp.value = txt;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { 
+    document.execCommand("copy"); 
+  } catch (err) {}
+
+  document.body.removeChild(temp);
+};
+
+rebuildTable();
+renderPie();
+</script>
+</body>
+</html>
