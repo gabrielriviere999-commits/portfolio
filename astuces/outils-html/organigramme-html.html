@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organigramme HTML</title>
+
+<style>
+body {
+  font-family: monospace;
+  background: #C0C0C0; /* fond normal de la page, FIXE */
+  padding-top: 150px;
+}
+
+/* Toolbar */
+.toolbar {
+  display: block;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  max-height: 225px;
+  padding: 4px;
+  z-index: 9999;
+}
+
+.toolbar.hidden {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Boutons Win98 */
+button {
+  background: #d4d0c8;
+  color: black;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  font-family: sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:active {
+  border-color: #404040 #fff #fff #404040;
+  background: #c0c0c0;
+}
+
+button:hover { background:#E0E0E0; }
+
+/* ORGANIGRAMME */
+.org-root {
+  display: inline-block;
+  padding: 10px;
+  background: transparent;
+  color: #000000;
+  text-align: center; /* aide la 3DS */
+}
+
+/* Chaque nœud est un bloc inline stable */
+.org-node {
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px;
+  text-align: center;
+  background: transparent;
+}
+
+/* Le carré */
+.org-label {
+  border: 1px solid #000;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: white;
+  color: inherit;
+}
+
+.org-label img {
+  display: block;
+  margin: 4px auto 0 auto;
+  max-width: 80px;
+  height: auto;
+}
+
+/* Sélection compatible 3DS (outline-offset non supporté) */
+.org-node.selected .org-label {
+  border: 2px solid #0078d7;
+  padding: 3px 7px; /* compense l’épaisseur du border */
+}
+
+/* Remplace flex par inline-block */
+.org-children {
+  display: table;
+  margin: 0 auto;
+  margin-top:10px;
+}
+
+.org-children > .org-node {
+  display: table-cell;
+  vertical-align: top;
+  padding: 0 10px;
+}
+</style>
+</head>
+
+<body>
+<h2>Organigramme HTML</h2>
+<div class="toolbar" style="opacity: 0.8;">
+  <button onclick="addChild()">Ajouter enfant</button>
+  <button onclick="addSibling()">Ajouter frère</button>
+  <label>
+  <input type="checkbox" id="editMode">Mode édition texte</label>
+  <button onclick="deleteNode()">Supprimer</button>
+  |
+  <button onclick="addImageToNode()">Ajouter image</button>
+  <button onclick="removeImageFromNode()">Supprimer image</button>
+  <input type="file" id="imgInput" style="display:none" accept="image/*" onchange="loadNodeImage(this)">
+  |
+  <button onclick="changeGlobalTextColor()">Texte global</button>
+  <button onclick="changeSelectedTextColor()">Texte sélectionné</button>
+  |
+  <button onclick="changeGlobalColor()">Fond global</button>
+  <button onclick="changeSelectedBgColor()">Fond sélectionné</button>
+  |
+  <button onclick="clearGlobalStyle()">Effacer style global</button>
+  <button onclick="clearSelectedStyle()">Effacer style sélectionné</button>
+  |
+  <button onclick="copyToClipboard(exportFullHtml())">Copier HTML</button>
+</div>
+<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
+
+<div id="org-container">
+  <div class="org-root"></div>
+</div>
+<textarea id="io" style="width:100%;height:200px;margin-top:10px;" wrap="off"></textarea>
+<br>
+<button onclick="doImport()">Importer</button>
+
+<script>
+// ===============================
+//  VARIABLES GLOBALES
+// ===============================
+var globalBoxBg = "white";
+var selectedId = null;
+var clickOnToolbar = false;
+var nextId = 1;
+
+// ===============================
+//  DONNÉES
+// ===============================
+var orgRoot = {
+  label: "CEO",
+  children: [
+    {
+      label: "CTO",
+      children: [
+        { label: "Dev 1", children: [] },
+        { label: "Dev 2", children: [] }
+      ]
+    },
+    {
+      label: "CFO",
+      children: [
+        { label: "Comptable", children: [] }
+      ]
+    }
+  ]
+};
+
+// ===============================
+//  ASSIGNATION DES IDS
+// ===============================
+function assignIds(node) {
+  node.id = nextId++;
+  for (var i = 0; i < node.children.length; i++) {
+    assignIds(node.children[i]);
+  }
+}
+assignIds(orgRoot);
+
+// ===============================
+//  RENDU HTML
+// ===============================
+function renderOrgTree(root) {
+  var container = document.getElementById("org-container");
+  var rootEl = document.querySelector(".org-root");
+  var globalText = rootEl.style.color || "#000000";
+
+  container.innerHTML =
+    '<div class="org-root" style="color:' + globalText + ';">\n' +
+    renderOrgNode(root, globalText, 2) +
+    '</div>';
+}
+
+// ===============================
+//  TOOLBAR
+// ===============================
+var toolbar = document.getElementsByClassName('toolbar')[0];
+var toggleBtn = document.getElementById('toggleToolbarBtn');
+var editMode = document.getElementById("editMode");
+var toolbarVisible = true;
+
+toolbar.onmousedown = function(e) {
+  clickOnToolbar = true;
+  e.stopPropagation();
+};
+
+toggleBtn.onmousedown = function(e) {
+  clickOnToolbar = true;
+  e.stopPropagation();
+};
+
+toggleBtn.onclick = function(e) {
+  clickOnToolbar = true;
+  e.stopPropagation();
+  toolbarVisible = !toolbarVisible;
+  toolbar.className = toolbarVisible ? 'toolbar' : 'toolbar hidden';
+};
+
+// ===============================
+//  SÉLECTION / ÉDITION
+// ===============================
+document.addEventListener('click', function(e) {
+  var node = findNodeElement(e.target);
+  if (!node) return;
+
+  var id = parseInt(node.getAttribute('data-id'), 10);
+
+  if (editMode.checked) {
+    startInlineRename(id, node);
+  } else {
+    selectedId = id;
+    updateSelectionHighlight();
+  }
+});
+
+// ===============================
+//  ÉDITION INLINE
+// ===============================
+function startInlineRename(id, nodeEl) {
+  var node = findNodeById(orgRoot, id);
+  var labelEl = nodeEl.getElementsByClassName("org-label")[0];
+
+  var old = node.label;
+
+  labelEl.innerHTML =
+    '<textarea id="inlineEdit" style="width:90%;height:60px;"></textarea>';
+
+  var ta = document.getElementById("inlineEdit");
+  ta.value = old;
+  ta.focus();
+
+  ta.addEventListener("keydown", function(ev) {
+    if (ev.keyCode === 13 && !ev.shiftKey) return;
+    if (ev.keyCode === 13 && ev.shiftKey) {
+      ev.preventDefault();
+      finishInlineRename(id, ta.value);
+    }
+  });
+
+  ta.addEventListener("blur", function() {
+    if (clickOnToolbar) {
+      clickOnToolbar = false;
+      ta.focus();
+      return;
+    }
+    finishInlineRename(id, ta.value);
+  });
+}
+
+// ===============================
+//  RENDU
+// ===============================
+function renderOrgNode(node, globalText, indent) {
+  var pad = "";
+  for (var i = 0; i < indent; i++) pad += " ";
+
+  var bg = (node.bg != null) ? node.bg : globalBoxBg;
+  var color = node.textColor || globalText;
+
+  var html = pad + '<div class="org-node" data-id="' + node.id + '">\n';
+  html += pad + '  <div class="org-label" style="background:' + bg + '; color:' + color + ';">' +
+          nl2br(escapeHtml(node.label));
+
+  if (node.img) {
+    html += '<br><img src="' + node.img + '" style="max-width:80px; margin-top:4px;">';
+  }
+
+  html += '</div>\n';
+
+  if (node.children.length > 0) {
+    html += pad + '  <div class="org-children">\n';
+    for (var j = 0; j < node.children.length; j++) {
+      html += renderOrgNode(node.children[j], globalText, indent + 4);
+    }
+    html += pad + '  </div>\n';
+  }
+
+  html += pad + '</div>\n';
+  return html;
+}
+
+window.onload = function() {
+  renderOrgTree(orgRoot);
+};
+
+// ===============================
+//  ÉDITION INLINE
+// ===============================
+function startInlineRename(id, nodeEl) {
+  var node = findNodeById(orgRoot, id);
+  var labelEl = nodeEl.getElementsByClassName("org-label")[0];
+
+  var old = node.label;
+
+  labelEl.innerHTML =
+    '<textarea id="inlineEdit" style="width:90%;height:60px;"></textarea>';
+
+  var ta = document.getElementById("inlineEdit");
+  ta.value = old;
+  ta.focus();
+
+  ta.addEventListener("keydown", function(ev) {
+    if (ev.keyCode === 13 && !ev.shiftKey) return;
+  });
+
+  ta.addEventListener("blur", function() {
+    if (clickOnToolbar) {
+      clickOnToolbar = false;
+      ta.focus();
+      return;
+    }
+    finishInlineRename(id, ta.value);
+  });
+}
+
+function finishInlineRename(id, newText) {
+  var node = findNodeById(orgRoot, id);
+  node.label = newText;
+
+  renderOrgTree(orgRoot);
+  selectedId = id;
+  updateSelectionHighlight();
+}
+
+// ===============================
+//  ACTIONS - AJOUT / SUPPRESSION
+// ===============================
+function addChild() {
+  if (!selectedId) return;
+  var node = findNodeById(orgRoot, selectedId);
+  var label = prompt("Nom du nouveau nœud :");
+  if (!label) return;
+  var newNode = { label: label, children: [] };
+  assignIds(newNode);
+  node.children.push(newNode);
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function addSibling() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+  var label = prompt("Nom du nouveau nœud :");
+  if (!label) return;
+  var newNode = { label: label, children: [] };
+  assignIds(newNode);
+  parent.children.push(newNode);
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function deleteNode() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      parent.children.splice(i, 1);
+      break;
+    }
+  }
+  selectedId = null;
+  renderOrgTree(orgRoot);
+}
+
+// ===============================
+//  ACTIONS - IMAGES
+// ===============================
+function addImageToNode() {
+  if (!selectedId) return;
+  document.getElementById("imgInput").click();
+}
+
+function loadNodeImage(input) {
+  if (!selectedId) return;
+  var file = input.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var node = findNodeById(orgRoot, selectedId);
+    node.img = e.target.result;
+    renderOrgTree(orgRoot);
+    updateSelectionHighlight();
+  };
+  reader.readAsDataURL(file);
+
+  input.value = "";
+}
+
+function removeImageFromNode() {
+  if (!selectedId) return;
+
+  var node = findNodeById(orgRoot, selectedId);
+  if (!node.img) return; // aucune image → rien à faire
+
+  delete node.img;       // on supprime l'image
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+// ===============================
+//  SÉLECTION
+// ===============================
+var selectedId = null;
+
+function findNodeElement(el) {
+  while (el && el !== document) {
+    if (el.className && el.className.indexOf('org-node') !== -1) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function updateSelectionHighlight() {
+  var nodes = document.getElementsByClassName('org-node');
+  for (var i = 0; i < nodes.length; i++) {
+    var id = parseInt(nodes[i].getAttribute('data-id'), 10);
+    nodes[i].className = (id === selectedId) ? 'org-node selected' : 'org-node';
+  }
+}
+
+// ===============================
+//  RECHERCHE
+// ===============================
+function findNodeById(node, id) {
+  if (node.id === id) return node;
+  for (var i = 0; i < node.children.length; i++) {
+    var found = findNodeById(node.children[i], id);
+    if (found) return found;
+  }
+  return null;
+}
+
+function findParent(node, id) {
+  for (var i = 0; i < node.children.length; i++) {
+    if (node.children[i].id === id) return node;
+    var found = findParent(node.children[i], id);
+    if (found) return found;
+  }
+  return null;
+}
+
+// ===============================
+//  UTILITAIRES
+// ===============================
+function nl2br(str) {
+  return str.replace(/\n/g, "<br>");
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, function(m) {
+    return ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[m];
+  });
+}
+
+function copyToClipboard(text) {
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+}
+
+// ===============================
+//  Styles
+// ===============================
+function changeGlobalTextColor() {
+  var col = prompt("Couleur globale du texte :");
+  if (!col) return;
+  var root = document.querySelector(".org-root");
+  root.style.color = col;
+  renderOrgTree(orgRoot);
+}
+
+function changeSelectedTextColor() {
+  if (!selectedId) return;
+  var col = prompt("Couleur du texte :");
+  if (!col) return;
+  var node = findNodeById(orgRoot, selectedId);
+  node.textColor = col;
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function changeGlobalColor() {
+  var col = prompt("Couleur globale du fond des carrés :");
+  if (!col) return;
+  globalBoxBg = col;
+  renderOrgTree(orgRoot);
+}
+
+function changeSelectedBgColor() {
+  if (!selectedId) return;
+  var col = prompt("Couleur du fond du carré sélectionné :");
+  if (!col) return;
+  var node = findNodeById(orgRoot, selectedId);
+  node.bg = col;
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function clearGlobalStyle() {
+  globalBoxBg = "white";
+  var root = document.querySelector(".org-root");
+  root.style.color = "#000000";
+  renderOrgTree(orgRoot);
+}
+
+function clearSelectedStyle() {
+  if (!selectedId) return;
+  var node = findNodeById(orgRoot, selectedId);
+  delete node.bg;
+  delete node.textColor;
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+// ===============================
+//  Export HTML
+// ===============================
+function exportHtmlNode(node, indent) {
+  var pad = "";
+  for (var i = 0; i < indent; i++) pad += " ";
+
+  var style = "";
+  if (node.bg != null) style += "background:" + escapeHtml(node.bg) + ";";
+  if (node.textColor) style += "color:" + escapeHtml(node.textColor) + ";";
+  if (style) style = ' style="' + style + '"';
+
+  var html = pad + '<div class="org-node" data-id="' + node.id + '">\n';
+  html += pad + '  <div class="org-label"' + style + '>' +
+        nl2br(escapeHtml(node.label));
+
+  if (node.img) {
+    html += '<br><img src="' + node.img + '" style="max-width:80px; margin-top:4px;">';
+  }
+
+  html += '</div>\n';
+
+  if (node.children.length > 0) {
+    html += pad + '  <div class="org-children">\n';
+    for (var j = 0; j < node.children.length; j++) {
+      html += exportHtmlNode(node.children[j], indent + 4);
+    }
+    html += pad + '  </div>\n';
+  }
+
+  html += pad + '</div>\n';
+  return html;
+}
+
+function exportFullHtml() {
+  var root = document.querySelector(".org-root");
+  var globalText = root.style.color || "#000000";
+
+  var css =
+    "<style>\n" +
+    ".org-root { display:inline-block; padding:10px; background:transparent; color:" + globalText + "; }\n" +
+    ".org-node { text-align:center; display:inline-block; margin:10px; background:transparent; }\n" +
+    ".org-label { border:1px solid #000; padding:4px 8px; background:" + globalBoxBg + "; color:inherit; font-size:12px; }\n" +
+    ".org-children { margin-top:10px; display:flex; justify-content:center; gap:10px; }\n" +
+    "</style>\n";
+
+  var html =
+    '<div class="org-root" data-global-bg="' + globalBoxBg + '" style="color:' + globalText + ';">\n' +
+    exportHtmlNode(orgRoot, 2) +
+    '</div>\n';
+
+  return css + html;
+}
+
+// ===============================
+//  IMPORT HTML
+// ===============================
+function importHtml(html) {
+  var container = document.createElement("div");
+  container.innerHTML = html;
+
+  function parseNode(el) {
+    var labelEl = el.getElementsByClassName("org-label")[0];
+
+    // 1) Extraire l'image AVANT de toucher au HTML
+    var imgEl = labelEl.getElementsByTagName("img")[0];
+    var imgSrc = null;
+    if (imgEl) imgSrc = imgEl.src;
+
+    // 2) Récupérer le HTML brut
+    var raw = labelEl.innerHTML;
+
+    // 3) Supprimer l'image du HTML
+    raw = raw.replace(/<img[^>]*>/gi, "");
+
+    // 4) Convertir <br> en \n
+    var label = raw.replace(/<br\s*\/?>/gi, "\n");
+
+    // 5) Nettoyer les espaces parasites
+    label = label.replace(/^\s+|\s+$/g, "");
+
+    var node = { label: label, children: [] };
+
+    // 6) Restaurer l'image
+    if (imgSrc) node.img = imgSrc;
+
+    // 7) Styles
+    if (labelEl.style.color) node.textColor = labelEl.style.color;
+    if (labelEl.style.background) node.bg = labelEl.style.background;
+
+    // 8) Enfants
+    var childrenContainer = el.getElementsByClassName("org-children")[0];
+    if (childrenContainer) {
+      var childNodes = childrenContainer.children;
+      for (var i = 0; i < childNodes.length; i++) {
+        node.children.push(parseNode(childNodes[i]));
+      }
+    }
+
+    return node;
+  }
+
+  var rootEl = container.getElementsByClassName("org-root")[0];
+  if (!rootEl) return null;
+
+  var global = rootEl.getAttribute("data-global-bg");
+  if (global) globalBoxBg = global;
+
+  var realRoot = document.querySelector(".org-root");
+  realRoot.style.color = rootEl.style.color || "#000000";
+
+  var firstNode = rootEl.getElementsByClassName("org-node")[0];
+  var root = parseNode(firstNode);
+
+  assignIds(root);
+  return root;
+}
+
+function importData(text) {
+  if (text.indexOf("<div") !== -1) {
+    orgRoot = importHtml(text);
+  }
+  renderOrgTree(orgRoot);
+  selectedId = null;
+}
+
+function doImport() {
+  var txt = document.getElementById("io").value;
+  importData(txt);
+}
+</script>
+
+</body>
+</html>
