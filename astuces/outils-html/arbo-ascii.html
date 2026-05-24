@@ -565,26 +565,8 @@ render();
 var toolbar = document.getElementsByClassName('toolbar')[0];
 var toggleBtn = document.getElementById('toggleToolbarBtn');
 
-var toolbarVisible = true;
-
-toggleBtn.onmousedown = function(e) {
-  e = e || window.event;
-  e.cancelBubble = true;
-  if (e.stopPropagation) e.stopPropagation();
-};
-
-toggleBtn.onclick = function(e) {
-  e = e || window.event;
-  e.cancelBubble = true;
-  if (e.stopPropagation) e.stopPropagation();
-
-  toolbarVisible = !toolbarVisible;
-
-  if (toolbarVisible) {
-    toolbar.className = 'toolbar';
-  } else {
-    toolbar.className = 'toolbar hidden';
-  }
+toggleBtn.onclick = function () {
+    toolbar.classList.toggle('hidden');
 };
 
 // Parseur universel pour sortie "tree"
