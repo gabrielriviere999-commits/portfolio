@@ -7,7 +7,6 @@
 <style>
 body {
   font-family: sans-serif;
-  padding: 10px;
   background: #C0C0C0;
 }
 
@@ -29,18 +28,18 @@ button:active {
 
 button:hover { background:#E0E0E0; }
 
-/* Conteneur principal en tableau */
-.layout {
-  display: table;
-  width: 100%;
-  border-spacing: 10px;
+.card {
+  background: #C0C0C0;
+  border: 2px solid;
+  border-color: #FFFFFF #808080 #808080 #FFFFFF;
+  padding: 10px;
+  display: block;
+  min-width: 315px;
 }
 
-/* Colonnes */
-.left, .right {
-  display: table-cell;
-  vertical-align: top;
-  width: 50%;
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 /* Tableaux */
@@ -92,6 +91,9 @@ textarea {
 </style>
 </head>
 <body>
+<div class="container">
+
+<div class="card">
 <h2>Parts</h2>
 <table id="tbl">
   <thead>
@@ -103,19 +105,21 @@ textarea {
 <button id="validateBtn">Valider</button>
 <p></p>
 <label>Taille du camembert : <input type="number" id="pieSize" value="200" style="width:40px;"></label>
+</div>
 
-<div class="left">
+<div class="card">
   <h2>Aperçu</h2>
   <div id="preview"></div>
 </div>
 
-<div class="right">
+<div class="card">
   <h2>Code SVG</h2>
   <button id="copyBtn">Copier</button>
   <button id="importBtn">Importer</button>
   <textarea id="code"></textarea>
 </div>
 
+</div>
 <script>
 // ------------------------------
 // Données
