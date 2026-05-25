@@ -34,7 +34,7 @@ button:hover { background:#E0E0E0; }
   border-color: #FFFFFF #808080 #808080 #FFFFFF;
   padding: 10px;
   display: block;
-  min-width: 315px;
+  min-width: 320px;
 }
 
 .container {
@@ -209,7 +209,7 @@ function rebuildTable() {
     tr.appendChild(td3);
 
     // ------------------------------
-    // BOUTONS ↑ ↓ ✕
+    // BOUTONS ↑ ↓ x
     // ------------------------------
     var td4 = document.createElement("td");
 
@@ -241,9 +241,9 @@ function rebuildTable() {
     }}(i);
     td4.appendChild(downBtn);
 
-    // ✕
+    // x
     var delBtn = document.createElement("button");
-    delBtn.innerHTML = "✕";
+    delBtn.innerHTML = "x";
     delBtn.onclick = function(index){ return function(){
       slices.splice(index,1);
       renderPie();
