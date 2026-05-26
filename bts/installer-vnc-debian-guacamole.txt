@@ -139,6 +139,9 @@ After=multi-user.target
 Type=simple
 User=vboxuser
 ExecStart=/usr/bin/x11vnc -display :0 -forever -auth /root/.Xauthority -rfbauth /home/vboxuser/.vnc/passwd
+# Redémarrer en cas de plantage
+Restart=always
+RestartSec=2
 
 [Install]
 WantedBy=multi-user.target
