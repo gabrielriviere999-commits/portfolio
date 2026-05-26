@@ -1,0 +1,159 @@
+# Documentation : Accès graphique Debian via Guacamole + VNC (x11vnc)
+
+Cette documentation explique comment configurer un accès graphique à une machine Debian (VM Proxmox/VirtualBox ou serveur) via Guacamole, en utilisant x11vnc pour partager une session graphique.
+
+Elle couvre :
+
+- Installation des composants graphiques  
+- Installation et configuration de x11vnc  
+- Lancement manuel et automatique  
+- Configuration Guacamole  
+- Cas avec ou sans bureau local  
+
+---
+
+## 1. Prérequis côté Debian
+
+### 1.1. Si tu veux un vrai bureau (XFCE par exemple)
+
+sudo apt update
+sudo apt install xfce4 lightdm lightdm-gtk-greeter
+sudo dpkg-reconfigure lightdm   # choisir lightdm
+sudo reboot
+
+Après reboot, tu dois avoir un bureau graphique local (dans Proxmox/VirtualBox).
+
+### 1.2. Si tu veux un Xorg "virtuel" (serveur sans bureau local)
+
+sudo apt update
+sudo apt install xserver-xorg xserver-xorg-video-dummy
+
+Puis tu pourras lancer un Xorg virtuel (voir section 4.2).
+
+---
+
+## 2. Installation de x11vnc
+
+sudo apt update
+sudo apt install x11vnc
+
+---
+
+## 3. Création du mot de passe VNC
+
+x11vnc -storepasswd
+
+Cela crée le fichier :
+
+~/.vnc/passwd
+
+---
+
+## 4. Lancer x11vnc
+
+### 4.1. Cas le plus simple : bureau déjà actif sur DISPLAY :0 (avec LightDM)
+
+Si tu as un bureau graphique qui fonctionne déjà (XFCE, Gnome, etc.) :
+
+x11vnc -display :0 -forever -auth guess -rfbauth ~/.vnc/passwd
+
+Si '-auth guess' échoue, tu peux utiliser :
+
+x11vnc -display :0 -forever -auth /root/.Xauthority -rfbauth ~/.vnc/passwd
+
+### 4.2. Cas "serveur headless" : pas de bureau local, Xorg virtuel
+
+Créer la config dummy :
+
+sudo mkdir -p /etc/X11/xorg.conf.d
+sudo nano /etc/X11/xorg.conf.d/10-dummy.conf
+
+Contenu :
+text
+Section "Device"
+    Identifier  "DummyDevice"
+    Driver      "dummy"
+    VideoRam    256000
+EndSection
+
+Section "Monitor"
+    Identifier "DummyMonitor"
+    HorizSync  30-70
+    VertRefresh 50-75
+EndSection
+
+Section "Screen"
+    Identifier "DummyScreen"
+    Device     "DummyDevice"
+    Monitor    "DummyMonitor"
+    SubSection "Display"
+        Depth 24
+        Modes "1920x1080"
+    EndSubSection
+EndSection
+
+Lancer Xorg virtuel :
+
+sudo Xorg :0
+
+Dans un autre terminal :
+
+x11vnc -display :0 -forever -auth /root/.Xauthority -rfbauth ~/.vnc/passwd
+
+---
+
+## 5. Configuration Guacamole (VNC)
+
+Dans l'interface Guacamole, créer une connexion :
+
+- Protocole : VNC  
+- Host : IP de la machine Debian  
+- Port : '5900'  
+- Password : celui créé avec 'x11vnc -storepasswd'  
+- Color depth : 24 bits  
+- Ignore certificate : oui  
+
+Après validation, Guacamole affiche le bureau Debian (local ou virtuel selon ton choix).
+
+---
+
+## 6. Lancer x11vnc automatiquement au démarrage (optionnel)
+
+Créer un service systemd :
+
+sudo nano /etc/systemd/system/x11vnc.service
+
+Contenu (à adapter si besoin) :
+text
+[Unit]
+Description=Start x11vnc at startup
+After=multi-user.target
+
+[Service]
+Type=simple
+User=vboxuser
+ExecStart=/usr/bin/x11vnc -display :0 -forever -auth /root/.Xauthority -rfbauth /home/vboxuser/.vnc/passwd
+
+[Install]
+WantedBy=multi-user.target
+
+Activer :
+
+sudo systemctl enable x11vnc
+sudo systemctl start x11vnc
+
+---
+
+## 7. Problèmes courants et solutions
+
+- Écran noir dans Guacamole  
+  Cause : pas de Xorg actif (pas de DISPLAY :0).  
+  Solution : vérifier 'ps aux | grep Xorg', relancer LightDM ou Xorg dummy.
+
+- '-auth guess: failed for display=':0''  
+  Cause : x11vnc ne trouve pas le fichier Xauthority.  
+  Solution : utiliser explicitement '/root/.Xauthority' ou le chemin indiqué par 'ps aux | grep Xorg' (option '-auth').
+
+- TigerVNC / vncserver ne fonctionne pas  
+  Cause : conflit avec VirtualBox/Proxmox et Xorg, deuxième serveur X qui plante.  
+  Solution : utiliser x11vnc qui se connecte au X existant.
