@@ -1,67 +1,77 @@
-# Documentation : Accès graphique Debian via Guacamole + VNC (x11vnc)
+# Documentation : Accès graphique Debian via Guacamole + VNC (x11vnc) + Proxmox
 
-Cette documentation explique comment configurer un accès graphique à une machine Debian (VM Proxmox/VirtualBox ou serveur) via Guacamole, en utilisant x11vnc pour partager une session graphique.
+Cette documentation explique comment configurer un accès graphique à une machine Debian (VM Proxmox/VirtualBox) via Guacamole, en utilisant x11vnc pour partager une session graphique Xorg.
 
-Elle couvre :
+Elle couvre :
 
-- Installation des composants graphiques  
-- Installation et configuration de x11vnc  
-- Lancement manuel et automatique  
-- Configuration Guacamole  
-- Cas avec ou sans bureau local  
+- Installation d'un environnement graphique
+- Installation et configuration de x11vnc
+- Lancement manuel et automatique
+- Configuration Guacamole
+- Cas avec ou sans bureau local
+- Compatibilité Proxmox
+- Dépannage
 
 ---
 
-## 1. Prérequis côté Debian
+# 1. Installation d'un environnement graphique Debian
 
-### 1.1. Si tu veux un vrai bureau (XFCE par exemple)
+## 1.1. Installation recommandée (fonctionne dans Proxmox ET Guacamole)
+
+XFCE + LightDM + Xorg + drivers VMware
 
 sudo apt update
 sudo apt install xfce4 lightdm lightdm-gtk-greeter
 sudo dpkg-reconfigure lightdm   # choisir lightdm
+
+Installer les drivers vidéo compatibles Proxmox :
+
+sudo apt install xserver-xorg-video-vmware xserver-xorg-video-fbdev xserver-xorg-video-vesa
+
+Puis :
+
 sudo reboot
 
-Après reboot, tu dois avoir un bureau graphique local (dans Proxmox/VirtualBox).
+Après reboot, le bureau doit apparaître dans Proxmox.
 
-### 1.2. Si tu veux un Xorg "virtuel" (serveur sans bureau local)
+---
+
+## 1.2. Cas "serveur sans bureau" (Xorg virtuel)
 
 sudo apt update
 sudo apt install xserver-xorg xserver-xorg-video-dummy
 
-Puis tu pourras lancer un Xorg virtuel (voir section 4.2).
-
 ---
 
-## 2. Installation de x11vnc
+# 2. Installation de x11vnc
 
-sudo apt update
 sudo apt install x11vnc
 
 ---
 
-## 3. Création du mot de passe VNC
+# 3. Création du mot de passe VNC
 
 x11vnc -storepasswd
 
-Cela crée le fichier :
+Fichier créé :
 
 ~/.vnc/passwd
 
 ---
 
-## 4. Lancer x11vnc
+# 4. Lancer x11vnc
 
-### 4.1. Cas le plus simple : bureau déjà actif sur DISPLAY :0 (avec LightDM)
-
-Si tu as un bureau graphique qui fonctionne déjà (XFCE, Gnome, etc.) :
+## 4.1. Si un bureau Xorg existe (LightDM + XFCE)
 
 x11vnc -display :0 -forever -auth guess -rfbauth ~/.vnc/passwd
 
-Si '-auth guess' échoue, tu peux utiliser :
+Si '-auth guess' échoue :
 
 x11vnc -display :0 -forever -auth /root/.Xauthority -rfbauth ~/.vnc/passwd
 
-### 4.2. Cas "serveur headless" : pas de bureau local, Xorg virtuel
+---
+
+## 4.2. Si aucun bureau n'existe (Xorg virtuel)
 
 Créer la config dummy :
 
@@ -69,7 +79,7 @@ sudo mkdir -p /etc/X11/xorg.conf.d
 sudo nano /etc/X11/xorg.conf.d/10-dummy.conf
 
 Contenu :
-text
+
 Section "Device"
     Identifier  "DummyDevice"
     Driver      "dummy"
@@ -96,35 +106,31 @@ Lancer Xorg virtuel :
 
 sudo Xorg :0
 
-Dans un autre terminal :
+Puis :
 
 x11vnc -display :0 -forever -auth /root/.Xauthority -rfbauth ~/.vnc/passwd
 
 ---
 
-## 5. Configuration Guacamole (VNC)
+# 5. Configuration Guacamole (VNC)
 
-Dans l'interface Guacamole, créer une connexion :
-
-- Protocole : VNC  
-- Host : IP de la machine Debian  
-- Port : '5900'  
-- Password : celui créé avec 'x11vnc -storepasswd'  
-- Color depth : 24 bits  
-- Ignore certificate : oui  
-
-Après validation, Guacamole affiche le bureau Debian (local ou virtuel selon ton choix).
+- Protocole : VNC
+- Host : IP de la VM Debian
+- Port : 5900
+- Password : celui créé avec 'x11vnc -storepasswd'
+- Color depth : 24 bits
+- Ignore certificate : oui
 
 ---
 
-## 6. Lancer x11vnc automatiquement au démarrage (optionnel)
+# 6. Lancer x11vnc automatiquement au démarrage
 
-Créer un service systemd :
+Créer le service :
 
 sudo nano /etc/systemd/system/x11vnc.service
 
-Contenu (à adapter si besoin) :
-text
+Contenu :
+
 [Unit]
 Description=Start x11vnc at startup
 After=multi-user.target
@@ -144,16 +150,65 @@ sudo systemctl start x11vnc
 
 ---
 
-## 7. Problèmes courants et solutions
+# 7. Configuration Proxmox (IMPORTANT)
 
-- Écran noir dans Guacamole  
-  Cause : pas de Xorg actif (pas de DISPLAY :0).  
-  Solution : vérifier 'ps aux | grep Xorg', relancer LightDM ou Xorg dummy.
+Dans Hardware → Display :
 
-- '-auth guess: failed for display=':0''  
-  Cause : x11vnc ne trouve pas le fichier Xauthority.  
-  Solution : utiliser explicitement '/root/.Xauthority' ou le chemin indiqué par 'ps aux | grep Xorg' (option '-auth').
+- Display : Default
+- Graphic card : VMware compatible
 
-- TigerVNC / vncserver ne fonctionne pas  
-  Cause : conflit avec VirtualBox/Proxmox et Xorg, deuxième serveur X qui plante.  
-  Solution : utiliser x11vnc qui se connecte au X existant.
+C'est la seule combinaison stable pour :
+
+- LightDM
+- XFCE
+- Xorg
+- x11vnc
+- Proxmox console
+- Guacamole
+
+---
+
+# 8. Dépannage
+
+## Problème : écran noir dans Proxmox
+Cause : Xorg ne démarre pas.
+Solution :
+
+sudo apt install --reinstall xserver-xorg-core xserver-xorg-video-all xserver-xorg-input-all
+sudo apt install xserver-xorg-video-vmware xserver-xorg-video-fbdev xserver-xorg-video-vesa
+sudo reboot
+
+Supprimer toute config Xorg cassée :
+sudo rm -f /etc/X11/xorg.conf
+sudo rm -f /etc/X11/xorg.conf.d/*.conf
+
+---
+
+## Problème : Guacamole → "serveur distant inaccessible"
+Cause : pas de DISPLAY :0 ou mauvais fichier Xauthority.
+Solution :
+
+ps aux | grep Xorg
+
+Puis utiliser le chemin exact dans :
+
+x11vnc -display :0 -forever -auth /chemin/Xauthority -rfbauth ~/.vnc/passwd
+
+---
+
+## Problème : TigerVNC / vncserver plante
+Cause : conflit avec Xorg existant.
+Solution : utiliser x11vnc.
+
+---
+
+# 9. Résultat final
+
+Avec cette configuration :
+
+- Bureau graphique visible dans Proxmox
+- Bureau graphique visible dans Guacamole
+- x11vnc partage DISPLAY :0
+- Aucun écran noir
+- Aucun conflit Wayland/GDM3
+- Fonctionne sur toutes les VM Proxmox
