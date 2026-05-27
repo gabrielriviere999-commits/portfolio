@@ -33,6 +33,11 @@ FLUSH PRIVILEGES;
 
 cat guacamole-auth-jdbc-1.6.0/mysql/schema/upgrade/*.sql | mysql -u guaca_nachos -p guacadb
 
+Ou appliquer la mise à jour MySQL
+cd guacamole-auth-jdbc-1.6.0/mysql/schema/
+mysql -u guaca_nachos -p guacadb < upgrade/upgrade-pre-1.6.0.sql
+mysql -u guaca_nachos -p guacadb < upgrade/upgrade-1.6.0.sql
+
 # 6. Redémarrer les services
 sudo systemctl daemon-reexec
 sudo systemctl restart guacd
