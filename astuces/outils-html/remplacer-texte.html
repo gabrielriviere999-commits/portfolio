@@ -44,6 +44,7 @@ label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical
 
 <h3>Résultat</h3>
 <textarea id="output" readonly style="width:100%; height:200px; font-family:monospace; white-space:pre;"></textarea>
+<div id="stats" style="margin-top:8px;font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
 
 <script>
 // ------------------------------
@@ -81,6 +82,22 @@ function applySuffix(text, suffix) {
         }
     }
     return lines.join("\n");
+}
+
+function updateStats(text) {
+    var chars = text.length;
+
+    // Compter les mots (séparés par espaces, tab, retours ligne)
+    var trimmed = text.replace(/\s+/g, " ").trim();
+    var words = trimmed === "" ? 0 : trimmed.split(" ").length;
+
+    // Compter les lignes
+    var lines = text === "" ? 0 : text.split(/\r?\n/).length;
+
+    document.getElementById("stats").innerHTML =
+        "Caractères : " + chars +
+        ", Mots : " + words +
+        ", Lignes : " + lines;
 }
 
 function appliquerTransformations() {
@@ -144,7 +161,10 @@ function appliquerTransformations() {
   var suffix = document.getElementById("suffixInput").value;
   txt = applySuffix(txt, suffix);
 
-  // 11) afficher résultat
+  // 11) mettre a jour les stats
+  updateStats(txt);
+
+  // 12) afficher résultat
   setText(document.getElementById("output"), txt);
 }
 
@@ -279,7 +299,8 @@ function copier() {
 function effacerTout() {
   document.getElementById("input").value = "";
   setText(document.getElementById("output"), "");
-
+  updateStats("");
+  
   localStorage.removeItem("casse_input");
   localStorage.removeItem("casse_output");
   
@@ -376,12 +397,11 @@ window.onload = function() {
   }
 
   chargerReplacements();
-
   document.getElementById("repl_ignore_case").onchange = saveReplacements;
 };
 
 /* ============================================================
-   Remplacements personnalisés avec déplacement ↑ ↓ — ES3
+   Remplacements personnalisés avec déplacement ↑ ↓
    ============================================================ */
 
 function ajouterRemplacement(from, to) {
