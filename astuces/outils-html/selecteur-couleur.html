@@ -168,12 +168,12 @@ var lockHex=false, lockRgb=false, lockHsl=false, lockHsv=false;
 function clamp(v,min,max){return v<min?min:(v>max?max:v);}
 
 function rgbToHex(r,g,b){
-    function h2(x){var s=x.toString(16).toUpperCase();return s.length===1?"0"+s:s;}
+    function h2(x){var s=x.toString(16);return s.length===1?"0"+s:s;}
     return "#"+h2(r)+h2(g)+h2(b);
 }
 function alphaToHex(a){
     var v=Math.round(a*255);
-    var s=v.toString(16).toUpperCase();
+    var s=v.toString(16);
     return s.length===1?"0"+s:s;
 }
 

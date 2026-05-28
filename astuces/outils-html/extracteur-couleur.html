@@ -324,7 +324,7 @@ function copyText(id, btn){
 }
 
 /* --- Conversions couleurs --- */
-function toHex(c){ var h = c.toString(16).toUpperCase(); return h.length == 1 ? "0" + h : h; }
+function toHex(c){ var h = c.toString(16); return h.length == 1 ? "0" + h : h; }
 function rgbToHex(r,g,b){ return "#" + toHex(r) + toHex(g) + toHex(b); }
 
 function rgbToHsl(r,g,b){
