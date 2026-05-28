@@ -301,9 +301,6 @@ function effacerTout() {
   setText(document.getElementById("output"), "");
   updateStats("");
   
-  localStorage.removeItem("casse_input");
-  localStorage.removeItem("casse_output");
-  
   document.getElementById("repl_container").innerHTML = "";
   localStorage.removeItem("repl_list");
 
@@ -320,10 +317,6 @@ function effacerTout() {
 // ------------------------------
 // Sauvegarde / Restauration
 // ------------------------------
-
-function saveState() {
-  localStorage.setItem("casse_input", document.getElementById("input").value);
-}
 
 function saveChecks() {
   localStorage.setItem("chk_min", document.getElementById("chk_min").checked ? "1" : "0");
@@ -364,8 +357,6 @@ document.getElementById("chk_quo").onchange = saveChecks;
 document.getElementById("chk_squo").onchange = saveChecks;
 
 window.onload = function() {
-  var savedInput = localStorage.getItem("casse_input");
-
   var cmin = localStorage.getItem("chk_min");
   var cmaj = localStorage.getItem("chk_maj");
   var cinv = localStorage.getItem("chk_inv");
