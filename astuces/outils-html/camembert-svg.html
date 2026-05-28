@@ -135,26 +135,39 @@ var preview = document.getElementById("preview");
 var codeArea = document.getElementById("code");
 var pieSize = 200;
 
-var namedColors = {
-  red: "#ff0000",
-  blue: "#0000ff",
-  green: "#008000",
-  yellow: "#ffff00",
-  cyan: "#00ffff",
-  magenta: "#ff00ff",
-  purple: "#800080",
-  orange: "#ffa500",
-  pink: "#ffc0cb",
-  brown: "#a52a2a",
-  black: "#000000",
-  white: "#ffffff",
-  gray: "#808080",
-  grey: "#808080"
-};
-
 // ------------------------------
 // Construction du tableau
 // ------------------------------
+function normalizeColor(col) {
+  // élément temporaire
+  var tmp = document.createElement("div");
+  tmp.style.color = col;
+
+  // si le navigateur ne comprend pas → ignore
+  if (!tmp.style.color) return null;
+
+  // obtenir la couleur calculée (souvent en rgb())
+  document.body.appendChild(tmp);
+  var rgb = window.getComputedStyle ?
+            window.getComputedStyle(tmp).color :
+            tmp.currentStyle.color;
+  document.body.removeChild(tmp);
+
+  // convertir rgb(...) → #rrggbb
+  var m = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  if (!m) return null;
+
+  var r = parseInt(m[1], 10).toString(16);
+  var g = parseInt(m[2], 10).toString(16);
+  var b = parseInt(m[3], 10).toString(16);
+
+  if (r.length < 2) r = "0" + r;
+  if (g.length < 2) g = "0" + g;
+  if (b.length < 2) b = "0" + b;
+
+  return "#" + r + g + b;
+}
+
 function rebuildTable() {
   tblBody.innerHTML = "";
 
@@ -213,29 +226,20 @@ function rebuildTable() {
     inp3.maxLength = 20;
 
     inp3.oninput = function(index){ return function(){
-      var v = this.value.trim().toLowerCase();
-
-      // Nom de couleur CSS
-      if (namedColors[v]) {
-        slices[index].color = namedColors[v];
-        this.value = namedColors[v]; // met à jour l'input
-        return;
-      }
+      var v = this.value.trim();
 
       // HEX sans #
-      if (v.match(/^[0-9a-f]{6}$/)) {
+      if (/^[0-9A-Fa-f]{6}$/.test(v)) {
         v = "#" + v;
-        slices[index].color = v;
-        this.value = v;
-        return;
       }
 
-      // HEX complet
-      if (v.match(/^#[0-9a-f]{6}$/)) {
-        slices[index].color = v;
-        return;
-      }
+      // Essayer de normaliser (HEX ou nom CSS)
+      var hex = normalizeColor(v);
 
+      if (hex) {
+        slices[index].color = hex;
+        this.value = hex; // mettre à jour l’input
+      }
     }}(i);
 
     td3.appendChild(inp3);
