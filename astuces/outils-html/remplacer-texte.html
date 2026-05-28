@@ -363,12 +363,8 @@ document.getElementById("chk_spc").onchange = saveChecks;
 document.getElementById("chk_quo").onchange = saveChecks;
 document.getElementById("chk_squo").onchange = saveChecks;
 
-document.getElementById("input").oninput = saveState;
-
 window.onload = function() {
   var savedInput = localStorage.getItem("casse_input");
-
-  if (savedInput !== null) document.getElementById("input").value = savedInput;
 
   var cmin = localStorage.getItem("chk_min");
   var cmaj = localStorage.getItem("chk_maj");

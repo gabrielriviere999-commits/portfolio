@@ -224,10 +224,6 @@ function copier() {
 function effacerTout() {
   document.getElementById("input").value = "";
   setText(document.getElementById("output"), "");
-
-  // Efface la sauvegarde
-  localStorage.removeItem("input_text");
-  localStorage.removeItem("output_text");
 }
 
 function resetParams() {
@@ -244,21 +240,17 @@ function resetParams() {
 // ------------------------------
 
 function saveState() {
-  localStorage.setItem("input_text", document.getElementById("input").value);
   localStorage.setItem("sep", document.getElementById("sep").value);
   localStorage.setItem("maxwidth", document.getElementById("maxwidth").value);
 }
 
-document.getElementById("input").oninput = saveState;
 document.getElementById("sep").oninput = saveState;
 document.getElementById("maxwidth").oninput = saveState;
 
 window.onload = function() {
-  var savedInput = localStorage.getItem("input_text");
   var savedSep = localStorage.getItem("sep");
   var savedMax = localStorage.getItem("maxwidth");
 
-  if (savedInput !== null) document.getElementById("input").value = savedInput;
   if (savedSep !== null) document.getElementById("sep").value = savedSep;
   if (savedMax !== null) document.getElementById("maxwidth").value = savedMax;
 };
