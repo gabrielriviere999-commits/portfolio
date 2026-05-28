@@ -225,20 +225,15 @@ function rebuildTable() {
     inp3.value = s.color;
     inp3.maxLength = 20;
 
-    inp3.oninput = function(index){ return function(){
+    inp3.onchange = function(index){ return function(){
       var v = this.value.trim();
 
-      // HEX sans #
-      if (/^[0-9A-Fa-f]{6}$/.test(v)) {
-        v = "#" + v;
-      }
+      if (/^[0-9A-Fa-f]{6}$/.test(v)) v = "#" + v;
 
-      // Essayer de normaliser (HEX ou nom CSS)
       var hex = normalizeColor(v);
-
       if (hex) {
         slices[index].color = hex;
-        this.value = hex; // mettre à jour l’input
+        this.value = hex;
       }
     }}(i);
 
