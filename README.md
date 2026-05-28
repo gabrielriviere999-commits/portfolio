@@ -10,7 +10,6 @@ Sur ce site, vous trouverez des fichiers organisés sous forme de galeries :
 Pour afficher le menu du site, cliquez sur le bouton ≡ en haut à gauche :
 - [Rechercher](https://gabrielriviere999-commits.github.io/portfolio/search.html)
 - [Arborescence](https://gabrielriviere999-commits.github.io/portfolio/arbo.html)
-- [Soutenir le site](https://gabrielriviere999-commits.github.io/portfolio/donations.html)
 
 Le bouton Q sert à lancer la recherche de fichiers.
 
@@ -27,10 +26,11 @@ Portfolio/
 ├── Stages/
 │   ├── Activités faites en stages
 │   └── Documentations du stage de BTS2
-└── Astuces/
-    ├── Lien pour soutenir le site via PayPal
-    ├── Documentations pour s'initier à Linux
-    ├── Scripts et applications pour Linux
-    ├── Applications pour Android
-    └── Outils HTML ← Outils utilisables dans le navigateur sans installation
+├── Astuces/
+│   ├── Lien pour soutenir le site via PayPal
+│   ├── Documentations pour s'initier à Linux
+│   ├── Scripts et applications pour Linux
+│   ├── Applications pour Android
+│   └── Outils HTML ← Outils utilisables dans le navigateur sans installation
+└── Donate/ ← Lien pour soutenir le site via PayPal
 ```

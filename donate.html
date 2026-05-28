@@ -1,43 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta name="google-site-verification" content="RZ0cNb5DMvQPDCE9WjoktWFDSZxKwXrD2Pb5N7AprAc" />
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Accueil</title>
-<meta name="description" content="Accueil">
+<title>Soutenir le site</title>
+<meta name="description" content="Soutenez le site en contribuant à la maintenance et au partage des astuces Linux, Windows et Android.">
 <link rel="icon" href="favicon.png" type="image/png">
 <style>
-/* --- Styles généraux --- */
 body {
-  background-color: #C0C0C0;
-  color: black;
-  font-size: 14px;
-  font-family: monospace;
-  overflow-x: auto;
-}
-
-.win98-btn-bleu {
-  padding: 2px 6px;
-  background-color: #3A6EA5;
-  border: 2px solid #FFFFFF;
-  border-right-color: #1A2F4A;
-  border-bottom-color: #1A2F4A;
-  text-decoration: none;
-  display: inline-block;
+  background-image: url("logo.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  max-width: 900px;
+  margin: auto;
   color: white;
-  font-family: monospace;
+  font-size: 15px;
+  font-family: sans-serif;
+  line-height: 1.6;
+  padding: 20px;
 }
-
-.win98-btn-bleu:hover {
-  background-color: #4A82C0;
+a.button {
+  background: #0070ba;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 25px;
 }
-
-.win98-btn-bleu:active {
-  border: 2px solid #1A2F4A;
-  border-right-color: #FFFFFF;
-  border-bottom-color: #FFFFFF;
-  background-color: #2F5C8A;
+.text-box {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
 }
 
 /* --- Barre de navigation --- */
@@ -133,9 +130,9 @@ body {
 }
 </style>
 </head>
+
 <body>
 <main>
-<!-- Barre de navigation -->
 <div class="navbar" style="opacity: 0.8;">
 <select class="win98-select" aria-label="Menu du site"
         onchange="
@@ -159,60 +156,38 @@ body {
     <option value="__github__">Dépôt GitHub (nouvel onglet)</option>
 </select>
 <a href="search.html" class="win98-select">Q</a>
-		<a><select class="win98-select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex = 0;">
+		<select class="win98-select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex = 0;">
             <option value="">tab?</option>
-            <option disabled="index.html">Accueil</option>
+            <option value="index.html">Accueil</option>
             <option value="bts.html">BTS</option>
             <option value="stages.html">Stages</option>
             <option value="astuces.html">Astuces</option>
-            <option value="donate.html">Donate</option>
-        </select></a>
-    <a class="tab-button tab-button-active">Accueil</a>
+            <option disabled="donate.html">Donate</option>
+        </select>
+    <a class="tab-button" href="index.html">Accueil</a>
     <a class="tab-button" href="bts.html">BTS</a>
     <a class="tab-button" href="stages.html">Stages</a>
     <a class="tab-button" href="astuces.html">Astuces</a>
-    <a class="tab-button" href="donate.html">Donate</a>
+    <a class="tab-button tab-button-active">Donate</a>
 </div>
 
-<!-- Contenu -->
 <p style="font-size:80px;"></p>
-<h1>Accueil</h1>
-<p></p>
-<p>Portfolio de Rivière Gabriel<p>
-<img src="logo.svg" width=200px height=200px alt="logo.svg">
-<p></p>
-<a href="accueil/cv-riviere-gabriel.html" class="win98-btn-bleu">Ouvrir le CV</a>
-<h2>Carte du site</h2>
-<style>
-pre.tree{font-family:monospace;white-space:pre;background:black;padding:5px;overflow-x:auto;}
-pre.tree .folder{color:#4af;}
-pre.tree .file{color:#0f0;}
-pre.tree .ascii{color:#0f0;}
-pre.tree .comment{color:#888;}
-</style>
-<pre class="tree">
-<span class="folder">Portfolio/</span>
-<span class="ascii">├──</span> <span class="folder">Accueil/</span>
-<span class="ascii">│</span>   <span class="ascii">└──</span> <span class="file">CV</span>
-<span class="ascii">├──</span> <span class="folder">BTS/</span>
-<span class="ascii">│</span>   <span class="ascii">├──</span> <span class="file">Tableau de synthèse</span>
-<span class="ascii">│</span>   <span class="ascii">├──</span> <span class="file">Veille technologique</span>
-<span class="ascii">│</span>   <span class="ascii">└──</span> <span class="file">Documentations de l'infrastructure</span>
-<span class="ascii">├──</span> <span class="folder">Stages/</span>
-<span class="ascii">│</span>   <span class="ascii">├──</span> <span class="file">Activités faites en stages</span>
-<span class="ascii">│</span>   <span class="ascii">└──</span> <span class="file">Documentations du stage de BTS2</span>
-<span class="ascii">├──</span> <span class="folder">Astuces/</span>
-<span class="ascii">│</span>   <span class="ascii">├──</span> <span class="file">Lien pour soutenir le site via PayPal</span>
-<span class="ascii">│</span>   <span class="ascii">├──</span> <span class="file">Documentations pour s'initier à Linux</span>
-<span class="ascii">│</span>   <span class="ascii">├──</span> <span class="file">Scripts et applications pour Linux</span>
-<span class="ascii">│</span>   <span class="ascii">├──</span> <span class="file">Applications pour Android</span>
-<span class="ascii">│</span>   <span class="ascii">└──</span> <span class="file">Outils HTML <span class="comment">← Outils utilisables dans le navigateur sans installation</span></span>
-<span class="ascii">└──</span> <span class="folder">Donate/</span> <span class="comment">← Lien pour soutenir le site via PayPal</span>
-</pre>
-<a href="arbo.html">Arborescence des dossiers et fichiers</a><p></p>
-<a href="https://gabsrivs.neocities.org" class="win98-btn-bleu">Neocities : https://gabsrivs.neocities.org</a>
+<h1 class="text-box">Soutenir le site</h1>
 
-<!-- Scripts -->
+<p class="text-box">
+L'onglet Astuces de ce site rassemble des astuces, outils utilisables directement dans le navigateur, scripts, et applications.
+</p>
+
+<p class="text-box">
+Si ce travail vous est utile, vous pouvez le soutenir grâce à un don volontaire.
+Cela m'aide à continuer à tester, adapter et maintenir ces ressources accessibles.
+</p>
+
+<p style="text-align:center;">
+  <a class="button" href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal">
+    💙 Faire un don via PayPal
+  </a>
+</p>
 <script>
 var lastScroll = 0;
 
