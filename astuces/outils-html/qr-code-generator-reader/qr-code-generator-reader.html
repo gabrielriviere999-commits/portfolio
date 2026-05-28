@@ -382,7 +382,7 @@ initColorPicker("bgHex", "bgPreview", function(hex){
   document.getElementById("bgColor").value = hex;
   generateQR();
 });
-document.getElementById("bgOpacity").oninput = generateQR;
+document.getElementById("bgOpacity").onchange = generateQR;
 
 /* ============================
    EXPORT PNG / JPG
@@ -564,14 +564,14 @@ var bgSlider = document.getElementById("bgOpacity");
 var bgPercent = document.getElementById("bgOpacityPercent");
 
 /* Slider → Pourcentage */
-bgSlider.oninput = function () {
+bgSlider.onchange = function () {
   var v = parseFloat(bgSlider.value);
   bgPercent.value = Math.round(v * 100);
   generateQR();
 };
 
 /* Pourcentage → Slider */
-bgPercent.oninput = function () {
+bgPercent.onchange = function () {
   var p = parseInt(bgPercent.value, 10);
 
   if (isNaN(p)) p = 0;
