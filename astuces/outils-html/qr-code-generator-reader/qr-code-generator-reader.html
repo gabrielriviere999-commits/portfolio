@@ -534,7 +534,12 @@ function initColorPicker(hexInputId, previewId, callback, skipInit) {
   input.onchange = function () {
     var v = input.value.trim();
 
-    // 1) Si c'est un hex valide
+    // 0) Ajouter # si hex sans #
+    if (/^[0-9A-Fa-f]{6}$/.test(v)) {
+      v = "#" + v;
+    }
+
+    // 1) Si c'est un hex valide (#xxxxxx)
     if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
       applyColor(v);
       return;
