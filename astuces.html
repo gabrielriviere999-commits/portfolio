@@ -589,24 +589,23 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</
     </option>
 </select>
 <p></p>
-<select id="download-windows" onchange="downloadFile(this)" aria-label="Windows">
-    <option value="">Windows...</option>
-    <option value="astuces/windows/tableau-clipboard-windows.py">
-        tableau-clipboard-windows.py
-    </option>
-    <option value="astuces/windows/minuscule-windows.py">
-        minuscule-windows.py
-    </option>
-    <option value="astuces/windows/majuscule-windows.py">
-        majuscule-windows.py
-    </option>
-    <option value="astuces/windows/inverser-casse-windows.py">
-        inverser-casse-windows.py
-    </option>
-</select>
-<p></p>
 <select id="download-autre-os" onchange="downloadFile(this)" aria-label="Autre OS">
     <option value="">Autre os...</option>
+    <option disabled>
+	    Windows
+    </option>
+    <option value="astuces/autres-os/windows/tableau-clipboard-windows.py">
+        tableau-clipboard-windows.py
+    </option>
+    <option value="astuces/autres-os/windows/minuscule-windows.py">
+        minuscule-windows.py
+    </option>
+    <option value="astuces/autres-os/windows/majuscule-windows.py">
+        majuscule-windows.py
+    </option>
+    <option value="astuces/autres-os/windows/inverser-casse-windows.py">
+        inverser-casse-windows.py
+    </option>
     <option disabled>
 	    macOS
     </option>
