@@ -507,6 +507,20 @@ document.getElementById("copy-btn").onclick = function () {
   document.body.removeChild(temp);
 };
 
+function cssNameToHex(name) {
+  var ctx = document.createElement("canvas").getContext("2d");
+  ctx.fillStyle = "#000"; // valeur par défaut
+  ctx.fillStyle = name;   // si invalide, reste "#000"
+  var computed = ctx.fillStyle;
+
+  // Si le navigateur n'a pas reconnu le nom → retourne null
+  if (computed === "#000000" && name.toLowerCase() !== "black") {
+    return null;
+  }
+
+  return computed; // retourne "#rrggbb"
+}
+
 function initColorPicker(hexInputId, previewId, callback, skipInit) {
   var input = document.getElementById(hexInputId);
   var preview = document.getElementById(previewId);
@@ -519,7 +533,18 @@ function initColorPicker(hexInputId, previewId, callback, skipInit) {
 
   input.oninput = function () {
     var v = input.value.trim();
-    if (/^#[0-9A-Fa-f]{6}$/.test(v)) applyColor(v);
+
+    // 1) Si c'est un hex valide
+    if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
+      applyColor(v);
+      return;
+    }
+
+    // 2) Sinon, essayer comme nom CSS
+    var hex = cssNameToHex(v);
+    if (hex) {
+      applyColor(hex);
+    }
   };
 
   var palette = input.parentNode.parentNode.querySelector(".palette");
