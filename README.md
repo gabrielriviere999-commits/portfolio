@@ -26,11 +26,10 @@ Portfolio/
 ├── Stages/
 │   ├── Activités faites en stages
 │   └── Documentations du stage de BTS2
-├── Astuces/
-│   ├── Lien pour soutenir le site via PayPal
-│   ├── Documentations pour s'initier à Linux
-│   ├── Scripts et applications pour Linux
-│   ├── Applications pour Android
-│   └── Outils HTML ← Outils utilisables dans le navigateur sans installation
-└── Donate/ ← Lien pour soutenir le site via PayPal
+└── Astuces/
+    ├── Lien pour soutenir le site via PayPal
+    ├── Documentations pour s'initier à Linux
+    ├── Scripts et applications pour Linux
+    ├── Applications pour Android
+    └── Outils HTML ← Outils utilisables dans le navigateur sans installation
 ```
