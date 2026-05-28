@@ -531,7 +531,7 @@ function initColorPicker(hexInputId, previewId, callback, skipInit) {
     if (trigger !== false) callback(hex);
   }
 
-  input.oninput = function () {
+  input.onchange = function () {
     var v = input.value.trim();
 
     // 1) Si c'est un hex valide
