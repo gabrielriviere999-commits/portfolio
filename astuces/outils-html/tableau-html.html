@@ -878,22 +878,24 @@ else if (colorMode === "border") {
 }
 
 document.getElementById('applyHexColor').onclick = function () {
-  var col = document.getElementById('hexColorInput').value;
+  var col = document.getElementById('hexColorInput').value.trim();
 
-  // enlever espaces
-  col = col.replace(/^\s+|\s+$/g, "");
-
-  // ajouter # si besoin
+  // Si c'est un hex sans # → ajouter #
   if (/^[0-9A-Fa-f]{6}$/.test(col)) {
     col = "#" + col;
   }
 
-  // valider format final
-  if (!/^#[0-9A-Fa-f]{6}$/.test(col)) {
-    return;
+  // Vérifier si c'est un hex valide (#xxxxxx)
+  var isHex = /^#[0-9A-Fa-f]{6}$/.test(col);
+
+  // Vérifier si c'est un nom de couleur valide
+  var isNamed = CSS.supports("color", col);
+
+  if (!isHex && !isNamed) {
+    return; // couleur invalide → on ne fait rien
   }
 
-  // appliquer selon mode
+  // Appliquer selon le mode
   applyColor(col);
 };
 
@@ -1195,32 +1197,32 @@ document.getElementById('updateFromCode').onclick = function() {
     // Extraire épaisseur
     var wMatch = css.match(/border:\s*([0-9]+px)/);
     if (wMatch) {
-      globalBorderWidth = wMatch[1];
-      globalStyles.borderWidth = globalBorderWidth;
-      document.documentElement.style.setProperty("--cell-border-width", globalBorderWidth);
-      document.documentElement.style.setProperty("--table-border-width", globalBorderWidth);
+        globalBorderWidth = wMatch[1];
+        globalStyles.borderWidth = globalBorderWidth;
+        document.documentElement.style.setProperty("--cell-border-width", globalBorderWidth);
+        document.documentElement.style.setProperty("--table-border-width", globalBorderWidth);
     }
 
     // Extraire couleur
-    var cMatch = css.match(/solid\s*(#[0-9A-Fa-f]{6})/);
+    var cMatch = css.match(/solid\s*([^;]+)/i);
     if (cMatch) {
-      globalBorderColor = cMatch[1];
-      globalStyles.borderColor = globalBorderColor;
-      document.documentElement.style.setProperty("--cell-border-color", globalBorderColor);
-      document.documentElement.style.setProperty("--table-border-color", globalBorderColor);
+        globalBorderColor = cMatch[1].trim();
+        globalStyles.borderColor = globalBorderColor;
+        document.documentElement.style.setProperty("--cell-border-color", globalBorderColor);
+        document.documentElement.style.setProperty("--table-border-color", globalBorderColor);
     }
 
     // Couleur texte globale
-    var tMatch = css.match(/color:\s*(#[0-9A-Fa-f]{6})/);
+    var tMatch = css.match(/color:\s*([^;]+)/i);
     if (tMatch) {
-        globalStyles.textColor = tMatch[1];
+        globalStyles.textColor = tMatch[1].trim();
         document.documentElement.style.setProperty("--global-text-color", globalStyles.textColor);
     }
 
     // Fond global
-    var bgMatch = css.match(/background-color:\s*(#[0-9A-Fa-f]{6})/);
+    var bgMatch = css.match(/background-color:\s*([^;]+)/i);
     if (bgMatch) {
-        globalStyles.bgColor = bgMatch[1];
+        globalStyles.bgColor = bgMatch[1].trim();
         document.documentElement.style.setProperty("--global-bg-color", globalStyles.bgColor);
     }
 
