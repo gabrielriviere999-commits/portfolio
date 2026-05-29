@@ -883,11 +883,6 @@ document.getElementById('applyHexColor').onclick = function () {
   // enlever espaces
   col = col.replace(/^\s+|\s+$/g, "");
 
-  // ajouter # si besoin
-  if (/^[0-9A-Fa-f]{6}$/.test(col)) {
-    col = "#" + col;
-  }
-
   // si vide → on ignore
   if (!col) return;
 
@@ -896,7 +891,16 @@ document.getElementById('applyHexColor').onclick = function () {
 };
 
 document.getElementById("hexColorInput").onchange = function () {
-    this.value = this.value.toLowerCase().replace(/^\s+|\s+$/g, "");
+    var v = this.value.toLowerCase().replace(/^\s+|\s+$/g, "");
+    // hex 6 digits → ajouter #
+    if (/^[0-9a-f]{6}$/.test(v)) {
+        v = "#" + v;
+    }
+    // hex 3 digits → ajouter #
+    else if (/^[0-9a-f]{3}$/.test(v)) {
+        v = "#" + v;
+    }
+    this.value = v;
 };
 
 document.getElementById('clearTdStyle').onclick = function () {
