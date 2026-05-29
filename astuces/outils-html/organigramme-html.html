@@ -506,6 +506,7 @@ function copyToClipboard(text) {
 function changeGlobalTextColor() {
   var col = prompt("Couleur globale du texte :");
   if (!col) return;
+  col = col.toLowerCase();
   var root = document.querySelector(".org-root");
   root.style.color = col;
   renderOrgTree(orgRoot);
@@ -515,6 +516,7 @@ function changeSelectedTextColor() {
   if (!selectedId) return;
   var col = prompt("Couleur du texte :");
   if (!col) return;
+  col = col.toLowerCase();
   var node = findNodeById(orgRoot, selectedId);
   node.textColor = col;
   renderOrgTree(orgRoot);
@@ -524,6 +526,7 @@ function changeSelectedTextColor() {
 function changeGlobalColor() {
   var col = prompt("Couleur globale du fond des carrés :");
   if (!col) return;
+  col = col.toLowerCase();
   globalBoxBg = col;
   renderOrgTree(orgRoot);
 }
@@ -532,6 +535,7 @@ function changeSelectedBgColor() {
   if (!selectedId) return;
   var col = prompt("Couleur du fond du carré sélectionné :");
   if (!col) return;
+  col = col.toLowerCase();
   var node = findNodeById(orgRoot, selectedId);
   node.bg = col;
   renderOrgTree(orgRoot);

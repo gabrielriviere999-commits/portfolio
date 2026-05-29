@@ -883,9 +883,6 @@ document.getElementById('applyHexColor').onclick = function () {
   // enlever espaces
   col = col.replace(/^\s+|\s+$/g, "");
 
-  // mettre en lowercase
-  col = col.toLowerCase();
-
   // ajouter # si besoin
   if (/^[0-9A-Fa-f]{6}$/.test(col)) {
     col = "#" + col;
@@ -896,6 +893,10 @@ document.getElementById('applyHexColor').onclick = function () {
 
   // appliquer selon mode
   applyColor(col);
+};
+
+document.getElementById("hexColorInput").onchange = function () {
+    this.value = this.value.toLowerCase().replace(/^\s+|\s+$/g, "");
 };
 
 document.getElementById('clearTdStyle').onclick = function () {
