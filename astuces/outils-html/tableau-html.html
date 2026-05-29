@@ -168,7 +168,7 @@ td.selected {
     <div class="color" data-col="#0000ff" style="background:#00f"></div>
     <div class="color" data-col="#ff9900" style="background:#f90"></div>
     <div class="color" data-col="#ffff00" style="background:#ff0"></div>
-    <input type="text" id="hexColorInput" placeholder="#RRGGBB">
+    <input type="text" id="hexColorInput" placeholder="#rrggbb">
   <button id="applyHexColor">OK</button>
   </div>
 </div>
@@ -880,8 +880,11 @@ else if (colorMode === "border") {
 document.getElementById('applyHexColor').onclick = function () {
   var col = document.getElementById('hexColorInput').value;
 
-  // enlever espaces (compatible 3DS)
+  // enlever espaces
   col = col.replace(/^\s+|\s+$/g, "");
+
+  // mettre en lowercase
+  col = col.toLowerCase();
 
   // ajouter # si besoin
   if (/^[0-9A-Fa-f]{6}$/.test(col)) {
