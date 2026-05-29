@@ -577,6 +577,10 @@ function importTreeUniversal(text) {
     // Normaliser les espaces insécables
     text = text.replace(/\u00A0/g, " ");
 
+    // Normaliser Windows : remplacer └─── par └── + espace
+    text = text.replace(/└───/g, "└── ");
+    text = text.replace(/├───/g, "├── ");
+
     var lines = text.split(/\r?\n/);
     if (lines.length === 0) {
         return { name: "/", folders: [], files: [], comment: "" };
