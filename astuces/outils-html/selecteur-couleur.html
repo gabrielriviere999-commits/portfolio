@@ -198,22 +198,36 @@ function cssNameToHex(name){
 
 function parseHex(str){
     str = str.trim();
-    // noms de couleur CSS ---
-    // si ce n'est pas un hex complet, on tente comme nom
-    if(!/^#?[0-9A-Fa-f]{6,8}$/.test(str)){
+
+    // --- AJOUT : accepter aussi les hex courts (#abc) ---
+    // si ce n'est pas un hex 3, 6 ou 8 → essayer comme nom CSS
+    if(
+        !/^#?[0-9A-Fa-f]{3}$/.test(str) &&
+        !/^#?[0-9A-Fa-f]{6}$/.test(str) &&
+        !/^#?[0-9A-Fa-f]{8}$/.test(str)
+    ){
         var hexFromName = cssNameToHex(str);
         if(!hexFromName) return null;
-        str = hexFromName; // ex: "#FF0000"
+        str = hexFromName; // ex: "#ff0000"
     }
 
-    str=str.trim().toUpperCase();
-    if(str.charAt(0)==="#") str=str.substring(1);
-    var aLocal=null;
-    if(str.length===8){
-        aLocal=parseInt(str.substring(6,8),16);
-        str=str.substring(0,6);
+    // normalisation
+    str = str.toUpperCase();
+    if(str.charAt(0)==="#") str = str.substring(1);
+
+    // --- expansion du format court ---
+    if(str.length === 3){
+        str = str[0]+str[0] + str[1]+str[1] + str[2]+str[2];
     }
+
+    var aLocal = null;
+    if(str.length === 8){
+        aLocal = parseInt(str.substring(6,8),16);
+        str = str.substring(0,6);
+    }
+
     if(!/^[0-9A-F]{6}$/.test(str)) return null;
+
     return {
         r:parseInt(str.substring(0,2),16),
         g:parseInt(str.substring(2,4),16),

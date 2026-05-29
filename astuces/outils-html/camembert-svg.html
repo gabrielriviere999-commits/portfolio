@@ -229,6 +229,7 @@ function rebuildTable() {
       var v = this.value.trim();
 
       if (/^[0-9A-Fa-f]{6}$/.test(v)) v = "#" + v;
+      else if (/^[0-9A-Fa-f]{3}$/.test(v)) v = "#" + v;
 
       var hex = normalizeColor(v);
       if (hex) {
