@@ -532,6 +532,7 @@ function initColorPicker(hexInputId, previewId, callback, skipInit) {
   }
 
   input.onchange = function () {
+	this.value = this.value.toLowerCase();
     var v = input.value.trim();
 
     // 0) Ajouter # si hex sans #
