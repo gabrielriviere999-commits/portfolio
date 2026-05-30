@@ -389,9 +389,9 @@ function readPixel(x,y){
     var hsv = rgbToHsv(r,g,b);
 
     hexSpan.innerHTML = hex;
-    rgbSpan.innerHTML = "rgb(" + r + ", " + g + ", " + b + ")";
-    hslSpan.innerHTML = "hsl(" + hsl.h + ", " + hsl.s + "%, " + hsl.l + "%)";
-    hsvSpan.innerHTML = "hsv(" + hsv.h + ", " + hsv.s + "%, " + hsv.v + "%)";
+    rgbSpan.innerHTML = "rgb(" + r + "," + g + "," + b + ")";
+    hslSpan.innerHTML = "hsl(" + hsl.h + "," + hsl.s + "%," + hsl.l + "%)";
+    hsvSpan.innerHTML = "hsv(" + hsv.h + "," + hsv.s + "%," + hsv.v + "%)";
 }
 
 function showLoupe(x, y){
