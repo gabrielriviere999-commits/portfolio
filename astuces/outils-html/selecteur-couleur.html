@@ -420,7 +420,7 @@ function updateUI(){
 
     if(!lockRgb){
         if(alphaOn)
-            rgbInput.value = r+","+g+","+b+","+a.toFixed(2);
+            rgbInput.value = r+","+g+","+b+","+a;
         else
             rgbInput.value = r+","+g+","+b;
     }
@@ -428,14 +428,14 @@ function updateUI(){
     var hsl=rgbToHsl(r,g,b);
     if(!lockHsl){
         if(alphaOn)
-            hslInput.value = hsl.h+","+hsl.s+"%,"+hsl.l+"%,"+a.toFixed(2);
+            hslInput.value = hsl.h+","+hsl.s+"%,"+hsl.l+"%,"+a;
         else
             hslInput.value = hsl.h+","+hsl.s+"%,"+hsl.l+"%";
     }
 
     if(!lockHsv){
         if(alphaOn)
-            hsvInput.value = hsv.h+","+hsv.s+"%,"+hsv.v+"%,"+a.toFixed(2);
+            hsvInput.value = hsv.h+","+hsv.s+"%,"+hsv.v+"%,"+a;
         else
             hsvInput.value = hsv.h+","+hsv.s+"%,"+hsv.v+"%";
     }
