@@ -4,12 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Générateur & Lecteur de QR Code</title>
-
 <style>
 body {
   font-family: monospace;
   background: #C0C0C0;
-  padding: 1rem;
+  padding: 10px;
   margin: 0;
   color: black;
 }
@@ -573,10 +572,9 @@ var bgSlider = document.getElementById("bgOpacity");
 var bgPercent = document.getElementById("bgOpacityPercent");
 
 /* Slider → Pourcentage */
-bgSlider.onchange = function () {
+bgSlider.oninput = function () {
   var v = parseFloat(bgSlider.value);
   bgPercent.value = Math.round(v * 100);
-  generateQR();
 };
 
 /* Pourcentage → Slider */
