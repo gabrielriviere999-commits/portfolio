@@ -7,8 +7,8 @@
 
 <style>
 body {
-  font-family: monospace;
-  background: #C0C0C0; /* fond normal de la page, FIXE */
+  font-family: sans-serif;
+  background: #C0C0C0;
   padding-top: 150px;
 }
 
@@ -52,7 +52,12 @@ button:active {
   background: #c0c0c0;
 }
 
-button:hover { background:#E0E0E0; }
+button:hover { background:#e0e0e0; }
+
+input, textarea {
+  border:2px solid;
+  border-color:#808080 #ffffff #ffffff #808080;
+}
 
 /* ORGANIGRAMME */
 .org-root {
@@ -60,7 +65,7 @@ button:hover { background:#E0E0E0; }
   padding: 10px;
   background: transparent;
   color: #000000;
-  text-align: center; /* aide la 3DS */
+  text-align: center;
 }
 
 /* Chaque nœud est un bloc inline stable */
@@ -88,13 +93,12 @@ button:hover { background:#E0E0E0; }
   height: auto;
 }
 
-/* Sélection compatible 3DS (outline-offset non supporté) */
+/* Sélection */
 .org-node.selected .org-label {
   border: 2px solid #0078d7;
   padding: 3px 7px; /* compense l’épaisseur du border */
 }
 
-/* Remplace flex par inline-block */
 .org-children {
   display: table;
   margin: 0 auto;

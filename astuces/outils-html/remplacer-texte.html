@@ -5,16 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Remplacer texte</title>
 <style>
-body { background-color: #C0C0C0; }
+body { background-color: #c0c0c0; }
 textarea { width: 100%; height: 150px; overflow-x: auto; white-space: pre; }
 pre { background: #eee; padding: 10px; white-space: pre-wrap; }
-button { margin-top: 10px; padding: 6px 10px; cursor:pointer; }
+button {
+  background:#d4d0c8;
+  color: black;
+  border:2px solid;
+  border-color:#fff #404040 #404040 #fff;
+  padding:4px 8px;
+  margin-top: 10px;
+  font-size:12px;
+  cursor:pointer;
+}
+button:active {
+  border-color:#404040 #fff #fff #404040;
+  background:#c0c0c0;
+}
+button:hover { filter: contrast(75%); }
+input, textarea {
+  border:2px solid;
+  border-color:#808080 #ffffff #ffffff #808080;
+}
 label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical-align: middle; }
 </style>
 </head>
 <body>
 
-<h3>Remplacer texte</h3>
+<h2>Remplacer texte</h2>
 <textarea id="input"></textarea>
 
 <br>
@@ -27,7 +45,7 @@ label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical
 <label><input type="checkbox" id="chk_quo">Guillemets → "</label>
 <label><input type="checkbox" id="chk_squo">Demi-guillemets → '</label>
 <br>
-<button onclick="toutDecocher()" style="background-color:#ffaa00; color:black;">Tout décocher</button>
+<button onclick="toutDecocher()" style="background-color:#ffaa00;">Tout décocher</button>
 <br>
 <label>Texte en début de ligne :</label>
 <input id="prefixInput" type="text" placeholder="ex:    ou >> ou - ">
@@ -38,9 +56,9 @@ label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical
 <button onclick="ajouterRemplacement()" style="background-color:#dddddd;">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
 <br><br>
-<button onclick="appliquerTransformations()" style="background-color:#ff8800; color:black;">Appliquer</button>
-<button onclick="copier()" style="background-color:#4CAF50; color:black;">Copier</button>
-<button onclick="effacerTout()" style="background-color:#ff4444; color:black;">Effacer tout</button>
+<button onclick="appliquerTransformations()" style="background-color:#ff8800;">Appliquer</button>
+<button onclick="copier()" style="background-color:#4CAF50;">Copier</button>
+<button onclick="effacerTout()" style="background-color:#ff4444;">Effacer tout</button>
 
 <h3>Résultat</h3>
 <textarea id="output" readonly style="width:100%; height:200px; font-family:monospace; white-space:pre;"></textarea>
