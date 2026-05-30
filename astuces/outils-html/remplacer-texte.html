@@ -6,7 +6,7 @@
 <title>Remplacer texte</title>
 <style>
 body { background-color: #c0c0c0; }
-textarea { width: 100%; height: 150px; overflow-x: auto; white-space: pre; }
+textarea { width: 100%; height: 150px; overflow-x: auto; white-space: pre; box-sizing: border-box; }
 pre { background: #eee; padding: 10px; white-space: pre-wrap; }
 button {
   background:#d4d0c8;
@@ -26,6 +26,7 @@ button:hover { filter: brightness(1.2) }
 input, textarea {
   border:2px solid;
   border-color:#808080 #ffffff #ffffff #808080;
+  box-sizing: border-box;
 }
 label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical-align: middle; }
 </style>
