@@ -6,111 +6,111 @@
 <title>Convertisseur d'unités</title>
 
 <style>
-  body { margin:20px; background:#C0C0C0; font-family:sans-serif; }
+body { margin:20px; background:#c0c0c0; font-family:sans-serif; }
 
-  .dropdown {
-    background: #FFFFFF;
-    border: 2px solid #FFFFFF;
-    border-left-color: #404040;
-    border-top-color: #404040;
-    padding: 4px;
-    cursor:pointer;
-    user-select:none;
-  }
+.dropdown {
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  border-left-color: #404040;
+  border-top-color: #404040;
+  padding: 4px;
+  cursor:pointer;
+  user-select:none;
+}
 
-  .dropdown:hover {
-    background: #FFFFE0;
-  }
+.dropdown:hover {
+  background: #ffffe0;
+}
 
-  .dropdown-list {
-    background: #FFFFFF;
-    border: 2px solid #FFFFFF;
-    border-left-color: #404040;
-    border-top-color: #404040;
-    margin-top: 2px;
-    max-height:200px;
-    overflow-y:auto;
-    display:none;
-  }
+.dropdown-list {
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  border-left-color: #404040;
+  border-top-color: #404040;
+  margin-top: 2px;
+  max-height:200px;
+  overflow-y:auto;
+  display:none;
+}
 
-  .dropdown-list div {
-    padding:4px;
-    border-bottom:1px solid #C0C0C0;
-  }
+.dropdown-list div {
+  padding:4px;
+  border-bottom:1px solid #c0c0c0;
+}
 
-  .dropdown-list div:hover {
-    background: #000080;
-    color: white;
-  }
+.dropdown-list div:hover {
+  background: #000080;
+  color: white;
+}
 
-  .dropdown-selected {
-    font-weight:bold;
-  }
+.dropdown-selected {
+  font-weight:bold;
+}
 
-  .block-cat {
-    background:#e35f5f;
-  }
+.block-cat {
+  background:#e35f5f;
+}
 
-  .block-value {
-    background:#ffd700;
-  }
+.block-value {
+  background:#ffd700;
+}
 
-  .block-from {
-    background:#8ec582;
-  }
+.block-from {
+  background:#8ec582;
+}
 
-  .block-to {
-    background:#7dc343;
-  }
+.block-to {
+  background:#7dc343;
+}
 
-  .block {
-    border: 2px solid #FFFFFF;
-    border-right-color: #404040;
-    border-bottom-color: #404040;
-    padding: 10px;
-    margin-top: 15px;
-  }
+.block {
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  padding: 10px;
+  margin-top: 15px;
+}
 
-  button {
-    background: #C0C0C0;
-    color: black;
-    border: 2px solid #FFFFFF;
-    border-right-color: #404040;
-    border-bottom-color: #404040;
-    padding: 4px 10px;
-    cursor: pointer;
-  }
+button {
+  background: #c0c0c0;
+  color: black;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  padding: 4px 10px;
+  cursor: pointer;
+}
 
-  .block h2 {
-    background: #000080;
-    color: white;
-    padding: 4px;
-    margin: -10px -10px 10px -10px;
-    font-size: 14px;
-    font-weight: bold;
-  }
+.block h2 {
+  background: #000080;
+  color: white;
+  padding: 4px;
+  margin: -10px -10px 10px -10px;
+  font-size: 14px;
+  font-weight: bold;
+}
 
-  button:hover {
-    background: #E0E0E0;
-  }
+button:hover {
+  background: #e0e0e0;
+}
 
-  button:active {
-    border: 2px solid #404040;
-    border-right-color: #FFFFFF;
-    border-bottom-color: #FFFFFF;
-  }
+button:active {
+  border: 2px solid #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
 
-  input, textarea {
-    background: #FFFFFF;
-    border: 2px solid #FFFFFF;
-    border-left-color: #404040;
-    border-top-color: #404040;
-    padding: 4px;
-  }
+input, textarea {
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  border-left-color: #404040;
+  border-top-color: #404040;
+  padding: 4px;
+}
 
-  input:hover, textarea:hover {
-    background: #FFFFE0;
-  }
+input:hover, textarea:hover {
+  background: #ffffe0;
+}
 
 #fromSearchList,
 #toSearchList {

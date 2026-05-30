@@ -7,144 +7,144 @@
 <style>
 /* --- Win98 global look --- */
 body {
-    font-family: sans-serif;
-    font-size: 20px;
-    background: #C0C0C0;
-    width:1230px;
-    padding-top: 20px;
+  font-family: sans-serif;
+  font-size: 20px;
+  background: #c0c0c0;
+  width:1230px;
+  padding-top: 20px;
 }
 
 /* --- Win98 controls --- */
 .win98-box {
-    background:#C0C0C0;
-    border:2px solid;
-    border-color:#FFFFFF #808080 #808080 #FFFFFF;
-    padding:10px;
+  background:#c0c0c0;
+  border:2px solid;
+  border-color:#ffffff #808080 #808080 #ffffff;
+  padding:10px;
 }
 
 button {
-    font-family: inherit;
-    color: black;
-    font-size: 20px;
-    padding: 2px 8px;
-    border: 2px solid #ffffff;
-    border-right-color: #404040;
-    border-bottom-color: #404040;
-    background: #c0c0c0;
-    cursor: pointer;
+  font-family: inherit;
+  color: black;
+  font-size: 20px;
+  padding: 2px 8px;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  background: #c0c0c0;
+  cursor: pointer;
 }
 button:active {
-    border: 2px solid #404040;
-    border-right-color: #ffffff;
-    border-bottom-color: #ffffff;
+  border: 2px solid #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
 }
-button:hover { background:#E0E0E0; }
+button:hover { background:#e0e0e0; }
 
 /* --- Layout --- */
 #dropzone {
-    border: 2px dashed #808080;
-    background: #e0e0e0;
-    padding: 10px;
-    text-align: center;
-    margin-bottom: 8px;
-    font-size: 20px;
+  border: 2px dashed #808080;
+  background: #e0e0e0;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 20px;
 }
 #dropzone.hover {
-    border-color: #000080;
-    background: #d0e4ff;
+  border-color: #000080;
+  background: #d0e4ff;
 }
 
 #canvasWrapper {
-    border: 2px inset #ffffff;
-    background: #000000;
-    padding: 2px;
+  border: 2px inset #ffffff;
+  background: #000000;
+  padding: 2px;
 }
 
 /* canvas full width */
 #canvas {
-    height: auto;
-    display: block;
-    background: #000000;
+  height: auto;
+  display: block;
+  background: #000000;
 }
 
 /* Loupe */
 #loupe {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    border: 2px solid #000000;
-    background: #c0c0c0;
-    display: none;
-    pointer-events: none;
-    image-rendering: pixelated;
-    box-shadow: 2px 2px 0 #000000;
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 2px solid #000000;
+  background: #c0c0c0;
+  display: none;
+  pointer-events: none;
+  image-rendering: pixelated;
+  box-shadow: 2px 2px 0 #000000;
 }
 #loupeCanvas {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 /* Croix au centre */
 #loupe:after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: red;
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: red;
 }
 #loupe:before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: red;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: red;
 }
 
 /* Croix sur l'image */
 .cross {
-    position:absolute;
-    width:36px;
-    height:36px;
-    pointer-events:none;
+  position:absolute;
+  width:36px;
+  height:36px;
+  pointer-events:none;
 }
 .cross:before, .cross:after {
-    content:"";
-    position:absolute;
-    background:#C0C0C0;
+  content:"";
+  position:absolute;
+  background:#c0c0c0;
 }
 .cross:before {
-    left:50%; top:0; bottom:0;
-    width:1px;
-    margin-left:-1px;
+  left:50%; top:0; bottom:0;
+  width:1px;
+  margin-left:-1px;
 }
 .cross:after {
-    top:50%; left:0; right:0;
-    height:1px;
-    margin-top:-1px;
+  top:50%; left:0; right:0;
+  height:1px;
+  margin-top:-1px;
 }
 
 /* Info zone */
 #info {
-    margin-top: 8px;
-    font-size: 20px;
+  margin-top: 8px;
+  font-size: 20px;
 }
 #preview {
-    width: 32px;
-    height: 32px;
-    border: 2px inset #ffffff;
-    display: inline-block;
-    margin-right: 6px;
+  width: 32px;
+  height: 32px;
+  border: 2px inset #ffffff;
+  display: inline-block;
+  margin-right: 6px;
 }
 .line {
-    margin: 3px 0;
+  margin: 3px 0;
 }
 .value {
-    display: inline-block;
-    min-width: 140px;
+  display: inline-block;
+  min-width: 140px;
 }
 
 .toolbar {
@@ -165,9 +165,9 @@ button:hover { background:#E0E0E0; }
 
 /* --- Mode mobile --- */
 @media screen and (max-width: 720px) {
-    body, button, #dropzone, #info, input { font-size: 50px; }
-    #loupe { width: 240px; height: 240px; }
-    #preview { width: 96px; height: 96px; }
+  body, button, #dropzone, #info, input { font-size: 50px; }
+  #loupe { width: 240px; height: 240px; }
+  #preview { width: 96px; height: 96px; }
 }
 </style>
 </head>
