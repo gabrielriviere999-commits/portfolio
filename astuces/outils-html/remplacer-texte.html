@@ -6,8 +6,7 @@
 <title>Remplacer texte</title>
 <style>
 body { background-color:#c0c0c0; }
-textarea { width:100%; height:200px; overflow-x:auto; white-space:pre; box-sizing:border-box; font-family:monospace; }
-pre { background:#eee; padding:10px; white-space:pre; }
+textarea { width:100%; height:200px; box-sizing:border-box; font-family:monospace; }
 button {
   color:black;
   border:2px solid;
@@ -31,7 +30,7 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <body>
 
 <h2>Remplacer texte</h2>
-<textarea id="input"></textarea>
+<textarea id="input" wrap="off"></textarea>
 
 <br>
 <label><input type="checkbox" id="chk_min">minuscule</label>
@@ -59,7 +58,7 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <button onclick="effacerTout()" style="background-color:#ff4444;">Effacer tout</button>
 
 <h3>Résultat</h3>
-<textarea id="output" readonly></textarea>
+<textarea id="output" wrap="off" readonly></textarea>
 <div id="stats" style="margin-top:8px;font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
 
 <script>
