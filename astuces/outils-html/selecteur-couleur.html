@@ -597,7 +597,7 @@ aRange.oninput=function(){
 
 alphaToggle.onchange=function(){updateUI();};
 
-alphaInput.oninput=function(){
+alphaInput.onchange=function(){
     var val=parseFloat(this.value);
     if(!isNaN(val)){
         a=clamp(val,0,1);
