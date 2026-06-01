@@ -1,0 +1,4 @@
+Libraries utilisées :
+
+https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js - Apache 2.0 - ZXing Team
+https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js - MIT - lindell.me

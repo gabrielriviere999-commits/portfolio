@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur & Lecteur de Code-barres</title>
+<style>
+body {
+  font-family: monospace;
+  background: #c0c0c0;
+  padding: 10px;
+  margin: 0;
+  color: black;
+}
+
+.section {
+  background: #c0c0c0;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  padding: 10px;
+  margin-bottom: 1rem;
+}
+
+h1, h2 {
+  font-weight: bold;
+  margin-top: 0;
+}
+
+label {
+  font-weight: bold;
+}
+
+textarea, input {
+  width: 100%;
+  padding: 4px;
+  margin: 4px 0;
+  box-sizing: border-box;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  background: #ffffff;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+textarea {
+  height: 150px;
+}
+
+.color-picker { margin-bottom: 10px; }
+
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color-preview {
+  width: 24px;
+  height: 24px;
+  border: 2px inset #808080;
+}
+
+#barcodePreview {
+background-color:black;
+}
+
+#bgPreview {
+background-color:white;
+}
+
+.hex-input {
+  width: 90px;
+  padding: 4px;
+  font-family: monospace;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  background: #ffffff;
+}
+
+.palette {
+  margin-top: 6px;
+}
+
+.palette div {
+  width: 20px;
+  height: 20px;
+  border: 2px outset #808080;
+  cursor: pointer;
+  display: inline-block;
+  margin: 2x;
+}
+
+.win98-btn,
+button,
+a.btn,
+input[type="file"] {
+  display: inline-block;
+  padding: 4px 10px;
+  margin-top: 4px;
+  cursor: pointer;
+  background: #c0c0c0;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  font-family: monospace;
+  color: black;
+  text-decoration: none;
+}
+
+.win98-btn:hover,
+button:hover,
+a.btn:hover,
+input[type="file"]:hover {
+  background: #e0e0e0;
+}
+
+.win98-btn:active,
+button:active,
+a.btn:active,
+input[type="file"]:active {
+  border: 2px solid #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+#barcode {
+  margin-top: 1rem;
+  background: #ffffff;
+  padding: 10px;
+  border: 2px inset #808080;
+}
+
+#video {
+  width: 100%;
+  max-width: 320px;
+  background: #000000;
+  border: 2px inset #808080;
+}
+</style>
+</head>
+<body>
+
+<h1>Générateur & Lecteur de Code-barres</h1>
+
+<div class="section">
+  <h2>Générer un Code-barres</h2>
+
+  <textarea id="text" wrap="off"></textarea>
+
+  <!-- === COLOR PICKER CODE-BARRES === -->
+  <div class="color-picker">
+    <label>Couleur du Code-barres :</label>
+    <div class="color-row">
+      <div id="barcodePreview" class="color-preview"></div>
+      <input id="barcodeHex" class="hex-input" value="#000000">
+    </div>
+
+    <div class="palette">
+      <div data-col="#000000" style="background:#000"></div>
+      <div data-col="#ffffff" style="background:#fff"></div>
+      <div data-col="#ff0000" style="background:#f00"></div>
+      <div data-col="#00ff00" style="background:#0f0"></div>
+      <div data-col="#0000ff" style="background:#00f"></div>
+      <div data-col="#ffff00" style="background:#ff0"></div>
+      <div data-col="#ff00ff" style="background:#f0f"></div>
+      <div data-col="#00ffff" style="background:#0ff"></div>
+    </div>
+  </div>
+
+  <!-- === COLOR PICKER BACKGROUND === -->
+  <div class="color-picker">
+    <label>Couleur du fond :</label>
+    <div class="color-row">
+      <div id="bgPreview" class="color-preview"></div>
+      <input id="bgHex" class="hex-input" value="#ffffff">
+    </div>
+
+    <div class="palette">
+      <div data-col="#ffffff" style="background:#fff"></div>
+      <div data-col="#000000" style="background:#000"></div>
+      <div data-col="#cccccc" style="background:#ccc"></div>
+      <div data-col="#808080" style="background:#808080"></div>
+      <div data-col="#ffaaaa" style="background:#faa"></div>
+      <div data-col="#aaffaa" style="background:#afa"></div>
+      <div data-col="#aaaaff" style="background:#aaf"></div>
+      <div data-col="#ffffaa" style="background:#ffa"></div>
+    </div>
+
+    <label>Opacité du fond :</label>
+    <input type="range" id="bgOpacity" min="0" max="1" step="0.01" value="1">
+
+    <input type="number" id="bgOpacityPercent" min="0" max="100" value="100" style="width:70px;">
+    <span>%</span>
+  </div>
+
+  <!-- === HIDDEN INPUTS POUR LE JS EXISTANT === -->
+  <input type="hidden" id="barcodeColor" value="#000000">
+  <input type="hidden" id="bgColor" value="#ffffff">
+
+  <button id="btn-generate">Générer</button>
+
+  <div id="barcode"></div>
+
+  <button id="export-png">Exporter PNG</button>
+  <button id="export-jpg">Exporter JPG</button>
+  <button id="export-svg">Exporter SVG</button>
+</div>
+
+<div class="section">
+  <h2>Décoder un Code-barres</h2>
+
+  <input type="file" id="file-input" accept="image/*">
+  <canvas id="canvas-file" style="display:none;"></canvas>
+
+  <pre id="decode-file" style="
+    overflow-x:auto;
+    background:#FFFFFF;
+    padding:10px;
+    border:2px inset #808080;
+    margin-top:10px;
+  "></pre>
+
+  <button id="copy-btn" class="win98-btn">Copier</button>
+  <a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
+</div>
+
+<!-- Librairies -->
+<script src="JsBarcode.all.min.js"></script>
+<script src="../zxing-es5.min.js"></script>
+
+<script>
+/* ============================
+   RÉFÉRENCES DE BASE
+============================ */
+var text = document.getElementById("text");
+var barcode = document.getElementById("barcode");
+var btnGen = document.getElementById("btn-generate");
+
+var barcodeColorInput = document.getElementById("barcodeColor");
+var bgColorInput = document.getElementById("bgColor");
+
+/* ============================
+   COLOR PICKERS INIT
+============================ */
+initColorPicker("barcodeHex", "barcodePreview", function (hex) {
+  barcodeColorInput.value = hex;
+  generateBarcode();
+});
+
+initColorPicker("bgHex", "bgPreview", function (hex) {
+  bgColorInput.value = hex;
+  generateBarcode();
+});
+
+/* ============================
+   COLOR PICKER
+============================ */
+function cssNameToHex(name) {
+  var ctx = document.createElement("canvas").getContext("2d");
+  ctx.fillStyle = "#000000";
+  ctx.fillStyle = name;
+  var computed = ctx.fillStyle;
+  if (computed === "#000000" && name.toLowerCase() !== "black") return null;
+  return computed;
+}
+
+function initColorPicker(hexInputId, previewId, callback) {
+  var input   = document.getElementById(hexInputId);
+  var preview = document.getElementById(previewId);
+
+  function applyColor(hex, trigger) {
+    preview.style.background = hex;
+    input.value = hex;
+    if (trigger !== false && callback) callback(hex);
+  }
+
+  input.onchange = function () {
+    this.value = this.value.toLowerCase();
+    var v = input.value.trim();
+
+    // 0) Ajouter # si hex sans #
+    if (/^[0-9A-Fa-f]{6}$/.test(v)) {
+      v = "#" + v;
+    }
+    else if (/^[0-9A-Fa-f]{3}$/.test(v)) {
+      v = "#" + v;
+    }
+
+    // 1) Si c'est un hex valide (#xxxxxx)
+    if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
+      applyColor(v);
+      return;
+    }
+
+    // 2) Sinon, essayer comme nom CSS
+    var hex = cssNameToHex(v);
+    if (hex) {
+      applyColor(hex);
+    }
+  };
+
+  var palette = input.parentNode.parentNode.querySelector(".palette");
+  var items   = palette.querySelectorAll("div");
+
+  for (var i = 0; i < items.length; i++) {
+    items[i].onclick = function () {
+      applyColor(this.getAttribute("data-col"));
+    };
+  }
+
+  applyColor(input.value, false);
+}
+
+/* ============================
+   SLIDER OPACITÉ FOND
+============================ */
+var bgSlider = document.getElementById("bgOpacity");
+var bgPercent = document.getElementById("bgOpacityPercent");
+
+/* Slider → met juste à jour le pourcentage */
+bgSlider.oninput = function () {
+  var v = parseFloat(bgSlider.value);
+  bgPercent.value = Math.round(v * 100);
+};
+
+/* Slider → quand on lâche, on génère */
+bgSlider.onchange = function () {
+  generateBarcode();
+};
+
+/* Pourcentage → met juste à jour le slider */
+bgPercent.onchange = function () {
+  var p = parseInt(bgPercent.value, 10);
+  if (isNaN(p)) p = 0;
+  if (p < 0) p = 0;
+  if (p > 100) p = 100;
+  bgSlider.value = p / 100;
+};
+
+/* Pourcentage → quand on valide, on génère */
+bgPercent.onchange = function () {
+  var p = parseInt(bgPercent.value, 10);
+  if (isNaN(p)) p = 0;
+  if (p < 0) p = 0;
+  if (p > 100) p = 100;
+  bgPercent.value = p;
+  bgSlider.value = p / 100;
+  generateBarcode();
+};
+
+/* ============================
+   GÉNÉRATION CODE-BARRES (SVG)
+============================ */
+function generateBarcode() {
+  var value = text.value.trim();
+  barcode.innerHTML = "";
+  if (!value) return;
+
+  var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+  var fg = barcodeColorInput.value || "#000000";
+  var bg = bgColorInput.value || "#ffffff";
+
+  JsBarcode(svg, value, {
+    format: "CODE128",
+    lineColor: fg,
+    background: bg,
+    width: 2,
+    height: 80,
+    displayValue: true
+  });
+
+  // taille FIXE pour tout (affichage + export)
+  svg.removeAttribute("viewBox");
+
+  // affichage
+  svg.style.display = "block";
+
+  // opacité du fond
+  var bgOpacitySlider = document.getElementById("bgOpacity");
+  var bgOpacity = bgOpacitySlider ? parseFloat(bgOpacitySlider.value) : 1;
+  var rects = svg.querySelectorAll("rect");
+  if (rects.length > 0) {
+    rects[0].setAttribute("fill-opacity", bgOpacity);
+  }
+
+  // NETTOYAGE DU SVG
+  // 1) Supprimer version="1.1"
+  svg.removeAttribute("version");
+
+  // 2) Nettoyer le style du SVG
+  var s = svg.getAttribute("style");
+  if (s) {
+      // Supprimer display:block;
+      s = s.replace(/display\s*:\s*block\s*;?/i, "");
+
+      // Supprimer transform: translate(0px);
+      s = s.replace(/transform\s*:\s*translate\(0px\)\s*;?/i, "");
+
+      // Nettoyer les espaces et ; inutiles
+      s = s.replace(/\s+/g, " ").replace(/;+/g, ";").trim();
+
+      // Si plus rien → supprimer l'attribut
+      if (s === "" || s === ";") {
+          svg.removeAttribute("style");
+      } else {
+          svg.setAttribute("style", s);
+      }
+  }
+
+  barcode.appendChild(svg);
+}
+
+btnGen.onclick = generateBarcode;
+
+/* ============================
+   EXPORT PNG / JPG / SVG
+============================ */
+function download(filename, dataUrl) {
+  var a = document.createElement("a");
+  a.href = dataUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function exportAs(type) {
+  var svg = barcode.querySelector("svg");
+  if (!svg) return;
+
+  var w = parseInt(svg.getAttribute("width"), 10) || 600;
+  var h = parseInt(svg.getAttribute("height"), 10) || 200;
+
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+  var xml = new XMLSerializer().serializeToString(svg);
+  var svg64 = btoa(unescape(encodeURIComponent(xml)));
+
+  var img = new Image();
+  img.onload = function () {
+    var canvas = document.createElement("canvas");
+    canvas.width  = w;
+    canvas.height = h;
+    var ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+
+    var data = canvas.toDataURL("image/" + type);
+    download("barcode." + (type === "jpeg" ? "jpg" : type), data);
+  };
+
+  img.src = "data:image/svg+xml;base64," + svg64;
+}
+
+document.getElementById("export-png").onclick = function () {
+  exportAs("png");
+};
+
+document.getElementById("export-jpg").onclick = function () {
+  exportAs("jpeg");
+};
+
+document.getElementById("export-svg").onclick = function () {
+  var svg = barcode.querySelector("svg");
+  if (!svg) return;
+
+  var blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
+  var url  = URL.createObjectURL(blob);
+
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "barcode.svg";
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
+
+/* ============================
+   DÉCODAGE FICHIER (Quagga)
+============================ */
+var fileInput  = document.getElementById("file-input");
+var canvasFile = document.getElementById("canvas-file");
+var ctxFile    = canvasFile.getContext("2d");
+var decodeFile = document.getElementById("decode-file");
+
+if (typeof ZXing === "undefined") {
+    fileInput.disabled = true;
+    decodeFile.innerText = "Lecture code-barres désactivée (ZXing non chargé).";
+} else {
+
+    var reader = new ZXing.BrowserBarcodeReader();
+
+    fileInput.onchange = function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        var url = URL.createObjectURL(file);
+
+        reader.decodeFromImageUrl(url)
+            .then(function (result) {
+                decodeFile.innerText = result.text;
+            })
+            .catch(function () {
+                decodeFile.innerText = "Aucun code-barres détecté.";
+            });
+    };
+}
+
+/* ============================
+   COPIER
+============================ */
+document.getElementById("copy-btn").onclick = function () {
+  var text = decodeFile.innerText;
+
+  var temp = document.createElement("textarea");
+  temp.value = text;
+  temp.style.position = "fixed";
+  temp.style.opacity = "0";
+  document.body.appendChild(temp);
+
+  temp.select();
+  document.execCommand("copy");
+  document.body.removeChild(temp);
+};
+</script>
+
+</body>
+</html>
