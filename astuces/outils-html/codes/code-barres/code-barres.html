@@ -335,8 +335,11 @@ bgSlider.oninput = function () {
   bgPercent.value = Math.round(v * 100);
 };
 
-/* Slider → quand on lâche, on génère */
-bgSlider.onchange = function () {
+/* Quand on lâche le slider → générer */
+bgSlider.onmouseup = function () {
+  generateBarcode();
+};
+bgSlider.ontouchend = function () {
   generateBarcode();
 };
 
@@ -349,7 +352,7 @@ bgPercent.onchange = function () {
   bgSlider.value = p / 100;
 };
 
-/* Pourcentage → quand on valide, on génère */
+/* Quand on valide le pourcentage → générer */
 bgPercent.onchange = function () {
   var p = parseInt(bgPercent.value, 10);
   if (isNaN(p)) p = 0;
