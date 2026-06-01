@@ -44,11 +44,17 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <br>
 <button onclick="toutDecocher()" style="background-color:#ff4444;">Tout décocher</button>
 <br>
-<label>Texte en début de ligne :</label>
-<input id="prefixInput" type="text" placeholder="ex:    ou >> ou - ">
+<label>Ajouter en début de ligne :</label>
+<input id="addPrefix" type="text" placeholder="ex:    ou >> ou - ">
 <br>
-<label>Texte en fin de ligne :</label>
-<input id="suffixInput" type="text" placeholder="ex: ; ou , ou // fin">
+<label>Ajouter en fin de ligne :</label>
+<input id="addSuffix" type="text" placeholder="ex: ; ou , ou // fin">
+<br>
+<label>Supprimer en début de ligne :</label>
+<input id="removePrefix" type="text" placeholder="ex:    ou >> ou - ">
+<br>
+<label>Supprimer en fin de ligne :</label>
+<input id="removeSuffix" type="text" placeholder="ex: ; ou , ou // fin">
 <div id="repl_container"></div>
 <button onclick="ajouterRemplacement()" style="background-color:#dddddd;">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
@@ -94,6 +100,35 @@ function applySuffix(text, suffix) {
     for (var i = 0; i < lines.length; i++) {
         if (lines[i].trim() !== "") {
             lines[i] = lines[i] + suffix;
+        }
+    }
+    return lines.join("\n");
+}
+
+function removePrefix(text, prefix) {
+    if (!prefix) return text;
+
+    var lines = text.split(/\r?\n/);
+    var L = prefix.length;
+
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i].indexOf(prefix) === 0) {
+            lines[i] = lines[i].substring(L);
+        }
+    }
+    return lines.join("\n");
+}
+
+function removeSuffix(text, suffix) {
+    if (!suffix) return text;
+
+    var lines = text.split(/\r?\n/);
+    var L = suffix.length;
+
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i].length >= L &&
+            lines[i].substring(lines[i].length - L) === suffix) {
+            lines[i] = lines[i].substring(0, lines[i].length - L);
         }
     }
     return lines.join("\n");
@@ -169,12 +204,16 @@ function appliquerTransformations() {
   txt = appliquerRemplacementsPersonnalises(txt);
 
   // 9) Préfixe
-  var prefix = document.getElementById("prefixInput").value;
+  var prefix = document.getElementById("addPrefix").value;
   txt = applyPrefix(txt, prefix);
+  var prefix = document.getElementById("removePrefix").value;
+  txt = removePrefix(txt, prefix);
 
   // 10) Suffixe
-  var suffix = document.getElementById("suffixInput").value;
+  var suffix = document.getElementById("addSuffix").value;
   txt = applySuffix(txt, suffix);
+  var suffix = document.getElementById("removeSuffix").value;
+  txt = removeSuffix(txt, suffix);
 
   // 11) mettre a jour les stats
   updateStats(txt);
@@ -322,11 +361,17 @@ function effacerTout() {
   document.getElementById("repl_ignore_case").checked = false;
   localStorage.removeItem("repl_ignore_case");
 
-  document.getElementById("prefixInput").value = "";
-  localStorage.removeItem("prefix_value");
+  document.getElementById("addPrefix").value = "";
+  localStorage.removeItem("add_prefix_value");
 
-  document.getElementById("suffixInput").value = "";
-  localStorage.removeItem("suffix_value");
+  document.getElementById("addSuffix").value = "";
+  localStorage.removeItem("add_suffix_value");
+
+  document.getElementById("removePrefix").value = "";
+  localStorage.removeItem("remove_prefix_value");
+
+  document.getElementById("removeSuffix").value = "";
+  localStorage.removeItem("remove_suffix_value");
 }
 
 // ------------------------------
@@ -358,12 +403,20 @@ document.getElementById("chk_inv").onchange = function() {
   saveChecks();
 };
 
-document.getElementById("prefixInput").oninput = function () {
-  localStorage.setItem("prefix_value", document.getElementById("prefixInput").value);
+document.getElementById("addPrefix").oninput = function () {
+  localStorage.setItem("add_prefix_value", document.getElementById("addPrefix").value);
 };
 
-document.getElementById("suffixInput").oninput = function () {
-  localStorage.setItem("suffix_value", document.getElementById("suffixInput").value);
+document.getElementById("addSuffix").oninput = function () {
+  localStorage.setItem("add_suffix_value", document.getElementById("addSuffix").value);
+};
+
+document.getElementById("removePrefix").oninput = function () {
+  localStorage.setItem("remove_prefix_value", document.getElementById("removePrefix").value);
+};
+
+document.getElementById("removeSuffix").oninput = function () {
+  localStorage.setItem("remove_suffix_value", document.getElementById("removeSuffix").value);
 };
 
 document.getElementById("chk_acc").onchange = saveChecks;
@@ -388,14 +441,24 @@ window.onload = function() {
   if (cquo !== null) document.getElementById("chk_quo").checked = (cquo === "1");
   if (csquo !== null) document.getElementById("chk_squo").checked = (csquo === "1");
 
-  var savedPrefix = localStorage.getItem("prefix_value");
+  var savedPrefix = localStorage.getItem("add_prefix_value");
   if (savedPrefix !== null) {
-    document.getElementById("prefixInput").value = savedPrefix;
+    document.getElementById("addPrefix").value = savedPrefix;
   }
 
-  var savedSuffix = localStorage.getItem("suffix_value");
+  var savedSuffix = localStorage.getItem("add_suffix_value");
   if (savedSuffix !== null) {
-    document.getElementById("suffixInput").value = savedSuffix;
+    document.getElementById("addSuffix").value = savedSuffix;
+  }
+
+  var savedPrefix = localStorage.getItem("remove_prefix_value");
+  if (savedPrefix !== null) {
+    document.getElementById("removePrefix").value = savedPrefix;
+  }
+
+  var savedSuffix = localStorage.getItem("remove_suffix_value");
+  if (savedSuffix !== null) {
+    document.getElementById("removeSuffix").value = savedSuffix;
   }
 
   chargerReplacements();
