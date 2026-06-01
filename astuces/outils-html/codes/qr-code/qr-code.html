@@ -518,7 +518,6 @@ initColorPicker("bgHex", "bgPreview", function(hex){
   document.getElementById("bgColor").value = hex;
   generateQR();
 });
-document.getElementById("bgOpacity").onchange = generateQR;
 
 /* ============================
    COLOR PICKER
@@ -572,28 +571,42 @@ function initColorPicker(hexInputId, previewId, callback, skipInit) {
 }
 
 /* ============================
-   SLIDER OPACITÉ FOND
+   SLIDER OPACITÉ FOND (QR)
 ============================ */
 var bgSlider = document.getElementById("bgOpacity");
 var bgPercent = document.getElementById("bgOpacityPercent");
 
-/* Slider → Pourcentage */
+/* Slider → met juste à jour le pourcentage */
 bgSlider.oninput = function () {
   var v = parseFloat(bgSlider.value);
   bgPercent.value = Math.round(v * 100);
 };
 
-/* Pourcentage → Slider */
+/* Quand on lâche le slider → générer */
+bgSlider.onmouseup = function () {
+  generateQR();
+};
+bgSlider.ontouchend = function () {
+  generateQR();
+};
+
+/* Pourcentage → met juste à jour le slider */
 bgPercent.onchange = function () {
   var p = parseInt(bgPercent.value, 10);
-
   if (isNaN(p)) p = 0;
   if (p < 0) p = 0;
   if (p > 100) p = 100;
+  bgSlider.value = p / 100;
+};
 
+/* Quand on valide le pourcentage → générer */
+bgPercent.onchange = function () {
+  var p = parseInt(bgPercent.value, 10);
+  if (isNaN(p)) p = 0;
+  if (p < 0) p = 0;
+  if (p > 100) p = 100;
   bgPercent.value = p;
   bgSlider.value = p / 100;
-
   generateQR();
 };
 </script>
