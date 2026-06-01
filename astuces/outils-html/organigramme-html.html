@@ -133,14 +133,13 @@ textarea {
   |
   <button onclick="clearGlobalStyle()">Effacer style global</button>
   <button onclick="clearSelectedStyle()">Effacer style sélectionné</button>
-  |
-  <button onclick="copyToClipboard(exportFullHtml())">Copier HTML</button>
 </div>
 <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
 
 <div id="org-container">
   <div class="org-root"></div>
 </div>
+<button onclick="copyToClipboard(exportFullHtml())">Copier HTML</button>
 <textarea id="io" style="width:100%;height:200px;margin-top:10px;" wrap="off"></textarea>
 <br>
 <button onclick="doImport()">Importer</button>

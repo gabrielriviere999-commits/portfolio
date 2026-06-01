@@ -88,17 +88,17 @@ textarea {
         <button onclick="addFolder()">+ Dossier</button>
         <button onclick="addFile()">+ Fichier</button>
         <button onclick="goUp()">← Remonter</button>
-        <button onclick="copyTree(this)">Copier texte</button>
-        <button onclick="copyTreeColored(this)">Copier HTML couleur</button>
         <p>Dossier courant : <span id="currentPath"></span></p>
     </div>
 <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
 
     <div id="ascii"></div><br>
+    <button onclick="copyTree(this)">Copier texte</button>
+    <button onclick="copyTreeColored(this)">Copier HTML couleur</button>
     <textarea id="importBox" wrap="off"></textarea>
     <button onclick="restoreTree()">Mettre à jour à partir du texte</button>
     <button onclick="importTreeFromText()">Importer (commande tree)</button>
-    <p></p><a style="font-size:24px;" href="notices/notice-arbo-ascii.html">Notice</a>
+    <p><a style="font-size:24px;" href="notices/notice-arbo-ascii.html">Notice</a></p>
 
 <script>
 // --- Données ---
