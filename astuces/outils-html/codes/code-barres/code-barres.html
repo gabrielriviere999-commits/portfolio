@@ -148,6 +148,11 @@ input[type="file"]:active {
 <div class="section">
   <h2>Générer un Code-barres</h2>
 
+  <select id="barcodeFormat">
+    <option value="CODE128">Code 128</option>
+    <option value="EAN13">EAN 13</option>
+  </select>
+
   <textarea id="text" wrap="off"></textarea>
 
   <!-- === COLOR PICKER CODE-BARRES === -->
@@ -364,8 +369,18 @@ function generateBarcode() {
   var fg = barcodeColorInput.value || "#000000";
   var bg = bgColorInput.value || "#ffffff";
 
+  // menu select
+  var format = document.getElementById("barcodeFormat").value;
+
+  if (format === "EAN13") {
+      if (!/^[0-9]{12,13}$/.test(value)) {
+          barcode.innerHTML = "<div style='color:red;font-weight:bold;'>EAN 13 : 12 ou 13 chiffres requis</div>";
+          return;
+      }
+  }
+
   JsBarcode(svg, value, {
-    format: "CODE128",
+    format: format,
     lineColor: fg,
     background: bg,
     width: 2,
