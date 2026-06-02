@@ -321,42 +321,52 @@ function download(filename, dataUrl) {
   document.body.removeChild(a);
 }
 
-function exportAs(type) {
-  var svg = qrDiv.querySelector("svg");
-  if (!svg) return;
+function exportCanvas(type) {
+  if (!qr) return;
 
-  var w = parseInt(svg.getAttribute("width"), 10) || 600;
-  var h = parseInt(svg.getAttribute("height"), 10) || 600;
+  var count = qr.getModuleCount();
+  var cell  = 10;
+  var size  = count * cell;
 
-  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  var fg = document.getElementById("qrColor").value;
+  var bg = document.getElementById("bgColor").value;
+  var bgOpacity = parseFloat(document.getElementById("bgOpacity").value);
 
-  var xml = new XMLSerializer().serializeToString(svg);
-  var svg64 = btoa(unescape(encodeURIComponent(xml)));
+  var canvas = document.createElement("canvas");
+  canvas.width  = size;
+  canvas.height = size;
+  var ctx = canvas.getContext("2d");
 
-  var img = new Image();
-  img.onload = function () {
-    var canvas = document.createElement("canvas");
-    canvas.width  = w;
-    canvas.height = h;
-    var ctx = canvas.getContext("2d");
+  // fond transparent si opacité = 0
+  if (bgOpacity > 0) {
+    ctx.fillStyle = bg;
+    ctx.globalAlpha = bgOpacity;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = 1;
+  }
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(img, 0, 0, w, h);
+  // modules
+  ctx.fillStyle = fg || "#000000";
+  for (var y = 0; y < count; y++) {
+    for (var x = 0; x < count; x++) {
+      if (qr.isDark(y, x)) {
+        ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+    }
+  }
 
-    var data = canvas.toDataURL("image/" + type);
-    download("qr-code." + (type === "jpeg" ? "jpg" : type), data);
-  };
+  var mime = "image/" + type;
+  var data = canvas.toDataURL(mime);
 
-  img.src = "data:image/svg+xml;base64," + svg64;
+  download("qr-code." + (type === "jpeg" ? "jpg" : type), data);
 }
 
 document.getElementById("export-png").onclick = function () {
-  exportAs("png");
+  exportCanvas("png");
 };
 
 document.getElementById("export-jpg").onclick = function () {
-  exportAs("jpeg");
+  exportCanvas("jpeg");
 };
 
 document.getElementById("export-svg").onclick = function () {
