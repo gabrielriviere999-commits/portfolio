@@ -209,6 +209,7 @@ input[type="file"]:active {
   <button id="btn-generate">Générer</button>
 
   <div id="barcode"></div>
+  <canvas id="barcodeCanvas" style="display:none"></canvas>
 
   <button id="export-png">Exporter PNG</button>
   <button id="export-jpg">Exporter JPG</button>
@@ -420,6 +421,17 @@ function isValidITF14(value) {
 /* ============================
    GÉNÉRATION CODE-BARRES (SVG)
 ============================ */
+function hexToRgba(hex, alpha) {
+  hex = hex.replace("#", "");
+  if (hex.length === 3) {
+    hex = hex[0]+hex[0] + hex[1]+hex[1] + hex[2]+hex[2];
+  }
+  var r = parseInt(hex.substr(0, 2), 16);
+  var g = parseInt(hex.substr(2, 2), 16);
+  var b = parseInt(hex.substr(4, 2), 16);
+  return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+}
+
 function generateBarcode() {
   var value = text.value.trim();
   barcode.innerHTML = "";
@@ -466,6 +478,26 @@ function generateBarcode() {
     format: format,
     lineColor: fg,
     background: bg,
+    width: 2,
+    height: 80,
+    displayValue: true
+  });
+
+  // GÉNÉRATION CANVAS POUR EXPORT PNG/JPG
+  var bgOpacity = parseFloat(document.getElementById("bgOpacity").value) || 0;
+  var canvasBg;
+
+  if (bgOpacity <= 0) {
+    // fond totalement transparent
+    canvasBg = "rgba(0,0,0,0)";
+  } else {
+    canvasBg = hexToRgba(bg, bgOpacity);
+  }
+
+  JsBarcode("#barcodeCanvas", value, {
+    format: format,
+    lineColor: fg,
+    background: canvasBg,
     width: 2,
     height: 80,
     displayValue: true
@@ -526,42 +558,22 @@ function download(filename, dataUrl) {
   document.body.removeChild(a);
 }
 
-function exportAs(type) {
-  var svg = barcode.querySelector("svg");
-  if (!svg) return;
+function exportCanvas(type) {
+  var canvas = document.getElementById("barcodeCanvas");
+  if (!canvas) return;
 
-  var w = parseInt(svg.getAttribute("width"), 10) || 600;
-  var h = parseInt(svg.getAttribute("height"), 10) || 200;
+  var mime = "image/" + type;
+  var data = canvas.toDataURL(mime);
 
-  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-  var xml = new XMLSerializer().serializeToString(svg);
-  var svg64 = btoa(unescape(encodeURIComponent(xml)));
-
-  var img = new Image();
-  img.onload = function () {
-    var canvas = document.createElement("canvas");
-    canvas.width  = w;
-    canvas.height = h;
-    var ctx = canvas.getContext("2d");
-
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(img, 0, 0, w, h);
-
-    var data = canvas.toDataURL("image/" + type);
-    download("barcode." + (type === "jpeg" ? "jpg" : type), data);
-  };
-
-  img.src = "data:image/svg+xml;base64," + svg64;
+  download("barcode." + (type === "jpeg" ? "jpg" : type), data);
 }
 
 document.getElementById("export-png").onclick = function () {
-  exportAs("png");
+  exportCanvas("png");
 };
 
 document.getElementById("export-jpg").onclick = function () {
-  exportAs("jpeg");
+  exportCanvas("jpeg");
 };
 
 document.getElementById("export-svg").onclick = function () {
