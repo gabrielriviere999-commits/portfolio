@@ -238,34 +238,9 @@ input[type="file"]:active {
 <script src="qrcode.js"></script>
 
 <script>
-var qr = null;
-
 /* ============================
-   UTF‑8 / Base64
+   GÉNÉRATION QR / MICRO QR (SVG)
 ============================ */
-function decodeUTF8(str) {
-  try {
-    var bytes = new Uint8Array(str.split('').map(function(c){ return c.charCodeAt(0); }));
-    return new TextDecoder("utf-8").decode(bytes);
-  } catch(e) {
-    return str;
-  }
-}
-
-function encodeBase64(str) {
-  try { return btoa(unescape(encodeURIComponent(str))); }
-  catch(e) { return btoa(str); }
-}
-
-function decodeBase64(str) {
-  try { return decodeURIComponent(escape(atob(str))); }
-  catch(e) { return atob(str); }
-}
-
-/* ============================
-   GÉNÉRATION QR
-============================ */
-var qr = null;
 var text = document.getElementById("text");
 var qrDiv = document.getElementById("qrcode");
 var btnGen = document.getElementById("btn-generate");
@@ -299,21 +274,17 @@ function generateQR() {
     qr = qrcode(0, 'H');
     qr.addData(value, 'Byte');
     qr.make();
-
     qrDiv.innerHTML = generateSVG(qr);
 }
 
 function isValidMicroQR(value) {
-    // Micro QR : max 14 octets en mode Byte
-    var bytes = new TextEncoder().encode(value);
-    return bytes.length <= 14;
+    return new TextEncoder().encode(value).length <= 14;
 }
 
 function generateMicroQR(value) {
     qr = qrcode(1, 'L');
     qr.addData(value, 'Byte');
     qr.make();
-
     qrDiv.innerHTML = generateSVG(qr);
 }
 
@@ -333,7 +304,6 @@ function generateCode() {
         return;
     }
 
-    // QR normal
     generateQR();
 }
 
@@ -370,7 +340,6 @@ function exportAs(type) {
     canvas.height = h;
     var ctx = canvas.getContext("2d");
 
-    // fond blanc pour le JPG
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, w, h);
     ctx.drawImage(img, 0, 0, w, h);
@@ -404,8 +373,9 @@ document.getElementById("export-svg").onclick = function () {
 
     URL.revokeObjectURL(url);
 };
+
 /* ============================
-   DÉCODAGE FICHIER
+   DÉCODAGE FICHIER (ZXing)
 ============================ */
 var fileInput = document.getElementById("file-input");
 var canvasFile = document.getElementById("canvas-file");
@@ -416,7 +386,6 @@ if (typeof ZXing === "undefined" || !ZXing.BrowserQRCodeReader) {
   fileInput.disabled = true;
   decodeFile.innerText = "Lecture QR désactivée (ZXing non chargé).";
 } else {
-
   var readerZX = new ZXing.BrowserMultiFormatReader();
 
   fileInput.onchange = function (e) {
@@ -425,18 +394,13 @@ if (typeof ZXing === "undefined" || !ZXing.BrowserQRCodeReader) {
 
     var img = new Image();
     img.onload = function () {
-
       var maxSize = 1000;
       var scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
 
       canvasFile.width = img.width * scale;
       canvasFile.height = img.height * scale;
 
-      ctxFile.drawImage(
-        img,
-        0, 0, img.width, img.height,
-        0, 0, canvasFile.width, canvasFile.height
-      );
+      ctxFile.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvasFile.width, canvasFile.height);
 
       var tempImg = new Image();
       tempImg.onload = function () {
