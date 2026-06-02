@@ -439,7 +439,7 @@ if (typeof ZXing === "undefined" || !ZXing.BrowserQRCodeReader) {
   decodeFile.innerText = "Lecture QR désactivée (ZXing non chargé).";
 } else {
 
-  var readerZX = new ZXing.BrowserQRCodeReader();
+  var readerZX = new ZXing.BrowserMultiFormatReader();
 
   fileInput.onchange = function (e) {
     var file = e.target.files[0];
