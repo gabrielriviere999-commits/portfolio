@@ -168,7 +168,9 @@ body {
 
 .thumbnail-row {
   display: block;
-  white-space: normal;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden; 
   padding: 4px;
   box-sizing: border-box;
   margin-top: 10px;
@@ -186,6 +188,7 @@ body {
   cursor: pointer;
   font-size: 12px;
   word-break: break-all;
+  white-space: normal;
   user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -386,7 +389,7 @@ summary {
     <div id="counter-infrastructure" class="slide-counter"></div>
 </div>
 
-<div class="thumbnail-row">
+<div class="thumbnail-row" data-group="infrastructure">
     <div class="thumbnail" data-group="infrastructure" onclick="currentSlide(1, 'infrastructure')"></div>
     <div class="thumbnail" data-group="infrastructure" onclick="currentSlide(2, 'infrastructure')"></div>
     <div class="thumbnail" data-group="infrastructure" onclick="currentSlide(3, 'infrastructure')"></div>
@@ -425,7 +428,7 @@ summary {
     <div id="counter-haproxy" class="slide-counter"></div>
 </div>
 
-<div class="thumbnail-row">
+<div class="thumbnail-row" data-group="haproxy">
     <div class="thumbnail" data-group="haproxy" onclick="currentSlide(1, 'haproxy')"></div>
     <div class="thumbnail" data-group="haproxy" onclick="currentSlide(2, 'haproxy')"></div>
 </div>
@@ -470,6 +473,26 @@ function currentSlide(n, group) {
   showSlides(slideIndex[group], group);
 }
 
+function scrollThumbnailIntoView(index, group) {
+    var row = document.querySelector('.thumbnail-row[data-group="' + group + '"]');
+    if (!row) return;
+
+    var thumbs = row.getElementsByClassName("thumbnail");
+    var t = thumbs[index - 1];
+    if (!t) return;
+
+    var left = t.offsetLeft;
+    var width = t.offsetWidth;
+    var visible = row.clientWidth;
+    var current = row.scrollLeft;
+
+    if (left < current) {
+        row.scrollLeft = left - 10;
+    } else if (left + width > current + visible) {
+        row.scrollLeft = (left + width) - visible + 10;
+    }
+}
+
 function showSlides(n, group) {
     var slides = document.querySelectorAll('.slide[data-group="' + group + '"]');
     var thumbs = document.querySelectorAll('.thumbnail[data-group="' + group + '"]');
@@ -481,7 +504,7 @@ function showSlides(n, group) {
     if (n > total) slideIndex[group] = 1;
     if (n < 1) slideIndex[group] = total;
 
-    // Masquer tous les slides
+    // masquer tous les slides
     for (i = 0; i < total; i++) {
         slides[i].style.display = "none";
     }
@@ -505,7 +528,7 @@ function showSlides(n, group) {
         thumbs[slideIndex[group] - 1].className += " active";
     }
 
-    // Mettre à jour le compteur
+    // mettre à jour le compteur
     var counter = document.getElementById("counter-" + group);
     if (counter) {
         counter.textContent = slideIndex[group] + " / " + total;
@@ -516,6 +539,7 @@ function showSlides(n, group) {
     if (select && slideIndex[group] > 0) {
         select.value = slideIndex[group];
     }
+    scrollThumbnailIntoView(slideIndex[group], group);
 
     // Création dynamique de l'iframe
     var holder = current.querySelector(".iframe-holder");
@@ -526,7 +550,6 @@ function showSlides(n, group) {
         holder.dataset.loaded = "1";
     }
 }
-
 
 function openFullscreen(group) {
     var index = slideIndex[group] || 1;
@@ -562,7 +585,6 @@ function openFullscreen(group) {
 
     console.log("Aucun contenu ouvrable trouvé dans cette slide");
 }
-
 
 function downloadSlide(group) {
     var index = slideIndex[group] || 1;
@@ -605,7 +627,6 @@ function downloadSlide(group) {
     a.click();
     document.body.removeChild(a);
 }
-
 
 function initAllSelects() {
     var selects = document.querySelectorAll(".slide-select");
@@ -661,7 +682,6 @@ function initAllSelects() {
 }
 
 initAllSelects();
-
 
 (function () {
     var elements = document.querySelectorAll("[data-include]");
