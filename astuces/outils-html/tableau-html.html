@@ -1285,9 +1285,6 @@ document.getElementById("htmlFileInput").addEventListener("change", function () 
 
         // Mettre le code dans la zone texte
         document.getElementById("codeBox").value = content;
-
-        // Mettre à jour le tableau
-        updateTableFromCode(content);
     };
 
     reader.readAsText(file);
@@ -1313,7 +1310,6 @@ codeBox.addEventListener("drop", function(e) {
         }
 
         codeBox.value = content;
-        updateTableFromCode(content);
     };
 
     reader.readAsText(file);
