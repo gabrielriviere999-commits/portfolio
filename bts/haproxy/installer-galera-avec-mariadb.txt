@@ -72,6 +72,13 @@ sudo systemctl start mariadb
 systemctl restart mariadb
 pour démarrer le cluster.
 
+Si mariadb ne démarre pas :
+Sur web1 : sudo nano /var/lib/mysql/grastate.dat
+mettre safe_to_bootstrap: 0 à 1
+Après avoir bootstrap et démarré :
+mysql -u root -p -e "SHOW STATUS LIKE 'wsrep_cluster_size';"
+le nombre de noeuds doit d'afficher.
+
 ---
 
 # 5. Test du cluster
