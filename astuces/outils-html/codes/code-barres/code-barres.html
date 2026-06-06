@@ -645,10 +645,6 @@ fileInput.onchange = function (e) {
 };
 
 // Décodage caméra
-/* ============================
-   DECODAGE CAMERA CODE-BARRES
-============================ */
-
 var barReader = null; // instance jetable
 var barCamList = [];
 var barCurrentCam = 0;
@@ -659,7 +655,6 @@ navigator.mediaDevices.enumerateDevices()
     barCamList = devices.filter(function (d) {
       return d.kind === "videoinput";
     });
-    console.log("Caméras détectées (code-barres) :", barCamList);
   });
 
 // 2) Fonction pour arrêter la caméra
