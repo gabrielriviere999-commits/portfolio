@@ -146,11 +146,6 @@ input[type="file"]:active {
 <div class="section">
   <h2>Générer un QR Code</h2>
 
-  <select id="codeFormat">
-    <option value="qr">QR Code</option>
-    <option value="microqr">Micro QR</option>
-  </select>
-
   <textarea id="text" wrap="off"></textarea>
 
   <!-- === COLOR PICKER QR === -->
@@ -368,7 +363,7 @@ bgPercent.onchange = function () {
 };
 
 /* ============================
-   GÉNÉRATION QR / MICRO QR (SVG)
+   GÉNÉRATION QR (SVG)
 ============================ */
 function generateSVG(qrObj) {
     var count = qrObj.getModuleCount();
@@ -402,32 +397,10 @@ function generateQR() {
     qrDiv.innerHTML = generateSVG(qr);
 }
 
-function isValidMicroQR(value) {
-    return new TextEncoder().encode(value).length <= 14;
-}
-
-function generateMicroQR(value) {
-    qr = qrcode(1, 'L');
-    qr.addData(value, 'Byte');
-    qr.make();
-    qrDiv.innerHTML = generateSVG(qr);
-}
-
 function generateCode() {
     var value = text.value.trim();
     qrDiv.innerHTML = "";
     if (!value) return;
-
-    var format = document.getElementById("codeFormat").value;
-
-    if (format === "microqr") {
-        if (!isValidMicroQR(value)) {
-            qrDiv.innerHTML = "<div style='color:red;font-weight:bold;'>Micro QR : longueur maximale dépassée (14 octets max)</div>";
-            return;
-        }
-        generateMicroQR(value);
-        return;
-    }
 
     generateQR();
 }
