@@ -230,6 +230,7 @@ input[type="file"]:active {
   <pre id="qrResult"></pre>
   <button id="copyQR" class="win98-btn">Copier</button>
   <button id="startScan">Scanner</button>
+  <button id="switchCam">Changer de caméra</button>
   <button id="stopScan">Stop</button>
 
   <br><a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
@@ -425,23 +426,69 @@ fileInput.onchange = function (e) {
 };
 
 // Décodage caméra
-var qrReader = null;
+var qrReader = new ZXing.BrowserQRCodeReader();
+var camList = [];
+var currentCam = 0;
 
-document.getElementById("startScan").onclick = function () {
+// 1) Récupérer les caméras via l’API native
+navigator.mediaDevices.enumerateDevices()
+  .then(function (devices) {
+    camList = devices.filter(function (d) {
+      return d.kind === "videoinput";
+    });
+    console.log("Caméras détectées :", camList);
+  });
+
+// 2) Démarrer la caméra
+function startCamera() {
   var video = document.getElementById("qrVideo");
   var resultBox = document.getElementById("qrResult");
 
-  qrReader = new ZXing.BrowserQRCodeReader();
+  if (camList.length === 0) {
+    resultBox.innerHTML = "Aucune caméra détectée.";
+    return;
+  }
 
-  qrReader.decodeFromVideoDevice(null, video, function (result, err) {
-    if (result) {
-      resultBox.innerHTML = result.getText();
+  // IMPORTANT : arrêter l’ancienne caméra
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(function (t) { t.stop(); });
+    video.srcObject = null;
+  }
+  qrReader.reset();
+
+  // 3) Forcer ZXing à utiliser le bon deviceId
+  qrReader.decodeFromVideoDevice(
+    camList[currentCam].deviceId,
+    video,
+    function (result, err) {
+      if (result) {
+        resultBox.innerHTML = result.getText();
+      }
     }
-  });
+  );
+}
+
+document.getElementById("startScan").onclick = function () {
+  startCamera();
 };
 
+// 4) Changer de caméra
+document.getElementById("switchCam").onclick = function () {
+  if (camList.length < 2) return;
+
+  currentCam = (currentCam + 1) % camList.length;
+
+  startCamera();
+};
+
+// 5) Stop
 document.getElementById("stopScan").onclick = function () {
-  if (qrReader) qrReader.reset();
+  var video = document.getElementById("qrVideo");
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(function (t) { t.stop(); });
+    video.srcObject = null;
+  }
+  qrReader.reset();
 };
 
 // Copier
