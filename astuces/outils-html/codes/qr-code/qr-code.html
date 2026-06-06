@@ -123,7 +123,7 @@ input[type="file"]:active {
   border-bottom-color: #ffffff;
 }
 
-#qrcode {
+#qrcode, #qrResult, #decode-file {
   margin-top: 1rem;
   background: #ffffff;
   padding: 10px;
@@ -218,13 +218,7 @@ input[type="file"]:active {
   <input type="file" id="file-input" accept="image/*">
   <canvas id="canvas-file" style="display:none;"></canvas>
 
-  <pre id="decode-file" style="
-    overflow-x:auto;
-    background:#FFFFFF;
-    padding:10px;
-    border:2px inset #808080;
-    margin-top:10px;
-  "></pre>
+  <pre id="decode-file"></pre>
 
   <button id="copy-btn" class="win98-btn">Copier</button>
 </div>
@@ -441,7 +435,7 @@ document.getElementById("startScan").onclick = function () {
 
   qrReader.decodeFromVideoDevice(null, video, function (result, err) {
     if (result) {
-      resultBox.innerHTML = "QR détecté : " + result.getText();
+      resultBox.innerHTML = result.getText();
     }
   });
 };
