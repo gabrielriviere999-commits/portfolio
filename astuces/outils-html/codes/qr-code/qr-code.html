@@ -213,7 +213,7 @@ input[type="file"]:active {
 </div>
 
 <div class="section">
-  <h2>Décoder un QR Code</h2>
+  <h2>Décoder un QR Code (fichier)</h2>
 
   <input type="file" id="file-input" accept="image/*">
   <canvas id="canvas-file" style="display:none;"></canvas>
@@ -227,12 +227,23 @@ input[type="file"]:active {
   "></pre>
 
   <button id="copy-btn" class="win98-btn">Copier</button>
-  <a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
 </div>
 
+<div class="section">
+  <h2>Décoder un QR Code (caméra)</h2>
+
+  <video id="qrVideo" autoplay playsinline muted style="width:300px;"></video>
+  <pre id="qrResult"></pre>
+  <button id="copyQR" class="win98-btn">Copier</button>
+  <button id="startScan">Scanner</button>
+  <button id="stopScan">Stop</button>
+
+  <br><a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
+</div>
 <!-- Librairies -->
-<script src="../zxing-es5.min.js"></script>
 <script src="qrcode.js"></script>
+<script src="../zxing-es5.min.js"></script>
+<script src="../zxing-browser.min.js"></script>
 
 <script>
 /* ============================
@@ -382,46 +393,80 @@ document.getElementById("export-svg").onclick = function () {
 };
 
 /* ============================
-   DÉCODAGE FICHIER (ZXing)
+   DÉCODAGE FICHIER
 ============================ */
 var fileInput = document.getElementById("file-input");
 var canvasFile = document.getElementById("canvas-file");
 var ctxFile = canvasFile.getContext("2d");
 var decodeFile = document.getElementById("decode-file");
 
-if (typeof ZXing === "undefined" || !ZXing.BrowserQRCodeReader) {
-  fileInput.disabled = true;
-  decodeFile.innerText = "Lecture QR désactivée (ZXing non chargé).";
-} else {
-  var readerZX = new ZXing.BrowserMultiFormatReader();
+// On suppose ZXing chargé (zxing-browser.min.js)
+var readerZX = new ZXing.BrowserMultiFormatReader();
 
-  fileInput.onchange = function (e) {
-    var file = e.target.files[0];
-    if (!file) return;
+fileInput.onchange = function (e) {
+  var file = e.target.files[0];
+  if (!file) return;
 
-    var img = new Image();
-    img.onload = function () {
-      var maxSize = 1000;
-      var scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+  var img = new Image();
+  img.onload = function () {
+    var maxSize = 1000;
+    var scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
 
-      canvasFile.width = img.width * scale;
-      canvasFile.height = img.height * scale;
+    canvasFile.width = img.width * scale;
+    canvasFile.height = img.height * scale;
 
-      ctxFile.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvasFile.width, canvasFile.height);
+    ctxFile.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvasFile.width, canvasFile.height);
 
-      var tempImg = new Image();
-      tempImg.onload = function () {
-        readerZX.decodeFromImageElement(tempImg)
-          .then(function(result){ decodeFile.innerText = result.text; })
-          .catch(function(){ decodeFile.innerText = "Aucun QR détecté."; });
-      };
-
-      tempImg.src = canvasFile.toDataURL("image/png");
+    var tempImg = new Image();
+    tempImg.onload = function () {
+      readerZX.decodeFromImageElement(tempImg)
+        .then(function(result){ decodeFile.innerText = result.text; })
+        .catch(function(){ decodeFile.innerText = "Aucun code détecté."; });
     };
 
-    img.src = URL.createObjectURL(file);
+    tempImg.src = canvasFile.toDataURL("image/png");
   };
+
+  img.src = URL.createObjectURL(file);
+};
+
+// Décodage caméra
+var qrReader = null;
+
+document.getElementById("startScan").onclick = function () {
+  var video = document.getElementById("qrVideo");
+  var resultBox = document.getElementById("qrResult");
+
+  qrReader = new ZXing.BrowserQRCodeReader();
+
+  qrReader.decodeFromVideoDevice(null, video, function (result, err) {
+    if (result) {
+      resultBox.innerHTML = "QR détecté : " + result.getText();
+    }
+  });
+};
+
+document.getElementById("stopScan").onclick = function () {
+  if (qrReader) qrReader.reset();
+};
+
+// Copier
+function copyTextFrom(elementId, btn) {
+  var txt = document.getElementById(elementId).textContent;
+
+  var t = document.createElement("textarea");
+  t.value = txt;
+  document.body.appendChild(t);
+  t.select();
+
+  try { document.execCommand("copy"); } catch (e) {}
+
+  document.body.removeChild(t);
 }
+
+document.getElementById("copyQR").onclick = function (e) {
+  copyTextFrom("qrResult", e.target);
+};
 
 /* ============================
    COPIER
