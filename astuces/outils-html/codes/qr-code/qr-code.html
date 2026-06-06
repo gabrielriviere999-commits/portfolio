@@ -242,12 +242,120 @@ input[type="file"]:active {
 
 <script>
 /* ============================
-   GÉNÉRATION QR / MICRO QR (SVG)
+   RÉFÉRENCES DE BASE
 ============================ */
 var text = document.getElementById("text");
 var qrDiv = document.getElementById("qrcode");
 var btnGen = document.getElementById("btn-generate");
 
+/* ============================
+   COLOR PICKERS INIT
+============================ */
+btnGen.onclick = generateCode;
+initColorPicker("qrHex", "qrPreview", function(hex){
+  document.getElementById("qrColor").value = hex;
+  generateCode();
+});
+
+initColorPicker("bgHex", "bgPreview", function(hex){
+  document.getElementById("bgColor").value = hex;
+  generateCode();
+});
+
+/* ============================
+   COLOR PICKER
+============================ */
+function initColorPicker(hexInputId, previewId, callback, skipInit) {
+  var input = document.getElementById(hexInputId);
+  var preview = document.getElementById(previewId);
+
+  function applyColor(hex, trigger) {
+    preview.style.background = hex;
+    input.value = hex;
+    if (trigger !== false) callback(hex);
+  }
+
+  input.onchange = function () {
+    this.value = this.value.toLowerCase();
+    var v = input.value.trim();
+
+    // 0) Ajouter # si hex sans #
+    if (/^[0-9A-Fa-f]{6}$/.test(v)) {
+      v = "#" + v;
+    }
+    else if (/^[0-9A-Fa-f]{3}$/.test(v)) {
+      v = "#" + v;
+    }
+
+    // 1) Si c'est un hex valide (#xxxxxx)
+    if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
+      applyColor(v);
+      return;
+    }
+
+    // 2) Sinon, essayer comme nom CSS
+    var hex = cssNameToHex(v);
+    if (hex) {
+      applyColor(hex);
+    }
+  };
+
+  var palette = input.parentNode.parentNode.querySelector(".palette");
+  var items = palette.querySelectorAll("div");
+
+  for (var i = 0; i < items.length; i++) {
+    items[i].onclick = function () {
+      applyColor(this.dataset.col);
+    };
+  }
+
+  // Ne déclenche pas au chargement
+  applyColor(input.value, false);
+}
+
+/* ============================
+   SLIDER OPACITÉ FOND (QR)
+============================ */
+var bgSlider = document.getElementById("bgOpacity");
+var bgPercent = document.getElementById("bgOpacityPercent");
+
+/* Slider → met juste à jour le pourcentage */
+bgSlider.oninput = function () {
+  var v = parseFloat(bgSlider.value);
+  bgPercent.value = Math.round(v * 100);
+};
+
+/* Quand on lâche le slider → générer */
+bgSlider.onmouseup = function () {
+  generateCode();
+};
+bgSlider.ontouchend = function () {
+  generateCode();
+};
+
+/* Pourcentage → met juste à jour le slider */
+bgPercent.onchange = function () {
+  var p = parseInt(bgPercent.value, 10);
+  if (isNaN(p)) p = 0;
+  if (p < 0) p = 0;
+  if (p > 100) p = 100;
+  bgSlider.value = p / 100;
+};
+
+/* Quand on valide le pourcentage → générer */
+bgPercent.onchange = function () {
+  var p = parseInt(bgPercent.value, 10);
+  if (isNaN(p)) p = 0;
+  if (p < 0) p = 0;
+  if (p > 100) p = 100;
+  bgPercent.value = p;
+  bgSlider.value = p / 100;
+  generateCode();
+};
+
+/* ============================
+   GÉNÉRATION QR / MICRO QR (SVG)
+============================ */
 function generateSVG(qrObj) {
     var count = qrObj.getModuleCount();
     var cell = 10;
@@ -538,111 +646,6 @@ function cssNameToHex(name) {
 
   return computed; // retourne "#rrggbb"
 }
-
-/* ============================
-   COLOR PICKERS INIT
-============================ */
-btnGen.onclick = generateCode;
-initColorPicker("qrHex", "qrPreview", function(hex){
-  document.getElementById("qrColor").value = hex;
-  generateCode();
-});
-
-initColorPicker("bgHex", "bgPreview", function(hex){
-  document.getElementById("bgColor").value = hex;
-  generateCode();
-});
-
-/* ============================
-   COLOR PICKER
-============================ */
-function initColorPicker(hexInputId, previewId, callback, skipInit) {
-  var input = document.getElementById(hexInputId);
-  var preview = document.getElementById(previewId);
-
-  function applyColor(hex, trigger) {
-    preview.style.background = hex;
-    input.value = hex;
-    if (trigger !== false) callback(hex);
-  }
-
-  input.onchange = function () {
-    this.value = this.value.toLowerCase();
-    var v = input.value.trim();
-
-    // 0) Ajouter # si hex sans #
-    if (/^[0-9A-Fa-f]{6}$/.test(v)) {
-      v = "#" + v;
-    }
-    else if (/^[0-9A-Fa-f]{3}$/.test(v)) {
-      v = "#" + v;
-    }
-
-    // 1) Si c'est un hex valide (#xxxxxx)
-    if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
-      applyColor(v);
-      return;
-    }
-
-    // 2) Sinon, essayer comme nom CSS
-    var hex = cssNameToHex(v);
-    if (hex) {
-      applyColor(hex);
-    }
-  };
-
-  var palette = input.parentNode.parentNode.querySelector(".palette");
-  var items = palette.querySelectorAll("div");
-
-  for (var i = 0; i < items.length; i++) {
-    items[i].onclick = function () {
-      applyColor(this.dataset.col);
-    };
-  }
-
-  // Ne déclenche pas au chargement
-  applyColor(input.value, false);
-}
-
-/* ============================
-   SLIDER OPACITÉ FOND (QR)
-============================ */
-var bgSlider = document.getElementById("bgOpacity");
-var bgPercent = document.getElementById("bgOpacityPercent");
-
-/* Slider → met juste à jour le pourcentage */
-bgSlider.oninput = function () {
-  var v = parseFloat(bgSlider.value);
-  bgPercent.value = Math.round(v * 100);
-};
-
-/* Quand on lâche le slider → générer */
-bgSlider.onmouseup = function () {
-  generateCode();
-};
-bgSlider.ontouchend = function () {
-  generateCode();
-};
-
-/* Pourcentage → met juste à jour le slider */
-bgPercent.onchange = function () {
-  var p = parseInt(bgPercent.value, 10);
-  if (isNaN(p)) p = 0;
-  if (p < 0) p = 0;
-  if (p > 100) p = 100;
-  bgSlider.value = p / 100;
-};
-
-/* Quand on valide le pourcentage → générer */
-bgPercent.onchange = function () {
-  var p = parseInt(bgPercent.value, 10);
-  if (isNaN(p)) p = 0;
-  if (p < 0) p = 0;
-  if (p > 100) p = 100;
-  bgPercent.value = p;
-  bgSlider.value = p / 100;
-  generateCode();
-};
 </script>
 </body>
 </html>
