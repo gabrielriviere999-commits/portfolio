@@ -265,6 +265,20 @@ initColorPicker("bgHex", "bgPreview", function(hex){
 /* ============================
    COLOR PICKER
 ============================ */
+function cssNameToHex(name) {
+  var ctx = document.createElement("canvas").getContext("2d");
+  ctx.fillStyle = "#000"; // valeur par défaut
+  ctx.fillStyle = name;   // si invalide, reste "#000"
+  var computed = ctx.fillStyle;
+
+  // Si le navigateur n'a pas reconnu le nom → retourne null
+  if (computed === "#000000" && name.toLowerCase() !== "black") {
+    return null;
+  }
+
+  return computed; // retourne "#rrggbb"
+}
+
 function initColorPicker(hexInputId, previewId, callback, skipInit) {
   var input = document.getElementById(hexInputId);
   var preview = document.getElementById(previewId);
@@ -632,20 +646,6 @@ document.getElementById("copy-btn").onclick = function () {
   document.execCommand("copy");
   document.body.removeChild(temp);
 };
-
-function cssNameToHex(name) {
-  var ctx = document.createElement("canvas").getContext("2d");
-  ctx.fillStyle = "#000"; // valeur par défaut
-  ctx.fillStyle = name;   // si invalide, reste "#000"
-  var computed = ctx.fillStyle;
-
-  // Si le navigateur n'a pas reconnu le nom → retourne null
-  if (computed === "#000000" && name.toLowerCase() !== "black") {
-    return null;
-  }
-
-  return computed; // retourne "#rrggbb"
-}
 </script>
 </body>
 </html>
