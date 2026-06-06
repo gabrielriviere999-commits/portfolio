@@ -214,7 +214,7 @@ input[type="file"]:active {
 </div>
 
 <div class="section">
-  <h2>Décoder un Code-barres</h2>
+  <h2>Décoder un Code-barres (fichier)</h2>
 
   <input type="file" id="file-input" accept="image/*">
   <canvas id="canvas-file" style="display:none;"></canvas>
@@ -228,12 +228,24 @@ input[type="file"]:active {
   "></pre>
 
   <button id="copy-btn" class="win98-btn">Copier</button>
-  <a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
+</div>
+
+<div class="section">
+  <h2>Décoder un Code-barres (caméra)</h2>
+
+  <video id="barVideo" autoplay playsinline style="width:300px;"></video>
+  <div id="barResult"></div>
+  <button id="copyBar" class="win98-btn">Copier</button>
+  <button id="startBarScan">Scanner code-barres</button>
+  <button id="stopBarScan">Stop</button>
+
+  <br><a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
 </div>
 
 <!-- Librairies -->
 <script src="JsBarcode.all.min.js"></script>
 <script src="../zxing-es5.min.js"></script>
+<script src="../zxing-browser.min.js"></script>
 
 <script>
 /* ============================
@@ -589,35 +601,93 @@ document.getElementById("export-svg").onclick = function () {
 };
 
 /* ============================
-   DÉCODAGE FICHIER (Quagga)
+   DÉCODAGE FICHIER (Code-barres)
 ============================ */
 var fileInput  = document.getElementById("file-input");
 var canvasFile = document.getElementById("canvas-file");
 var ctxFile    = canvasFile.getContext("2d");
 var decodeFile = document.getElementById("decode-file");
 
-if (typeof ZXing === "undefined") {
-    fileInput.disabled = true;
-    decodeFile.innerText = "Lecture code-barres désactivée (ZXing non chargé).";
-} else {
+// ZXing-browser fournit BrowserBarcodeReader
+var reader = new ZXing.BrowserBarcodeReader();
 
-    var reader = new ZXing.BrowserBarcodeReader();
+fileInput.onchange = function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
 
-    fileInput.onchange = function (e) {
-        var file = e.target.files[0];
-        if (!file) return;
+    var img = new Image();
+    img.onload = function () {
 
-        var url = URL.createObjectURL(file);
+        // Redimensionnement pour éviter les images trop grandes
+        var maxSize = 1000;
+        var scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
 
-        reader.decodeFromImageUrl(url)
-            .then(function (result) {
-                decodeFile.innerText = result.text;
-            })
-            .catch(function () {
-                decodeFile.innerText = "Aucun code-barres détecté.";
-            });
+        canvasFile.width  = img.width * scale;
+        canvasFile.height = img.height * scale;
+
+        ctxFile.drawImage(
+            img,
+            0, 0, img.width, img.height,
+            0, 0, canvasFile.width, canvasFile.height
+        );
+
+        // ZXing lit depuis une URL ou un élément image
+        var tempImg = new Image();
+        tempImg.onload = function () {
+            reader.decodeFromImageElement(tempImg)
+                .then(function (result) {
+                    decodeFile.innerText = result.text;
+                })
+                .catch(function () {
+                    decodeFile.innerText = "Aucun code-barres détecté.";
+                });
+        };
+
+        tempImg.src = canvasFile.toDataURL("image/png");
     };
+
+    img.src = URL.createObjectURL(file);
+};
+
+// Décodage caméra
+var barReader = null;
+
+document.getElementById("startBarScan").onclick = function () {
+  var video = document.getElementById("barVideo");
+  var resultBox = document.getElementById("barResult");
+
+  // Lecteur multi-format (EAN, UPC, Code128, etc.)
+  barReader = new ZXing.BrowserBarcodeReader();
+
+  // null = caméra par défaut
+  barReader.decodeFromVideoDevice(null, video, function (result, err) {
+    if (result) {
+      resultBox.innerHTML = "Code détecté : " + result.getText();
+    }
+  });
+};
+
+document.getElementById("stopBarScan").onclick = function () {
+  if (barReader) barReader.reset();
+};
+
+// Copier
+function copyTextFrom(elementId, btn) {
+  var txt = document.getElementById(elementId).textContent;
+
+  var t = document.createElement("textarea");
+  t.value = txt;
+  document.body.appendChild(t);
+  t.select();
+
+  try { document.execCommand("copy"); } catch (e) {}
+
+  document.body.removeChild(t);
 }
+
+document.getElementById("copyBar").onclick = function (e) {
+  copyTextFrom("barResult", e.target);
+};
 
 /* ============================
    COPIER
