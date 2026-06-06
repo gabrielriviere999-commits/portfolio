@@ -230,8 +230,9 @@ input[type="file"]:active {
   <video id="barVideo" autoplay playsinline style="width:300px;"></video>
   <div id="barResult"></div>
   <button id="copyBar" class="win98-btn">Copier</button>
-  <button id="startBarScan">Scanner code-barres</button>
-  <button id="stopBarScan">Stop</button>
+  <button id="startScan">Scanner</button>
+  <button id="switcCam">Changer de caméra</button>
+  <button id="stopScan">Stop</button>
 
   <br><a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
 </div>
@@ -644,25 +645,83 @@ fileInput.onchange = function (e) {
 };
 
 // Décodage caméra
-var barReader = null;
+/* ============================
+   DECODAGE CAMERA CODE-BARRES
+============================ */
 
-document.getElementById("startBarScan").onclick = function () {
+var barReader = null; // instance jetable
+var barCamList = [];
+var barCurrentCam = 0;
+
+// 1) Récupérer les caméras via enumerateDevices()
+navigator.mediaDevices.enumerateDevices()
+  .then(function (devices) {
+    barCamList = devices.filter(function (d) {
+      return d.kind === "videoinput";
+    });
+    console.log("Caméras détectées (code-barres) :", barCamList);
+  });
+
+// 2) Fonction pour arrêter la caméra
+function stopBarCamera() {
+  var video = document.getElementById("barVideo");
+
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(function (t) { t.stop(); });
+    video.srcObject = null;
+  }
+
+  if (barReader) {
+    barReader.reset();
+    barReader = null; // <<< CRUCIAL
+  }
+
+  document.getElementById("barResult").innerText = "";
+}
+
+// 3) Fonction pour démarrer la caméra
+function startBarCamera() {
   var video = document.getElementById("barVideo");
   var resultBox = document.getElementById("barResult");
 
-  // Lecteur multi-format (EAN, UPC, Code128, etc.)
+  if (barCamList.length === 0) {
+    resultBox.innerHTML = "Aucune caméra détectée.";
+    return;
+  }
+
+  stopBarCamera(); // IMPORTANT
+
+  // Nouvelle instance à chaque démarrage
   barReader = new ZXing.BrowserBarcodeReader();
 
-  // null = caméra par défaut
-  barReader.decodeFromVideoDevice(null, video, function (result, err) {
-    if (result) {
-      resultBox.innerHTML = result.getText();
+  barReader.decodeFromVideoDevice(
+    barCamList[barCurrentCam].deviceId,
+    video,
+    function (result, err) {
+      if (result) {
+        resultBox.innerHTML = result.getText();
+      }
     }
-  });
+  );
+}
+
+// 4) Bouton démarrer
+document.getElementById("startScan").onclick = function () {
+  startBarCamera();
 };
 
-document.getElementById("stopBarScan").onclick = function () {
-  if (barReader) barReader.reset();
+// 5) Bouton changer de caméra
+document.getElementById("switcCam").onclick = function () {
+  if (barCamList.length < 2) return;
+
+  barCurrentCam = (barCurrentCam + 1) % barCamList.length;
+
+  startBarCamera();
+};
+
+// 6) Bouton stop
+document.getElementById("stopScan").onclick = function () {
+  stopBarCamera();
 };
 
 // Copier
