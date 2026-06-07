@@ -1,5 +1,0 @@
-Libraries utilisées :
-
-https://kazuhikoarase.github.io/qrcode-generator/js/dist/qrcode.js - MIT - Kazuhiko Arase
-https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js - Apache 2.0 - ZXing Team
-https://unpkg.com/@zxing/browser@0.2.0/umd/zxing-browser.min.js - Apache 2.0 - ZXing Team
