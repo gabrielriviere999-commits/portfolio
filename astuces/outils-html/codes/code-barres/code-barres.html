@@ -675,6 +675,16 @@ function stopBarCamera() {
 }
 
 // 3) Fonction pour démarrer la caméra
+function flashHighlight(el) {
+  el.style.background = "yellow";
+  el.style.color = "black";
+
+  setTimeout(function () {
+    el.style.background = "";
+    el.style.color = "";
+  }, 300);
+}
+
 function startBarCamera() {
   var video = document.getElementById("barVideo");
   var resultBox = document.getElementById("barResult");
@@ -695,6 +705,7 @@ function startBarCamera() {
     function (result, err) {
       if (result) {
         resultBox.innerHTML = result.getText();
+        flashHighlight(resultBox);
       }
     }
   );
