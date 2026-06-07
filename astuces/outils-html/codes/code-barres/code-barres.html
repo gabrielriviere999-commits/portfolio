@@ -88,7 +88,6 @@ background-color:white;
 
 .win98-btn,
 button,
-a.btn,
 input[type="file"] {
   display: inline-block;
   padding: 4px 10px;
@@ -105,14 +104,12 @@ input[type="file"] {
 
 .win98-btn:hover,
 button:hover,
-a.btn:hover,
 input[type="file"]:hover {
   background: #e0e0e0;
 }
 
 .win98-btn:active,
 button:active,
-a.btn:active,
 input[type="file"]:active {
   border: 2px solid #404040;
   border-right-color: #ffffff;
@@ -233,9 +230,14 @@ input[type="file"]:active {
   <button id="startScan">Scanner</button>
   <button id="switcCam">Changer de caméra</button>
   <button id="stopScan">Stop</button>
-
-  <br><a href="credits.txt" class="btn">À propos des libraries / Crédits</a>
 </div>
+
+<details><summary>À propos des libraries / Crédits</summary>
+<pre>
+https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js - MIT - lindell.me
+https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js - Apache 2.0 - ZXing Team
+https://unpkg.com/@zxing/browser@0.2.0/umd/zxing-browser.min.js - Apache 2.0 - ZXing Team</pre>
+</details>
 
 <!-- Libraries -->
 <script src="JsBarcode.all.min.js"></script>
