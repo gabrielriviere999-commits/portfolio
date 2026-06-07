@@ -534,6 +534,16 @@ navigator.mediaDevices.enumerateDevices()
   });
 
 // 2) Démarrer la caméra
+function flashHighlight(el) {
+  el.style.background = "yellow";
+  el.style.color = "black";
+
+  setTimeout(function () {
+    el.style.background = "";
+    el.style.color = "";
+  }, 300);
+}
+
 function startCamera() {
   var video = document.getElementById("qrVideo");
   var resultBox = document.getElementById("qrResult");
@@ -557,6 +567,7 @@ function startCamera() {
     function (result, err) {
       if (result) {
         resultBox.innerHTML = result.getText();
+        flashHighlight(resultBox);
       }
     }
   );
