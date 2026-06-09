@@ -227,6 +227,7 @@ input[type="file"]:active {
   <button id="copyQR" class="win98-btn">Copier</button>
   <button id="startScan">Scanner</button>
   <button id="switchCam">Changer de caméra</button>
+  <button id="toggleTorch">Torche</button>
   <button id="stopScan">Stop</button>
 </div>
 
@@ -530,6 +531,7 @@ fileInput.onchange = function (e) {
 var qrReader = new ZXing.BrowserQRCodeReader();
 var camList = [];
 var currentCam = 0;
+var torchOn = false;
 
 // 1) Récupérer les caméras via l’API native
 navigator.mediaDevices.enumerateDevices()
@@ -548,6 +550,22 @@ function flashHighlight(el) {
     el.style.background = "";
     el.style.color = "";
   }, 300);
+}
+
+function toggleTorch() {
+  var video = document.getElementById("qrVideo");
+  if (!video.srcObject) return;
+
+  var track = video.srcObject.getVideoTracks()[0];
+  if (!track) return;
+
+  torchOn = !torchOn;
+
+  track.applyConstraints({
+    advanced: [{ torch: torchOn }]
+  }).catch(function(e) {
+    console.log("Torch error:", e);
+  });
 }
 
 function startCamera() {
@@ -592,8 +610,14 @@ document.getElementById("switchCam").onclick = function () {
   startCamera();
 };
 
+document.getElementById("toggleTorch").onclick = function () {
+  toggleTorch();
+};
+
 // 5) Stop
 document.getElementById("stopScan").onclick = function () {
+  torchOn = false;
+
   var video = document.getElementById("qrVideo");
   if (video.srcObject) {
     video.srcObject.getTracks().forEach(function (t) { t.stop(); });
