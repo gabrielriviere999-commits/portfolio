@@ -142,7 +142,9 @@ textarea {
 <button onclick="copyToClipboard(exportFullHtml())">Copier HTML</button>
 <textarea id="io" style="width:100%;height:200px;" wrap="off"></textarea>
 <br>
-<button onclick="doImport()">Importer</button>
+<button onclick="doImport()">Mettre à jour</button>
+<button id="importFileBtn">Importer fichier…</button>
+<input type="file" id="fileInput" style="display:none;">
 
 <script>
 // ===============================
@@ -727,6 +729,22 @@ io.addEventListener("drop", function(e) {
     }
 
     // Sinon → laisser le navigateur coller le texte
+});
+
+// Bouton Importer fichier…
+document.getElementById("importFileBtn").onclick = function () {
+    document.getElementById("fileInput").click();
+};
+
+document.getElementById("fileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("io").value = e.target.result;
+    };
+    reader.readAsText(file);
 });
 </script>
 
