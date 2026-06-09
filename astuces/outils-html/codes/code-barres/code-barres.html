@@ -749,6 +749,19 @@ document.getElementById("switcCam").onclick = function () {
 };
 
 document.getElementById("toggleTorch").onclick = function () {
+  var video = document.getElementById("barVideo");
+  if (!video.srcObject) return;
+
+  var track = video.srcObject.getVideoTracks()[0];
+  if (!track) return;
+
+  var caps = track.getCapabilities();
+
+  if (!caps.torch) {
+    alert("Allumez la torche via les réglages rapides pour cette caméra.");
+    return;
+  }
+
   toggleTorch();
 };
 
