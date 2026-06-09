@@ -533,7 +533,7 @@ var camList = [];
 var currentCam = 0;
 var torchOn = false;
 
-// 1) Récupérer les caméras via l’API native
+// 1) Récupérer les caméras via l'API native
 navigator.mediaDevices.enumerateDevices()
   .then(function (devices) {
     camList = devices.filter(function (d) {
@@ -577,7 +577,7 @@ function startCamera() {
     return;
   }
 
-  // IMPORTANT : arrêter l’ancienne caméra
+  // IMPORTANT : arrêter l'ancienne caméra
   if (video.srcObject) {
     video.srcObject.getTracks().forEach(function (t) { t.stop(); });
     video.srcObject = null;
