@@ -86,9 +86,47 @@ textarea {
 </div>
 
 <h2>Markdown</h2>
-<textarea id="md-input" wrap="off"></textarea>
+<textarea id="input" wrap="off"></textarea>
 
 <script>
+// Glisser-déposer
+var input = document.getElementById("input");
+
+input.addEventListener("dragover", function(e) {
+
+    // Si un fichier est glissé → empêcher le comportement natif
+    if (e.dataTransfer.types &&
+        (e.dataTransfer.types.indexOf("Files") !== -1 ||
+         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+
+        e.preventDefault(); // autorise le drop fichier
+    }
+
+    // Sinon → NE RIEN FAIRE
+    // Le navigateur affiche le curseur d’insertion
+});
+
+input.addEventListener("drop", function(e) {
+
+    // Si fichier → on gère nous-même
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+
+        var file = e.dataTransfer.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(ev) {
+            // On met le fichier brut dans la zone
+            input.value = ev.target.result;
+        };
+
+        reader.readAsText(file);
+        return;
+    }
+
+    // Sinon → laisser le navigateur coller le texte
+});
+
 /* --- Insertion --- */
 function insertAtCursor(textarea, text) {
   try {
@@ -141,7 +179,7 @@ function wrapSelection(textarea, before, after) {
 function initToolbar() {
   var toolbar = document.getElementsByClassName("toolbar")[0];
   var buttons = toolbar.getElementsByTagName("button");
-  var textarea = document.getElementById("md-input");
+  var textarea = document.getElementById("input");
 
   for (var i = 0; i < buttons.length; i++) {
     (function(btn) {
@@ -177,7 +215,7 @@ window.onload = function() {
 
 /* --- Copier --- */
 function copyMd(e) {
-  var code = document.getElementById('md-input');
+  var code = document.getElementById('input');
 
   var temp = document.createElement("textarea");
   temp.value = code.value;
