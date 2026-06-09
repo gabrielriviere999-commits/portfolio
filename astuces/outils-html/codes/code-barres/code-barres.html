@@ -233,6 +233,7 @@ input[type="file"]:active {
   <button id="copyBar" class="win98-btn">Copier</button>
   <button id="startScan">Scanner</button>
   <button id="switcCam">Changer de caméra</button>
+  <button id="toggleTorch">Torche</button>
   <button id="stopScan">Stop</button>
 </div>
 
@@ -653,6 +654,7 @@ fileInput.onchange = function (e) {
 var barReader = null; // instance jetable
 var barCamList = [];
 var barCurrentCam = 0;
+var torchOn = false;
 
 // 1) Récupérer les caméras via enumerateDevices()
 navigator.mediaDevices.enumerateDevices()
@@ -688,6 +690,22 @@ function flashHighlight(el) {
     el.style.background = "";
     el.style.color = "";
   }, 300);
+}
+
+function toggleTorch() {
+  var video = document.getElementById("barVideo");
+  if (!video.srcObject) return;
+
+  var track = video.srcObject.getVideoTracks()[0];
+  if (!track) return;
+
+  torchOn = !torchOn;
+
+  track.applyConstraints({
+    advanced: [{ torch: torchOn }]
+  }).catch(function(e) {
+    console.log("Torch error:", e);
+  });
 }
 
 function startBarCamera() {
@@ -730,8 +748,13 @@ document.getElementById("switcCam").onclick = function () {
   startBarCamera();
 };
 
+document.getElementById("toggleTorch").onclick = function () {
+  toggleTorch();
+};
+
 // 6) Bouton stop
 document.getElementById("stopScan").onclick = function () {
+  torchOn = false;
   stopBarCamera();
 };
 
