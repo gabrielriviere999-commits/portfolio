@@ -1314,13 +1314,8 @@ codeBox.addEventListener("drop", function(e) {
         var reader = new FileReader();
 
         reader.onload = function(ev) {
-            var content = ev.target.result;
-
-            if (document.getElementById("cleanLibreOffice").checked) {
-                content = cleanLibreOfficeHTML(content);
-            }
-
-            codeBox.value = content;
+            // On met le fichier brut dans la zone
+            codeBox.value = ev.target.result;
         };
 
         reader.readAsText(file);
@@ -1328,7 +1323,6 @@ codeBox.addEventListener("drop", function(e) {
     }
 
     // Sinon → laisser le navigateur coller le texte
-    // PAS de preventDefault ici
 });
 
 /* ============================
