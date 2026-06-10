@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Frise Chronologique ASCII</title>
+<style>
+body {
+  font-family: sans-serif;
+  background: #c0c0c0;
+}
+
+h1, h2 { margin-top: 0;}
+
+#editorPanel, #previewPanel, #ioPanel {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  padding: 10px;
+  display: block;
+  min-width: 320px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+button {
+  background: #d4d0c8;
+  color: black;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:active {
+  border-color: #404040 #fff #fff #404040;
+  background: #c0c0c0;
+}
+
+button:hover { background:#e0e0e0; }
+
+textarea {
+  width: 100%;
+  height: 200px;
+  box-sizing: border-box;
+}
+
+input, textarea {
+  border:2px solid;
+  border-color:#808080 #ffffff #ffffff #808080;
+}
+</style>
+</head>
+<body>
+<h1>Frise chronologique ASCII</h1>
+<div class="container">
+<!-- =======================
+     PANEL 1 : ÉDITEUR
+======================= -->
+<div id="editorPanel">
+  <h2>Évènements</h2>
+
+  <div id="eventList"></div>
+
+  <button onclick="addEvent()">Ajouter un évènement</button>
+</div>
+
+<!-- =======================
+     PANEL 2 : IMPORT / EXPORT
+======================= -->
+<div id="ioPanel">
+  <h2>Aperçu / texte</h2>
+
+  <textarea id="io" wrap="off" style="width:100%;height:200px;box-sizing:border-box;"></textarea>
+  <button id="copyCode">Copier</button>
+  <button onclick="importAscii()">Mettre à jour</button>
+  <button id="importFileBtn">Importer fichier…</button>
+  <input type="file" id="fileInput" style="display:none;">
+</div>
+
+</div>
+
+<script>
+/* ============================
+   Données internes
+============================ */
+var events = [];
+
+/* ============================
+   Ajouter un évènement
+============================ */
+function addEvent() {
+  events.push({
+    title: "Titre",
+    date: "01/01/2000",
+    desc: "Description",
+  });
+  refreshEditor();
+  exportAscii();
+}
+
+/* ============================
+   Supprimer un évènement
+============================ */
+function removeEvent(i) {
+  events.splice(i, 1);
+  refreshEditor();
+  exportAscii();
+}
+
+/* ============================
+   Déplacer un évènement
+============================ */
+function moveEventUp(i) {
+  if (i <= 0) return;
+  var tmp = events[i - 1];
+  events[i - 1] = events[i];
+  events[i] = tmp;
+  refreshEditor();
+  exportAscii();
+}
+
+function moveEventDown(i) {
+  if (i >= events.length - 1) return;
+  var tmp = events[i + 1];
+  events[i + 1] = events[i];
+  events[i] = tmp;
+  refreshEditor();
+  exportAscii();
+}
+
+/* ============================
+   Rafraîchir l’éditeur
+============================ */
+function refreshEditor() {
+  var html = "";
+  for (var i = 0; i < events.length; i++) {
+    var e = events[i];
+    html +=
+      '<div style="border: 2px groove #fff;;padding:5px;margin-bottom:5px;">' +
+      'Titre : <input value="' + e.title + '" onchange="events[' + i + '].title=this.value; exportAscii();"><br>' +
+      'Date : <input value="' + e.date + '" onchange="events[' + i + '].date=this.value; exportAscii();"><br>' +
+      'Description :<br>' +
+      '<textarea wrap="off" style="width:100%;height:60px;" onchange="events[' + i + '].desc=this.value; exportAscii();">' +
+        e.desc +
+      '</textarea><br>' +
+
+      // Boutons ↑ ↓
+      '<button onclick="moveEventUp(' + i + ')">↑</button> ' +
+      '<button onclick="moveEventDown(' + i + ')">↓</button> ' +
+
+      '<button onclick="removeEvent(' + i + ')">x</button>' +
+      '</div>';
+  }
+  document.getElementById("eventList").innerHTML = html;
+}
+
+/* ============================
+   EXPORT TEXTE
+============================ */
+function exportAscii() {
+  if (events.length === 0) {
+    document.getElementById("io").value = "";
+    return;
+  }
+
+  var i;
+
+  // 1. Largeur de chaque colonne
+  var widths = [];
+  for (i = 0; i < events.length; i++) {
+    var w = events[i].title.length;
+    if (events[i].date.length > w) w = events[i].date.length;
+    widths[i] = w + 4;
+  }
+
+  // 2. Centrage
+  function center(text, width) {
+    var left = Math.floor((width - text.length) / 2);
+    var right = width - text.length - left;
+    return repeat(" ", left) + text + repeat(" ", right);
+  }
+
+  // 3. Largeur totale (colonnes + séparateurs)
+  var totalWidth = 0;
+  for (i = 0; i < widths.length; i++) totalWidth += widths[i];
+  totalWidth += (events.length - 1); // les "|"
+
+  // 4. Lignes de la flèche (haut et bas)
+  var top1 = repeat(" ", totalWidth - 2) + "|\\";
+  var sep1 = repeat("-", totalWidth - 1) + " \\";
+  var sep2 = repeat("-", totalWidth - 1) + " /";
+  var bottomArrow = repeat(" ", totalWidth - 2) + "|/";
+
+  // 5. Titres
+  var titleRow = "";
+  for (i = 0; i < events.length; i++) {
+    titleRow += center(events[i].title, widths[i]);
+    if (i < events.length - 1) titleRow += "|";
+  }
+  titleRow += " }";
+
+  // 7. Dates
+  var dateRow = "";
+  for (i = 0; i < events.length; i++) {
+    dateRow += center(events[i].date, widths[i]);
+  }
+
+  // 8. Descriptions
+  var descs = [];
+  for (i = 0; i < events.length; i++) {
+    descs.push(events[i].date + " : " + events[i].desc);
+  }
+
+  // 9. Résultat final
+  var out =
+    top1 + "\n" +
+    sep1 + "\n" +
+    titleRow + "\n" +
+    sep2 + "\n" +
+    bottomArrow + "\n" +
+    dateRow + "\n\n" +
+    descs.join("\n");
+
+  document.getElementById("io").value = out;
+}
+
+function repeat(s, n) {
+  var r = "";
+  while (n-- > 0) r += s;
+  return r;
+}
+
+/* ============================
+   IMPORT TEXTE
+   Format : date | titre | desc
+============================ */
+function importAscii() {
+  var raw = document.getElementById("io").value;
+  var lines = raw.split("\n");
+  var i;
+
+  var titles = [];
+  var dates = [];
+  var descs = [];
+
+  // 1. Ligne des titres (celle qui contient "}")
+  var titleIndex = -1;
+  for (i = 0; i < lines.length; i++) {
+    if (lines[i].indexOf("}") !== -1) {
+      titleIndex = i;
+      break;
+    }
+  }
+  if (titleIndex === -1) return;
+
+  var titleLine = lines[titleIndex];
+  titleLine = titleLine.replace("}", "");
+  // découpe par "|"
+  var parts = titleLine.split("|");
+  for (i = 0; i < parts.length; i++) {
+    var t = trim(parts[i]);
+    if (t) titles.push(t);
+  }
+
+  // 2. Ligne des dates : première ligne non vide après la ligne contenant "|/"
+  var arrowIndex = -1;
+  for (i = 0; i < lines.length; i++) {
+    if (lines[i].indexOf("|/") !== -1) {
+      arrowIndex = i;
+      break;
+    }
+  }
+  if (arrowIndex !== -1) {
+    for (i = arrowIndex + 1; i < lines.length; i++) {
+      var l = trim(lines[i]);
+      if (l) {
+        // découpe par plusieurs espaces
+        dates = l.split(/\s{2,}/);
+        break;
+      }
+    }
+  }
+
+  // 3. Descriptions : "JJ/MM/AAAA : ..."
+  for (i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+    if (/^\d{2}\/\d{2}\/\d{4}\s*:/.test(line)) {
+      descs.push(line.replace(/^\d{2}\/\d{2}\/\d{4}\s*:\s*/, ""));
+    }
+  }
+
+  // 4. Reconstruire events[]
+  events = [];
+  var maxLen = Math.max(titles.length, dates.length, descs.length);
+  for (i = 0; i < maxLen; i++) {
+    events.push({
+      title: titles[i] || "",
+      date: dates[i] || "",
+      desc: descs[i] || "",
+    });
+  }
+
+  refreshEditor();
+}
+
+// trim ES3
+function trim(s) {
+  return s.replace(/^\s+/, "").replace(/\s+$/, "");
+}
+
+/* ============================
+   Bouton copier
+============================ */
+document.getElementById('copyCode').onclick = function(e) {
+  var btn = event.target;
+  var code = document.getElementById('io');
+
+  var temp = document.createElement("textarea");
+  temp.value = code.value;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (err) {}
+
+  document.body.removeChild(temp);
+  btn.focus();
+};
+
+// Glisser-déposer
+var io = document.getElementById("io");
+
+io.addEventListener("dragover", function(e) {
+
+    // Si un fichier est glissé → empêcher le comportement natif
+    if (e.dataTransfer.types &&
+        (e.dataTransfer.types.indexOf("Files") !== -1 ||
+         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+
+        e.preventDefault(); // autorise le drop fichier
+    }
+
+    // Sinon → NE RIEN FAIRE
+    // Le navigateur affiche le curseur d’insertion
+});
+
+io.addEventListener("drop", function(e) {
+
+    // Si fichier → on gère nous-même
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+
+        var file = e.dataTransfer.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(ev) {
+            // On met le fichier brut dans la zone
+            io.value = ev.target.result;
+        };
+
+        reader.readAsText(file);
+        return;
+    }
+
+    // Sinon → laisser le navigateur coller le texte
+});
+
+// Bouton Importer fichier…
+document.getElementById("importFileBtn").onclick = function () {
+    document.getElementById("fileInput").click();
+};
+
+document.getElementById("fileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("io").value = e.target.result;
+    };
+    reader.readAsText(file);
+});
+</script>
+
+</body>
+</html>
