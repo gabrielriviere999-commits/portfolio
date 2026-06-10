@@ -829,6 +829,7 @@ document.getElementById("stopScan").onclick = function () {
 
 // Copier
 function copyTextFrom(elementId, btn) {
+  var btn = event.target;
   var txt = document.getElementById(elementId).textContent;
 
   var t = document.createElement("textarea");
@@ -839,6 +840,7 @@ function copyTextFrom(elementId, btn) {
   try { document.execCommand("copy"); } catch (e) {}
 
   document.body.removeChild(t);
+  btn.focus();
 }
 
 document.getElementById("copyBar").onclick = function (e) {
@@ -849,6 +851,7 @@ document.getElementById("copyBar").onclick = function (e) {
    COPIER
 ============================ */
 document.getElementById("copy-btn").onclick = function () {
+  var btn = event.target;
   var text = decodeFile.innerText;
 
   var temp = document.createElement("textarea");
@@ -860,6 +863,7 @@ document.getElementById("copy-btn").onclick = function () {
   temp.select();
   document.execCommand("copy");
   document.body.removeChild(temp);
+  btn.focus();
 };
 </script>
 
