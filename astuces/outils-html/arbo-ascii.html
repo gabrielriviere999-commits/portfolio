@@ -180,6 +180,7 @@ function goUp() {
 }
 
 function copyTree(btn) {
+	var btn = event.target;
     var textarea = document.createElement("textarea");
     textarea.value = lastAsciiText;
     document.body.appendChild(textarea);
@@ -187,6 +188,7 @@ function copyTree(btn) {
     textarea.select();
     document.execCommand("copy");
     document.body.removeChild(textarea);
+    btn.focus();
 }
 
 function copyTreeColored(btn) {
@@ -257,12 +259,14 @@ function copyTreeColored(btn) {
         '</pre>';
 
     // 8. Copier
+    var btn = event.target;
     var textarea = document.createElement("textarea");
     textarea.value = finalHtml;
     document.body.appendChild(textarea);
     textarea.select();
     document.execCommand("copy");
     document.body.removeChild(textarea);
+    btn.focus();
 }
 
 function restoreTree() {

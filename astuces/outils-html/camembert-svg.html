@@ -519,6 +519,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
 // Copier
 // ------------------------------
 document.getElementById("copyBtn").onclick = function(e) {
+  var btn = event.target;
   var txt = codeArea.value;
 
   var temp = document.createElement("textarea");
@@ -531,6 +532,7 @@ document.getElementById("copyBtn").onclick = function(e) {
   } catch (err) {}
 
   document.body.removeChild(temp);
+  btn.focus();
 };
 
 rebuildTable();

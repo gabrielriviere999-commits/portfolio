@@ -338,6 +338,7 @@ function sansAccents(str) {
 
 // Bouton copier
 function copier() {
+  var btn = event.target;
   var texte = document.getElementById("output").textContent;
 
   var temp = document.createElement("textarea");
@@ -348,6 +349,7 @@ function copier() {
   try { document.execCommand("copy"); } catch (e) {}
 
   document.body.removeChild(temp);
+  btn.focus();
 }
 
 // Bouton Effacer tout

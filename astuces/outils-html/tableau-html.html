@@ -1323,6 +1323,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
 ============================ */
 
 document.getElementById('copyCode').onclick = function(e) {
+  var btn = event.target;
   var code = document.getElementById('codeBox');
 
   var temp = document.createElement("textarea");
@@ -1333,6 +1334,7 @@ document.getElementById('copyCode').onclick = function(e) {
   try { document.execCommand("copy"); } catch (err) {}
 
   document.body.removeChild(temp);
+  btn.focus();
 };
 
 var toolbar = document.getElementsByClassName('toolbar')[0];

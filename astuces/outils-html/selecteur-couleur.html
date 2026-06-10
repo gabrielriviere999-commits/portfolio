@@ -695,6 +695,7 @@ hsvInput.onchange=function(){
 var buttons = document.getElementsByClassName("copy-btn");
 for (var i = 0; i < buttons.length; i++) {
     buttons[i].onclick = function () {
+		var btn = event.target;
 		var btn = this;
         var type = this.getAttribute("data-copy");
         var text = "";
@@ -710,6 +711,7 @@ for (var i = 0; i < buttons.length; i++) {
         t.select();
         document.execCommand("copy");
         document.body.removeChild(t);
+        btn.focus();
     };
 }
 

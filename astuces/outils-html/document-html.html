@@ -303,6 +303,7 @@ function cleanExport(html) {
 }
 
 function copyExport() {
+  var btn = event.target;
   var texte = exportEl.value;
 
   var temp = document.createElement("textarea");
@@ -313,7 +314,7 @@ function copyExport() {
   try { document.execCommand("copy"); } catch (e) {}
 
   document.body.removeChild(temp);
-
+  btn.focus();
   setStatus("Export copié !");
 }
 

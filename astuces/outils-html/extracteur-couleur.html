@@ -313,6 +313,7 @@ function drawImageToCanvas(img){
 
 /* --- Copier --- */
 function copyText(id, btn){
+	var btn = event.target;
     var text = document.getElementById(id).innerHTML;
     var t = document.createElement("textarea");
     t.value = text;
@@ -320,6 +321,7 @@ function copyText(id, btn){
     t.select();
     document.execCommand("copy");
     document.body.removeChild(t);
+    btn.focus();
 }
 
 /* --- Conversions couleurs --- */

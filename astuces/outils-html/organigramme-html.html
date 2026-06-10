@@ -493,6 +493,7 @@ function escapeHtml(str) {
 }
 
 function copyToClipboard(text) {
+  var btn = event.target;
   var ta = document.createElement("textarea");
   ta.value = text;
   ta.style.position = "fixed";
@@ -502,6 +503,7 @@ function copyToClipboard(text) {
   ta.select();
   document.execCommand("copy");
   document.body.removeChild(ta);
+  btn.focus();
 }
 
 // ===============================

@@ -1287,6 +1287,7 @@ document.getElementById("inputValue").oninput = convert;
 // 11. COPIER
 // ===============================
 document.getElementById("copyBtn").onclick = function () {
+  var btn = event.target;
   var text = document.getElementById("result").innerHTML;
 
   // Créer un textarea caché
@@ -1302,6 +1303,7 @@ document.getElementById("copyBtn").onclick = function () {
 
   // Supprimer le textarea
   document.body.removeChild(temp);
+  btn.focus();
 };
 
 document.getElementById("inputValue").value = "1";

@@ -81,11 +81,10 @@ textarea {
 |
   <!-- Liens -->
   <button data-md="[texte](url)">Lien</button>
-|
-  <button onclick="copyMd(event)">Copier</button>
 </div>
 
 <h2>Markdown</h2>
+<button onclick="copyMd(event)">Copier</button>
 <textarea id="input" wrap="off"></textarea>
 <button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
@@ -233,6 +232,7 @@ window.onload = function() {
 
 /* --- Copier --- */
 function copyMd(e) {
+  var btn = event.target;
   var code = document.getElementById('input');
 
   var temp = document.createElement("textarea");
@@ -243,6 +243,7 @@ function copyMd(e) {
   try { document.execCommand("copy"); } catch (err) {}
 
   document.body.removeChild(temp);
+  btn.focus();
 }
 </script>
 

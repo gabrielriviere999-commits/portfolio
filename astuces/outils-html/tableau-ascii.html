@@ -279,6 +279,7 @@ function convertir() {
 
 // Bouton copier
 function copier() {
+  var btn = event.target;
   var texte = getText(document.getElementById("output"));
 
   var temp = document.createElement("textarea");
@@ -289,6 +290,7 @@ function copier() {
   try { document.execCommand("copy"); } catch (e) {}
 
   document.body.removeChild(temp);
+  btn.focus();
 }
 
 // Bouton Effacer tout
