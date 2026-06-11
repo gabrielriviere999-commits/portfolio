@@ -37,7 +37,7 @@ textarea, #view {
 button:hover { background:#e0e0e0; }
 #view {
     width:100%;
-    height:500px;
+    height:70vh;
     font-family:monospace;
     white-space:pre;
     overflow:auto;
@@ -158,6 +158,7 @@ function setTool(t) {
     document.getElementById("btnRect").className = "";
     document.getElementById("btnEllipse").className = "";
     document.getElementById("btnText").className = "";
+    document.getElementById("btnEdit").className = "";
     document.getElementById("btnErase").className = "";
 
     if (t === "free") btnFree.className = "active";
@@ -168,6 +169,12 @@ function setTool(t) {
     if (t === "erase") btnErase.className = "active";
     if (t === "text") btnText.className = "active";
     if (t === "edit") btnEdit.className = "active";
+    
+    if (t === "edit") {
+        enableTouchDrawing(false); // Android peut éditer normalement
+    } else {
+        enableTouchDrawing(true);  // Android dessine normalement
+    }
 }
 
 // =========================
@@ -497,6 +504,30 @@ view.onmousemove = function(e) {
 	autoWidthDynamic(); // recalcul en temps réel
     if (!isDown) return;
 
+    // =========================
+    // AUTO-SCROLL MANUEL
+    // =========================
+    var rect = view.getBoundingClientRect();
+    var margin = 50; // zone sensible en px
+
+    // --- vertical ---
+    if (e.clientY > rect.bottom - margin) {
+        view.scrollTop += charH * 2; // scroll vers le bas
+    }
+    else if (e.clientY < rect.top + margin) {
+        view.scrollTop -= charH * 2; // scroll vers le haut
+        if (view.scrollTop < 0) view.scrollTop = 0;
+    }
+
+    // --- horizontal ---
+    if (e.clientX > rect.right - margin) {
+        view.scrollLeft += charW * 2; // scroll droite
+    }
+    else if (e.clientX < rect.left + margin) {
+        view.scrollLeft -= charW * 2; // scroll gauche
+        if (view.scrollLeft < 0) view.scrollLeft = 0;
+    }
+
     var pos = getPos(e);
 
     if (tool === "free") {
@@ -538,6 +569,33 @@ view.onmouseup = function(e) {
 
     tempGrid = null;
 };
+
+var touchEnabled = true;
+
+function enableTouchDrawing(enable) {
+    touchEnabled = enable;
+}
+
+view.addEventListener("touchstart", function(e) {
+    if (!touchEnabled) return; // 🔥 mode édition → laisser Android gérer
+    e.preventDefault();
+    var t = e.touches[0];
+    view.onmousedown({ clientX:t.clientX, clientY:t.clientY });
+}, { passive:false });
+
+view.addEventListener("touchmove", function(e) {
+    if (!touchEnabled) return;
+    e.preventDefault();
+    var t = e.touches[0];
+    view.onmousemove({ clientX:t.clientX, clientY:t.clientY });
+}, { passive:false });
+
+view.addEventListener("touchend", function(e) {
+    if (!touchEnabled) return;
+    e.preventDefault();
+    var t = e.changedTouches[0];
+    view.onmouseup({ clientX:t.clientX, clientY:t.clientY });
+}, { passive:false });
 
 // =========================
 // STARTUP
