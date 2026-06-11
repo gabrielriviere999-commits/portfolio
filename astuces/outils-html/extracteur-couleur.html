@@ -182,9 +182,14 @@ button:hover { background:#e0e0e0; }
 </div>
 
         <div class="win98-box">
-            <div id="dropzone">Glissez-déposez une image ici ou cliquez
+            <div id="dropzone">Cliquer ou glisser-déposer une image ici
                 <input type="file" id="fileInput" accept="image/*" style="display:none">
             </div>
+
+            <div id="pastezone" class="win98-box" style="margin-top:10px; text-align:center;">
+                Cliquer ici puis faire Ctrl+V pour coller une image
+            </div>
+
             <div id="canvasWrapper">
                 <canvas id="canvas" width="1200" height="900"></canvas>
             </div>
@@ -310,6 +315,31 @@ function drawImageToCanvas(img){
     ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
     label.innerHTML = "Cliquez ou touchez l'image pour lire une couleur.";
 }
+
+/* --- Coller l'image --- */
+var pastezone = document.getElementById("pastezone");
+
+pastezone.onclick = function(){
+    pastezone.focus();
+};
+
+pastezone.onpaste = function(e){
+    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    var file = null;
+
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            file = items[i].getAsFile();
+            break;
+        }
+    }
+
+    if (file) {
+        loadFile(file);
+    } else {
+        alert("Aucune image trouvée dans le presse‑papier.");
+    }
+};
 
 /* --- Copier --- */
 function copyText(id, btn){
