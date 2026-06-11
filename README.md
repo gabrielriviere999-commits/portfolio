@@ -1,3 +1,4 @@
+![texte](https://gabrielriviere999-commits.github.io/portfolio/logo.svg)
 # Portfolio
 - Repo : https://github.com/gabrielriviere999-commits/portfolio
 - Site : https://gabrielriviere999-commits.github.io/portfolio
