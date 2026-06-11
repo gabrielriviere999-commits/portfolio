@@ -504,9 +504,7 @@ view.onmousemove = function(e) {
 	autoWidthDynamic(); // recalcul en temps réel
     if (!isDown) return;
 
-    // =========================
     // AUTO-SCROLL MANUEL
-    // =========================
     var rect = view.getBoundingClientRect();
     var margin = 50; // zone sensible en px
 
@@ -577,7 +575,7 @@ function enableTouchDrawing(enable) {
 }
 
 view.addEventListener("touchstart", function(e) {
-    if (!touchEnabled) return; // 🔥 mode édition → laisser Android gérer
+    if (!touchEnabled) return; // mode édition → laisser Android gérer
     e.preventDefault();
     var t = e.touches[0];
     view.onmousedown({ clientX:t.clientX, clientY:t.clientY });
@@ -601,6 +599,7 @@ view.addEventListener("touchend", function(e) {
 // STARTUP
 // =========================
 window.onload = function() {
+    setTool("edit");
     autoWidth();
     grid = [[]];
     render();
@@ -666,6 +665,13 @@ document.getElementById("fileInput").addEventListener("change", function () {
     var reader = new FileReader();
     reader.onload = function (e) {
         document.getElementById("view").value = e.target.result;
+    };
+    reader.readAsText(file);
+});
+</script>
+</body>
+</html>
+ult;
     };
     reader.readAsText(file);
 });
