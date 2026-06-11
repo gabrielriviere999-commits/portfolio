@@ -32,17 +32,15 @@ button.active {
 textarea, #view {
   border:2px solid;
   border-color:#808080 #ffffff #ffffff #808080;
-  box-sizing:border-box;
 }
 button:hover { background:#e0e0e0; }
 #view {
-    width:100%;
-    height:70vh;
-    font-family:monospace;
-    white-space:pre;
-    overflow:auto;
-    padding:0;
-    margin:0;
+  width:100%;
+  height:70vh;
+  font-family:monospace;
+  padding:0;
+  margin:0;
+  box-sizing:border-box;
 }
 </style>
 </head>
@@ -72,7 +70,7 @@ background:#c0c0c0; border:1px solid #000; padding:10px; z-index:9999;opacity: 0
 
 <h2>Dessin ASCII</h2>
 <button id="copyDraw">Copier</button>
-<textarea id="view"></textarea>
+<textarea id="view" wrap="off"></textarea>
 <button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 
