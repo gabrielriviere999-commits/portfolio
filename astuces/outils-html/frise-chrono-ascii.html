@@ -207,6 +207,7 @@ function exportAscii() {
   var dateRow = "";
   for (i = 0; i < events.length; i++) {
     dateRow += center(events[i].date, widths[i]);
+    if (i < events.length - 1) dateRow += " ";
   }
 
   // 8. Descriptions
