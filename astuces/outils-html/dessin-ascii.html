@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dessin ASCII</title>
+<style>
+body {
+  background:#c0c0c0;
+  font-family:sans-serif;
+}
+#toolbar {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px;
+}
+button {
+  background:#d4d0c8;
+  color: black;
+  border:2px solid;
+  border-color:#fff #404040 #404040 #fff;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+}
+button:active,
+button.active {
+  border-color:#404040 #fff #fff #404040;
+  background:#c0c0c0;
+}
+textarea, #view {
+  border:2px solid;
+  border-color:#808080 #ffffff #ffffff #808080;
+  box-sizing:border-box;
+}
+button:hover { background:#e0e0e0; }
+#view {
+    width:100%;
+    height:500px;
+    font-family:monospace;
+    white-space:pre;
+    overflow:auto;
+    padding:0;
+    margin:0;
+}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button id="btnFree" onclick="setTool('free')">Tracé libre</button>
+  <button id="btnLine" onclick="setTool('line')">Ligne</button>
+  <button id="btnArrow" onclick="setTool('arrow')">Flèche</button>
+  <button id="btnRect" onclick="setTool('rect')">Rectangle</button>
+  <button id="btnEllipse" onclick="setTool('ellipse')">Ellipse</button>
+  |
+  <button id="btnText" onclick="setTool('text')">Texte libre</button>
+  <button id="btnEdit" onclick="setTool('edit')">Édition texte</button>
+  |
+  <button id="btnErase" onclick="setTool('erase')">Gomme</button>
+  <button onclick="undo()">Undo</button>
+  <button onclick="redo()">Redo</button>
+</div>
+
+<div id="textBox" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+background:#c0c0c0; border:1px solid #000; padding:10px; z-index:9999;opacity: 0.8;">
+  <textarea id="textInput" style="width:300px; height:120px;"></textarea><br>
+  <button onclick="confirmText()">OK</button>
+  <button onclick="cancelText()">Annuler</button>
+</div>
+
+<h2>Dessin ASCII</h2>
+<button id="copyDraw">Copier dessin</button>
+<textarea id="view"></textarea>
+<button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
+<input type="file" id="fileInput" style="display:none;">
+
+
+<script>
+// =========================
+// CONFIG
+// =========================
+var grid = [];
+var tool = "edit";
+var isDown = false;
+var startX = 0;
+var startY = 0;
+var undoStack = [];
+var redoStack = [];
+var charW = 8;
+var charH = 16;
+var textStartX = 0;
+var textStartY = 0;
+var textMarkerActive = false;
+var textMarkerX = 0;
+var textMarkerY = 0;
+var tempGrid = null;
+var textEditTimer = null;
+
+// =========================
+// MESURE CARACTÈRE
+// =========================
+function autoWidth() {
+    var probe = document.createElement("span");
+    probe.style.visibility = "hidden";
+    probe.style.position = "absolute";
+    probe.style.whiteSpace = "pre";
+
+    var style = view.currentStyle || window.getComputedStyle(view);
+    probe.style.fontFamily = style.fontFamily;
+    probe.style.fontSize   = style.fontSize;
+
+    var s = "";
+    for (var i = 0; i < 100; i++) s += "M";
+    probe.innerText = s;
+
+    document.body.appendChild(probe);
+    var rect = probe.getBoundingClientRect();
+    charW = rect.width / 100;
+    charH = rect.height;
+    document.body.removeChild(probe);
+}
+
+// =========================
+// GRID DYNAMIQUE
+// =========================
+function ensureCell(x, y) {
+    var i;
+    while (grid.length <= y) grid.push([]);
+    while (grid[y].length <= x) grid[y].push(" ");
+}
+
+// =========================
+// RENDER
+// =========================
+function render() {
+    var out = "";
+    var y, x;
+
+    for (y = 0; y < grid.length; y++) {
+        for (x = 0; x < grid[y].length; x++) out += grid[y][x];
+        if (y < grid.length - 1) out += "\n";
+    }
+
+    view.value = out;
+}
+
+// =========================
+// SETOOL
+// =========================
+function setTool(t) {
+    tool = t;
+
+    document.getElementById("btnFree").className = "";
+    document.getElementById("btnLine").className = "";
+    document.getElementById("btnArrow").className = "";
+    document.getElementById("btnRect").className = "";
+    document.getElementById("btnEllipse").className = "";
+    document.getElementById("btnText").className = "";
+    document.getElementById("btnErase").className = "";
+
+    if (t === "free") btnFree.className = "active";
+    if (t === "line") btnLine.className = "active";
+    if (t === "arrow") btnArrow.className = "active";
+    if (t === "rect") btnRect.className = "active";
+    if (t === "ellipse") btnEllipse.className = "active";
+    if (t === "erase") btnErase.className = "active";
+    if (t === "text") btnText.className = "active";
+    if (t === "edit") btnEdit.className = "active";
+}
+
+// =========================
+// EXPORT / IMPORT
+// =========================
+function exportTextReturn() {
+    return view.value;
+}
+
+function importAscii(txt) {
+    var lines = txt.split("\n");
+    grid = [];
+
+    var i, j;
+    for (i = 0; i < lines.length; i++) {
+        grid[i] = [];
+        for (j = 0; j < lines[i].length; j++) {
+            grid[i][j] = lines[i].charAt(j);
+        }
+    }
+    render();
+}
+
+function syncFromTextarea() {
+    importAscii(view.value);
+}
+
+// =========================
+// UNDO / REDO
+// =========================
+function copyGrid(src) {
+    var out = [];
+    var y, x;
+
+    for (y = 0; y < src.length; y++) {
+        out[y] = [];
+        for (x = 0; x < src[y].length; x++) out[y][x] = src[y][x];
+    }
+    return out;
+}
+
+function saveState() {
+    undoStack.push(copyGrid(grid));
+    redoStack = [];
+}
+
+function undo() {
+    if (undoStack.length === 0) return;
+    redoStack.push(copyGrid(grid));
+    grid = undoStack.pop();
+    render();
+}
+
+function redo() {
+    if (redoStack.length === 0) return;
+    undoStack.push(copyGrid(grid));
+    grid = redoStack.pop();
+    render();
+}
+
+// =========================
+// POSITION
+// =========================
+function getPos(e) {
+    var rect = view.getBoundingClientRect();
+
+    var scrollX = view.scrollLeft;
+    var scrollY = view.scrollTop;
+
+    var x = Math.floor((e.clientX - rect.left + scrollX) / charW);
+    var y = Math.floor((e.clientY - rect.top  + scrollY) / charH);
+
+    return { x:x, y:y };
+}
+
+// =========================
+// DRAW FREE
+// =========================
+function drawFree(x, y) {
+    ensureCell(x, y);
+    grid[y][x] = "#";
+    render();
+}
+
+// =========================
+// LINE
+// =========================
+function drawLine(x1, y1, x2, y2) {
+    var dx = Math.abs(x2 - x1);
+    var dy = Math.abs(y2 - y1);
+    var sx = (x1 < x2) ? 1 : -1;
+    var sy = (y1 < y2) ? 1 : -1;
+    var err = dx - dy;
+
+    while (true) {
+        ensureCell(x1, y1);
+        grid[y1][x1] = "*";
+
+        if (x1 === x2 && y1 === y2) break;
+
+        var e2 = 2 * err;
+        if (e2 > -dy) { err -= dy; x1 += sx; }
+        if (e2 < dx) { err += dx; y1 += sy; }
+    }
+    render();
+}
+
+// =========================
+// ARROW
+// =========================
+function drawArrow(x1, y1, x2, y2) {
+    // 1) Segment horizontal
+    var midX = x2;
+    var midY = y1;
+
+    var x;
+    if (x1 <= midX) {
+        for (x = x1; x <= midX; x++) {
+            ensureCell(x, midY);
+            grid[midY][x] = "-";
+        }
+    } else {
+        for (x = x1; x >= midX; x--) {
+            ensureCell(x, midY);
+            grid[midY][x] = "-";
+        }
+    }
+
+    // 2) Segment vertical
+    var y;
+    if (y1 <= y2) {
+        for (y = y1; y <= y2; y++) {
+            ensureCell(midX, y);
+            grid[y][midX] = "|";
+        }
+    } else {
+        for (y = y1; y >= y2; y--) {
+            ensureCell(midX, y);
+            grid[y][midX] = "|";
+        }
+    }
+
+    // 3) Pointe
+    ensureCell(x2, y2);
+
+    if (Math.abs(x2 - x1) >= Math.abs(y2 - y1)) {
+        // direction horizontale dominante
+        if (x2 > x1) grid[y2][x2] = ">";
+        else         grid[y2][x2] = "<";
+    } else {
+        // direction verticale dominante
+        if (y2 > y1) grid[y2][x2] = "v";
+        else         grid[y2][x2] = "^";
+    }
+
+    render();
+}
+
+// =========================
+// RECTANGLE
+// =========================
+function drawRectangle(x1, y1, x2, y2) {
+    var xMin = Math.min(x1, x2);
+    var xMax = Math.max(x1, x2);
+    var yMin = Math.min(y1, y2);
+    var yMax = Math.max(y1, y2);
+
+    ensureCell(xMin, yMin);
+    ensureCell(xMax, yMax);
+
+    grid[yMin][xMin] = "+";
+    grid[yMin][xMax] = "+";
+    grid[yMax][xMin] = "+";
+    grid[yMax][xMax] = "+";
+
+    var x, y;
+    for (x = xMin + 1; x < xMax; x++) {
+        ensureCell(x, yMin);
+        ensureCell(x, yMax);
+        grid[yMin][x] = "-";
+        grid[yMax][x] = "-";
+    }
+    for (y = yMin + 1; y < yMax; y++) {
+        ensureCell(xMin, y);
+        ensureCell(xMax, y);
+        grid[y][xMin] = "|";
+        grid[y][xMax] = "|";
+    }
+
+    render();
+}
+
+// =========================
+// ELLIPSE
+// =========================
+function drawEllipse(x1, y1, x2, y2) {
+    var cx = Math.floor((x1 + x2) / 2);
+    var cy = Math.floor((y1 + y2) / 2);
+    var rx = Math.abs(x2 - x1) / 2;
+    var ry = Math.abs(y2 - y1) / 2;
+
+    var x, y;
+    for (y = -Math.ceil(ry); y <= Math.ceil(ry); y++) {
+        for (x = -Math.ceil(rx); x <= Math.ceil(rx); x++) {
+            var d = (x*x)/(rx*rx) + (y*y)/(ry*ry);
+            if (Math.abs(d - 1) < 0.15) {
+                var px = cx + x;
+                var py = cy + y;
+                ensureCell(px, py);
+                grid[py][px] = "o";
+            }
+        }
+    }
+    render();
+}
+
+// =========================
+// TEXTE
+// =========================
+function placeTextMarker(x, y) {
+    textMarkerX = x;
+    textMarkerY = y;
+    textMarkerActive = true;
+
+    ensureCell(x, y);
+    grid[y][x] = "█"; // marqueur visuel
+    render();
+}
+
+function removeTextMarker() {
+    if (!textMarkerActive) return;
+    ensureCell(textMarkerX, textMarkerY);
+    grid[textMarkerY][textMarkerX] = " "; // ou laisser tel quel si tu préfères
+    textMarkerActive = false;
+    render();
+}
+
+function placeText(x, y) {
+    textStartX = x;
+    textStartY = y;
+
+    removeTextMarker();      // au cas où
+    placeTextMarker(x, y);   // on voit où le texte va commencer
+
+    textInput.value = "";
+    textBox.style.display = "block";
+}
+
+function confirmText() {
+    saveState();
+
+    removeTextMarker(); // on nettoie le curseur
+
+    var lines = textInput.value.split("\n");
+    var i, j;
+
+    for (i = 0; i < lines.length; i++) {
+        for (j = 0; j < lines[i].length; j++) {
+            ensureCell(textStartX + j, textStartY + i);
+            grid[textStartY + i][textStartX + j] = lines[i].charAt(j);
+        }
+    }
+
+    textBox.style.display = "none";
+    render();
+}
+
+function cancelText() {
+    removeTextMarker();
+    textBox.style.display = "none";
+}
+
+view.addEventListener("input", function() {
+    if (textEditTimer) clearTimeout(textEditTimer);
+
+    textEditTimer = setTimeout(function() {
+        saveState();          // undo/redo pour texte normal
+        syncFromTextarea();   // grid = textarea
+    }, 300); // 300 ms après la dernière frappe
+});
+
+// =========================
+// GOMME
+// =========================
+function eraseAt(x, y) {
+    ensureCell(x, y);
+    grid[y][x] = " ";
+    render();
+}
+
+// =========================
+// MOUSE HANDLING
+// =========================
+view.onmousedown = function(e) {
+    if (tool === "edit") {
+        // mode texte normal : on laisse le textarea gérer le curseur
+        return;
+    }
+    syncFromTextarea();
+
+    var pos = getPos(e);
+    isDown = true;
+    startX = pos.x;
+    startY = pos.y;
+
+    saveState();
+
+    // copie de la grille pour affichage temporaire
+    tempGrid = copyGrid(grid);
+
+    if (tool === "text") {
+        placeText(pos.x, pos.y);
+        isDown = false;
+        return;
+    }
+
+    if (tool === "free")  drawFree(pos.x, pos.y);
+    if (tool === "erase") eraseAt(pos.x, pos.y);
+};
+
+function autoWidthDynamic() {
+    autoWidth(); // recalcul charW et charH
+}
+
+view.onmousemove = function(e) {
+	if (tool === "edit") return; // pas de dessin
+	autoWidthDynamic(); // recalcul en temps réel
+    if (!isDown) return;
+
+    var pos = getPos(e);
+
+    if (tool === "free") {
+        drawFree(pos.x, pos.y);
+        return;
+    }
+
+    if (tool === "erase") {
+        eraseAt(pos.x, pos.y);
+        return;
+    }
+
+    // formes géométriques : affichage temporaire
+    grid = copyGrid(tempGrid);
+
+    if (tool === "line") drawLine(startX, startY, pos.x, pos.y);
+    if (tool === "arrow") drawArrow(startX, startY, pos.x, pos.y);
+    if (tool === "rect") drawRectangle(startX, startY, pos.x, pos.y);
+    if (tool === "ellipse") drawEllipse(startX, startY, pos.x, pos.y);
+
+    // affichage temporaire dans le textarea
+    render();
+};
+
+view.onmouseup = function(e) {
+	if (tool === "edit") return; // pas de dessin
+    if (!isDown) return;
+    isDown = false;
+
+    syncFromTextarea();
+
+    var pos = getPos(e);
+
+    // forme finale
+    if (tool === "line") drawLine(startX, startY, pos.x, pos.y);
+    if (tool === "arrow") drawArrow(startX, startY, pos.x, pos.y);
+    if (tool === "rect") drawRectangle(startX, startY, pos.x, pos.y);
+    if (tool === "ellipse") drawEllipse(startX, startY, pos.x, pos.y);
+
+    tempGrid = null;
+};
+
+// =========================
+// STARTUP
+// =========================
+window.onload = function() {
+    autoWidth();
+    grid = [[]];
+    render();
+};
+
+/* ============================
+   COPIER
+============================ */
+document.getElementById('copyDraw').onclick = function(e) {
+    var txt = view.value;
+
+    var temp = document.createElement("textarea");
+    temp.value = txt;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try {
+        document.execCommand("copy");
+    } catch (err) {}
+
+    document.body.removeChild(temp);
+};
+
+// Glisser-déposer
+var textarea = document.getElementById("view");
+
+textarea.addEventListener("dragover", function(e) {
+
+    if (e.dataTransfer.types &&
+        (e.dataTransfer.types.indexOf("Files") !== -1 ||
+         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+
+        e.preventDefault();
+    }
+});
+
+textarea.addEventListener("drop", function(e) {
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+
+        var file = e.dataTransfer.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(ev) {
+            textarea.value = ev.target.result;
+        };
+
+        reader.readAsText(file);
+        return;
+    }
+});
+
+// Bouton Importer fichier…
+document.getElementById("importFileBtn").onclick = function () {
+    document.getElementById("fileInput").click();
+};
+
+document.getElementById("fileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("view").value = e.target.result;
+    };
+    reader.readAsText(file);
+});
+</script>
+</body>
+</html>
