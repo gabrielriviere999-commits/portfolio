@@ -609,6 +609,7 @@ window.onload = function() {
    COPIER
 ============================ */
 document.getElementById('copyDraw').onclick = function(e) {
+	var btn = event.target;
     var txt = view.value;
 
     var temp = document.createElement("textarea");
@@ -621,6 +622,7 @@ document.getElementById('copyDraw').onclick = function(e) {
     } catch (err) {}
 
     document.body.removeChild(temp);
+    btn.focus();
 };
 
 // Glisser-déposer
