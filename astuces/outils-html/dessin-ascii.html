@@ -646,6 +646,10 @@ view.onmousedown = function(e) {
     if (tool === "erase") eraseAt(pos.x, pos.y);
 };
 
+function autoWidthDynamic() {
+    autoWidth(); // recalcul charW et charH
+}
+
 view.onmousemove = function(e) {
 
     var rect = view.getBoundingClientRect();
@@ -679,6 +683,7 @@ view.onmousemove = function(e) {
         return;
     }
 	if (tool === "edit") return; // pas de dessin
+	autoWidthDynamic();
     if (!isDown) return;
 
     var pos = getPos(e);
