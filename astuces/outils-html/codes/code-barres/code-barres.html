@@ -221,9 +221,10 @@ input[type="file"]:active {
 
   <input type="file" id="file-input" accept="image/*">
   <canvas id="canvas-file" style="display:none;"></canvas>
-
+  <div id="pastezone" class="win98-box" style="margin-top:10px; text-align:center;">
+    <input id="pasteInput" maxlength="0" style="width:100%;height:30px;box-sizing:border-box;" placeholder="Ou cliquer ici puis faire Ctrl+V">
+  </div>
   <div id="decode-file"></div>
-
   <button id="copy-btn" class="win98-btn">Copier</button>
 </div>
 
@@ -705,6 +706,57 @@ fileInput.onchange = function (e) {
 
     img.src = URL.createObjectURL(file);
 };
+
+/* --- Coller une image depuis le presse‑papier --- */
+var pasteInput = document.getElementById("pasteInput");
+
+pasteInput.onpaste = function(e) {
+    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    var file = null;
+
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            file = items[i].getAsFile();
+            break;
+        }
+    }
+
+    if (file) {
+        loadFile(file);
+    } else {
+        alert("Aucune image trouvée dans le presse‑papier.");
+    }
+};
+
+function loadFile(file) {
+    var img = new Image();
+    img.onload = function () {
+
+        // Redimensionnement
+        var maxSize = 1000;
+        var scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+
+        canvasFile.width  = img.width * scale;
+        canvasFile.height = img.height * scale;
+
+        ctxFile.drawImage(
+            img,
+            0, 0, img.width, img.height,
+            0, 0, canvasFile.width, canvasFile.height
+        );
+
+        var tempImg = new Image();
+        tempImg.onload = function () {
+            reader.decodeFromImageElement(tempImg)
+                .then(function(result){ decodeFile.innerText = result.text; })
+                .catch(function(){ decodeFile.innerText = "Aucun code-barres détecté."; });
+        };
+
+        tempImg.src = canvasFile.toDataURL("image/png");
+    };
+
+    img.src = URL.createObjectURL(file);
+}
 
 // Décodage caméra
 var barReader = null; // instance jetable
