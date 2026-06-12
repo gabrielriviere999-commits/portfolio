@@ -10,6 +10,20 @@ body {
   font-family: sans-serif;
 }
 
+.block block-cat, .block block-value, .block block-from, .block block-to, block {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  padding: 10px;
+  display: block;
+  min-width: 320px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
 .dropdown {
   background: #ffffff;
   border: 2px solid #ffffff;
@@ -125,6 +139,7 @@ input:hover, textarea:hover {
 
 <h2>Convertisseur d'unités</h2>
 
+<div class="container">
 <!-- CATEGORIE -->
 <div class="block block-cat">
   <label>Catégorie :</label>
@@ -138,7 +153,9 @@ input:hover, textarea:hover {
   <label for="inputValue">Valeur à convertir :</label>
   <input type="text" id="inputValue" value="1">
 </div>
+</div>
 
+<div class="container">
 <!-- DE -->
 <div class="block block-from">
   <label>Rechercher "De" :</label>
@@ -166,11 +183,12 @@ input:hover, textarea:hover {
     <div class="dropdown-list" id="toList"></div>
   </div>
 </div>
-
-<div class="block" style="text-align:center; margin:10px 0;">
-  <button id="swapBtn">Inverser De ↔ Vers</button>
 </div>
 
+<div class="block" style="text-align:center;">
+  <button id="swapBtn">Inverser De ↔ Vers</button>
+</div>
+	
 <p>
   Résultat : <strong id="result">—</strong>
   <button id="copyBtn">Copier</button>
