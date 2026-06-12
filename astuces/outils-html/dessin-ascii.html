@@ -54,6 +54,7 @@ button:hover { background:#e0e0e0; }
   <button id="btnArrow" onclick="setTool('arrow')">Flèche</button>
   <button id="btnRect" onclick="setTool('rect')">Rectangle</button>
   <button id="btnEllipse" onclick="setTool('ellipse')">Ellipse</button>
+  <button id="btnMove" onclick="setTool('move')">Déplacer</button>
   |
   <button id="btnText" onclick="setTool('text')">Texte libre</button>
   <button id="btnEdit" onclick="setTool('edit')">Édition texte</button>
@@ -95,6 +96,10 @@ var textMarkerX = 0;
 var textMarkerY = 0;
 var tempGrid = null;
 var textEditTimer = null;
+var moveSelection = null;
+var moveMode = 0; // 0=sélection, 1=attente destination
+var lastMoveX = 0;
+var lastMoveY = 0;
 
 // =========================
 // MESURE CARACTÈRE
@@ -155,6 +160,7 @@ function setTool(t) {
     document.getElementById("btnArrow").className = "";
     document.getElementById("btnRect").className = "";
     document.getElementById("btnEllipse").className = "";
+    document.getElementById("btnMove").className = "";
     document.getElementById("btnText").className = "";
     document.getElementById("btnEdit").className = "";
     document.getElementById("btnErase").className = "";
@@ -164,6 +170,11 @@ function setTool(t) {
     if (t === "arrow") btnArrow.className = "active";
     if (t === "rect") btnRect.className = "active";
     if (t === "ellipse") btnEllipse.className = "active";
+    if (t === "move") btnMove.className = "active";
+    if (t === "move") {
+        moveSelection = null;
+        moveMode = 0;
+    }
     if (t === "erase") btnErase.className = "active";
     if (t === "text") btnText.className = "active";
     if (t === "edit") btnEdit.className = "active";
@@ -390,6 +401,137 @@ function drawEllipse(x1, y1, x2, y2) {
 }
 
 // =========================
+// DEPLACEMENT
+// =========================
+function captureSelection(x1,y1,x2,y2) {
+
+    var xMin = Math.min(x1,x2);
+    var xMax = Math.max(x1,x2);
+    var yMin = Math.min(y1,y2);
+    var yMax = Math.max(y1,y2);
+
+    moveSelection = {
+        x:xMin,
+        y:yMin,
+        w:xMax-xMin+1,
+        h:yMax-yMin+1,
+        data:[]
+    };
+
+    var x,y;
+
+    for(y=yMin;y<=yMax;y++) {
+
+        moveSelection.data.push([]);
+
+        for(x=xMin;x<=xMax;x++) {
+
+            ensureCell(x,y);
+
+            moveSelection.data[y-yMin].push(grid[y][x]);
+
+            // efface l'original
+            grid[y][x] = " ";
+        }
+    }
+
+    render();
+    tempGrid = copyGrid(grid);
+}
+
+function trimGrid() {
+
+    var y, x;
+
+    // supprimer espaces de fin de ligne
+    for (y = 0; y < grid.length; y++) {
+
+        if (!grid[y]) continue;
+
+        while (
+            grid[y].length > 0 &&
+            grid[y][grid[y].length - 1] === " "
+        ) {
+            grid[y].pop();
+        }
+    }
+
+    // supprimer lignes vides finales
+    while (grid.length > 0) {
+
+        var empty = true;
+
+        for (x = 0; x < grid[grid.length - 1].length; x++) {
+            if (grid[grid.length - 1][x] !== " ") {
+                empty = false;
+                break;
+            }
+        }
+
+        if (!empty) break;
+
+        grid.pop();
+    }
+}
+
+function pasteSelection(destX,destY) {
+
+    grid = copyGrid(tempGrid);
+
+    var x,y;
+
+    for(y=0;y<moveSelection.h;y++) {
+        for(x=0;x<moveSelection.w;x++) {
+
+            var c = moveSelection.data[y][x];
+
+            if(c === " ") continue;
+
+            ensureCell(destX+x,destY+y);
+
+            grid[destY+y][destX+x] = c;
+        }
+    }
+
+    moveSelection = null;
+    moveMode = 0;
+    tempGrid = null;
+
+    trimGrid();
+    render();
+}
+
+function previewMove(destX, destY) {
+
+    if (!moveSelection || !tempGrid) return;
+
+    var realGrid = grid;
+
+    var previewGrid = copyGrid(tempGrid);
+
+    grid = previewGrid;
+
+    var x, y;
+
+    for (y = 0; y < moveSelection.h; y++) {
+        for (x = 0; x < moveSelection.w; x++) {
+
+            var c = moveSelection.data[y][x];
+
+            if (c === " ") continue;
+
+            ensureCell(destX + x, destY + y);
+
+            grid[destY + y][destX + x] = c;
+        }
+    }
+
+    render();
+
+    grid = realGrid;
+}
+
+// =========================
 // TEXTE
 // =========================
 function placeTextMarker(x, y) {
@@ -474,6 +616,17 @@ view.onmousedown = function(e) {
     syncFromTextarea();
 
     var pos = getPos(e);
+    if(tool === "move" && moveMode === 1) {
+
+        isDown = true;
+
+        lastMoveX = pos.x;
+        lastMoveY = pos.y;
+
+        previewMove(pos.x, pos.y);
+
+        return;
+    }
     isDown = true;
     startX = pos.x;
     startY = pos.y;
@@ -493,36 +646,40 @@ view.onmousedown = function(e) {
     if (tool === "erase") eraseAt(pos.x, pos.y);
 };
 
-function autoWidthDynamic() {
-    autoWidth(); // recalcul charW et charH
-}
-
 view.onmousemove = function(e) {
-	if (tool === "edit") return; // pas de dessin
-	autoWidthDynamic(); // recalcul en temps réel
-    if (!isDown) return;
 
-    // AUTO-SCROLL MANUEL
     var rect = view.getBoundingClientRect();
-    var margin = 50; // zone sensible en px
+    var margin = 50;
 
-    // --- vertical ---
     if (e.clientY > rect.bottom - margin) {
-        view.scrollTop += charH * 2; // scroll vers le bas
+        view.scrollTop += charH * 2;
     }
     else if (e.clientY < rect.top + margin) {
-        view.scrollTop -= charH * 2; // scroll vers le haut
+        view.scrollTop -= charH * 2;
         if (view.scrollTop < 0) view.scrollTop = 0;
     }
 
-    // --- horizontal ---
     if (e.clientX > rect.right - margin) {
-        view.scrollLeft += charW * 2; // scroll droite
+        view.scrollLeft += charW * 2;
     }
     else if (e.clientX < rect.left + margin) {
-        view.scrollLeft -= charW * 2; // scroll gauche
+        view.scrollLeft -= charW * 2;
         if (view.scrollLeft < 0) view.scrollLeft = 0;
     }
+
+    if(tool === "move" && moveMode === 1 && isDown) {
+
+        var pos = getPos(e);
+
+        lastMoveX = pos.x;
+        lastMoveY = pos.y;
+
+        previewMove(pos.x, pos.y);
+
+        return;
+    }
+	if (tool === "edit") return; // pas de dessin
+    if (!isDown) return;
 
     var pos = getPos(e);
 
@@ -549,6 +706,14 @@ view.onmousemove = function(e) {
 };
 
 view.onmouseup = function(e) {
+  if(tool === "move" && moveMode === 1) {
+
+      pasteSelection(lastMoveX, lastMoveY);
+
+      isDown = false;
+
+      return;
+  }
 	if (tool === "edit") return; // pas de dessin
     if (!isDown) return;
     isDown = false;
@@ -556,6 +721,22 @@ view.onmouseup = function(e) {
     syncFromTextarea();
 
     var pos = getPos(e);
+    if(tool === "move") {
+
+        if(moveMode === 0) {
+
+            captureSelection(
+                startX,
+                startY,
+                pos.x,
+                pos.y
+            );
+
+            moveMode = 1;
+        }
+
+        return;
+    }
 
     // forme finale
     if (tool === "line") drawLine(startX, startY, pos.x, pos.y);
@@ -607,7 +788,7 @@ window.onload = function() {
    COPIER
 ============================ */
 document.getElementById('copyDraw').onclick = function(e) {
-	var btn = event.target;
+	var btn = e.target;
     var txt = view.value;
 
     var temp = document.createElement("textarea");
