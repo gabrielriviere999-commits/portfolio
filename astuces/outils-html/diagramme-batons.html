@@ -84,9 +84,6 @@ D;10</textarea><br>
       <option value="right">Droite</option>
     </select>
   </label>
-  <label>Largeur colonne libellés :
-    <input type="text" id="labelWidth" value="1" size="4">
-  </label>
   <label>Séparateur libellé / barre :
     <input type="text" id="sep" value=" | " size="6">
   </label>
@@ -121,8 +118,6 @@ function updateChart(){
     var bgChar=document.getElementById('bgChar').value.charAt(0)||' ';
 
     var labelAlign=document.getElementById('labelAlign').value;
-    var labelWidth=parseIntSafe(document.getElementById('labelWidth').value,1);
-    if(labelWidth<0) labelWidth=0;
 
     var sep=document.getElementById('sep').value;
     var showValues = true;
@@ -322,7 +317,6 @@ function setupBlurUpdate(id) {
 setupBlurUpdate('maxWidth');
 setupBlurUpdate('barChar');
 setupBlurUpdate('bgChar');
-setupBlurUpdate('labelWidth');
 setupBlurUpdate('sep');
 
 // Select
