@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Testeur de polices</title>
+<style>
+body {
+  font-family: sans-serif;
+  background: #c0c0c0;
+}
+h3 { margin-bottom: 0; }
+p { margin-bottom:10px; line-height:0; }
+#inputZone {
+  width: 100%;
+  height: 200px;
+  border: 2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-sizing: border-box;
+  white-space: pre;
+  overflow: auto;
+}
+
+.preview {
+  background: white;
+  border:2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  padding: 2px;
+  margin-top: 10px;
+  min-height: 40px;
+  max-height: 200px;
+  white-space: pre;
+  overflow: auto;
+}
+
+/* Chaque bloc a sa propre police */
+#preview1 { font-family: Arial, sans-serif; }
+#preview2 { font-family: "Courier New", monospace; }
+#preview3 { font-family: "Times New Roman", serif; }
+#preview4 { font-family: Verdana, sans-serif; }
+#preview5 { font-family: Arial, Verdana, sans-serif; }
+#preview6 { font-family: "Comic Sans MS", cursive; }
+#preview7 { font-family: "Lucida Console", monospace; }
+</style>
+</head>
+<body>
+
+<h2>Testeur de polices</h2>
+
+<h3>Texte</h3>
+
+<textarea id="inputZone" onkeyup="updateText();"></textarea>
+
+<h3>Affichage des polices</h3>
+
+<p>Arial, sans-serif</p>
+<div id="preview1" class="preview"></div>
+<p>"Courier New", monospace</p>
+<div id="preview2" class="preview"></div>
+<p>"Times New Roman", serif</p>
+<div id="preview3" class="preview"></div>
+<p>Verdana, sans-serif</p>
+<div id="preview4" class="preview"></div>
+<p>Arial, Verdana, sans-serif</p>
+<div id="preview5" class="preview"></div>
+<p>"Comic Sans MS", cursive</p>
+<div id="preview6" class="preview"></div>
+<p>"Lucida Console", monospace</p>
+<div id="preview7" class="preview"></div>
+<script>
+function updateText() {
+    var txt = document.getElementById("inputZone").value;
+
+    document.getElementById("preview1").innerHTML = txt;
+    document.getElementById("preview2").innerHTML = txt;
+    document.getElementById("preview3").innerHTML = txt;
+    document.getElementById("preview4").innerHTML = txt;
+    document.getElementById("preview5").innerHTML = txt;
+    document.getElementById("preview6").innerHTML = txt;
+    document.getElementById("preview7").innerHTML = txt;
+}
+</script>
+
+</body>
+</html>
