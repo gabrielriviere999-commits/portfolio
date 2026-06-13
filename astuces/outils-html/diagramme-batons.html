@@ -37,7 +37,6 @@ input, textarea {
   border-color:#808080 #ffffff #ffffff #808080;
 }
 
-fieldset { border: 2px groove #fff; }
 label { display: block; margin: 2px 0; }
 
 .card {
@@ -146,6 +145,14 @@ function updateChart(){
     if(!items.length){ outEl.value=''; return; }
     if(!normalize && maxVal===0) maxVal=1;
 
+    // Déterminer automatiquement la largeur max des labels
+    var autoWidth = 0;
+    for(i=0;i<items.length;i++){
+        if(items[i].label.length > autoWidth)
+            autoWidth = items[i].label.length;
+    }
+    labelWidth = autoWidth;
+
     var out=[],width,labelText,bar;
 
     for(i=0;i<items.length;i++){
@@ -162,8 +169,6 @@ function updateChart(){
 
         labelText=it.label;
         if(labelWidth>0){
-            if(labelText.length>labelWidth)
-                labelText=labelText.substring(0,labelWidth);
             if(labelAlign==='right')
                 labelText=repeatChar(' ',labelWidth-labelText.length)+labelText;
             else
