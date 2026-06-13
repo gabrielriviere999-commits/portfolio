@@ -12,11 +12,6 @@ h2, h3 { margin-top: 0; }
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
   padding: 10px;
-  display: block;
-}
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 textarea { width:100%; height:200px; box-sizing:border-box; font-family:monospace; }
 button {
@@ -50,7 +45,6 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 
 <h2>Remplacer texte</h2>
 
-<div class="container">
 <div class="card">
 <fieldset>
 <legend>Options</legend>
@@ -93,15 +87,12 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <h3>Source</h3>
 <textarea id="input" wrap="off"></textarea>
 </div>
-</div>
 
-<div class="container">
 <div class="card">
 <h3>Résultat</h3>
 <input type="file" id="fileInput" style="display:none;">
 <textarea id="output" wrap="off" readonly></textarea>
 <div id="stats" style="font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
-</div>
 </div>
 
 <script>
