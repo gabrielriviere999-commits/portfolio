@@ -20,7 +20,6 @@ button {
   border:2px solid;
   border-color:#fff #404040 #404040 #fff;
   padding:4px 8px;
-  margin-top:10px;
   font-size:12px;
   cursor:pointer;
 }
@@ -39,7 +38,7 @@ hr {
   border-bottom: 1px solid #fff;
   margin: 8px 0;
 }
-label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-align:middle; }
+label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 </style>
 </head>
 <body>
@@ -72,27 +71,28 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <br>
 <label>Supprimer en fin de ligne :</label>
 <input id="removeSuffix" type="text" placeholder="ex: ; ou , ou // fin">
-<hr>
+<p></p>
 <div id="repl_container"></div>
 <button onclick="ajouterRemplacement()" style="background-color:#dddddd;">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
-<hr>
-<button onclick="appliquerTransformations()" style="background-color:#ff8800;">Appliquer</button>
-<button onclick="copier()" style="background-color:#4caf50;">Copier</button>
-<button onclick="effacerTout()" style="background-color:#ff4444;">Effacer tout</button>
-<button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
+<br>
+<button onclick="effacerRemplacements()" style="background-color:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
 </fieldset>
 </div>
 
 <div class="card">
 <h3>Source</h3>
-<textarea id="input" wrap="off"></textarea>
+<textarea id="input" wrap="off"></textarea><br>
+<button onclick="appliquerTransformations()" style="background-color:#ff8800;">Appliquer</button>
+<button onclick="effacerTout()" style="background-color:#ff4444;">Effacer tout</button>
+<button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
+<input type="file" id="fileInput" style="display:none;">
 </div>
 
 <div class="card">
 <h3>Résultat</h3>
-<input type="file" id="fileInput" style="display:none;">
-<textarea id="output" wrap="off" readonly></textarea>
+<button onclick="copier()" style="background-color:#4caf50;">Copier</button>
+<br><textarea id="output" wrap="off" readonly></textarea>
 <div id="stats" style="font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
 </div>
 
@@ -380,12 +380,14 @@ function copier() {
   btn.focus();
 }
 
-// Bouton Effacer tout
+// Boutons Effacer
 function effacerTout() {
   document.getElementById("input").value = "";
   setText(document.getElementById("output"), "");
   updateStats("");
-  
+}
+
+function effacerRemplacements() {  
   document.getElementById("repl_container").innerHTML = "";
   localStorage.removeItem("repl_list");
 
@@ -614,6 +616,11 @@ function ajouterRemplacement(from, to) {
   div.appendChild(inp1);
   div.appendChild(document.createTextNode(" → "));
   div.appendChild(inp2);
+
+  var hr = document.createElement("hr");
+  hr.style.border = "0";
+  hr.style.borderTop = "1px solid";
+  div.appendChild(hr);
 
   cont.appendChild(div);
 
