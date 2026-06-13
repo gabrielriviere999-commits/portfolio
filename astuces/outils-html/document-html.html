@@ -116,14 +116,6 @@ iframe {
   font-size: 11px;
   color: #555;
 }
-
-.export-area {
-  margin-top: 8px;
-}
-
-.export-area textarea {
-  height: 150px;
-}
 </style>
 </head>
 <body>
@@ -144,9 +136,8 @@ iframe {
 <button type="button" onclick="insertList('ul')">UL</button>
 <button type="button" onclick="insertList('ol')">OL</button>
 |
+<button id="copyCode">Copier le code</button>
 <button type="button" onclick="updatePreview()">Prévisualiser</button>
-<button type="button" onclick="exportDocument()">Exporter</button>
-<button type="button" onclick="copyExport()">Copier export</button>
 <button id="importHtmlFile">Importer HTML...</button>
 <input type="file" id="htmlFileInput" style="display:none;">
 |
@@ -177,11 +168,6 @@ iframe {
     <h2>Prévisualisation</h2>
     <iframe id="preview"></iframe>
   </div>
-</div>
-
-<div class="panel export-area">
-  <h2>Export (HTML complet)</h2>
-  <textarea id="export"></textarea>
 </div>
 
 <script>
@@ -293,29 +279,8 @@ function updatePreview() {
   setStatus('Prévisualisation mise à jour.');
 }
 
-function exportDocument() {
-  exportEl.value = editor.value;
-  setStatus('Document copié dans la zone Export. Tu peux le sauvegarder en .html.');
-}
-
 function cleanExport(html) {
   return html.replace(/contenteditable="true"/gi, "");
-}
-
-function copyExport() {
-  var btn = event.target;
-  var texte = exportEl.value;
-
-  var temp = document.createElement("textarea");
-  temp.value = texte;
-  document.body.appendChild(temp);
-  temp.select();
-
-  try { document.execCommand("copy"); } catch (e) {}
-
-  document.body.removeChild(temp);
-  btn.focus();
-  setStatus("Export copié !");
 }
 
 document.getElementById("importHtmlFile").onclick = function () {
@@ -600,6 +565,24 @@ toggleBtn.onclick = function(e) {
   } else {
     toolbar.className = 'toolbar hidden';
   }
+};
+
+/* ============================
+   COPIER
+============================ */
+document.getElementById('copyCode').onclick = function(e) {
+  var btn = event.target;
+  var code = document.getElementById('editor');
+
+  var temp = document.createElement("textarea");
+  temp.value = code.value;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { document.execCommand("copy"); } catch (err) {}
+
+  document.body.removeChild(temp);
+  btn.focus();
 };
 </script>
 
