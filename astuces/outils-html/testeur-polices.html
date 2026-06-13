@@ -33,18 +33,18 @@ p { margin-bottom:10px; line-height:0; }
 }
 
 /* Chaque bloc a sa propre police */
-#preview1 { font-family: Courier New; }
-#preview2 { font-family: Lucida Console; }
-#preview3 { font-family: Consolas; }
-#preview4 { font-family: monospace; }
-#preview5 { font-family: Arial; }
-#preview6 { font-family: Verdana; }
-#preview7 { font-family: Times New Roman; }
-#preview8 { font-family: Georgia; }
-#preview9 { font-family: sans-serif; }
-#preview10 { font-family: Comic Sans MS; }
-#preview11 { font-family: Impact; }
-#preview12 { font-family: Trebuchet MS; }
+#preview1, .p1 { font-family: Courier New; }
+#preview2, .p2 { font-family: Lucida Console; }
+#preview3, .p3 { font-family: Consolas; }
+#preview4, .p4 { font-family: monospace; }
+#preview5, .p5 { font-family: Arial; }
+#preview6, .p6 { font-family: Verdana; }
+#preview7, .p7 { font-family: Times New Roman; }
+#preview8, .p8 { font-family: Georgia; }
+#preview9, .p9 { font-family: sans-serif; }
+#preview10, .p10 { font-family: Comic Sans MS; }
+#preview11, .p11 { font-family: Impact; }
+#preview12, .p12 { font-family: Trebuchet MS; }
 </style>
 </head>
 <body>
@@ -57,31 +57,30 @@ p { margin-bottom:10px; line-height:0; }
 
 <h3>Affichage des polices</h3>
 
-<p>Courier New</p>
+<p class="p1">Courier New</p>
 <div id="preview1" class="preview"></div>
-<p>Lucida Console</p>
+<p class="p2">Lucida Console</p>
 <div id="preview2" class="preview"></div>
-<p>Consolas</p>
+<p class="p3">Consolas</p>
 <div id="preview3" class="preview"></div>
-<p>monospace</p>
+<p class="p4">monospace</p>
 <div id="preview4" class="preview"></div>
-<p>Arial</p>
+<p class="p5">Arial</p>
 <div id="preview5" class="preview"></div>
-<p>Verdana</p>
+<p class="p6">Verdana</p>
 <div id="preview6" class="preview"></div>
-<p>Times New Roman</p>
+<p class="p7">Times New Roman</p>
 <div id="preview7" class="preview"></div>
-<p>Georgia</p>
+<p class="p8">Georgia</p>
 <div id="preview8" class="preview"></div>
-<p>sans-serif</p>
+<p class="p9">sans-serif</p>
 <div id="preview9" class="preview"></div>
-<p>Comic Sans MS</p>
+<p class="p10">Comic Sans MS</p>
 <div id="preview10" class="preview"></div>
-<p>Impact</p>
+<p class="p11">Impact</p>
 <div id="preview11" class="preview"></div>
-<p>Trebuchet MS</p>
+<p class="p12">Trebuchet MS</p>
 <div id="preview12" class="preview"></div>
-
 <script>
 function updateText() {
     var txt = document.getElementById("inputZone").value;
