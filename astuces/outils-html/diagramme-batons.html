@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagramme en bâtons ASCII</title>
+<style>
+body {
+  font-family: sans-serif;
+  background: #c0c0c0;
+}
+
+h2, h3 { margin-top: 0; }
+
+button {
+  background: #d4d0c8;
+  color: black;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+button:active {
+  border-color: #404040 #fff #fff #404040;
+  background: #c0c0c0;
+}
+button:hover { background:#e0e0e0; }
+
+textarea {
+  width: 100%;
+  height: 200px;
+  box-sizing: border-box;
+}
+input, textarea {
+  border:2px solid;
+  border-color:#808080 #ffffff #ffffff #808080;
+}
+
+label { display: block; margin: 2px 0; }
+
+.card {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  padding: 10px;
+  display: block;
+}
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+</style>
+</head>
+<body>
+<h2>Diagramme en bâtons ASCII</h2>
+
+<div class="container">
+
+<div class="card">
+  <h3>Données</h3>
+  <label for="data">Format : libellé ; valeur</label>
+  <button id="copydata">Copier</button>
+  <br><textarea id="data" wrap="off">A;3
+B;7
+C;5
+D;10</textarea><br>
+  <button id="importFileBtndata">Importer fichier…</button>
+  <input type="file" id="fileInputdata" style="display:none;">
+  <fieldset>
+  <legend>Options</legend>
+  <label>Largeur max des barres :
+    <input type="text" id="maxWidth" value="50" size="4">
+  </label>
+  <label>Caractère de remplissage :
+    <input type="text" id="barChar" value="#" size="2" maxlength="1">
+  </label>
+  <label>Caractère de fond :
+    <input type="text" id="bgChar" value=" " size="2" maxlength="1">
+  </label>
+  <label>Alignement des libellés :
+    <select id="labelAlign">
+      <option value="left">Gauche</option>
+      <option value="right">Droite</option>
+    </select>
+  </label>
+  <label>Largeur colonne libellés :
+    <input type="text" id="labelWidth" value="1" size="4">
+  </label>
+  <label>Séparateur libellé / barre :
+    <input type="text" id="sep" value=" | " size="6">
+  </label>
+  <label><input type="checkbox" id="normalize" checked="checked"> Normaliser</label>
+  </fieldset>
+</div>
+
+<div class="card">
+  <h3>Aperçu / texte</h3>
+  <button id="copyoutput">Copier</button>
+  <br><textarea id="output" wrap="off"></textarea><br>
+  <button type="button" onclick="importFromOutput()">Mettre à jour</button>
+  <button id="importFileBtnoutput">Importer fichier…</button>
+  <input type="file" id="fileInputoutput" style="display:none;">
+</div>
+
+</div>
+
+<script>
+function trimStr(s){ return s.replace(/^\s+/, '').replace(/\s+$/, ''); }
+function repeatChar(ch,n){ var o='',i; for(i=0;i<n;i++) o+=ch; return o; }
+function parseIntSafe(v,d){ var n=parseInt(v,10); return isNaN(n)?d:n; }
+
+function updateChart(){
+    var dataEl=document.getElementById('data');
+    var outEl=document.getElementById('output');
+
+    var maxWidth=parseIntSafe(document.getElementById('maxWidth').value,50);
+    if(maxWidth<1) maxWidth=1;
+
+    var barChar=document.getElementById('barChar').value.charAt(0)||'#';
+    var bgChar=document.getElementById('bgChar').value.charAt(0)||' ';
+
+    var labelAlign=document.getElementById('labelAlign').value;
+    var labelWidth=parseIntSafe(document.getElementById('labelWidth').value,1);
+    if(labelWidth<0) labelWidth=0;
+
+    var sep=document.getElementById('sep').value;
+    var showValues = true;
+    var normalize=document.getElementById('normalize').checked;
+
+    var lines=dataEl.value.split(/\r?\n/);
+    var items=[],maxVal=0,i;
+
+    for(i=0;i<lines.length;i++){
+        var line=trimStr(lines[i]);
+        if(!line) continue;
+        var p=line.split(';');
+        var label=trimStr(p[0]);
+        var v=parseFloat(trimStr(p[1]||'0'));
+        if(isNaN(v)) v=0;
+        if(v>maxVal) maxVal=v;
+        items.push({label:label,value:v});
+    }
+
+    if(!items.length){ outEl.value=''; return; }
+    if(!normalize && maxVal===0) maxVal=1;
+
+    var out=[],width,labelText,bar;
+
+    for(i=0;i<items.length;i++){
+        var it=items[i];
+        var v=it.value;
+
+        if(normalize){
+            width=maxVal>0?Math.round((v/maxVal)*maxWidth):0;
+        } else {
+            width=Math.round(v);
+            if(width>maxWidth) width=maxWidth;
+        }
+        if(width<0) width=0;
+
+        labelText=it.label;
+        if(labelWidth>0){
+            if(labelText.length>labelWidth)
+                labelText=labelText.substring(0,labelWidth);
+            if(labelAlign==='right')
+                labelText=repeatChar(' ',labelWidth-labelText.length)+labelText;
+            else
+                labelText=labelText+repeatChar(' ',labelWidth-labelText.length);
+        }
+
+        bar=repeatChar(barChar,width)+repeatChar(bgChar,maxWidth-width);
+
+        var lineOut=(labelWidth>0?labelText+sep:'')+bar+(showValues?' '+v:'');
+        out.push(lineOut);
+    }
+
+    outEl.value=out.join('\n');
+}
+
+function init(){
+    updateChart();
+}
+
+function importFromOutput() {
+    var outText = document.getElementById('output').value;
+    var sep = document.getElementById('sep').value;
+    var lines = outText.split(/\r?\n/);
+    var dataLines = [];
+    var i;
+
+    for (i = 0; i < lines.length; i++) {
+        var line = trimStr(lines[i]);
+        if (!line) continue;
+
+        var label = "";
+        var value = "0";
+
+        // --- Trouver le label propre ---
+        var idx = sep ? line.indexOf(sep) : -1;
+        if (idx >= 0) {
+            // On prend AVANT le séparateur
+            label = trimStr(line.substring(0, idx));
+        } else {
+            // fallback : avant les barres
+            var guess = line.split(/[#\-\+\=\*]/)[0];
+            label = trimStr(guess);
+        }
+
+        // --- Nettoyage supplémentaire : retirer un éventuel ":" final ---
+        // Exemple : "A :" → "A"
+        if (label.charAt(label.length - 1) === ':' ||
+            label.charAt(label.length - 1) === '|' ) {
+            label = trimStr(label.substring(0, label.length - 1));
+        }
+
+        // --- Trouver la valeur à la fin ---
+        var j = line.length - 1;
+
+        while (j >= 0 && line.charAt(j) === ' ') j--;
+
+        var end = j + 1;
+
+        while (j >= 0) {
+            var c = line.charAt(j);
+            if ((c >= '0' && c <= '9') || c === '.' || c === '-') {
+                j--;
+            } else break;
+        }
+
+        var start = j + 1;
+        var valStr = trimStr(line.substring(start, end));
+        if (valStr !== "") value = valStr;
+
+        dataLines.push(label + ";" + value);
+    }
+
+    document.getElementById('data').value = dataLines.join("\n");
+    updateChart();
+}
+
+if(window.attachEvent) window.attachEvent('onload',init);
+else if(window.addEventListener) window.addEventListener('load',init,false);
+else window.onload=init;
+
+function setupDropAndImport(textareaId, buttonId, fileInputId) {
+
+    var area = document.getElementById(textareaId);
+    var btn  = document.getElementById(buttonId);
+    var file = document.getElementById(fileInputId);
+
+    // --- Drag & Drop ---
+    area.addEventListener("dragover", function(e) {
+        if (e.dataTransfer.types &&
+            (e.dataTransfer.types.indexOf("Files") !== -1 ||
+             e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+
+            e.preventDefault(); // autorise le drop fichier
+        }
+    });
+
+    area.addEventListener("drop", function(e) {
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            e.preventDefault();
+
+            var f = e.dataTransfer.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(ev) {
+                area.value = ev.target.result;
+            };
+
+            reader.readAsText(f);
+            return;
+        }
+        // Sinon → laisser le navigateur coller du texte
+    });
+
+    // --- Bouton Importer ---
+    btn.onclick = function () {
+        file.click();
+    };
+
+    // --- Input fichier ---
+    file.addEventListener("change", function () {
+        var f = this.files[0];
+        if (!f) return;
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            area.value = e.target.result;
+        };
+        reader.readAsText(f);
+    });
+}
+
+setupDropAndImport("data", "importFileBtndata", "fileInputdata");
+setupDropAndImport("output", "importFileBtnoutput", "fileInputoutput");
+
+/* ============================
+   Mise à jour au blur
+============================ */
+function setupBlurUpdate(id) {
+    var el = document.getElementById(id);
+
+    if (el.addEventListener) {
+        el.addEventListener('blur', updateChart, false);
+        el.addEventListener('change', updateChart, false); // utile pour checkbox/select
+    } else if (el.attachEvent) {
+        el.attachEvent('onblur', updateChart);
+        el.attachEvent('onchange', updateChart);
+    }
+}
+
+// Champs texte
+setupBlurUpdate('maxWidth');
+setupBlurUpdate('barChar');
+setupBlurUpdate('bgChar');
+setupBlurUpdate('labelWidth');
+setupBlurUpdate('sep');
+
+// Select
+setupBlurUpdate('labelAlign');
+
+// Checkbox
+setupBlurUpdate('normalize');
+
+// Et bien sûr, le textarea data
+setupBlurUpdate('data');
+
+/* ============================
+   Bouton copier
+============================ */
+function copyFrom(id, btn) {
+    var code = document.getElementById(id);
+
+    var temp = document.createElement("textarea");
+    temp.value = code.value;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try { document.execCommand("copy"); } catch (err) {}
+
+    document.body.removeChild(temp);
+    btn.focus();
+}
+
+document.getElementById('copydata').onclick = function(e) {
+    copyFrom('data', e.target);
+};
+
+document.getElementById('copyoutput').onclick = function(e) {
+    copyFrom('output', e.target);
+};
+</script>
+</body>
+</html>
