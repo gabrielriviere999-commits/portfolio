@@ -33,13 +33,18 @@ p { margin-bottom:10px; line-height:0; }
 }
 
 /* Chaque bloc a sa propre police */
-#preview1 { font-family: Arial, sans-serif; }
-#preview2 { font-family: "Courier New", monospace; }
-#preview3 { font-family: "Times New Roman", serif; }
-#preview4 { font-family: Verdana, sans-serif; }
-#preview5 { font-family: Arial, Verdana, sans-serif; }
-#preview6 { font-family: "Comic Sans MS", cursive; }
-#preview7 { font-family: "Lucida Console", monospace; }
+#preview1 { font-family: Courier New; }
+#preview2 { font-family: Lucida Console; }
+#preview3 { font-family: Consolas; }
+#preview4 { font-family: monospace; }
+#preview5 { font-family: Arial; }
+#preview6 { font-family: Verdana; }
+#preview7 { font-family: Times New Roman; }
+#preview8 { font-family: Georgia; }
+#preview9 { font-family: sans-serif; }
+#preview10 { font-family: Comic Sans MS; }
+#preview11 { font-family: Impact; }
+#preview12 { font-family: Trebuchet MS; }
 </style>
 </head>
 <body>
@@ -52,20 +57,31 @@ p { margin-bottom:10px; line-height:0; }
 
 <h3>Affichage des polices</h3>
 
-<p>Arial, sans-serif</p>
+<p>Courier New</p>
 <div id="preview1" class="preview"></div>
-<p>"Courier New", monospace</p>
+<p>Lucida Console</p>
 <div id="preview2" class="preview"></div>
-<p>"Times New Roman", serif</p>
+<p>Consolas</p>
 <div id="preview3" class="preview"></div>
-<p>Verdana, sans-serif</p>
+<p>monospace</p>
 <div id="preview4" class="preview"></div>
-<p>Arial, Verdana, sans-serif</p>
+<p>Arial</p>
 <div id="preview5" class="preview"></div>
-<p>"Comic Sans MS", cursive</p>
+<p>Verdana</p>
 <div id="preview6" class="preview"></div>
-<p>"Lucida Console", monospace</p>
+<p>Times New Roman</p>
 <div id="preview7" class="preview"></div>
+<p>Georgia</p>
+<div id="preview8" class="preview"></div>
+<p>sans-serif</p>
+<div id="preview9" class="preview"></div>
+<p>Comic Sans MS</p>
+<div id="preview10" class="preview"></div>
+<p>Impact</p>
+<div id="preview11" class="preview"></div>
+<p>Trebuchet MS</p>
+<div id="preview12" class="preview"></div>
+
 <script>
 function updateText() {
     var txt = document.getElementById("inputZone").value;
@@ -77,6 +93,11 @@ function updateText() {
     document.getElementById("preview5").innerHTML = txt;
     document.getElementById("preview6").innerHTML = txt;
     document.getElementById("preview7").innerHTML = txt;
+    document.getElementById("preview8").innerHTML = txt;
+    document.getElementById("preview9").innerHTML = txt;
+    document.getElementById("preview10").innerHTML = txt;
+    document.getElementById("preview11").innerHTML = txt;
+    document.getElementById("preview12").innerHTML = txt;
 }
 </script>
 
