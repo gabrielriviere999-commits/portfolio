@@ -24,6 +24,13 @@ input, textarea {
   border:2px solid;
   border-color:#808080 #ffffff #ffffff #808080;
 }
+fieldset { border: 2px groove #fff; }
+hr {
+  border: 0;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #fff;
+  margin: 8px 0;
+}
 label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-align:middle; }
 </style>
 </head>
@@ -34,6 +41,8 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 <br>
+<fieldset>
+<legend>Options</legend>
 <label><input type="checkbox" id="chk_min">minuscule</label>
 <label><input type="checkbox" id="chk_maj">MAJUSCULE</label>
 <label><input type="checkbox" id="chk_inv">iNVERSER CASSE</label>
@@ -45,6 +54,7 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <br>
 <button onclick="toutDecocher()" style="background-color:#ff4444;">Tout décocher</button>
 <br>
+<hr>
 <label>Ajouter en début de ligne :</label>
 <input id="addPrefix" type="text" placeholder="ex:    ou >> ou - ">
 <br>
@@ -56,10 +66,11 @@ label { display:inline-block; white-space:nowrap; margin-right:10px; vertical-al
 <br>
 <label>Supprimer en fin de ligne :</label>
 <input id="removeSuffix" type="text" placeholder="ex: ; ou , ou // fin">
+<hr>
 <div id="repl_container"></div>
 <button onclick="ajouterRemplacement()" style="background-color:#dddddd;">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
-<br><br>
+</fieldset>
 <button onclick="appliquerTransformations()" style="background-color:#ff8800;">Appliquer</button>
 <button onclick="copier()" style="background-color:#4caf50;">Copier</button>
 <button onclick="effacerTout()" style="background-color:#ff4444;">Effacer tout</button>
