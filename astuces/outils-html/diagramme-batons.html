@@ -79,12 +79,6 @@ D;10</textarea><br>
   <label>Caractère de fond :
     <input type="text" id="bgChar" value=" " size="2" maxlength="1">
   </label>
-  <label>Alignement des libellés :
-    <select id="labelAlign">
-      <option value="left">Gauche</option>
-      <option value="right">Droite</option>
-    </select>
-  </label>
   <label>Séparateur libellé / barre :
     <input type="text" id="sep" value=" | " size="6">
   </label>
@@ -117,8 +111,6 @@ function updateChart(){
 
     var barChar=document.getElementById('barChar').value.charAt(0)||'#';
     var bgChar=document.getElementById('bgChar').value.charAt(0)||' ';
-
-    var labelAlign=document.getElementById('labelAlign').value;
 
     var sep=document.getElementById('sep').value;
     var showValues = true;
@@ -164,12 +156,7 @@ function updateChart(){
         if(width<0) width=0;
 
         labelText=it.label;
-        if(labelWidth>0){
-            if(labelAlign==='right')
-                labelText=repeatChar(' ',labelWidth-labelText.length)+labelText;
-            else
-                labelText=labelText+repeatChar(' ',labelWidth-labelText.length);
-        }
+        labelText = labelText + repeatChar(' ', labelWidth - labelText.length);
 
         bar=repeatChar(barChar,width)+repeatChar(bgChar,maxWidth-width);
 
@@ -319,9 +306,6 @@ setupBlurUpdate('maxWidth');
 setupBlurUpdate('barChar');
 setupBlurUpdate('bgChar');
 setupBlurUpdate('sep');
-
-// Select
-setupBlurUpdate('labelAlign');
 
 // Checkbox
 setupBlurUpdate('normalize');
