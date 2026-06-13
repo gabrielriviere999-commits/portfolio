@@ -74,13 +74,13 @@ D;10</textarea><br>
     <input type="text" id="maxWidth" value="25" size="4">
   </label>
   <label>Caractère de remplissage :
-    <input type="text" id="barChar" value="#" size="2" maxlength="1">
+    <input type="text" id="barChar" value="." size="2" maxlength="1">
   </label>
   <label>Caractère de fond :
     <input type="text" id="bgChar" value=" " size="2" maxlength="1">
   </label>
   <label>Séparateur libellé / barre :
-    <input type="text" id="sep" value=" | " size="6">
+    <input type="text" id="sep" value=" " size="6">
   </label>
   <label><input type="checkbox" id="normalize" checked="checked"> Normaliser</label>
   </fieldset>
@@ -109,7 +109,7 @@ function updateChart(){
     var maxWidth=parseIntSafe(document.getElementById('maxWidth').value,25);
     if(maxWidth<1) maxWidth=1;
 
-    var barChar=document.getElementById('barChar').value.charAt(0)||'#';
+    var barChar=document.getElementById('barChar').value.charAt(0)||'.';
     var bgChar=document.getElementById('bgChar').value.charAt(0)||' ';
 
     var sep=document.getElementById('sep').value;
