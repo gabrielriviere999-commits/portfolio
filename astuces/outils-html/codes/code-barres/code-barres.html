@@ -105,13 +105,11 @@ input[type="file"] {
   color: black;
   text-decoration: none;
 }
-
 .win98-btn:hover,
 button:hover,
 input[type="file"]:hover {
   background: #e0e0e0;
 }
-
 .win98-btn:active,
 button:active,
 input[type="file"]:active {
@@ -306,9 +304,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
     reader.readAsText(file);
 });
 
-/* ============================
-   RÉFÉRENCES DE BASE
-============================ */
+/* --- RÉFÉRENCES DE BASE --- */
 var text = document.getElementById("text");
 var barcode = document.getElementById("barcode");
 var btnGen = document.getElementById("btn-generate");
@@ -316,9 +312,7 @@ var btnGen = document.getElementById("btn-generate");
 var barcodeColorInput = document.getElementById("barcodeColor");
 var bgColorInput = document.getElementById("bgColor");
 
-/* ============================
-   COLOR PICKERS INIT
-============================ */
+/* --- COLOR PICKERS INIT --- */
 initColorPicker("barcodeHex", "barcodePreview", function (hex) {
   barcodeColorInput.value = hex;
   generateBarcode();
@@ -329,9 +323,7 @@ initColorPicker("bgHex", "bgPreview", function (hex) {
   generateBarcode();
 });
 
-/* ============================
-   COLOR PICKER
-============================ */
+/* --- COLOR PICKER --- */
 function cssNameToHex(name) {
   var ctx = document.createElement("canvas").getContext("2d");
   ctx.fillStyle = "#000000";
@@ -388,19 +380,17 @@ function initColorPicker(hexInputId, previewId, callback) {
   applyColor(input.value, false);
 }
 
-/* ============================
-   SLIDER OPACITÉ FOND
-============================ */
+/* --- SLIDER OPACITÉ FOND --- */
 var bgSlider = document.getElementById("bgOpacity");
 var bgPercent = document.getElementById("bgOpacityPercent");
 
-/* Slider → met juste à jour le pourcentage */
+// Slider → met juste à jour le pourcentage
 bgSlider.oninput = function () {
   var v = parseFloat(bgSlider.value);
   bgPercent.value = Math.round(v * 100);
 };
 
-/* Quand on lâche le slider → générer */
+// Quand on lâche le slider → générer
 bgSlider.onmouseup = function () {
   generateBarcode();
 };
@@ -408,7 +398,7 @@ bgSlider.ontouchend = function () {
   generateBarcode();
 };
 
-/* Pourcentage → met juste à jour le slider */
+// Pourcentage → met juste à jour le slider
 bgPercent.onchange = function () {
   var p = parseInt(bgPercent.value, 10);
   if (isNaN(p)) p = 0;
@@ -417,7 +407,7 @@ bgPercent.onchange = function () {
   bgSlider.value = p / 100;
 };
 
-/* Quand on valide le pourcentage → générer */
+// Quand on valide le pourcentage → générer
 bgPercent.onchange = function () {
   var p = parseInt(bgPercent.value, 10);
   if (isNaN(p)) p = 0;
@@ -428,9 +418,7 @@ bgPercent.onchange = function () {
   generateBarcode();
 };
 
-/* ============================
-   HELPERS CHECKSUM
-============================ */
+/* --- HELPERS CHECKSUM --- */
 // Calcule la clé mod10 type EAN/UPC/ITF à partir de n-1 chiffres
 function computeMod10Check(digits) {
   var len = digits.length;
@@ -485,9 +473,7 @@ function isValidITF14(value) {
   return computeMod10Check(body) === check;
 }
 
-/* ============================
-   GÉNÉRATION CODE-BARRES (SVG)
-============================ */
+/* --- GÉNÉRATION CODE-BARRES (SVG) --- */
 function hexToRgba(hex, alpha) {
   hex = hex.replace("#", "");
   if (hex.length === 3) {
@@ -613,9 +599,7 @@ function generateBarcode() {
 
 btnGen.onclick = generateBarcode;
 
-/* ============================
-   EXPORT PNG / JPG / SVG
-============================ */
+/* --- EXPORT PNG / JPG / SVG --- */
 function download(filename, dataUrl) {
   var a = document.createElement("a");
   a.href = dataUrl;
@@ -658,9 +642,7 @@ document.getElementById("export-svg").onclick = function () {
   URL.revokeObjectURL(url);
 };
 
-/* ============================
-   DÉCODAGE FICHIER (Code-barres)
-============================ */
+/* --- DÉCODAGE FICHIER (Code-barres) --- */
 var fileInput  = document.getElementById("file-input");
 var canvasFile = document.getElementById("canvas-file");
 var ctxFile    = canvasFile.getContext("2d");
@@ -899,9 +881,7 @@ document.getElementById("copyBar").onclick = function (e) {
   copyTextFrom("barResult", e.target);
 };
 
-/* ============================
-   COPIER
-============================ */
+/* --- COPIER --- */
 document.getElementById("copy-btn").onclick = function () {
   var btn = event.target;
   var text = decodeFile.innerText;
