@@ -18,10 +18,19 @@ p { margin-top:10px; line-height:0; }
   border-color: #ffffff #808080 #808080 #ffffff;
   padding: 10px;
   display: block;
+  max-width: 100%;
+  overflow: hidden;
 }
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+@media (min-width: 0px) {
+  .container { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 1100px) {
+  .container { grid-template-columns: 1fr 1fr; }
 }
 
 #inputZone {
