@@ -77,6 +77,13 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
 <br>
 <button onclick="effacerRemplacements()" style="background-color:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
+<hr>
+<button type="button" onclick="exportOptions()">Exporter</button>
+<button type="button" onclick="showImportBox()">Importer options</button>
+<div id="importBox" style="display:none; margin-top:10px;">
+  <textarea id="importText" rows="8" cols="40"></textarea><br>
+  <button type="button" onclick="applyImport()">Valider l'import</button>
+</div>
 </fieldset>
 </div>
 
@@ -551,6 +558,119 @@ window.onload = function() {
   chargerReplacements();
   document.getElementById("repl_ignore_case").onchange = saveReplacements;
 };
+
+// Exporter options
+function exportOptions() {
+
+    var data = {
+        checks: {
+            min: document.getElementById("chk_min").checked,
+            maj: document.getElementById("chk_maj").checked,
+            inv: document.getElementById("chk_inv").checked,
+            acc: document.getElementById("chk_acc").checked,
+            spc: document.getElementById("chk_spc").checked,
+            quo: document.getElementById("chk_quo").checked,
+            squo: document.getElementById("chk_squo").checked
+        },
+
+        prefixSuffix: {
+            addPrefix: document.getElementById("addPrefix").value,
+            addSuffix: document.getElementById("addSuffix").value,
+            removePrefix: document.getElementById("removePrefix").value,
+            removeSuffix: document.getElementById("removeSuffix").value
+        },
+
+        replacements: getReplacements(),
+
+        ignoreCase: document.getElementById("repl_ignore_case").checked
+    };
+
+    var json = JSON.stringify(data, null, 2);
+
+    var temp = document.createElement("textarea");
+    temp.value = json;
+    temp.style.position = "fixed";
+    temp.style.left = "-1000px";
+    document.body.appendChild(temp);
+    temp.select();
+    try { document.execCommand("copy"); } catch(e) {}
+    document.body.removeChild(temp);
+
+    alert("Options copiées dans le presse‑papiers.");
+}
+
+function getReplacements() {
+    var cont = document.getElementById("repl_container");
+    var list = [];
+    var divs = cont.getElementsByTagName("div");
+
+    for (var i = 0; i < divs.length; i++) {
+        var inputs = divs[i].getElementsByTagName("input");
+        if (inputs.length === 2) {
+            list.push({
+                from: inputs[0].value,
+                to: inputs[1].value
+            });
+        }
+    }
+    return list;
+}
+
+function showImportBox() {
+    document.getElementById("importBox").style.display = "block";
+}
+
+function applyImport() {
+    var txt = document.getElementById("importText").value;
+    if (!txt) return;
+
+    try {
+        var data = JSON.parse(txt);
+
+        // Cases à cocher
+        var c = data.checks;
+        if (c) {
+            document.getElementById("chk_min").checked = c.min;
+            document.getElementById("chk_maj").checked = c.maj;
+            document.getElementById("chk_inv").checked = c.inv;
+            document.getElementById("chk_acc").checked = c.acc;
+            document.getElementById("chk_spc").checked = c.spc;
+            document.getElementById("chk_quo").checked = c.quo;
+            document.getElementById("chk_squo").checked = c.squo;
+        }
+
+        // Préfixes / suffixes
+        var p = data.prefixSuffix;
+        if (p) {
+            document.getElementById("addPrefix").value = p.addPrefix;
+            document.getElementById("addSuffix").value = p.addSuffix;
+            document.getElementById("removePrefix").value = p.removePrefix;
+            document.getElementById("removeSuffix").value = p.removeSuffix;
+        }
+
+        // Remplacements
+        if (data.replacements) {
+            var cont = document.getElementById("repl_container");
+            cont.innerHTML = ""; // évite la multiplication
+            for (var i = 0; i < data.replacements.length; i++) {
+                var r = data.replacements[i];
+                ajouterRemplacement(r.from, r.to);
+            }
+        }
+
+        // Ignorer casse
+        if (data.ignoreCase !== undefined) {
+            document.getElementById("repl_ignore_case").checked = data.ignoreCase;
+        }
+
+        saveReplacements();
+
+        document.getElementById("importBox").style.display = "none";
+
+    } catch(e) {
+        alert("JSON invalide.");
+    }
+}
 
 /* ============================================================
    Remplacements personnalisés avec déplacement ↑ ↓
