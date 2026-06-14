@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tester polices</title>
+<style>
+body {
+  font-family: sans-serif;
+  background: #c0c0c0;
+}
+
+h3 { margin-bottom: 0; }
+p { margin-top:10px; line-height:0; }
+.card {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  padding: 10px;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+}
+.container {
+  display: grid;
+}
+
+@media (min-width: 0px) {
+  .container { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 1100px) {
+  .container { grid-template-columns: 1fr 1fr; }
+}
+
+#inputZone {
+  width: 100%;
+  height: 200px;
+  border: 2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-sizing: border-box;
+  white-space: pre;
+  overflow: auto;
+}
+
+.preview {
+  background: white;
+  border:2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  padding: 2px;
+  margin-top: 10px;
+  min-height: 40px;
+  max-height: 200px;
+  white-space: pre;
+  overflow: auto;
+  font-size: 12px
+}
+
+/* Chaque bloc a sa propre police */
+#preview1, .p1 { font-family: Courier New; }
+#preview2, .p2 { font-family: Lucida Console; }
+#preview3, .p3 { font-family: Consolas; }
+#preview4, .p4 { font-family: monospace; }
+#preview5, .p5 { font-family: Arial; }
+#preview6, .p6 { font-family: Verdana; }
+#preview7, .p7 { font-family: Times New Roman; }
+#preview8, .p8 { font-family: Georgia; }
+#preview9, .p9 { font-family: sans-serif; }
+#preview10, .p10 { font-family: Comic Sans MS; }
+#preview11, .p11 { font-family: Impact; }
+#preview12, .p12 { font-family: Trebuchet MS; }
+</style>
+</head>
+<body>
+
+<h2>Tester polices</h2>
+
+<h3>Texte</h3>
+
+<textarea id="inputZone" onkeyup="updateText();"></textarea>
+
+<h3>Affichage des polices</h3>
+
+<div class="container">
+
+<div class="card">
+<p class="p1">Courier New</p>
+<div id="preview1" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p2">Lucida Console</p>
+<div id="preview2" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p3">Consolas</p>
+<div id="preview3" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p4">monospace</p>
+<div id="preview4" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p5">Arial</p>
+<div id="preview5" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p6">Verdana</p>
+<div id="preview6" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p7">Times New Roman</p>
+<div id="preview7" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p8">Georgia</p>
+<div id="preview8" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p9">sans-serif</p>
+<div id="preview9" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p10">Comic Sans MS</p>
+<div id="preview10" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p11">Impact</p>
+<div id="preview11" class="preview"></div>
+</div>
+
+<div class="card">
+<p class="p12">Trebuchet MS</p>
+<div id="preview12" class="preview"></div>
+</div>
+
+</div>
+
+<script>
+function updateText() {
+    var txt = document.getElementById("inputZone").value;
+
+    document.getElementById("preview1").innerHTML = txt;
+    document.getElementById("preview2").innerHTML = txt;
+    document.getElementById("preview3").innerHTML = txt;
+    document.getElementById("preview4").innerHTML = txt;
+    document.getElementById("preview5").innerHTML = txt;
+    document.getElementById("preview6").innerHTML = txt;
+    document.getElementById("preview7").innerHTML = txt;
+    document.getElementById("preview8").innerHTML = txt;
+    document.getElementById("preview9").innerHTML = txt;
+    document.getElementById("preview10").innerHTML = txt;
+    document.getElementById("preview11").innerHTML = txt;
+    document.getElementById("preview12").innerHTML = txt;
+}
+</script>
+
+</body>
+</html>
