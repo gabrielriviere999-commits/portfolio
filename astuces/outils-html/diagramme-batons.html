@@ -12,7 +12,7 @@ body {
 
 h2, h3 { margin-top: 0; }
 
-button {
+button, #optionsFile {
   background: #d4d0c8;
   color: black;
   border: 2px solid;
@@ -38,6 +38,12 @@ input, textarea {
 }
 
 fieldset { border: 2px groove #fff; }
+hr {
+  border: 0;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #fff;
+  margin: 8px 0;
+}
 label { display: block; margin: 2px 0; }
 
 .card {
@@ -83,7 +89,14 @@ D;10</textarea><br>
     <input type="text" id="sep" value=" " size="6">
   </label>
   <label><input type="checkbox" id="normalize" checked="checked"> Normaliser</label>
+  <hr>
   <button onclick="resetOptions()">Valeurs par défaut</button>
+  <button type="button" onclick="exportOptions()">Exporter</button>
+  <button type="button" onclick="showImportBox()">Importer options</button>
+  <div id="importBox" style="display:none; margin-top:10px;">
+    <textarea id="importText" rows="8" cols="40"></textarea><br>
+    <button type="button" onclick="applyImport()">Valider l'import</button>
+  </div>
   </fieldset>
 </div>
 
@@ -459,6 +472,60 @@ window.onload = function() {
 
   updateChart();
 };
+
+// Exporter options
+function exportOptions() {
+    var opts = {
+        maxWidth: document.getElementById("maxWidth").value,
+        barChar: document.getElementById("barChar").value,
+        bgChar: document.getElementById("bgChar").value,
+        sep: document.getElementById("sep").value,
+        normalize: document.getElementById("normalize").checked ? 1 : 0
+    };
+
+    var json = JSON.stringify(opts, null, 2);
+
+    // Copie dans le presse‑papier
+    var temp = document.createElement("textarea");
+    temp.value = json;
+    temp.style.position = "fixed";
+    temp.style.left = "-1000px";
+    document.body.appendChild(temp);
+    temp.select();
+
+    try { document.execCommand("copy"); } catch(e) {}
+
+    document.body.removeChild(temp);
+
+    alert("Options copiées dans le presse‑papiers.");
+}
+
+function showImportBox() {
+    document.getElementById("importBox").style.display = "block";
+}
+
+function applyImport() {
+    var txt = document.getElementById("importText").value;
+    if (!txt) return;
+
+    try {
+        var opts = JSON.parse(txt);
+
+        if (opts.maxWidth !== undefined) document.getElementById("maxWidth").value = opts.maxWidth;
+        if (opts.barChar !== undefined) document.getElementById("barChar").value = opts.barChar;
+        if (opts.bgChar !== undefined) document.getElementById("bgChar").value = opts.bgChar;
+        if (opts.sep !== undefined) document.getElementById("sep").value = opts.sep;
+        if (opts.normalize !== undefined) document.getElementById("normalize").checked = (opts.normalize == 1);
+
+        saveState();
+        updateChart();
+
+        document.getElementById("importBox").style.display = "none";
+
+    } catch(e) {
+        alert("JSON invalide.");
+    }
+}
 </script>
 </body>
 </html>
