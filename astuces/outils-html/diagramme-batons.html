@@ -486,16 +486,16 @@ function exportOptions() {
     var json = JSON.stringify(opts, null, 2);
 
     // Copie dans le presse‑papier
+    var btn = event.target;
     var temp = document.createElement("textarea");
     temp.value = json;
-    temp.style.position = "fixed";
-    temp.style.left = "-1000px";
     document.body.appendChild(temp);
     temp.select();
 
     try { document.execCommand("copy"); } catch(e) {}
 
     document.body.removeChild(temp);
+    btn.focus();
 
     alert("Options copiées dans le presse‑papiers.");
 }
