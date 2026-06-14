@@ -83,6 +83,7 @@ D;10</textarea><br>
     <input type="text" id="sep" value=" " size="6">
   </label>
   <label><input type="checkbox" id="normalize" checked="checked"> Normaliser</label>
+  <button onclick="resetOptions()">Valeurs par défaut</button>
   </fieldset>
 </div>
 
@@ -407,6 +408,56 @@ document.getElementById('copydata').onclick = function(e) {
 
 document.getElementById('copyoutput').onclick = function(e) {
     copyFrom('output', e.target);
+};
+
+// Bouton Valeurs par défaut
+function resetOptions() {
+  document.getElementById("maxWidth").value = "25";
+  localStorage.setItem("maxWidth", "25");
+
+  document.getElementById("barChar").value = ".";
+  localStorage.setItem("barChar", ".");
+
+  document.getElementById("bgChar").value = " ";
+  localStorage.setItem("bgChar", " ");
+
+  document.getElementById("sep").value = " ";
+  localStorage.setItem("sep", " ");
+
+  document.getElementById("normalize").checked = true;
+  localStorage.removeItem("normalize");
+  updateChart();
+}
+
+// Sauvegarde/Restauration
+function saveState() {
+  localStorage.setItem("maxWidth", document.getElementById("maxWidth").value);
+  localStorage.setItem("barChar", document.getElementById("barChar").value);
+  localStorage.setItem("bgChar", document.getElementById("bgChar").value);
+  localStorage.setItem("sep", document.getElementById("sep").value);
+  localStorage.setItem("normalize", document.getElementById("normalize").checked ? "1" : "0");
+}
+
+document.getElementById("maxWidth").oninput = saveState;
+document.getElementById("barChar").oninput = saveState;
+document.getElementById("bgChar").oninput = saveState;
+document.getElementById("sep").oninput = saveState;
+document.getElementById("normalize").onchange = saveState;
+
+window.onload = function() {
+  var savedmaxWidth = localStorage.getItem("maxWidth");
+  var savedbarChar = localStorage.getItem("barChar");
+  var savedbgChar = localStorage.getItem("bgChar");
+  var savedsep = localStorage.getItem("sep");
+  var savedNormalize = localStorage.getItem("normalize");
+
+  if (savedmaxWidth !== null) document.getElementById("maxWidth").value = savedmaxWidth;
+  if (savedbarChar !== null) document.getElementById("barChar").value = savedbarChar;
+  if (savedbgChar !== null) document.getElementById("bgChar").value = savedbgChar;
+  if (savedsep !== null) document.getElementById("sep").value = savedsep;
+  if (savedNormalize !== null) document.getElementById("normalize").checked = (savedNormalize === "1");
+
+  updateChart();
 };
 </script>
 </body>
