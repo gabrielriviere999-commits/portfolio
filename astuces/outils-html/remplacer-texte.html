@@ -57,7 +57,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <label><input type="checkbox" id="chk_quo">Guillemets → "</label>
 <label><input type="checkbox" id="chk_squo">Demi-guillemets → '</label>
 <br>
-<button onclick="toutDecocher()" style="background-color:#ff4444;">Tout décocher</button>
+<button onclick="decocherTout()" style="background-color:#ff4444;">Décocher tout</button>
 <br>
 <hr>
 <label>Ajouter en début de ligne :</label>
@@ -267,7 +267,7 @@ function exclusiviteCasse(chk) {
   saveChecks();
 }
 
-function toutDecocher() {
+function decocherTout() {
   document.getElementById("chk_min").checked = false;
   document.getElementById("chk_maj").checked = false;
   document.getElementById("chk_inv").checked = false;
