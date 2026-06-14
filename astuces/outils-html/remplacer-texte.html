@@ -73,13 +73,13 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <input id="removeSuffix" type="text" placeholder="ex: ; ou , ou // fin">
 <p></p>
 <div id="repl_container"></div>
-<button onclick="ajouterRemplacement()" style="background-color:#dddddd;">Ajouter un remplacement</button>
+<button onclick="ajouterRemplacement()" style="background-color:#d4d0c8;">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
 <br>
 <button onclick="effacerRemplacements()" style="background-color:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
 <hr>
-<button type="button" onclick="exportOptions()">Exporter</button>
-<button type="button" onclick="showImportBox()">Importer</button>
+<button type="button" onclick="exportOptions()" style="background-color:#d4d0c8;">Exporter</button>
+<button type="button" onclick="showImportBox()" style="background-color:#d4d0c8;">Importer</button>
 <div id="importBox" style="display:none; margin-top:10px;">
   <textarea id="importText" rows="8" cols="40"></textarea><br>
   <button type="button" onclick="applyImport()">Valider l'import</button>
