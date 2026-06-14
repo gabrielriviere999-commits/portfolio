@@ -11,7 +11,6 @@ body {
   padding-top: 250px;
 }
 
-/* Toolbar Win98 */
 .toolbar {
   display: block;
   background: #c0c0c0;
@@ -26,19 +25,16 @@ body {
   padding: 4px;
   z-index: 9999;
 }
-
 .toolbar.hidden {
   visibility: hidden;
   height: 0;
   padding: 0;
   overflow: hidden;
 }
-
 .toolbar button {
   margin: 2px;
 }
 
-/* Boutons Win98 */
 button {
   background: #d4d0c8;
   color: black;
@@ -48,18 +44,15 @@ button {
   font-size: 12px;
   cursor: pointer;
 }
-
 button:active,
 button.active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-
 button:hover { background:#e0e0e0; }
 
 label { display: inline-block; white-space: nowrap; margin-right: 10px; vertical-align: middle; }
 
-/* TABLEAU */
 table {
   background: #fff;
 }
@@ -80,7 +73,6 @@ td.selected {
 .palette {
   display: block;
 }
-
 .palette .color {
   display: inline-block;
   width: 22px;
@@ -103,7 +95,6 @@ input, textarea {
 }
 textarea { box-sizing: border-box; }
 
-/* CODE BOX */
 #codeBox {
   width: 100%;
   height: 200px;
@@ -194,10 +185,7 @@ textarea { box-sizing: border-box; }
 <p><a style="font-size:24px;" href="notices/notice-tableau-html.html">Notice</a></p>
 
 <script>
-/* ============================
-   POLYFILLS
-============================ */
-
+/* --- POLYFILLS --- */
 // matches()
 if (!Element.prototype.matches) {
   Element.prototype.matches =
@@ -237,10 +225,7 @@ function forEachNode(list, fn) {
   for (var i = 0; i < list.length; i++) fn(list[i], i);
 }
 
-/* ============================
-   VARIABLES
-============================ */
-
+/* --- VARIABLES --- */
 var table = document.getElementById('editorTable');
 var selectedCells = [];
 var colorMode = "text";
@@ -254,10 +239,7 @@ var globalStyles = {
   borderWidth: globalBorderWidth
 };
 
-/* ============================
-   SÉLECTION MULTIPLE
-============================ */
-
+/* --- SÉLECTION MULTIPLE --- */
 table.addEventListener('click', function(e) {
   var t = e.target;
   if (t && t.nodeName === 'TD') {
@@ -326,10 +308,7 @@ function getRealCell(el) {
   return (el && el.nodeName === 'TD') ? el : null;
 }
 
-/* =======================
-   MOTEUR MATRICIEL ACTIF
-========================== */
-
+/* --- MOTEUR MATRICIEL ACTIF --- */
 var MatrixEngine = (function () {
 
     function build(table) {
@@ -603,10 +582,7 @@ function unmergeSelectedCells() {
 document.getElementById("mergeCellsBtn").onclick = mergeSelectedCells;
 document.getElementById("unmergeCellsBtn").onclick = unmergeSelectedCells;
 
-/* ============================================================
-   SÉLECTION : SAUVEGARDE / RESTAURATION / NETTOYAGE
-============================================================ */
-
+/* --- SÉLECTION : SAUVEGARDE / RESTAURATION / NETTOYAGE --- */
 function getSelectedMatrixPositions(table, selectedCells) {
     var m = MatrixEngine.build(table).matrix;
     var positions = [];
@@ -643,10 +619,7 @@ function clearAllSelectedClasses(table) {
     }
 }
 
-/* ============================================================
-   AJUSTEMENT DES COORDONNÉES APRÈS INSERT / DELETE
-============================================================ */
-
+/* --- AJUSTEMENT DES COORDONNÉES APRÈS INSERT / DELETE --- */
 function adjustPositionsForRowInsert(positions, rowIndex) {
     for (var i = 0; i < positions.length; i++) {
         if (positions[i].r >= rowIndex) {
@@ -679,10 +652,7 @@ function adjustPositionsForColDelete(positions, colIndex) {
     }
 }
 
-/* ============================
-   LIGNES
-============================ */
-
+/* --- LIGNES --- */
 document.getElementById('addRowAbove').onclick = function () {
     if (!selectedCells.length) return;
 
@@ -740,10 +710,7 @@ document.getElementById('delRow').onclick = function () {
     restoreSelectionFromMatrixPositions(table, saved);
 };
 
-/* ============================
-   COLONNES
-============================ */
-
+/* --- COLONNES --- */
 document.getElementById('addColLeft').onclick = function () {
     if (!selectedCells.length) return;
 
@@ -801,10 +768,7 @@ document.getElementById('delCol').onclick = function () {
     restoreSelectionFromMatrixPositions(table, saved);
 };
 
-/* ============================
-   ALIGNEMENT
-============================ */
-
+/* --- ALIGNEMENT --- */
 var alignButtons = document.querySelectorAll('button[data-align]');
 forEachNode(alignButtons, function(btn) {
   btn.onclick = function() {
@@ -820,9 +784,7 @@ forEachNode(alignButtons, function(btn) {
   };
 });
 
-/* ============================
-   PALETTE + MODES
-============================ */
+/* --- PALETTE + MODES --- */
 
 var modeButtons = document.querySelectorAll('#colorModes button');
 forEachNode(modeButtons, function(btn) {
@@ -928,10 +890,7 @@ document.getElementById('clearTdStyle').onclick = function () {
   }
 };
 
-/* ============================
-   EPAISSEUR
-============================ */
-
+/* --- EPAISSEUR --- */
 document.getElementById('borderWidth').onchange = function() {
   globalBorderWidth = this.value;
   globalStyles.borderWidth = globalBorderWidth;
@@ -941,10 +900,7 @@ document.getElementById('borderWidth').onchange = function() {
   document.documentElement.style.setProperty("--table-border-width", globalBorderWidth);
 };
 
-/* ============================
-   EXPORT HTML
-============================ */
-
+/* --- EXPORT HTML --- */
 function updateCodeBox() {
   var clone = table.cloneNode(true);
   var newId = document.getElementById("importTableId").value || "tableau1";
@@ -1066,10 +1022,7 @@ function repeat(str, count) {
 
 document.getElementById('generateCode').onclick = updateCodeBox;
 
-/* ============================
-   IMPORT HTML
-============================ */
-
+/* --- IMPORT HTML --- */
 function cleanLibreOfficeHTML(html) {
 
   var container = document.createElement("div");
@@ -1318,10 +1271,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
     reader.readAsText(file);
 });
 
-/* ============================
-   COPIER
-============================ */
-
+/* --- COPIER --- */
 document.getElementById('copyCode').onclick = function(e) {
   var btn = event.target;
   var code = document.getElementById('codeBox');

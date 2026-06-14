@@ -357,9 +357,7 @@ document.getElementById("fileInputoutput").addEventListener("change", function (
     reader.readAsText(file);
 });
 
-/* ============================
-   Mise à jour au blur
-============================ */
+/* --- Mise à jour au blur --- */
 function setupBlurdata(id) {
     var el = document.getElementById(id);
 
@@ -397,9 +395,7 @@ setupBlurdata('normalize');
 setupBlurdata('data');
 setupBluroutput('output');
 
-/* ============================
-   Bouton copier
-============================ */
+/* --- Bouton copier --- */
 function copyFrom(id, btn) {
     var code = document.getElementById(id);
 

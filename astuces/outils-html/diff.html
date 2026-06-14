@@ -38,12 +38,10 @@ button {
   font-size: 12px;
   cursor: pointer;
 }
-
 button:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-
 button:hover {
   background: #e0e0e0;
 }
@@ -118,9 +116,7 @@ button:hover {
 </div>
 
 <script>
-/* ------------------------------
-   Import fichier (ES3)
---------------------------------*/
+/* --- Import fichier (ES3) --- */
 function importFile(textId, inputId) {
   var input = document.getElementById(inputId);
 
@@ -138,9 +134,7 @@ function importFile(textId, inputId) {
   input.click();
 }
 
-/* ------------------------------
-   Effacer
---------------------------------*/
+/* --- Effacer --- */
 function deleteA() {
   document.getElementById("textA").value = "";
 }
@@ -149,9 +143,7 @@ function deleteB() {
   document.getElementById("textB").value = "";
 }
 
-/* ------------------------------
-   Drag & Drop (ES3)
---------------------------------*/
+/* --- Drag & Drop (ES3) --- */
 function setupDrop(dropId, textId) {
   var dropzone = document.getElementById(dropId);
   var textarea = document.getElementById(textId);
@@ -201,9 +193,7 @@ function setupDrop(dropId, textId) {
 setupDrop("dropA", "textA");
 setupDrop("dropB", "textB");
 
-/* ------------------------------
-   Diff ES3 ligne par ligne
---------------------------------*/
+/* --- Diff ES3 ligne par ligne --- */
 function simpleLineDiff(aLines, bLines) {
   var result = [];
   var maxLen = Math.max(aLines.length, bLines.length);

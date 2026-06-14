@@ -104,10 +104,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 </div>
 
 <script>
-// ------------------------------
-// Compatibilité maximale (ES3)
-// ------------------------------
-
+/* --- Compatibilité maximale (ES3) --- */
 function setText(el, txt) {
     if (el.textContent !== undefined) el.textContent = txt;
     else el.innerText = txt; // IE6/IE7
@@ -468,10 +465,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
     reader.readAsText(file);
 });
 
-// ------------------------------
-// Sauvegarde / Restauration
-// ------------------------------
-
+/* --- Sauvegarde / Restauration --- */
 function saveChecks() {
   localStorage.setItem("chk_min", document.getElementById("chk_min").checked ? "1" : "0");
   localStorage.setItem("chk_maj", document.getElementById("chk_maj").checked ? "1" : "0");
@@ -672,10 +666,7 @@ function applyImport() {
     }
 }
 
-/* ============================================================
-   Remplacements personnalisés avec déplacement ↑ ↓
-   ============================================================ */
-
+/* --- Remplacements personnalisés avec déplacement ↑ ↓ --- */
 function ajouterRemplacement(from, to) {
   var cont = document.getElementById("repl_container");
 

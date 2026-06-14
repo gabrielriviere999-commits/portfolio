@@ -34,12 +34,10 @@ button {
   font-size: 12px;
   cursor: pointer;
 }
-
 button:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-
 button:hover { background:#e0e0e0; }
 
 textarea {
@@ -84,14 +82,10 @@ input, textarea {
 </div>
 
 <script>
-/* ============================
-   Données internes
-============================ */
+/* --- Données internes --- */
 var events = [];
 
-/* ============================
-   Ajouter un évènement
-============================ */
+/* --- Ajouter un évènement --- */
 function addEvent() {
   events.push({
     title: "Titre",
@@ -102,18 +96,14 @@ function addEvent() {
   exportAscii();
 }
 
-/* ============================
-   Supprimer un évènement
-============================ */
+/* --- Supprimer un évènement --- */
 function removeEvent(i) {
   events.splice(i, 1);
   refreshEditor();
   exportAscii();
 }
 
-/* ============================
-   Déplacer un évènement
-============================ */
+/* --- Déplacer un évènement --- */
 function moveEventUp(i) {
   if (i <= 0) return;
   var tmp = events[i - 1];
@@ -132,9 +122,7 @@ function moveEventDown(i) {
   exportAscii();
 }
 
-/* ============================
-   Rafraîchir l’éditeur
-============================ */
+/* --- Rafraîchir l’éditeur --- */
 function refreshEditor() {
   var html = "";
   for (var i = 0; i < events.length; i++) {
@@ -158,9 +146,7 @@ function refreshEditor() {
   document.getElementById("eventList").innerHTML = html;
 }
 
-/* ============================
-   EXPORT TEXTE
-============================ */
+/* --- EXPORT TEXTE --- */
 function exportAscii() {
   if (events.length === 0) {
     document.getElementById("io").value = "";
@@ -235,10 +221,7 @@ function repeat(s, n) {
   return r;
 }
 
-/* ============================
-   IMPORT TEXTE
-   Format : date | titre | desc
-============================ */
+/* --- IMPORT TEXTE Format : date | titre | desc --- */
 function importAscii() {
   var raw = document.getElementById("io").value;
   var lines = raw.split("\n");
@@ -313,9 +296,7 @@ function trim(s) {
   return s.replace(/^\s+/, "").replace(/\s+$/, "");
 }
 
-/* ============================
-   Bouton copier
-============================ */
+/* --- Bouton copier --- */
 document.getElementById('copyCode').onclick = function(e) {
   var btn = event.target;
   var code = document.getElementById('io');

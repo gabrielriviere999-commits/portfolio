@@ -44,10 +44,7 @@ Largeur max : <input id="maxwidth" value="120" size="4">
 <textarea id="output" wrap="off" readonly></textarea>
 
 <script>
-// ------------------------------
-// Compatibilité maximale (ES3)
-// ------------------------------
-
+/* --- Compatibilité maximale (ES3) --- */
 function setText(el, txt) {
     if (el.textContent !== undefined) el.textContent = txt;
     else el.innerText = txt; // IE6/IE7
@@ -249,9 +246,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
     reader.readAsText(file);
 });
 
-// ------------------------------
-// Conversion CSV → ASCII
-// ------------------------------
+/* --- Conversion CSV → ASCII --- */
 function convertir() {
   var texte = document.getElementById("input").value;
   var sep = document.getElementById("sep").value || ";";
@@ -303,10 +298,7 @@ function resetParams() {
   localStorage.setItem("maxwidth", "120");
 }
 
-// ------------------------------
-// Sauvegarde/Restauration
-// ------------------------------
-
+/* --- Sauvegarde/Restauration --- */
 function saveState() {
   localStorage.setItem("sep", document.getElementById("sep").value);
   localStorage.setItem("maxwidth", document.getElementById("maxwidth").value);

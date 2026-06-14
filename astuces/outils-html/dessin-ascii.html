@@ -79,9 +79,7 @@ background:#c0c0c0; border:1px solid #000; padding:10px; z-index:9999;opacity: 0
 <input type="file" id="fileInput" style="display:none;">
 
 <script>
-// =========================
-// CONFIG
-// =========================
+/* --- CONFIG --- */
 var grid = [];
 var tool = "edit";
 var isDown = false;
@@ -104,9 +102,7 @@ var copyMode = 0;
 var lastMoveX = 0;
 var lastMoveY = 0;
 
-// =========================
-// MESURE CARACTÈRE
-// =========================
+/* --- MESURE CARACTÈRE --- */
 function autoWidth() {
     var probe = document.createElement("span");
     probe.style.visibility = "hidden";
@@ -128,17 +124,13 @@ function autoWidth() {
     document.body.removeChild(probe);
 }
 
-// =========================
-// GRID DYNAMIQUE
-// =========================
+/* --- GRID DYNAMIQUE --- */
 function ensureCell(x, y) {
     while (grid.length <= y) grid.push([]);
     while (grid[y].length <= x) grid[y].push(" ");
 }
 
-// =========================
-// RENDER
-// =========================
+/* --- RENDER --- */
 function render() {
     var out = "";
     var y, x;
@@ -151,9 +143,7 @@ function render() {
     view.value = out;
 }
 
-// =========================
-// SETOOL
-// =========================
+/* --- SETOOL --- */
 function setTool(t) {
     tool = t;
 
@@ -194,9 +184,7 @@ function setTool(t) {
     }
 }
 
-// =========================
-// EXPORT / IMPORT
-// =========================
+/* --- EXPORT / IMPORT --- */
 function exportTextReturn() {
     return view.value;
 }
@@ -219,9 +207,7 @@ function syncFromTextarea() {
     importAscii(view.value);
 }
 
-// =========================
-// UNDO / REDO
-// =========================
+/* --- UNDO / REDO --- */
 function copyGrid(src) {
     var out = [];
     var y, x;
@@ -252,9 +238,7 @@ function redo() {
     render();
 }
 
-// =========================
-// POSITION
-// =========================
+/* --- POSITION --- */
 function getPos(e) {
     var rect = view.getBoundingClientRect();
 
@@ -267,18 +251,14 @@ function getPos(e) {
     return { x:x, y:y };
 }
 
-// =========================
-// DRAW FREE
-// =========================
+/* --- DRAW FREE --- */
 function drawFree(x, y) {
     ensureCell(x, y);
     grid[y][x] = "#";
     render();
 }
 
-// =========================
-// LINE
-// =========================
+/* --- LINE --- */
 function drawLine(x1, y1, x2, y2) {
     var dx = Math.abs(x2 - x1);
     var dy = Math.abs(y2 - y1);
@@ -299,9 +279,7 @@ function drawLine(x1, y1, x2, y2) {
     render();
 }
 
-// =========================
-// ARROW
-// =========================
+/* --- ARROW --- */
 function drawArrow(x1, y1, x2, y2) {
     // 1) Segment horizontal
     var midX = x2;
@@ -350,9 +328,7 @@ function drawArrow(x1, y1, x2, y2) {
     render();
 }
 
-// =========================
-// RECTANGLE
-// =========================
+/* --- RECTANGLE --- */
 function drawRectangle(x1, y1, x2, y2) {
     var xMin = Math.min(x1, x2);
     var xMax = Math.max(x1, x2);
@@ -384,9 +360,7 @@ function drawRectangle(x1, y1, x2, y2) {
     render();
 }
 
-// =========================
-// ELLIPSE
-// =========================
+/* --- ELLIPSE --- */
 function drawEllipse(x1, y1, x2, y2) {
     var cx = Math.floor((x1 + x2) / 2);
     var cy = Math.floor((y1 + y2) / 2);
@@ -408,9 +382,7 @@ function drawEllipse(x1, y1, x2, y2) {
     render();
 }
 
-// =========================
-// DEPLACEMENT
-// =========================
+/* --- DEPLACEMENT --- */
 function safeGet(x, y) {
     if (!grid[y]) return " ";
     if (grid[y][x] == null) return " ";
@@ -587,9 +559,7 @@ function previewMove(destX, destY) {
     grid = realGrid;
 }
 
-// =========================
-// TEXTE
-// =========================
+/* --- TEXTE --- */
 function placeTextMarker(x, y) {
     textMarkerX = x;
     textMarkerY = y;
@@ -652,18 +622,14 @@ view.addEventListener("input", function() {
     }, 300); // 300 ms après la dernière frappe
 });
 
-// =========================
-// GOMME
-// =========================
+/* --- GOMME --- */
 function eraseAt(x, y) {
     ensureCell(x, y);
     grid[y][x] = " ";
     render();
 }
 
-// =========================
-// MOUSE HANDLING
-// =========================
+/* --- MOUSE HANDLING --- */
 view.onmousedown = function(e) {
     if (tool === "edit") {
         // mode texte normal : on laisse le textarea gérer le curseur
@@ -862,9 +828,7 @@ view.addEventListener("touchend", function(e) {
     view.onmouseup({ clientX:t.clientX, clientY:t.clientY });
 }, { passive:false });
 
-// =========================
-// STARTUP
-// =========================
+/* --- STARTUP --- */
 window.onload = function() {
     setTool("edit");
     autoWidth();
@@ -872,9 +836,7 @@ window.onload = function() {
     render();
 };
 
-/* ============================
-   COPIER
-============================ */
+/* --- COPIER --- */
 document.getElementById('copyDraw').onclick = function(e) {
 	var btn = e.target;
     var txt = view.value;

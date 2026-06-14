@@ -21,12 +21,10 @@ button {
   font-size: 12px;
   cursor: pointer;
 }
-
 button:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-
 button:hover { background:#e0e0e0; }
 
 .card {
@@ -130,9 +128,7 @@ input, textarea {
 
 </div>
 <script>
-// ------------------------------
-// Données
-// ------------------------------
+/* --- Données --- */
 var slices = [
   { label: "A", value: 40, color: "#e74c3c" },
   { label: "B", value: 30, color: "#3498db" },
@@ -144,9 +140,7 @@ var preview = document.getElementById("preview");
 var codeArea = document.getElementById("code");
 var pieSize = 200;
 
-// ------------------------------
-// Construction du tableau
-// ------------------------------
+/* --- Construction du tableau --- */
 function normalizeColor(col) {
   // élément temporaire
   var tmp = document.createElement("div");
@@ -188,9 +182,7 @@ function rebuildTable() {
     var s = slices[i];
     var tr = document.createElement("tr");
 
-    // ------------------------------
     // LABEL
-    // ------------------------------
     var td1 = document.createElement("td");
     var inp1 = document.createElement("input");
     inp1.type = "text";
@@ -201,9 +193,7 @@ function rebuildTable() {
     td1.appendChild(inp1);
     tr.appendChild(td1);
 
-    // ------------------------------
     // POURCENTAGE
-    // ------------------------------
     var td2 = document.createElement("td");
     var inp2 = document.createElement("input");
     inp2.type = "text";
@@ -225,9 +215,7 @@ function rebuildTable() {
     td2.appendChild(inp2);
     tr.appendChild(td2);
 
-    // ------------------------------
     // COULEUR (HEX + noms CSS)
-    // ------------------------------
     var td3 = document.createElement("td");
     var inp3 = document.createElement("input");
     inp3.type = "text";
@@ -250,9 +238,7 @@ function rebuildTable() {
     td3.appendChild(inp3);
     tr.appendChild(td3);
 
-    // ------------------------------
     // BOUTONS ↑ ↓ x
-    // ------------------------------
     var td4 = document.createElement("td");
 
     // ↑
@@ -295,7 +281,6 @@ function rebuildTable() {
 
     tr.appendChild(td4);
 
-    // ------------------------------
     tblBody.appendChild(tr);
   }
 }
@@ -322,9 +307,7 @@ document.getElementById("pieSize").oninput = function() {
   pieSize = v;
 };
 
-// ------------------------------
-// Génération du SVG + LÉGENDE
-// ------------------------------
+/* --- Génération du SVG + LÉGENDE --- */
 function renderPie() {
   var total = 0;
   for (var i = 0; i < slices.length; i++) total += slices[i].value;
@@ -348,9 +331,7 @@ function renderPie() {
             'viewBox="0 0 '+size+' '+(size+ (slices.length*20)+20)+'" '+
             'xmlns="http://www.w3.org/2000/svg">';
 
-  // ------------------------------
   // PARTIES DU CAMEMBERT
-  // ------------------------------
   if (slices.length === 1) {
     // Cas spécial : cercle complet
     svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+slices[0].color+'">' +
@@ -384,9 +365,7 @@ function renderPie() {
     }
   }
 
-  // ------------------------------
   // LÉGENDE DANS LE SVG
-  // ------------------------------
   var legendY = size + 15;
 
   for (var i = 0; i < slices.length; i++) {
@@ -415,9 +394,7 @@ function escapeHtml(t) {
   return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
-// ------------------------------
-// Import depuis le SVG + légende
-// ------------------------------
+/* --- Import depuis le SVG + légende --- */
 document.getElementById("importBtn").onclick = function() {
   var txt = codeArea.value;
   if (!txt) return;
@@ -517,9 +494,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
     reader.readAsText(file);
 });
 
-// ------------------------------
-// Copier
-// ------------------------------
+/* --- Copier --- */
 document.getElementById("copyBtn").onclick = function(e) {
   var btn = event.target;
   var txt = codeArea.value;

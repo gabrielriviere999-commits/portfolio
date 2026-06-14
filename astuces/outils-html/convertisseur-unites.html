@@ -96,6 +96,14 @@ button {
   padding: 4px 10px;
   cursor: pointer;
 }
+button:hover {
+  background: #e0e0e0;
+}
+button:active {
+  border: 2px solid #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
 
 .block h2 {
   background: #000080;
@@ -104,16 +112,6 @@ button {
   margin: -10px -10px 10px -10px;
   font-size: 14px;
   font-weight: bold;
-}
-
-button:hover {
-  background: #e0e0e0;
-}
-
-button:active {
-  border: 2px solid #404040;
-  border-right-color: #ffffff;
-  border-bottom-color: #ffffff;
 }
 
 input, textarea {
@@ -195,14 +193,10 @@ input:hover, textarea:hover {
 </p>
 
 <script>
-// ===============================
-// 1. Catégories
-// ===============================
+/* --- 1. Catégories --- */
 var categories = {
 
-  // ============================
   // DISTANCE
-  // ============================
   distance:{
     base:"m",
     units:{
@@ -226,9 +220,7 @@ var categories = {
     }
   },
 
-  // ============================
   // ACCÉLÉRATION
-  // ============================
   accélération:{
     base:"m/s²",
     units:{
@@ -246,9 +238,7 @@ var categories = {
     }
   },
 
-  // ============================
   // MASSE
-  // ============================
   masse:{
     base:"kg",
     units:{
@@ -269,9 +259,7 @@ var categories = {
     }
   },
 
-  // ============================
   // VOLUME (liquide)
-  // ============================
   volume:{
     base:"L",
     units:{
@@ -295,9 +283,7 @@ var categories = {
     }
   },
 
-  // ============================
   // VOLUME (sec)
-  // ============================
   volume_sec:{
     base:"L_dry",
     units:{
@@ -313,9 +299,7 @@ var categories = {
     }
   },
 
-  // ============================
   // SURFACE
-  // ============================
   surface:{
     base:"m²",
     units:{
@@ -333,9 +317,7 @@ var categories = {
     }
   },
 
-  // ============================
   // VITESSE
-  // ============================
   vitesse:{
     base:"m/s",
     units:{
@@ -352,9 +334,7 @@ var categories = {
     }
   },
 
-  // ============================
   // TEMPS
-  // ============================
   temps:{
     base:"s",
     units:{
@@ -369,9 +349,7 @@ var categories = {
     }
   },
 
-  // ============================
   // ÉNERGIE
-  // ============================
   énergie:{
     base:"J",
     units:{
@@ -390,9 +368,7 @@ var categories = {
     }
   },
 
-  // ============================
   // PUISSANCE
-  // ============================
   puissance:{
     base:"W",
     units:{
@@ -407,9 +383,7 @@ var categories = {
     }
   },
 
-  // ============================
   // FORCE
-  // ============================
   force:{
     base:"N",
     units:{
@@ -428,9 +402,7 @@ var categories = {
     }
   },
 
-  // ============================
   // PRESSION
-  // ============================
   pression:{
     base:"Pa",
     units:{
@@ -451,9 +423,7 @@ var categories = {
     }
   },
 
-  // ============================
   // DENSITÉ
-  // ============================
   densité:{
     base:"kg/m³",
     units:{
@@ -469,9 +439,7 @@ var categories = {
     }
   },
 
-  // ============================
   // DÉBIT
-  // ============================
   débit:{
     base:"m³/s",
     units:{
@@ -487,9 +455,7 @@ var categories = {
     }
   },
 
-  // ============================
   // ANGLE
-  // ============================
   angle:{
     base:"rad",
     units:{
@@ -505,9 +471,7 @@ var categories = {
     }
   },
 
-  // ============================
   // LUMIÈRE
-  // ============================
   lumière:{
     base:"lx",
     units:{
@@ -516,17 +480,13 @@ var categories = {
     }
   },
 
-  // ============================
   // TEMPÉRATURE
-  // ============================
   température:{
     special:true,
     units:["C","F","K"]
   },
 
-  // ============================
   // DONNÉES (SI / IEC)
-  // ============================
   données:{
     units:{
       // --- SI (base 10) : bits ---
@@ -567,9 +527,7 @@ var categories = {
 
 };
 
-// ===============================
-// 2. Dictionnaire
-// ===============================
+/* --- 2. Dictionnaire --- */
 var unitNames = {
 
   // --- Distance ---
@@ -766,9 +724,7 @@ var unitNames = {
   "EiB":"exbioctet",
 };
 
-// ===============================
-// 3. Extraire les unités
-// ===============================
+/* --- 3. Extraire les unités --- */
 function getUnitList(cat) {
   if (!cat) return [];
   if (cat.special === true) return cat.units;
@@ -778,9 +734,7 @@ function getUnitList(cat) {
   return arr;
 }
 
-// ===============================
-// 4. Liste globale des unités + map unité → catégorie
-// ===============================
+/* --- 4. Liste globale des unités + map unité → catégorie --- */
 
 var allUnits = [];
 var unitToCategory = {};
@@ -800,9 +754,7 @@ function buildGlobalUnitList() {
   }
 }
 
-// ===============================
-// 5. Dropdown
-// ===============================
+/* --- 5. Dropdown --- */
 function createDropdown(selectedId, listId, onSelect) {
   var selected = document.getElementById(selectedId);
   var list = document.getElementById(listId);
@@ -907,9 +859,7 @@ function highlight() {
   return fill;
 }
 
-// ===============================
-// 6. Variables global + création des 3 menus
-// ===============================
+/* --- 6. Variables global + création des 3 menus --- */
 var selectedCategory = null;
 var selectedFrom = null;
 var selectedTo = null;
@@ -959,9 +909,7 @@ var fillTo = createDropdown("toSelected", "toList", function(opt){
   convert();
 });
 
-// ===============================
-// 7. Mise à jour des unités
-// ===============================
+/* --- 7. Mise à jour des unités --- */
 function updateUnits() {
   var cat = categories[selectedCategory];
   var units = getUnitList(cat);
@@ -977,10 +925,8 @@ function updateUnits() {
   document.getElementById("result").innerHTML = "—";
 }
 
-// ===============================
-// 8. Recherche globale (De + Vers)
-// ===============================
-// --- Recherche "De" avec noms + clavier + scroll ---
+/* --- 8. Recherche globale (De + Vers) --- */
+// Recherche "De" avec noms + clavier + scroll
 document.getElementById("searchFrom").oninput = function () {
   var q = this.value.toLowerCase();
   var list = document.getElementById("fromSearchList");
@@ -1038,7 +984,7 @@ document.getElementById("searchFrom").oninput = function () {
 };
 
 
-// --- Navigation clavier pour la recherche "De" ---
+// Navigation clavier pour la recherche "De"
 (function(){
   var input = document.getElementById("searchFrom");
   var list  = document.getElementById("fromSearchList");
@@ -1103,7 +1049,7 @@ function highlight() {
   };
 })();
 
-// --- Recherche "Vers" avec noms + clavier + scroll ---
+// Recherche "Vers" avec noms + clavier + scroll
 document.getElementById("searchTo").oninput = function () {
   var q = this.value.toLowerCase();
   var list = document.getElementById("toSearchList");
@@ -1160,7 +1106,7 @@ document.getElementById("searchTo").oninput = function () {
   list.style.display = filtered.length ? "block" : "none";
 };
 
-// --- Navigation clavier pour la recherche "Vers" ---
+// Navigation clavier pour la recherche "Vers"
 (function(){
   var input = document.getElementById("searchTo");
   var list  = document.getElementById("toSearchList");
@@ -1225,9 +1171,7 @@ function highlight() {
   };
 })();
 
-// ===============================
-// 9. Conversion
-// ===============================
+/* --- 9. Conversion --- */
 function cleanNumber(n) {
   return Number(n.toFixed(12));
 }
@@ -1250,9 +1194,7 @@ function convert() {
     return;
   }
 
-  // ============================
   // CAS SPÉCIAL : TEMPÉRATURE
-  // ============================
   if (cat.special === true) {
     var res;
 
@@ -1271,9 +1213,7 @@ function convert() {
     return;
   }
 
-  // ============================
   // CAS NORMAL : BASE MULTIPLICATIVE
-  // ============================
   var units = cat.units;
   var baseFrom = units[selectedFrom];
   var baseTo = units[selectedTo];
@@ -1289,9 +1229,7 @@ function convert() {
 
 document.getElementById("inputValue").oninput = convert;
 
-// ===============================
-// 10. Initialisation
-// ===============================
+/* --- 10. Initialisation --- */
 (function init() {
   buildGlobalUnitList();
 
@@ -1301,9 +1239,7 @@ document.getElementById("inputValue").oninput = convert;
   fillCategory(catNames);
 })();
 
-// ===============================
-// 11. COPIER
-// ===============================
+/* --- 11. COPIER --- */
 document.getElementById("copyBtn").onclick = function () {
   var btn = event.target;
   var text = document.getElementById("result").innerHTML;
@@ -1327,9 +1263,7 @@ document.getElementById("copyBtn").onclick = function () {
 document.getElementById("inputValue").value = "1";
 convert();
 
-// ===============================
-// 12. bouton Inverser De ↔ Vers
-// ===============================
+/* --- 12. bouton Inverser De ↔ Vers --- */
 document.getElementById("swapBtn").onclick = function () {
 
   // On échange les unités sélectionnées

@@ -11,7 +11,6 @@ body {
   padding-top: 150px;
 }
 
-/* Toolbar */
 .toolbar {
   display: block;
   background: #c0c0c0;
@@ -34,7 +33,6 @@ body {
   overflow: hidden;
 }
 
-/* Boutons Win98 */
 button {
   background: #d4d0c8;
   color: black;
@@ -44,12 +42,10 @@ button {
   font-size: 12px;
   cursor: pointer;
 }
-
 button:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-
 button:hover { background:#e0e0e0; }
 
 textarea {
@@ -58,7 +54,6 @@ textarea {
   box-sizing: border-box;
 }
 
-/* ORGANIGRAMME */
 .org-root {
   display: inline-block;
   padding: 10px;
@@ -146,17 +141,13 @@ textarea {
 <input type="file" id="fileInput" style="display:none;">
 
 <script>
-// ===============================
-//  VARIABLES GLOBALES
-// ===============================
+/* --- VARIABLES GLOBALES --- */
 var globalBoxBg = "white";
 var selectedId = null;
 var clickOnToolbar = false;
 var nextId = 1;
 
-// ===============================
-//  DONNÉES
-// ===============================
+/* --- DONNÉES --- */
 var orgRoot = {
   label: "CEO",
   children: [
@@ -176,9 +167,7 @@ var orgRoot = {
   ]
 };
 
-// ===============================
-//  ASSIGNATION DES IDS
-// ===============================
+/* --- ASSIGNATION DES IDS --- */
 function assignIds(node) {
   node.id = nextId++;
   for (var i = 0; i < node.children.length; i++) {
@@ -187,9 +176,7 @@ function assignIds(node) {
 }
 assignIds(orgRoot);
 
-// ===============================
-//  RENDU HTML
-// ===============================
+/* --- RENDU HTML --- */
 function renderOrgTree(root) {
   var container = document.getElementById("org-container");
   var rootEl = document.querySelector(".org-root");
@@ -201,9 +188,7 @@ function renderOrgTree(root) {
     '</div>';
 }
 
-// ===============================
-//  TOOLBAR
-// ===============================
+/* --- TOOLBAR --- */
 var toolbar = document.getElementsByClassName('toolbar')[0];
 var toggleBtn = document.getElementById('toggleToolbarBtn');
 var editMode = document.getElementById("editMode");
@@ -226,9 +211,7 @@ toggleBtn.onclick = function(e) {
   toolbar.className = toolbarVisible ? 'toolbar' : 'toolbar hidden';
 };
 
-// ===============================
-//  SÉLECTION / ÉDITION
-// ===============================
+/* --- SÉLECTION / ÉDITION --- */
 document.addEventListener('click', function(e) {
   var node = findNodeElement(e.target);
   if (!node) return;
@@ -243,9 +226,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// ===============================
-//  ÉDITION INLINE
-// ===============================
+/* --- ÉDITION INLINE --- */
 function startInlineRename(id, nodeEl) {
   var node = findNodeById(orgRoot, id);
   var labelEl = nodeEl.getElementsByClassName("org-label")[0];
@@ -277,9 +258,7 @@ function startInlineRename(id, nodeEl) {
   });
 }
 
-// ===============================
-//  RENDU
-// ===============================
+/* --- RENDU --- */
 function renderOrgNode(node, globalText, indent) {
   var pad = "";
   for (var i = 0; i < indent; i++) pad += " ";
@@ -313,9 +292,7 @@ window.onload = function() {
   renderOrgTree(orgRoot);
 };
 
-// ===============================
-//  ÉDITION INLINE
-// ===============================
+/* --- ÉDITION INLINE --- */
 function startInlineRename(id, nodeEl) {
   var node = findNodeById(orgRoot, id);
   var labelEl = nodeEl.getElementsByClassName("org-label")[0];
@@ -352,9 +329,7 @@ function finishInlineRename(id, newText) {
   updateSelectionHighlight();
 }
 
-// ===============================
-//  ACTIONS - AJOUT / SUPPRESSION
-// ===============================
+/* --- ACTIONS - AJOUT / SUPPRESSION --- */
 function addChild() {
   if (!selectedId) return;
   var node = findNodeById(orgRoot, selectedId);
@@ -394,9 +369,7 @@ function deleteNode() {
   renderOrgTree(orgRoot);
 }
 
-// ===============================
-//  ACTIONS - IMAGES
-// ===============================
+/* --- ACTIONS - IMAGES --- */
 function addImageToNode() {
   if (!selectedId) return;
   document.getElementById("imgInput").click();
@@ -430,9 +403,7 @@ function removeImageFromNode() {
   updateSelectionHighlight();
 }
 
-// ===============================
-//  SÉLECTION
-// ===============================
+/* --- SÉLECTION --- */
 var selectedId = null;
 
 function findNodeElement(el) {
@@ -451,9 +422,7 @@ function updateSelectionHighlight() {
   }
 }
 
-// ===============================
-//  RECHERCHE
-// ===============================
+/* --- RECHERCHE --- */
 function findNodeById(node, id) {
   if (node.id === id) return node;
   for (var i = 0; i < node.children.length; i++) {
@@ -472,9 +441,7 @@ function findParent(node, id) {
   return null;
 }
 
-// ===============================
-//  UTILITAIRES
-// ===============================
+/* --- UTILITAIRES --- */
 function nl2br(str) {
   return str.replace(/\n/g, "<br>");
 }
@@ -505,9 +472,7 @@ function copyToClipboard(text) {
   btn.focus();
 }
 
-// ===============================
-//  Styles
-// ===============================
+/* --- Styles --- */
 function changeGlobalTextColor() {
   var col = prompt("Couleur globale du texte :");
   if (!col) return;
@@ -563,9 +528,7 @@ function clearSelectedStyle() {
   updateSelectionHighlight();
 }
 
-// ===============================
-//  Export HTML
-// ===============================
+/* --- Export HTML --- */
 function exportHtmlNode(node, indent) {
   var pad = "";
   for (var i = 0; i < indent; i++) pad += " ";
@@ -617,9 +580,7 @@ function exportFullHtml() {
   return css + html;
 }
 
-// ===============================
-//  IMPORT HTML
-// ===============================
+/* --- IMPORT HTML --- */
 function importHtml(html) {
   var container = document.createElement("div");
   container.innerHTML = html;
