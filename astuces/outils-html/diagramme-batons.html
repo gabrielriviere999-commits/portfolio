@@ -44,7 +44,7 @@ hr {
   border-bottom: 1px solid #fff;
   margin: 8px 0;
 }
-label { display: block; margin: 2px 0; }
+label { display: inline-block; margin: 2px 0; }
 
 .card {
   background: #c0c0c0;
@@ -78,16 +78,16 @@ D;10</textarea><br>
   <legend>Options</legend>
   <label>Largeur max des barres :
     <input type="text" id="maxWidth" value="25" size="4">
-  </label>
+  </label><br>
   <label>Caractère de remplissage :
     <input type="text" id="barChar" value="." size="2" maxlength="1">
-  </label>
+  </label><br>
   <label>Caractère de fond :
     <input type="text" id="bgChar" value=" " size="2" maxlength="1">
-  </label>
+  </label><br>
   <label>Séparateur libellé / barre :
     <input type="text" id="sep" value=" " size="6">
-  </label>
+  </label><br>
   <label><input type="checkbox" id="normalize" checked="checked">Normaliser</label>
   <hr>
   <button onclick="resetOptions()">Valeurs par défaut</button>
