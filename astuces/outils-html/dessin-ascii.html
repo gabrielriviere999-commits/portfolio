@@ -54,7 +54,9 @@ button:hover { background:#e0e0e0; }
   <button id="btnArrow" onclick="setTool('arrow')">Flèche</button>
   <button id="btnRect" onclick="setTool('rect')">Rectangle</button>
   <button id="btnEllipse" onclick="setTool('ellipse')">Ellipse</button>
+  |
   <button id="btnMove" onclick="setTool('move')">Déplacer</button>
+  <button id="btnCopy" onclick="setTool('copy')">Copier</button>
   |
   <button id="btnText" onclick="setTool('text')">Texte libre</button>
   <button id="btnEdit" onclick="setTool('edit')">Édition texte</button>
@@ -98,6 +100,7 @@ var tempGrid = null;
 var textEditTimer = null;
 var moveSelection = null;
 var moveMode = 0; // 0=sélection, 1=attente destination
+var copyMode = 0;
 var lastMoveX = 0;
 var lastMoveY = 0;
 
@@ -161,6 +164,7 @@ function setTool(t) {
     document.getElementById("btnRect").className = "";
     document.getElementById("btnEllipse").className = "";
     document.getElementById("btnMove").className = "";
+    document.getElementById("btnCopy").className = "";
     document.getElementById("btnText").className = "";
     document.getElementById("btnEdit").className = "";
     document.getElementById("btnErase").className = "";
@@ -171,9 +175,14 @@ function setTool(t) {
     if (t === "rect") btnRect.className = "active";
     if (t === "ellipse") btnEllipse.className = "active";
     if (t === "move") btnMove.className = "active";
+    if (t === "copy") btnCopy.className = "active";
     if (t === "move") {
         moveSelection = null;
         moveMode = 0;
+    }
+    if (t === "copy") {
+        moveSelection = null;
+       copyMode = 0;
     }
     if (t === "erase") btnErase.className = "active";
     if (t === "text") btnText.className = "active";
@@ -439,6 +448,40 @@ function captureSelection(x1,y1,x2,y2) {
     tempGrid = copyGrid(grid);
 }
 
+function captureSelectionCopy(x1, y1, x2, y2) {
+
+    var xMin = Math.min(x1, x2);
+    var xMax = Math.max(x1, x2);
+    var yMin = Math.min(y1, y2);
+    var yMax = Math.max(y1, y2);
+
+    moveSelection = {
+        x:xMin,
+        y:yMin,
+        w:xMax-xMin+1,
+        h:yMax-yMin+1,
+        data:[]
+    };
+
+    var x,y;
+
+    for(y=yMin;y<=yMax;y++) {
+
+        moveSelection.data.push([]);
+
+        for(x=xMin;x<=xMax;x++){
+
+            ensureCell(x,y);
+
+            // on copie mais on n'efface pas
+            moveSelection.data[y-yMin].push(grid[y][x]);
+        }
+    }
+
+    render();
+    tempGrid = copyGrid(grid);
+}
+
 function trimGrid() {
 
     var y, x;
@@ -495,6 +538,7 @@ function pasteSelection(destX,destY) {
 
     moveSelection = null;
     moveMode = 0;
+copyMode = 0;
     tempGrid = null;
 
     trimGrid();
@@ -627,6 +671,17 @@ view.onmousedown = function(e) {
 
         return;
     }
+    if(tool === "copy" && copyMode === 1) {
+
+        isDown = true;
+
+        lastMoveX = pos.x;
+        lastMoveY = pos.y;
+
+        previewMove(pos.x, pos.y);
+
+        return;
+    }
     isDown = true;
     startX = pos.x;
     startY = pos.y;
@@ -682,6 +737,18 @@ view.onmousemove = function(e) {
 
         return;
     }
+    if(tool === "copy" && copyMode === 1 && isDown) {
+
+        var pos = getPos(e);
+
+        lastMoveX = pos.x;
+        lastMoveY = pos.y;
+
+        previewMove(pos.x, pos.y);
+
+        return;
+    }
+
 	if (tool === "edit") return; // pas de dessin
 	autoWidthDynamic();
     if (!isDown) return;
@@ -711,42 +778,46 @@ view.onmousemove = function(e) {
 };
 
 view.onmouseup = function(e) {
-  if(tool === "move" && moveMode === 1) {
+    if (tool === "edit") return;
 
-      pasteSelection(lastMoveX, lastMoveY);
+    var pos = getPos(e);
 
-      isDown = false;
+    if (tool === "move" && moveMode === 1) {
+        pasteSelection(lastMoveX, lastMoveY);
+        isDown = false;
+        return;
+    }
 
-      return;
-  }
-	if (tool === "edit") return; // pas de dessin
+    if (tool === "copy" && copyMode === 1) {
+        pasteSelection(lastMoveX, lastMoveY);
+        isDown = false;
+        return;
+    }
+
     if (!isDown) return;
     isDown = false;
 
     syncFromTextarea();
 
-    var pos = getPos(e);
-    if(tool === "move") {
-
-        if(moveMode === 0) {
-
-            captureSelection(
-                startX,
-                startY,
-                pos.x,
-                pos.y
-            );
-
+    if (tool === "move") {
+        if (moveMode === 0) {
+            captureSelection(startX, startY, pos.x, pos.y);
             moveMode = 1;
         }
-
+        return;
+    }
+    if (tool === "copy") {
+        if (copyMode === 0) {
+            captureSelectionCopy(startX, startY, pos.x, pos.y);
+            copyMode = 1;
+        }
         return;
     }
 
-    // forme finale
-    if (tool === "line") drawLine(startX, startY, pos.x, pos.y);
-    if (tool === "arrow") drawArrow(startX, startY, pos.x, pos.y);
-    if (tool === "rect") drawRectangle(startX, startY, pos.x, pos.y);
+    // formes finales
+    if (tool === "line")    drawLine(startX, startY, pos.x, pos.y);
+    if (tool === "arrow")   drawArrow(startX, startY, pos.x, pos.y);
+    if (tool === "rect")    drawRectangle(startX, startY, pos.x, pos.y);
     if (tool === "ellipse") drawEllipse(startX, startY, pos.x, pos.y);
 
     tempGrid = null;
