@@ -412,6 +412,17 @@ function drawEllipse(x1, y1, x2, y2) {
 // =========================
 // DEPLACEMENT
 // =========================
+function safeGet(x, y) {
+    if (!grid[y]) return " ";
+    if (grid[y][x] == null) return " ";
+    return grid[y][x];
+}
+
+function safeSet(x, y, c) {
+    ensureCell(x, y);
+    grid[y][x] = c;
+}
+
 function captureSelection(x1,y1,x2,y2) {
 
     var xMin = Math.min(x1,x2);
@@ -437,7 +448,7 @@ function captureSelection(x1,y1,x2,y2) {
 
             ensureCell(x,y);
 
-            moveSelection.data[y-yMin].push(grid[y][x]);
+            moveSelection.data[y-yMin].push(safeGet(x, y));
 
             // efface l'original
             grid[y][x] = " ";
@@ -474,7 +485,7 @@ function captureSelectionCopy(x1, y1, x2, y2) {
             ensureCell(x,y);
 
             // on copie mais on n'efface pas
-            moveSelection.data[y-yMin].push(grid[y][x]);
+            moveSelection.data[y-yMin].push(safeGet(x, y));
         }
     }
 
@@ -527,6 +538,7 @@ function pasteSelection(destX,destY) {
         for(x=0;x<moveSelection.w;x++) {
 
             var c = moveSelection.data[y][x];
+            if (c !== " ") safeSet(destX + x, destY + y, c);
 
             if(c === " ") continue;
 
@@ -561,6 +573,7 @@ function previewMove(destX, destY) {
         for (x = 0; x < moveSelection.w; x++) {
 
             var c = moveSelection.data[y][x];
+            safeSet(destX + x, destY + y, c);
 
             if (c === " ") continue;
 
