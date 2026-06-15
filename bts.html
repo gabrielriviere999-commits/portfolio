@@ -16,25 +16,20 @@ body {
   padding-top: 50px;
 }
 
-.win98-btn-bleu {
-  padding: 2px 6px;
-  background-color: #3a6ea5;
-  border: 2px solid #ffffff;
-  border-right-color: #1a2f4a;
-  border-bottom-color: #1a2f4a;
-  text-decoration: none;
-  display: inline-block;
+.win98-a {
+  background: #d4d0c8;
   color: white;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-decoration:none;
+  display: inline-block;
 }
-.win98-btn-bleu:hover {
-  background-color: #4a82c0;
+.win98-a:active {
+  border-color: #404040 #fff #fff #404040;
 }
-.win98-btn-bleu:active {
-  border: 2px solid #1a2f4a;
-  border-right-color: #ffffff;
-  border-bottom-color: #ffffff;
-  background-color: #2f5c8a;
-}
+.win98-a:hover { filter: brightness(1.2); text-decoration:underline; }
 
 /* --- Barre de navigation --- */
 .navbar {
@@ -78,9 +73,8 @@ body {
   border-color: #808080 #ffffff #ffffff #808080;
 }
 
-.tab-button, .win98-select {
-  text-decoration: none;
-}
+.tab-button, .win98-select { text-decoration:none; }
+.tab-button:hover:not(.tab-button-active), .win98-select:hover { text-decoration:underline; }
 
 .win98-select {
   /* Style Win98 */
@@ -295,9 +289,9 @@ summary {
 <div data-include="bts/tableau-synthese-e5-2025.html" class="tableau"></div>
 </details>
 <p></p>
-<a class="win98-btn-bleu" href="bts/tableau-synthese-e5-2025.html" download>Télécharger tableau-synthese-e5-2025.html</a>
+<a href="bts/tableau-synthese-e5-2025.html" class="win98-a" style="background-color:#3a6ea5;" download>Télécharger tableau-synthese-e5-2025.html</a>
 <p></p>
-<a href="veille-technologique/veille-technologique-les-logiciels-libres-pour-linux.html" class="win98-btn-bleu">Veille technologique</a>
+<a href="veille-technologique/veille-technologique-les-logiciels-libres-pour-linux.html" class="win98-a" style="background-color:#3a6ea5;">Veille technologique</a>
 <br><br><hr>
 <h2>Infrastructure</h2>
 <select class="slide-select" data-group="infrastructure"><option value="" disabled selected>- Choisir une slide -</option></select>
