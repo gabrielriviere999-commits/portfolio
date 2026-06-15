@@ -12,7 +12,7 @@ body {
 
 h2, h3 { margin-top: 0; }
 
-button {
+.btn-grey {
   background: #d4d0c8;
   color: black;
   border: 2px solid;
@@ -21,11 +21,23 @@ button {
   font-size: 12px;
   cursor: pointer;
 }
-button:active {
+.btn-grey:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-button:hover { background:#e0e0e0; }
+.btn-grey:hover { background:#e0e0e0; }
+.btn-color {
+  color:black;
+  border:2px solid;
+  border-color:#fff #404040 #404040 #fff;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+}
+.btn-color:active {
+  border-color:#404040 #fff #fff #404040;
+}
+.btn-color:hover { filter: brightness(1.2) }
 
 .card {
   background: #c0c0c0;
@@ -106,8 +118,8 @@ input, textarea {
   </thead>
   <tbody></tbody>
 </table>
-<button id="addBtn">Ajouter une part</button>
-<button id="validateBtn">Valider</button>
+<button id="addBtn" class="btn-grey">Ajouter une part</button>
+<button id="validateBtn" class="btn-color" style="background-color:#ff8800;">Valider</button>
 <p></p>
 <label>Taille du camembert : <input type="number" id="pieSize" value="200" style="width:40px;"></label>
 </div>
@@ -119,11 +131,11 @@ input, textarea {
 
 <div class="card">
   <h3>Code SVG</h3>
-  <button id="copyBtn">Copier</button>
+  <button id="copyBtn" class="btn-color" style="background-color:#4caf50;">Copier</button>
   <input type="file" id="fileInput" style="display:none;">
   <br><textarea id="code"></textarea><br>
-  <button id="importBtn">Mettre à jour</button>
-  <button id="importFileBtn">Importer fichier…</button>
+  <button id="importBtn" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
+  <button id="importFileBtn" class="btn-grey">Importer fichier…</button>
 </div>
 
 </div>
@@ -244,6 +256,7 @@ function rebuildTable() {
     // ↑
     var upBtn = document.createElement("button");
     upBtn.innerHTML = "↑";
+    upBtn.className = "btn-grey";
     upBtn.onclick = function(index){ return function(){
       if (index > 0) {
         var tmp = slices[index - 1];
@@ -258,6 +271,7 @@ function rebuildTable() {
     // ↓
     var downBtn = document.createElement("button");
     downBtn.innerHTML = "↓";
+    downBtn.className = "btn-grey";
     downBtn.onclick = function(index){ return function(){
       if (index < slices.length - 1) {
         var tmp = slices[index + 1];
@@ -272,6 +286,8 @@ function rebuildTable() {
     // x
     var delBtn = document.createElement("button");
     delBtn.innerHTML = "x";
+    delBtn.className = "btn-color";
+    delBtn.style = "background-color:#ff4444;";
     delBtn.onclick = function(index){ return function(){
       slices.splice(index,1);
       renderPie();
