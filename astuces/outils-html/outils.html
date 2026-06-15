@@ -13,26 +13,21 @@ body {
   font-family: sans-serif;
 }
 
-.win98-btn-jaune {
-  padding: 4px 10px;
-  background-color: #ffd700;
-  border: 2px solid #ffffff;
-  border-right-color: #808000;
-  border-bottom-color: #808000;
-  text-decoration: none;
-  display: inline-block;
-  color: black;
+.win98-a {
+  background: #d4d0c8;
+  color: white;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
   font-size: 22px;
+  cursor: pointer;
+  text-decoration:none;
+  display: inline-block;
 }
-.win98-btn-jaune:hover {
-  background-color: #ffea00;
+.win98-a:active {
+  border-color: #404040 #fff #fff #404040;
 }
-.win98-btn-jaune:active {
-  border: 2px solid #808000;
-  border-right-color: #ffffff;
-  border-bottom-color: #ffffff;
-  background-color: #daa520;
-}
+.win98-a:hover { filter: brightness(1.1); text-decoration:underline; }
 
 /* --- BARRE DE RECHERCHE WIN98 --- */
 .search-box {
@@ -108,7 +103,7 @@ body {
 </head>
 
 <body>
-<a class="win98-btn-jaune" href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal">💙 Faire un don via PayPal</a>
+<a href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal" class="win98-a" style="color:black;background-color:#ffd700;">💙 Faire un don via PayPal</a>
 <br>
 <a href="../../astuces.html">Remonter vers astuces.html</a>
 <h1>Outils</h1>
