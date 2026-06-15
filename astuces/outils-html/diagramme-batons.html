@@ -12,7 +12,7 @@ body {
 
 h2, h3 { margin-top: 0; }
 
-button, #optionsFile {
+.btn-grey {
   background: #d4d0c8;
   color: black;
   border: 2px solid;
@@ -21,11 +21,23 @@ button, #optionsFile {
   font-size: 12px;
   cursor: pointer;
 }
-button:active {
+.btn-grey:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-button:hover { background:#e0e0e0; }
+.btn-grey:hover { background:#e0e0e0; }
+.btn-color {
+  color:black;
+  border:2px solid;
+  border-color:#fff #404040 #404040 #fff;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+}
+.btn-color:active {
+  border-color:#404040 #fff #fff #404040;
+}
+.btn-color:hover { filter: brightness(1.2) }
 
 textarea {
   width: 100%;
@@ -66,12 +78,12 @@ label { display: inline-block; margin: 2px 0; }
 
 <div class="card">
   <h3>Données : libellé;valeur</h3>
-  <button id="copydata">Copier</button>
+  <button id="copydata" class="btn-color" style="background-color:#4caf50;">Copier</button>
   <br><textarea id="data" wrap="off">A;3
 B;7
 C;5
 D;10</textarea><br>
-  <button id="importFileBtndata">Importer fichier…</button>
+  <button id="importFileBtndata" class="btn-grey">Importer fichier…</button>
   <input type="file" id="fileInputdata" style="display:none;">
   <fieldset>
   <legend>Options</legend>
@@ -89,21 +101,21 @@ D;10</textarea><br>
   </label><br>
   <label><input type="checkbox" id="bars_normalize" checked="checked">Normaliser</label>
   <hr>
-  <button onclick="resetOptions()">Valeurs par défaut</button>
-  <button type="button" onclick="exportOptions()">Exporter</button>
-  <button type="button" onclick="showImportBox()">Importer</button>
+  <button onclick="resetOptions()" class="btn-color" style="background-color:#ff4444;">Valeurs par défaut</button>
+  <button type="button" onclick="exportOptions()" class="btn-grey">Exporter</button>
+  <button type="button" onclick="showImportBox()" class="btn-grey">Importer</button>
   <div id="importBox" style="display:none; margin-top:10px;">
     <textarea id="importText" rows="8" cols="40"></textarea><br>
-    <button type="button" onclick="applyImport()">Valider l'import</button>
+    <button type="button" onclick="applyImport()" class="btn-grey">Valider l'import</button>
   </div>
   </fieldset>
 </div>
 
 <div class="card">
   <h3>Aperçu / texte</h3>
-  <button id="copyoutput">Copier</button>
+  <button id="copyoutput" class="btn-color" style="background-color:#4caf50;">Copier</button>
   <br><textarea id="output" wrap="off"></textarea><br>
-  <button id="importFileBtnoutput">Importer fichier…</button>
+  <button id="importFileBtnoutput" class="btn-grey">Importer fichier…</button>
   <input type="file" id="fileInputoutput" style="display:none;">
 </div>
 
