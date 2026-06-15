@@ -15,7 +15,7 @@ h2, h3 { margin-top: 0; }
   display: block;
 }
 textarea { width:100%; height:200px; box-sizing:border-box; font-family:monospace; }
-button {
+.btn-color {
   color:black;
   border:2px solid;
   border-color:#fff #404040 #404040 #fff;
@@ -23,10 +23,24 @@ button {
   font-size:12px;
   cursor:pointer;
 }
-button:active {
+.btn-color:active {
   border-color:#404040 #fff #fff #404040;
 }
-button:hover { filter: brightness(1.2) }
+.btn-color:hover { filter: brightness(1.2) }
+.btn-grey {
+  background: #d4d0c8;
+  color: black;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-grey:active {
+  border-color: #404040 #fff #fff #404040;
+  background: #c0c0c0;
+}
+.btn-grey:hover { background:#e0e0e0; }
 input, textarea {
   border:2px solid;
   border-color:#808080 #ffffff #ffffff #808080;
@@ -57,7 +71,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <label><input type="checkbox" id="chk_quo">Guillemets → "</label>
 <label><input type="checkbox" id="chk_squo">Demi-guillemets → '</label>
 <br>
-<button onclick="decocherTout()" style="background-color:#ff4444;">Décocher tout</button>
+<button onclick="decocherTout()" class="btn-color" style="background-color:#ff4444;">Décocher tout</button>
 <br>
 <hr>
 <label>Ajouter en début de ligne :</label>
@@ -73,13 +87,13 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <input id="removeSuffix" type="text" placeholder="ex: ; ou , ou // fin">
 <p></p>
 <div id="repl_container"></div>
-<button onclick="ajouterRemplacement()" style="background-color:#d4d0c8;">Ajouter un remplacement</button>
+<button onclick="ajouterRemplacement()" class="btn-grey">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
 <br>
-<button onclick="effacerRemplacements()" style="background-color:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
+<button onclick="effacerRemplacements()" class="btn-color" style="background-color:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
 <hr>
-<button type="button" onclick="exportOptions()" style="background-color:#d4d0c8;">Exporter</button>
-<button type="button" onclick="showImportBox()" style="background-color:#d4d0c8;">Importer</button>
+<button type="button" onclick="exportOptions()" class="btn-grey">Exporter</button>
+<button type="button" onclick="showImportBox()" class="btn-grey">Importer</button>
 <div id="importBox" style="display:none; margin-top:10px;">
   <textarea id="importText" rows="8" cols="40"></textarea><br>
   <button type="button" onclick="applyImport()">Valider l'import</button>
@@ -90,15 +104,15 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <div class="card">
 <h3>Source</h3>
 <textarea id="input" wrap="off"></textarea><br>
-<button onclick="appliquerTransformations()" style="background-color:#ff8800;">Appliquer</button>
-<button onclick="effacerTout()" style="background-color:#ff4444;">Effacer tout</button>
-<button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
+<button onclick="appliquerTransformations()" class="btn-color" style="background-color:#ff8800;">Appliquer</button>
+<button onclick="effacerTout()" class="btn-color" style="background-color:#ff4444;">Effacer tout</button>
+<button id="importFileBtn" class="btn-grey">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 </div>
 
 <div class="card">
 <h3>Résultat</h3>
-<button onclick="copier()" style="background-color:#4caf50;">Copier</button>
+<button onclick="copier()" class="btn-color" style="background-color:#4caf50;">Copier</button>
 <br><textarea id="output" wrap="off" readonly></textarea>
 <div id="stats" style="font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
 </div>
@@ -676,6 +690,7 @@ function ajouterRemplacement(from, to) {
   // Bouton monter
   var up = document.createElement("button");
   up.textContent = "↑";
+  up.className = "btn-grey";
   up.onclick = function () {
     var prev = div.previousSibling;
     if (prev) {
@@ -687,6 +702,7 @@ function ajouterRemplacement(from, to) {
   // Bouton descendre
   var down = document.createElement("button");
   down.textContent = "↓";
+  down.className = "btn-grey";
   down.onclick = function () {
     var next = div.nextSibling;
     if (next) {
@@ -698,6 +714,8 @@ function ajouterRemplacement(from, to) {
   // Bouton supprimer
   var del = document.createElement("button");
   del.textContent = "x";
+  del.className = "btn-color";
+  del.style = "background-color:#ff4444;";
   del.onclick = function () {
     cont.removeChild(div);
     saveReplacements();
