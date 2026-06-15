@@ -15,19 +15,7 @@ h2, h3 { margin-top: 0; }
   display: block;
 }
 textarea { width:100%; height:200px; box-sizing:border-box; font-family:monospace; }
-.btn-color {
-  color:black;
-  border:2px solid;
-  border-color:#fff #404040 #404040 #fff;
-  padding:4px 8px;
-  font-size:12px;
-  cursor:pointer;
-}
-.btn-color:active {
-  border-color:#404040 #fff #fff #404040;
-}
-.btn-color:hover { filter: brightness(1.2) }
-.btn-grey {
+button {
   background: #d4d0c8;
   color: black;
   border: 2px solid;
@@ -36,11 +24,12 @@ textarea { width:100%; height:200px; box-sizing:border-box; font-family:monospac
   font-size: 12px;
   cursor: pointer;
 }
-.btn-grey:active {
+button:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-.btn-grey:hover { background:#e0e0e0; }
+button:hover { background:#e0e0e0; }
+.btn-color:hover { filter: brightness(1.2) }
 input, textarea {
   border:2px solid;
   border-color:#808080 #ffffff #ffffff #808080;
@@ -87,16 +76,16 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <input id="removeSuffix" type="text" placeholder="ex: ; ou , ou // fin">
 <p></p>
 <div id="repl_container"></div>
-<button onclick="ajouterRemplacement()" class="btn-grey">Ajouter un remplacement</button>
+<button onclick="ajouterRemplacement()">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
 <br>
 <button onclick="effacerRemplacements()" class="btn-color" style="background-color:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
 <hr>
-<button type="button" onclick="exportOptions()" class="btn-grey">Exporter</button>
-<button type="button" onclick="showImportBox()" class="btn-grey">Importer</button>
+<button type="button" onclick="exportOptions()">Exporter</button>
+<button type="button" onclick="showImportBox()">Importer</button>
 <div id="importBox" style="display:none; margin-top:10px;">
   <textarea id="importText" rows="8" cols="40"></textarea><br>
-  <button type="button" onclick="applyImport()" class="btn-grey">Valider l'import</button>
+  <button type="button" onclick="applyImport()">Valider l'import</button>
 </div>
 </fieldset>
 </div>
@@ -106,7 +95,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <textarea id="input" wrap="off"></textarea><br>
 <button onclick="appliquerTransformations()" class="btn-color" style="background-color:#ff8800;">Appliquer</button>
 <button onclick="effacerTout()" class="btn-color" style="background-color:#ff4444;">Effacer tout</button>
-<button id="importFileBtn" class="btn-grey">Importer fichier…</button>
+<button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 </div>
 
@@ -690,7 +679,6 @@ function ajouterRemplacement(from, to) {
   // Bouton monter
   var up = document.createElement("button");
   up.textContent = "↑";
-  up.className = "btn-grey";
   up.onclick = function () {
     var prev = div.previousSibling;
     if (prev) {
@@ -702,7 +690,6 @@ function ajouterRemplacement(from, to) {
   // Bouton descendre
   var down = document.createElement("button");
   down.textContent = "↓";
-  down.className = "btn-grey";
   down.onclick = function () {
     var next = div.nextSibling;
     if (next) {
