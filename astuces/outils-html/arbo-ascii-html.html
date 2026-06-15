@@ -81,14 +81,14 @@ textarea {
 <body>
     <h2>Arborescence ASCII & HTML</h2>
 
-    <div class="toolbar" style="opacity: 0.8;">
+    <div class="toolbar" style="opacity:0.8;">
         <button onclick="renameRoot()">Renommer racine</button>
         <button onclick="addFolder()">+ Dossier</button>
         <button onclick="addFile()">+ Fichier</button>
         <button onclick="goUp()">← Remonter</button>
         <p>Dossier courant : <span id="currentPath"></span></p>
     </div>
-<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
+    <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity:0.8;">≡</button>
 
     <div id="ascii"></div><br>
     <button onclick="copyTree(this)" class="btn-color" style="background-color:#4caf50;">Copier texte</button>
