@@ -76,18 +76,18 @@ D;10</textarea><br>
   <fieldset>
   <legend>Options</legend>
   <label>Largeur max des barres :
-    <input type="text" id="maxWidth" value="25" size="4">
+    <input type="text" id="bars_maxWidth" value="25" size="4">
   </label><br>
   <label>Caractère de remplissage :
-    <input type="text" id="barChar" value="." size="2" maxlength="1">
+    <input type="text" id="bars_barChar" value="." size="2" maxlength="1">
   </label><br>
   <label>Caractère de fond :
-    <input type="text" id="bgChar" value=" " size="2" maxlength="1">
+    <input type="text" id="bars_bgChar" value=" " size="2" maxlength="1">
   </label><br>
   <label>Séparateur libellé / barre :
-    <input type="text" id="sep" value=" " size="6">
+    <input type="text" id="bars_sep" value=" " size="6">
   </label><br>
-  <label><input type="checkbox" id="normalize" checked="checked">Normaliser</label>
+  <label><input type="checkbox" id="bars_normalize" checked="checked">Normaliser</label>
   <hr>
   <button onclick="resetOptions()">Valeurs par défaut</button>
   <button type="button" onclick="exportOptions()">Exporter</button>
@@ -118,15 +118,15 @@ function updateChart(){
     var dataEl=document.getElementById('data');
     var outEl=document.getElementById('output');
 
-    var maxWidth=parseIntSafe(document.getElementById('maxWidth').value,25);
-    if(maxWidth<1) maxWidth=1;
+    var bars_maxWidth=parseIntSafe(document.getElementById('bars_maxWidth').value,25);
+    if(bars_maxWidth<1) bars_maxWidth=1;
 
-    var barChar=document.getElementById('barChar').value.charAt(0)||'.';
-    var bgChar=document.getElementById('bgChar').value.charAt(0)||' ';
+    var bars_barChar=document.getElementById('bars_barChar').value.charAt(0)||'.';
+    var bars_bgChar=document.getElementById('bars_bgChar').value.charAt(0)||' ';
 
-    var sep=document.getElementById('sep').value;
+    var bars_sep=document.getElementById('bars_sep').value;
     var showValues = true;
-    var normalize=document.getElementById('normalize').checked;
+    var bars_normalize=document.getElementById('bars_normalize').checked;
 
     var lines=dataEl.value.split(/\r?\n/);
     var items=[],maxVal=0,i;
@@ -143,7 +143,7 @@ function updateChart(){
     }
 
     if(!items.length){ outEl.value=''; return; }
-    if(!normalize && maxVal===0) maxVal=1;
+    if(!bars_normalize && maxVal===0) maxVal=1;
 
     // Déterminer automatiquement la largeur max des labels
     var autoWidth = 0;
@@ -159,20 +159,20 @@ function updateChart(){
         var it=items[i];
         var v=it.value;
 
-        if(normalize){
-            width=maxVal>0?Math.round((v/maxVal)*maxWidth):0;
+        if(bars_normalize){
+            width=maxVal>0?Math.round((v/maxVal)*bars_maxWidth):0;
         } else {
             width=Math.round(v);
-            if(width>maxWidth) width=maxWidth;
+            if(width>bars_maxWidth) width=bars_maxWidth;
         }
         if(width<0) width=0;
 
         labelText=it.label;
         labelText = labelText + repeatChar(' ', labelWidth - labelText.length);
 
-        bar=repeatChar(barChar,width)+repeatChar(bgChar,maxWidth-width);
+        bar=repeatChar(bars_barChar,width)+repeatChar(bars_bgChar,bars_maxWidth-width);
 
-        var lineOut=(labelWidth>0?labelText+sep:'')+bar+(showValues?' '+v:'');
+        var lineOut=(labelWidth>0?labelText+bars_sep:'')+bar+(showValues?' '+v:'');
         out.push(lineOut);
     }
 
@@ -185,7 +185,7 @@ function init(){
 
 function importFromOutput() {
     var outText = document.getElementById('output').value;
-    var sep = document.getElementById('sep').value;
+    var bars_sep = document.getElementById('bars_sep').value;
     var lines = outText.split(/\r?\n/);
     var dataLines = [];
     var i;
@@ -198,7 +198,7 @@ function importFromOutput() {
         var value = "0";
 
         // --- Trouver le label propre ---
-        var idx = sep ? line.indexOf(sep) : -1;
+        var idx = bars_sep ? line.indexOf(bars_sep) : -1;
         if (idx >= 0) {
             // On prend AVANT le séparateur
             label = trimStr(line.substring(0, idx));
@@ -383,13 +383,13 @@ function setupBluroutput(id) {
 }
 
 // Champs texte
-setupBlurdata('maxWidth');
-setupBlurdata('barChar');
-setupBlurdata('bgChar');
-setupBlurdata('sep');
+setupBlurdata('bars_maxWidth');
+setupBlurdata('bars_barChar');
+setupBlurdata('bars_bgChar');
+setupBlurdata('bars_sep');
 
 // Checkbox
-setupBlurdata('normalize');
+setupBlurdata('bars_normalize');
 
 // Textarea
 setupBlurdata('data');
@@ -420,50 +420,50 @@ document.getElementById('copyoutput').onclick = function(e) {
 
 // Bouton Valeurs par défaut
 function resetOptions() {
-  document.getElementById("maxWidth").value = "25";
-  localStorage.setItem("maxWidth", "25");
+  document.getElementById("bars_maxWidth").value = "25";
+  localStorage.setItem("bars_maxWidth", "25");
 
-  document.getElementById("barChar").value = ".";
-  localStorage.setItem("barChar", ".");
+  document.getElementById("bars_barChar").value = ".";
+  localStorage.setItem("bars_barChar", ".");
 
-  document.getElementById("bgChar").value = " ";
-  localStorage.setItem("bgChar", " ");
+  document.getElementById("bars_bgChar").value = " ";
+  localStorage.setItem("bars_bgChar", " ");
 
-  document.getElementById("sep").value = " ";
-  localStorage.setItem("sep", " ");
+  document.getElementById("bars_sep").value = " ";
+  localStorage.setItem("bars_sep", " ");
 
-  document.getElementById("normalize").checked = true;
-  localStorage.removeItem("normalize");
+  document.getElementById("bars_normalize").checked = true;
+  localStorage.removeItem("bars_normalize");
   updateChart();
 }
 
 // Sauvegarde/Restauration
 function saveState() {
-  localStorage.setItem("maxWidth", document.getElementById("maxWidth").value);
-  localStorage.setItem("barChar", document.getElementById("barChar").value);
-  localStorage.setItem("bgChar", document.getElementById("bgChar").value);
-  localStorage.setItem("sep", document.getElementById("sep").value);
-  localStorage.setItem("normalize", document.getElementById("normalize").checked ? "1" : "0");
+  localStorage.setItem("bars_maxWidth", document.getElementById("bars_maxWidth").value);
+  localStorage.setItem("bars_barChar", document.getElementById("bars_barChar").value);
+  localStorage.setItem("bars_bgChar", document.getElementById("bars_bgChar").value);
+  localStorage.setItem("bars_sep", document.getElementById("bars_sep").value);
+  localStorage.setItem("bars_normalize", document.getElementById("bars_normalize").checked ? "1" : "0");
 }
 
-document.getElementById("maxWidth").oninput = saveState;
-document.getElementById("barChar").oninput = saveState;
-document.getElementById("bgChar").oninput = saveState;
-document.getElementById("sep").oninput = saveState;
-document.getElementById("normalize").onchange = saveState;
+document.getElementById("bars_maxWidth").oninput = saveState;
+document.getElementById("bars_barChar").oninput = saveState;
+document.getElementById("bars_bgChar").oninput = saveState;
+document.getElementById("bars_sep").oninput = saveState;
+document.getElementById("bars_normalize").onchange = saveState;
 
 window.onload = function() {
-  var savedmaxWidth = localStorage.getItem("maxWidth");
-  var savedbarChar = localStorage.getItem("barChar");
-  var savedbgChar = localStorage.getItem("bgChar");
-  var savedsep = localStorage.getItem("sep");
-  var savedNormalize = localStorage.getItem("normalize");
+  var savedbars_maxWidth = localStorage.getItem("bars_maxWidth");
+  var savedbars_barChar = localStorage.getItem("bars_barChar");
+  var savedbars_bgChar = localStorage.getItem("bars_bgChar");
+  var savedbars_sep = localStorage.getItem("bars_sep");
+  var savedbars_normalize = localStorage.getItem("bars_normalize");
 
-  if (savedmaxWidth !== null) document.getElementById("maxWidth").value = savedmaxWidth;
-  if (savedbarChar !== null) document.getElementById("barChar").value = savedbarChar;
-  if (savedbgChar !== null) document.getElementById("bgChar").value = savedbgChar;
-  if (savedsep !== null) document.getElementById("sep").value = savedsep;
-  if (savedNormalize !== null) document.getElementById("normalize").checked = (savedNormalize === "1");
+  if (savedbars_maxWidth !== null) document.getElementById("bars_maxWidth").value = savedbars_maxWidth;
+  if (savedbars_barChar !== null) document.getElementById("bars_barChar").value = savedbars_barChar;
+  if (savedbars_bgChar !== null) document.getElementById("bars_bgChar").value = savedbars_bgChar;
+  if (savedbars_sep !== null) document.getElementById("bars_sep").value = savedbars_sep;
+  if (savedbars_normalize !== null) document.getElementById("bars_normalize").checked = (savedbars_normalize === "1");
 
   updateChart();
 };
@@ -471,11 +471,11 @@ window.onload = function() {
 // Exporter options
 function exportOptions() {
     var opts = {
-        maxWidth: document.getElementById("maxWidth").value,
-        barChar: document.getElementById("barChar").value,
-        bgChar: document.getElementById("bgChar").value,
-        sep: document.getElementById("sep").value,
-        normalize: document.getElementById("normalize").checked ? 1 : 0
+        bars_maxWidth: document.getElementById("bars_maxWidth").value,
+        bars_barChar: document.getElementById("bars_barChar").value,
+        bars_bgChar: document.getElementById("bars_bgChar").value,
+        bars_sep: document.getElementById("bars_sep").value,
+        bars_normalize: document.getElementById("bars_normalize").checked ? 1 : 0
     };
 
     var json = JSON.stringify(opts, null, 2);
@@ -506,11 +506,11 @@ function applyImport() {
     try {
         var opts = JSON.parse(txt);
 
-        if (opts.maxWidth !== undefined) document.getElementById("maxWidth").value = opts.maxWidth;
-        if (opts.barChar !== undefined) document.getElementById("barChar").value = opts.barChar;
-        if (opts.bgChar !== undefined) document.getElementById("bgChar").value = opts.bgChar;
-        if (opts.sep !== undefined) document.getElementById("sep").value = opts.sep;
-        if (opts.normalize !== undefined) document.getElementById("normalize").checked = (opts.normalize == 1);
+        if (opts.bars_maxWidth !== undefined) document.getElementById("bars_maxWidth").value = opts.bars_maxWidth;
+        if (opts.bars_barChar !== undefined) document.getElementById("bars_barChar").value = opts.bars_barChar;
+        if (opts.bars_bgChar !== undefined) document.getElementById("bars_bgChar").value = opts.bars_bgChar;
+        if (opts.bars_sep !== undefined) document.getElementById("bars_sep").value = opts.bars_sep;
+        if (opts.bars_normalize !== undefined) document.getElementById("bars_normalize").checked = (opts.bars_normalize == 1);
 
         saveState();
         updateChart();

@@ -29,9 +29,9 @@ input, textarea {
 
 <h2>Tableau ASCII</h2>
 
-Séparateur : <input id="sep" value=";" size="1">
+Séparateur : <input id="tableau_ascii_sep" value=";" size="1">
 &nbsp;&nbsp;
-Largeur max : <input id="maxwidth" value="120" size="4">
+Largeur max : <input id="tableau_ascii_maxwidth" value="120" size="4">
 <button onclick="resetParams()" style="background-color:#ff4444;">Valeurs par défaut</button>
 <p></p><textarea id="input" wrap="off"></textarea><p></p>
 <button onclick="convertir()" style="background-color:#ff8800;">Convertir</button>
@@ -154,12 +154,12 @@ function asciiTable(rows, MAX_TABLE_WIDTH) {
   }
 
   // 5) Ligne de séparation
-  var sepLine = "+";
+  var tableau_ascii_sepLine = "+";
   for (var c = 0; c < colCount; c++) {
-    sepLine += repeat("-", widths[c] + 2) + "+";
+    tableau_ascii_sepLine += repeat("-", widths[c] + 2) + "+";
   }
 
-  var out = sepLine + "\n";
+  var out = tableau_ascii_sepLine + "\n";
 
   // 6) Génération des lignes avec wrap
   for (var r = 0; r < rows.length; r++) {
@@ -186,7 +186,7 @@ function asciiTable(rows, MAX_TABLE_WIDTH) {
       out += line + "\n";
     }
 
-    out += sepLine + "\n";
+    out += tableau_ascii_sepLine + "\n";
   }
 
   return out;
@@ -249,8 +249,8 @@ document.getElementById("fileInput").addEventListener("change", function () {
 /* --- Conversion CSV → ASCII --- */
 function convertir() {
   var texte = document.getElementById("input").value;
-  var sep = document.getElementById("sep").value || ";";
-  var maxWidth = parseInt(document.getElementById("maxwidth").value, 10);
+  var tableau_ascii_sep = document.getElementById("tableau_ascii_sep").value || ";";
+  var tableau_ascii_maxwidth = parseInt(document.getElementById("tableau_ascii_maxwidth").value, 10);
 
   if (!texte) {
     document.getElementById("output").textContent = "Aucune donnée.";
@@ -260,10 +260,10 @@ function convertir() {
   var lignes = texte.split("\n");
   var rows = [];
   for (var i = 0; i < lignes.length; i++) {
-    rows.push(lignes[i].split(sep));
+    rows.push(lignes[i].split(tableau_ascii_sep));
   }
 
-  var table = asciiTable(rows, maxWidth);
+  var table = asciiTable(rows, tableau_ascii_maxwidth);
   setText(document.getElementById("output"), table);
 }
 
@@ -290,29 +290,29 @@ function effacerTout() {
 }
 
 function resetParams() {
-  document.getElementById("sep").value = ";";
-  document.getElementById("maxwidth").value = "120";
+  document.getElementById("tableau_ascii_sep").value = ";";
+  document.getElementById("tableau_ascii_maxwidth").value = "120";
 
   // Met à jour la sauvegarde
-  localStorage.setItem("sep", ";");
-  localStorage.setItem("maxwidth", "120");
+  localStorage.setItem("tableau_ascii_sep", ";");
+  localStorage.setItem("tableau_ascii_maxwidth", "120");
 }
 
 /* --- Sauvegarde/Restauration --- */
 function saveState() {
-  localStorage.setItem("sep", document.getElementById("sep").value);
-  localStorage.setItem("maxwidth", document.getElementById("maxwidth").value);
+  localStorage.setItem("tableau_ascii_sep", document.getElementById("tableau_ascii_sep").value);
+  localStorage.setItem("tableau_ascii_maxwidth", document.getElementById("tableau_ascii_maxwidth").value);
 }
 
-document.getElementById("sep").oninput = saveState;
-document.getElementById("maxwidth").oninput = saveState;
+document.getElementById("tableau_ascii_sep").oninput = saveState;
+document.getElementById("tableau_ascii_maxwidth").oninput = saveState;
 
 window.onload = function() {
-  var savedSep = localStorage.getItem("sep");
-  var savedMax = localStorage.getItem("maxwidth");
+  var savedtableau_ascii_sep = localStorage.getItem("tableau_ascii_sep");
+  var savedMax = localStorage.getItem("tableau_ascii_maxwidth");
 
-  if (savedSep !== null) document.getElementById("sep").value = savedSep;
-  if (savedMax !== null) document.getElementById("maxwidth").value = savedMax;
+  if (savedtableau_ascii_sep !== null) document.getElementById("tableau_ascii_sep").value = savedtableau_ascii_sep;
+  if (savedMax !== null) document.getElementById("tableau_ascii_maxwidth").value = savedMax;
 };
 </script>
 
