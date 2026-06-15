@@ -25,7 +25,7 @@ h2, h3 { margin-top: 0; }
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
-button {
+.btn-grey {
   background: #d4d0c8;
   color: black;
   border: 2px solid;
@@ -34,11 +34,23 @@ button {
   font-size: 12px;
   cursor: pointer;
 }
-button:active {
+.btn-grey:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-button:hover { background:#e0e0e0; }
+.btn-grey:hover { background:#e0e0e0; }
+.btn-color {
+  color:black;
+  border:2px solid;
+  border-color:#fff #404040 #404040 #fff;
+  padding:4px 8px;
+  font-size:12px;
+  cursor:pointer;
+}
+.btn-color:active {
+  border-color:#404040 #fff #fff #404040;
+}
+.btn-color:hover { filter: brightness(1.2) }
 
 textarea {
   width: 100%;
@@ -63,7 +75,7 @@ input, textarea {
 
   <div id="eventList"></div>
 
-  <button onclick="addEvent()">Ajouter un évènement</button>
+  <button onclick="addEvent()" class="btn-grey">Ajouter un évènement</button>
 </div>
 
 <!-- =======================
@@ -72,10 +84,10 @@ input, textarea {
 <div id="ioPanel">
   <h3>Aperçu / texte</h3>
 
-  <button id="copyCode">Copier</button>
+  <button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier</button>
   <br><textarea id="io" wrap="off" style="width:100%;height:200px;box-sizing:border-box;"></textarea><br>
-  <button onclick="importAscii()">Mettre à jour</button>
-  <button id="importFileBtn">Importer fichier…</button>
+  <button onclick="importAscii()" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
+  <button id="importFileBtn" class="btn-grey">Importer fichier…</button>
   <input type="file" id="fileInput" style="display:none;">
 </div>
 
@@ -122,7 +134,7 @@ function moveEventDown(i) {
   exportAscii();
 }
 
-/* --- Rafraîchir l’éditeur --- */
+/* --- Rafraîchir l'éditeur --- */
 function refreshEditor() {
   var html = "";
   for (var i = 0; i < events.length; i++) {
@@ -137,10 +149,10 @@ function refreshEditor() {
       '</textarea><br>' +
 
       // Boutons ↑ ↓
-      '<button onclick="moveEventUp(' + i + ')">↑</button> ' +
-      '<button onclick="moveEventDown(' + i + ')">↓</button> ' +
+      '<button onclick="moveEventUp(' + i + ')" class="btn-grey">↑</button> ' +
+      '<button onclick="moveEventDown(' + i + ')" class="btn-grey">↓</button> ' +
 
-      '<button onclick="removeEvent(' + i + ')">x</button>' +
+      '<button onclick="removeEvent(' + i + ')" class="btn-color" style="background-color:#ff4444;">x</button>' +
       '</div>';
   }
   document.getElementById("eventList").innerHTML = html;
@@ -269,12 +281,45 @@ function importAscii() {
     }
   }
 
-  // 3. Descriptions : "JJ/MM/AAAA : ..."
+  // 3. Descriptions multilignes
+  var inDesc = false;
+  var currentDesc = "";
+
   for (i = 0; i < lines.length; i++) {
     var line = trim(lines[i]);
-    if (/^\d{2}\/\d{2}\/\d{4}\s*:/.test(line)) {
-      descs.push(line.replace(/^\d{2}\/\d{2}\/\d{4}\s*:\s*/, ""));
+
+    // Première ligne de description (contient ":")
+    if (line.indexOf(":") !== -1) {
+      // Si on était déjà dans une description → on la pousse
+      if (currentDesc !== "") {
+        descs.push(currentDesc);
+      }
+
+      // Nouvelle description
+      var idx = line.indexOf(":");
+      currentDesc = line.substring(idx + 1).replace(/^\s+/, "");
+      inDesc = true;
+      continue;
     }
+
+    // Lignes suivantes (multilignes)
+    if (inDesc) {
+      // Fin si ligne vide
+      if (line === "") {
+        descs.push(currentDesc);
+        currentDesc = "";
+        inDesc = false;
+        continue;
+      }
+
+      // Sinon → on ajoute la ligne à la description
+      currentDesc += "\n" + line;
+    }
+  }
+
+  // Dernière description si non poussée
+  if (currentDesc !== "") {
+    descs.push(currentDesc);
   }
 
   // 4. Reconstruire events[]
@@ -326,7 +371,7 @@ io.addEventListener("dragover", function(e) {
     }
 
     // Sinon → NE RIEN FAIRE
-    // Le navigateur affiche le curseur d’insertion
+    // Le navigateur affiche le curseur d'insertion
 });
 
 io.addEventListener("drop", function(e) {
