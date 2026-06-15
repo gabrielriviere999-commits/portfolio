@@ -141,6 +141,7 @@ iframe {
 <button class="btn-toggle" onclick="formatText(this, 'bold')"><b>Gras</b></button>
 <button class="btn-toggle" onclick="formatText(this, 'italic')"><i>Italique</i></button>
 <button class="btn-toggle" onclick="formatText(this, 'underline')"><u>Souligné</u></button>
+<button class="btn-toggle" onclick="formatText(this, 'strikethrough')"><s>Barré</s></button>
 
 <button class="btn-toggle" onclick="formatText(this, 'hiliteColor', 'yellow')" style="background-color:#;"><span style="background-color:#ffff00;">Surligné</span></button>
 
@@ -467,7 +468,7 @@ function formatText(btn, cmd, value) {
       doc.execCommand("foreColor", false, "#000000");
     }
 
-    if (cmd === "bold" || cmd === "italic" || cmd === "underline") {
+    if (cmd === "bold" || cmd === "italic" || cmd === "underline" || cmd === "strikethrough") {
       doc.execCommand(cmd, false, null);
     }
 
