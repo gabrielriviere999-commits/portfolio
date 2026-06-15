@@ -42,9 +42,8 @@ button:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-button:hover {
-  background: #e0e0e0;
-}
+button:hover { background:#e0e0e0; }
+.btn-color:hover { filter: brightness(1.2) }
 
 #result {
   margin-top: 5px;
@@ -92,9 +91,9 @@ button:hover {
   <div id="dropA">
     <textarea id="textA" wrap="off"></textarea>
   </div>
+  <button onclick="deleteA()" class="btn-color" style="background-color:#ff4444;">Effacer tout</button>
   <button onclick="importFile('textA','fileA')">Importer fichier…</button>
   <input type="file" id="fileA" style="display:none">
-  <button onclick="deleteA()">Effacer tout</button>
 </div>
 
 <div class="card">
@@ -102,15 +101,15 @@ button:hover {
   <div id="dropB">
     <textarea id="textB" wrap="off"></textarea>
   </div>
+  <button onclick="deleteB()" class="btn-color" style="background-color:#ff4444;">Effacer tout</button>
   <button onclick="importFile('textB','fileB')">Importer fichier…</button>
   <input type="file" id="fileB" style="display:none">
-  <button onclick="deleteB()">Effacer tout</button>
 </div>
 
 </div>
 
 <div class="card">
-<button onclick="compare()">Comparer</button>
+<button onclick="compare()" class="btn-color" style="background-color:#ff8800;">Comparer</button>
 <div id="summary" style="margin-top:10px; font-weight:bold;"></div>
 <div id="result"></div>
 </div>
