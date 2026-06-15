@@ -56,9 +56,8 @@ button:active {
   border-color: #404040 #fff #fff #404040;
   background: #c0c0c0;
 }
-button:hover {
-  background: #e0e0e0;
-}
+button:hover { background:#e0e0e0; }
+.btn-color:hover { filter: brightness(1.2) }
 
 .layout {
   display: flex;
@@ -134,9 +133,9 @@ iframe {
 <button type="button" onclick="insertList('ul')">UL</button>
 <button type="button" onclick="insertList('ol')">OL</button>
 |
-<button id="copyCode">Copier le code</button>
-<button type="button" onclick="updatePreview()">Prévisualiser</button>
-<button id="importHtmlFile">Importer HTML...</button>
+<button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
+<button type="button" onclick="updatePreview()" class="btn-color" style="background-color:#ff8800;">Prévisualiser</button>
+<button id="importHtmlFile">Importer fichier...</button>
 <input type="file" id="htmlFileInput" style="display:none;">
 |
 <button class="btn-toggle" onclick="formatText(this, 'bold')">Gras</button>
