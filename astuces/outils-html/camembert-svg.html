@@ -407,6 +407,15 @@ document.getElementById("importBtn").onclick = function() {
   var div = document.createElement("div");
   div.innerHTML = txt;
 
+  var svg = div.getElementsByTagName("svg")[0];
+  if (svg) {
+      var w = parseInt(svg.getAttribute("width"), 10);
+      if (!isNaN(w) && w > 0) {
+          pieSize = w;
+          document.getElementById("pieSize").value = w;
+      }
+  }
+
   var paths = div.getElementsByTagName("path");
   var newSlices = [];
 
