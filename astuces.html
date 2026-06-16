@@ -39,6 +39,8 @@ body {
   padding: 4px;
 }
 
+fieldset { border: 2px groove #fff; }
+
 /* --- Barre de navigation --- */
 .navbar {
   background-color: #c0c0c0;
@@ -383,7 +385,8 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</
     <div class="thumbnail" data-group="linux" onclick="currentSlide(16, 'linux')"></div>
 </div>
 
-<p style="font-size:20px;">Télécharger</p>
+<br>
+<fieldset><legend>Télécharger</legend>
 <select id="download-script-linux" onchange="downloadFile(this)" aria-label="Script">
     <option value="">Script...</option>
     <option value="astuces/linux/scripts/ocr-batch.sh">
@@ -427,6 +430,7 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</
         ascii-table.zip
     </option>
 </select>
+</fieldset>
 <br><br><hr>
 
 <h2>Android</h2>
@@ -489,7 +493,9 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</
     <div class="thumbnail" data-group="android" onclick="currentSlide(8, 'android')">Indexeur</div>
     <div class="thumbnail" data-group="android" onclick="currentSlide(9, 'android')">Arbo</div>
 </div>
-<p style="font-size:20px;">Télécharger</p>
+
+<br>
+<fieldset><legend>Télécharger</legend>
 <select id="download-android" onchange="downloadFile(this)" aria-label="Android">
     <option value="">Android...</option>
     <option disabled>
@@ -541,7 +547,8 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</
         inverser-casse-android.py
     </option>
 </select>
-<p><a href="https://www.dropbox.com/scl/fi/khfuhw0w4dactu1yfzcku/projets-android.zip?rlkey=iz0ip79mup794sms9pzm3qpjj&st=qvoxf4my&dl=1">Télécharger projets depuis Dropbox</a></p>
+<p></p><a href="https://www.dropbox.com/scl/fi/khfuhw0w4dactu1yfzcku/projets-android.zip?rlkey=iz0ip79mup794sms9pzm3qpjj&st=qvoxf4my&dl=1">Télécharger projets depuis Dropbox</a>
+</fieldset>
 <hr>
 <select id="download-autre-os" onchange="downloadFile(this)" aria-label="Autre OS">
     <option value="">Autre os...</option>
