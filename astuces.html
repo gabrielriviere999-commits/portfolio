@@ -16,6 +16,13 @@ body {
   padding-top: 50px;
 }
 
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  margin-top:0;
+}
+
 .win98-a {
   background: #d4d0c8;
   border: 2px solid;
@@ -31,13 +38,6 @@ body {
 }
 .win98-a:hover { filter: brightness(1.2); text-decoration:underline; }
 .win98-a-yellow:hover { filter: brightness(1.1); text-decoration:underline; }
-
-.donate {
-  background: #c0c0c0;
-  border: 2px solid;
-  border-color: #808080 #ffffff #ffffff #808080;
-  padding: 4px;
-}
 
 fieldset { border: 2px groove #fff; }
 
@@ -282,11 +282,12 @@ select {
 </div>
 
 <!-- Contenu -->
-<h1>Astuces</h1>
-<div class="donate">Cette page rassemble des astuces, <a class="link" href="astuces/outils-html/outils.html">outils</a> utilisables directement dans le navigateur, scripts, et applications.<p></p>
-Si ce travail vous est utile, vous pouvez le soutenir grâce à un don volontaire.<br>
-Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</div>
+<fieldset><legend><h1>Astuces</h1></legend>
+<pre>Cette page rassemble des astuces, <a class="link" href="astuces/outils-html/outils.html">outils</a> utilisables directement dans le navigateur, scripts, et applications.
+Si ce travail vous est utile, vous pouvez le soutenir grâce à un don volontaire.
+Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</pre>
 <a href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal" class="win98-a win98-a-yellow" style="color:black;background-color:#ffd700;">💙 Faire un don via PayPal</a>
+</fieldset>
 
 <h2>Linux</h2>
 
