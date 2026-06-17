@@ -36,6 +36,11 @@ button:hover { background:#e0e0e0; }
   display: block;
 }
 
+.scrollZone {
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
 .container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -101,12 +106,14 @@ input, textarea {
 
 <div class="card">
 <h3>Parts</h3>
+<div class="scrollZone">
 <table id="tbl">
   <thead>
     <tr><th style="width:100px">Libellé</th><th style="width:20px">Valeur</th><th style="width:60px";>Couleur</th><th></th></tr>
   </thead>
   <tbody></tbody>
 </table>
+</div>
 <button id="addBtn">Ajouter une part</button>
 <button id="validateBtn" class="btn-color" style="background-color:#ff8800;">Valider</button>
 <p></p>
@@ -115,7 +122,7 @@ input, textarea {
 
 <div class="card">
   <h3>Aperçu</h3>
-  <div id="preview"></div>
+  <div id="preview" class="scrollZone"></div>
 </div>
 
 <div class="card">
