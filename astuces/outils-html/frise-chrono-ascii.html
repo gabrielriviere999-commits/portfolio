@@ -67,8 +67,9 @@ input, textarea {
 ======================= -->
 <div id="editorPanel">
   <h3>Évènements</h3>
+  <button onclick="addEventUnshift()">Ajouter un évènement au début</button>
   <div id="eventList" class="scrollZone"></div>
-  <button onclick="addEvent()">Ajouter un évènement</button>
+  <button onclick="addEventPush()">Ajouter un évènement à la fin</button>
 </div>
 
 <!-- =======================
@@ -91,7 +92,17 @@ input, textarea {
 var events = [];
 
 /* --- Ajouter un évènement --- */
-function addEvent() {
+function addEventUnshift() {
+  events.unshift({
+    title: "Titre",
+    date: "01/01/2000",
+    desc: "Description",
+  });
+  refreshEditor();
+  exportAscii();
+}
+
+function addEventPush() {
   events.push({
     title: "Titre",
     date: "01/01/2000",
