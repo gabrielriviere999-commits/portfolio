@@ -101,6 +101,16 @@ function addEvent() {
   exportAscii();
 }
 
+function addEventAfter(i) {
+  events.splice(i + 1, 0, {
+    title: "Titre",
+    date: "01/01/2000",
+    desc: "Description"
+  });
+  refreshEditor();
+  exportAscii();
+}
+
 /* --- Supprimer un évènement --- */
 function removeEvent(i) {
   events.splice(i, 1);
@@ -141,10 +151,10 @@ function refreshEditor() {
         e.desc +
       '</textarea><br>' +
 
-      // Boutons ↑ ↓
+      // Boutons ↑ ↓ + x
       '<button onclick="moveEventUp(' + i + ')">↑</button> ' +
       '<button onclick="moveEventDown(' + i + ')">↓</button> ' +
-
+      '<button onclick="addEventAfter(' + i + ')">+</button> ' +
       '<button onclick="removeEvent(' + i + ')" class="btn-color" style="background-color:#ff4444;">x</button>' +
       '</div>';
   }
