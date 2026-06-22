@@ -35,6 +35,7 @@ textarea, #view, input {
   border-color:#808080 #ffffff #ffffff #808080;
   font-family:monospace;
 }
+input { width:15px; }
 button:hover { background:#e0e0e0; }
 #view {
   width:100%;
@@ -51,16 +52,18 @@ button:hover { background:#e0e0e0; }
 
 <div id="toolbar">
   <button id="btnFree" onclick="setTool('free')">Tracé libre</button>
-  <input id="freeChar" value="#" maxlength="1" style="width:15px;">
+  <input id="freeChar" value="#" maxlength="1">
   |
   <button id="btnLine" onclick="setTool('line')">Ligne</button>
-  <input id="lineChar" value="*" maxlength="1" style="width:15px;">
+  <input id="lineChar" value="*" maxlength="1">
   |
   <button id="btnArrow" onclick="setTool('arrow')">Flèche</button>
+  |
   <button id="btnRect" onclick="setTool('rect')">Rectangle</button>
+  <input id="rectChar" value="" maxlength="1">
   |
   <button id="btnEllipse" onclick="setTool('ellipse')">Ellipse</button>
-  <input id="ellipseChar" value="o" maxlength="1" style="width:15px;">
+  <input id="ellipseChar" value="o" maxlength="1">
   |
   <button id="btnMove" onclick="setTool('move')">Déplacer</button>
   <button id="btnCopy" onclick="setTool('copy')">Copier</button>
@@ -354,23 +357,38 @@ function drawRectangle(x1, y1, x2, y2) {
     ensureCell(xMin, yMin);
     ensureCell(xMax, yMax);
 
-    grid[yMin][xMin] = "+";
-    grid[yMin][xMax] = "+";
-    grid[yMax][xMin] = "+";
-    grid[yMax][xMax] = "+";
+    // lire le caractère personnalisé
+    var c = document.getElementById("rectChar").value;
+
+    // mode normal si input vide
+    var useCustom = (c && c.length > 0 && c !== " ");
+
+    var corner = useCustom ? c : "+";
+    var horiz  = useCustom ? c : "-";
+    var vert   = useCustom ? c : "|";
+
+    // coins
+    grid[yMin][xMin] = corner;
+    grid[yMin][xMax] = corner;
+    grid[yMax][xMin] = corner;
+    grid[yMax][xMax] = corner;
 
     var x, y;
+
+    // horizontales
     for (x = xMin + 1; x < xMax; x++) {
         ensureCell(x, yMin);
         ensureCell(x, yMax);
-        grid[yMin][x] = "-";
-        grid[yMax][x] = "-";
+        grid[yMin][x] = horiz;
+        grid[yMax][x] = horiz;
     }
+
+    // verticales
     for (y = yMin + 1; y < yMax; y++) {
         ensureCell(xMin, y);
         ensureCell(xMax, y);
-        grid[y][xMin] = "|";
-        grid[y][xMax] = "|";
+        grid[y][xMin] = vert;
+        grid[y][xMax] = vert;
     }
 
     render();
