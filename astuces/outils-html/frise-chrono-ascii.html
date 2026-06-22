@@ -12,6 +12,10 @@ body {
 
 h2, h3 { margin-top: 0; }
 
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
 #editorPanel, #previewPanel, #ioPanel {
   background: #c0c0c0;
   border: 2px solid;
@@ -19,17 +23,32 @@ h2, h3 { margin-top: 0; }
   padding: 10px;
   display: block;
 }
-
 .scrollZone {
   overflow-y: auto;
   max-height: 70vh;
 }
-
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    background: #c0c0c0;
 }
-
+/* rail */
+::-webkit-scrollbar-track {
+    background: #d9d9d9;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-bottom: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+/* barre (thumb) */
+::-webkit-scrollbar-thumb {
+    background: #aaaaaa;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-bottom: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
 button {
   background: #d4d0c8;
   color: black;
