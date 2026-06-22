@@ -8,7 +8,6 @@
 body {
   font-family: monospace;
   background: #c0c0c0;
-  padding-top: 120px;
 }
 
 button {
@@ -40,10 +39,10 @@ textarea {
   background: black;
   color: #0f0;
   padding: 15px;
-  margin-top: 20px;
   white-space: pre;
   border: 1px solid #444;
-  overflow-x: auto;
+  overflow: auto;
+  max-height: 70vh;
 }
 .folder {
   color: #4af;
@@ -58,49 +57,53 @@ textarea {
 }
 
 .toolbar {
-  display: block;
   background: #c0c0c0;
   border: 2px solid;
   border-color: #fff #404040 #404040 #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  overflow-y: auto;
-  max-height: 225px;
   padding: 4px;
-  z-index: 9999;
 }
-.toolbar.hidden {
-  visibility: hidden;
-  height: 0;
-  padding: 0;
-  overflow: hidden;
+
+.card {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  padding: 10px;
+  display: block;
+}
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 </style>
 </head>
 <body>
-    <h2>Arborescence ASCII & HTML</h2>
 
-    <div class="toolbar" style="opacity:0.8;">
-        <button onclick="renameRoot()">Renommer racine</button>
-        <button onclick="addFolder()">+ Dossier</button>
-        <button onclick="addFile()">+ Fichier</button>
-        <button onclick="goUp()">← Remonter</button>
-        <p>Dossier courant : <span id="currentPath"></span></p>
-    </div>
-    <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity:0.8;">≡</button>
+<h2>Arborescence ASCII & HTML</h2>
 
-    <div id="ascii"></div><br>
-    <button onclick="copyTree(this)" class="btn-color" style="background-color:#4caf50;">Copier texte</button>
-    <button onclick="copyTreeColored(this)" class="btn-color" style="background-color:#4caf50;">Copier HTML couleur</button>
-    <br><textarea id="importBox" wrap="off"></textarea><br>
-    <button onclick="restoreTree()" class="btn-color" style="background-color:#ff8800;">Mettre à jour à partir du texte</button>
-    <button onclick="importTreeFromText()" class="btn-color" style="background-color:#ff8800;">Importer (commande tree)</button>
-    <button id="importFileBtn">Importer fichier…</button>
-    <input type="file" id="fileInput" style="display:none;">
-    
-    <p><a style="font-size:24px;" href="notices/notice-arbo-ascii-html.html">Notice</a></p>
+<div class="container">
+
+<div class="card">
+  <button onclick="renameRoot()">Renommer racine</button>
+  <button onclick="addFolder()">+ Dossier</button>
+  <button onclick="addFile()">+ Fichier</button>
+  <button onclick="goUp()">← Remonter</button>
+  <p>Dossier courant : <span id="currentPath"></span></p>
+  <div id="ascii"></div>
+  <button onclick="copyTree(this)" class="btn-color" style="background-color:#4caf50;">Copier texte</button>
+  <button onclick="copyTreeColored(this)" class="btn-color" style="background-color:#4caf50;">Copier HTML couleur</button>
+</div>
+
+<div class="card">
+  <br><textarea id="importBox" wrap="off"></textarea><br>
+  <button onclick="restoreTree()" class="btn-color" style="background-color:#ff8800;">Mettre à jour à partir du texte</button>
+  <button onclick="importTreeFromText()" class="btn-color" style="background-color:#ff8800;">Importer (commande tree)</button>
+  <button id="importFileBtn">Importer fichier…</button>
+  <input type="file" id="fileInput" style="display:none;">
+</div>
+
+</div>
+
+<p><a style="font-size:24px;" href="notices/notice-arbo-ascii-html.html">Notice</a></p>
 
 <script>
 // --- Données ---
@@ -573,14 +576,6 @@ function buildAsciiText(node, prefix, pathArr) {
 }
 
 render();
-
-// --- Toolbar ---
-var toolbar = document.getElementsByClassName('toolbar')[0];
-var toggleBtn = document.getElementById('toggleToolbarBtn');
-
-toggleBtn.onclick = function () {
-    toolbar.classList.toggle('hidden');
-};
 
 // Parseur universel pour sortie "tree"
 // Entrée : texte brut de "tree" (avec ou sans -F)
