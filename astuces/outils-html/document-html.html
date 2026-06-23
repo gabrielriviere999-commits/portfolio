@@ -13,32 +13,9 @@ body {
   font-family: sans-serif;
   font-size: 14px;
   background: #c0c0c0;
-  padding-top: 200px;
 }
 
-h3 { margin-top: 0; }
-
-.toolbar {
-  display: block;
-  background: #c0c0c0;
-  border: 2px solid;
-  border-color: #fff #404040 #404040 #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  overflow-y: auto;
-  max-height: 225px;
-  padding: 4px;
-  z-index: 9999;
-}
-
-.toolbar.hidden {
-  visibility: hidden;
-  height: 0;
-  padding: 0;
-  overflow: hidden;
-}
+h2, h3 { margin-top: 0; }
 
 button {
   background: #d4d0c8;
@@ -114,54 +91,48 @@ iframe {
 </head>
 <body>
 
-<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
-
-<div class="toolbar" style="opacity: 0.8;">
-<button type="button" onclick="insertTemplate('page')">Page</button>
-<button type="button" onclick="insertTemplate('h1')">h1</button>
-<button type="button" onclick="insertTemplate('h2')">h2</button>
-<button type="button" onclick="insertTemplate('h3')">h3</button>
-<button type="button" onclick="insertTemplate('pagebreak')">Saut de page</button>
-|
-<button type="button" onclick="insertTemplate('code')">Code block</button>
-<button type="button" onclick="insertTemplate('figure')">Figure</button>
-<button type="button" onclick="insertTemplate('note')">Note</button>
-|
-<button type="button" onclick="insertList('ul')">ul</button>
-<button type="button" onclick="insertList('ol')">ol</button>
-|
-<button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
-<button type="button" onclick="updatePreview()" class="btn-color" style="background-color:#ff8800;">Prévisualiser</button>
-<button id="importHtmlFile">Importer fichier...</button>
-<input type="file" id="htmlFileInput" style="display:none;">
-|
-<button class="btn-toggle" onclick="formatText(this, 'bold')"><b>Gras</b></button>
-<button class="btn-toggle" onclick="formatText(this, 'italic')"><i>Italique</i></button>
-<button class="btn-toggle" onclick="formatText(this, 'underline')"><u>Souligné</u></button>
-<button class="btn-toggle" onclick="formatText(this, 'strikethrough')"><s>Barré</s></button>
-
-<button class="btn-toggle" onclick="formatText(this, 'hiliteColor', 'yellow')" style="background-color:#;"><span style="background-color:#ffff00;">Surligné</span></button>
-
-<button class="btn-toggle" onclick="formatText(this, 'foreColor', '#ff0000')" style="color:#ff0000;">Rouge</button>
-<button class="btn-toggle" onclick="formatText(this, 'foreColor', '#00aa00')" style="color:#00aa00;">Vert</button>
-<button class="btn-toggle" onclick="formatText(this, 'foreColor', '#0000ff')" style="color:#0000ff;">Bleu</button>
-|
-<button class="align-btn" onclick="toggleAlign(this, 'left')">Gauche</button>
-<button class="align-btn" onclick="toggleAlign(this, 'center')">Centre</button>
-<button class="align-btn" onclick="toggleAlign(this, 'right')">Droite</button>
-</div>
+<h2>Document HTML</h2>
 
 <a style="font-size:24px;" href="notices/notice-document-html.html">Notice</a>
 <div class="container">
   <div class="card">
-    <h3>Source HTML</h3>
-    <textarea id="editor"></textarea>
-    <div id="status">Prêt.</div>
+    <h3>Prévisualisation</h3>
+    <button type="button" onclick="insertTemplate('page')">Page</button>
+    <button type="button" onclick="insertTemplate('h1')">h1</button>
+    <button type="button" onclick="insertTemplate('h2')">h2</button>
+    <button type="button" onclick="insertTemplate('h3')">h3</button>
+    <button type="button" onclick="insertTemplate('pagebreak')">Saut de page</button>
+    |
+    <button type="button" onclick="insertTemplate('code')">Code block</button>
+    <button type="button" onclick="insertTemplate('figure')">Figure</button>
+    <button type="button" onclick="insertTemplate('note')">Note</button>
+    |
+    <button type="button" onclick="insertList('ul')">ul</button>
+    <button type="button" onclick="insertList('ol')">ol</button>
+    |
+    <button class="btn-toggle" onclick="formatText(this, 'bold')"><b>Gras</b></button>
+    <button class="btn-toggle" onclick="formatText(this, 'italic')"><i>Italique</i></button>
+    <button class="btn-toggle" onclick="formatText(this, 'underline')"><u>Souligné</u></button>
+    <button class="btn-toggle" onclick="formatText(this, 'strikethrough')"><s>Barré</s></button>
+    <button class="btn-toggle" onclick="formatText(this, 'hiliteColor', 'yellow')" style="background-color:#;"><span style="background-color:#ffff00;">Surligné</span></button>
+    <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#ff0000')" style="color:#ff0000;">Rouge</button>
+    <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#00aa00')" style="color:#00aa00;">Vert</button>
+    <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#0000ff')" style="color:#0000ff;">Bleu</button>
+    |
+    <button class="align-btn" onclick="toggleAlign(this, 'left')">Gauche</button>
+    <button class="align-btn" onclick="toggleAlign(this, 'center')">Centre</button>
+    <button class="align-btn" onclick="toggleAlign(this, 'right')">Droite</button>
+    <iframe id="preview"></iframe>
   </div>
 
   <div class="card">
-    <h3>Prévisualisation</h3>
-    <iframe id="preview"></iframe>
+    <h3>Code HTML</h3>
+    <button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
+    <br><textarea id="editor"></textarea><br>
+    <button type="button" onclick="updatePreview()" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
+    <button id="importHtmlFile">Importer fichier...</button>
+    <input type="file" id="htmlFileInput" style="display:none;">
+    <div id="status">Prêt.</div>
   </div>
 </div>
 
@@ -536,30 +507,6 @@ function removeAlignmentStyles(doc) {
     }
   }
 }
-
-
-var toolbar = document.getElementsByClassName('toolbar')[0];
-var toggleBtn = document.getElementById('toggleToolbarBtn');
-
-var toolbarVisible = true;
-
-toggleBtn.onclick = function(e) {
-  e = e || window.event;
-  e.cancelBubble = true;
-  if (e.stopPropagation) e.stopPropagation();
-
-  // Remettre le focus dans l'aperçu
-  var doc = preview.contentDocument || preview.contentWindow.document;
-  doc.body.focus();
-
-  toolbarVisible = !toolbarVisible;
-
-  if (toolbarVisible) {
-    toolbar.className = 'toolbar';
-  } else {
-    toolbar.className = 'toolbar hidden';
-  }
-};
 
 /* --- COPIER --- */
 document.getElementById('copyCode').onclick = function(e) {
