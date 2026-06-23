@@ -82,9 +82,6 @@ input, textarea {
 <body>
 <h2>Frise chronologique ASCII</h2>
 <div class="container">
-<!-- =======================
-     PANEL 1 : ÉDITEUR
-======================= -->
 <div id="editorPanel">
   <h3>Évènements</h3>
   <button onclick="addEventUnshift()">Ajouter évènement au début</button>
@@ -92,12 +89,8 @@ input, textarea {
   <div id="eventList" class="scrollZone"></div>
 </div>
 
-<!-- =======================
-     PANEL 2 : IMPORT / EXPORT
-======================= -->
 <div id="ioPanel">
   <h3>Aperçu / texte</h3>
-
   <button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier</button>
   <br><textarea id="io" wrap="off" style="width:100%;height:200px;box-sizing:border-box;"></textarea><br>
   <button onclick="importAscii()" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
