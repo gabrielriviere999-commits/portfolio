@@ -92,13 +92,12 @@ fieldset { border: 2px groove #fff; display: inline-block; }
 .tab-button {
   font-size: 14px;
   padding: 8px 10px;
+  width: 36px;
   background-color: #c0c0c0;
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
   cursor: pointer;
-  box-sizing: border-box;
   color: black;
-  vertical-align: middle;
 }
 .tab-button:hover:not(.tab-button-active) {
   background-color: #d8d8d8;
@@ -114,6 +113,7 @@ fieldset { border: 2px groove #fff; display: inline-block; }
 .win98-select {
   /* Style Win98 */
   font-size: 14px;
+  font-family: monospace;
   background-color: #c0c0c0;
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
@@ -121,8 +121,8 @@ fieldset { border: 2px groove #fff; display: inline-block; }
   cursor: pointer;
   box-sizing: border-box;
   /* Forme carrée */
-  width: 36px;
-  height: 36px;
+  width: 36.5px;
+  height: 36.5px;
   padding: 0;
   margin: 0;
   /* Supprimer le style moderne du select */
@@ -134,7 +134,6 @@ fieldset { border: 2px groove #fff; display: inline-block; }
   line-height: 32px;
   /* Empêche les décalages */
   display: inline-block;
-  vertical-align: middle;
 }
 .win98-select:hover {
   background-color: #d8d8d8;
@@ -292,9 +291,9 @@ select {
     <option value="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub</option>
     <option value="__github__">Dépôt GitHub (nouvel onglet)</option>
 </select>
-<a href="search.html" class="win98-select">Q</a>
+<a href="search.html" class="tab-button">Q</a>
 		<select class="win98-select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex = 0;" style="text-decoration:none;">
-            <option value="">tab?</option>
+            <option value="">tab</option>
             <option value="index.html">Accueil</option>
             <option value="bts.html">BTS</option>
             <option value="stages.html">Stages</option>
