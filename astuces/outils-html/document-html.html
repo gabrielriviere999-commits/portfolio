@@ -16,10 +16,7 @@ body {
   padding-top: 200px;
 }
 
-h1 {
-  margin: 0 0 10px 0;
- font-size: 18px;
-}
+h3 { margin-top: 0; }
 
 .toolbar {
   display: block;
@@ -59,35 +56,17 @@ button:active {
 button:hover { background:#e0e0e0; }
 .btn-color:hover { filter: brightness(1.2) }
 
-.layout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
-.panel {
-  background: #ffffff;
-  border: 1px solid #ccc;
-  padding: 8px;
-}
-
-.panel h2 {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 3px;
-}
-
-.panel-editor {
-  flex: 1 1 50%;
-  min-width: 300px;
-}
-
-.panel-preview {
-  flex: 1 1 45%;
-  min-width: 280px;
-  max-height: 80vh;
-  overflow: auto;
+.card {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  padding: 10px;
+  display: block;
 }
 
 textarea {
@@ -95,7 +74,8 @@ textarea {
   height: 70vh;
   font-family: monospace;
   font-size: 12px;
-  border: 1px solid #aaa;
+  border:2px solid;
+  border-color:#808080 #ffffff #ffffff #808080;
   padding: 6px;
   resize: vertical;
   white-space: pre;
@@ -104,14 +84,9 @@ textarea {
 iframe {
   width: 100%;
   height: 70vh;
-  border: 1px solid #aaa;
+  border:2px solid;
+  border-color:#808080 #ffffff #ffffff #808080;
   background: #fff;
-}
-
-.status {
-  margin-top: 4px;
-  font-size: 11px;
-  color: #555;
 }
 
 /* scrollbar */
@@ -143,18 +118,18 @@ iframe {
 <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity: 0.8;">≡</button>
 
 <div class="toolbar" style="opacity: 0.8;">
-<button type="button" onclick="insertTemplate('page')">+ Page</button>
-<button type="button" onclick="insertTemplate('h1')">+ H1</button>
-<button type="button" onclick="insertTemplate('h2')">+ H2</button>
-<button type="button" onclick="insertTemplate('h3')">+ H3</button>
-<button type="button" onclick="insertTemplate('pagebreak')">+ Saut de page</button>
+<button type="button" onclick="insertTemplate('page')">Page</button>
+<button type="button" onclick="insertTemplate('h1')">h1</button>
+<button type="button" onclick="insertTemplate('h2')">h2</button>
+<button type="button" onclick="insertTemplate('h3')">h3</button>
+<button type="button" onclick="insertTemplate('pagebreak')">Saut de page</button>
 |
-<button type="button" onclick="insertTemplate('code')">+ Code block</button>
-<button type="button" onclick="insertTemplate('figure')">+ Figure</button>
-<button type="button" onclick="insertTemplate('note')">+ Note</button>
+<button type="button" onclick="insertTemplate('code')">Code block</button>
+<button type="button" onclick="insertTemplate('figure')">Figure</button>
+<button type="button" onclick="insertTemplate('note')">Note</button>
 |
-<button type="button" onclick="insertList('ul')">UL</button>
-<button type="button" onclick="insertList('ol')">OL</button>
+<button type="button" onclick="insertList('ul')">ul</button>
+<button type="button" onclick="insertList('ol')">ol</button>
 |
 <button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
 <button type="button" onclick="updatePreview()" class="btn-color" style="background-color:#ff8800;">Prévisualiser</button>
@@ -178,15 +153,15 @@ iframe {
 </div>
 
 <a style="font-size:24px;" href="notices/notice-document-html.html">Notice</a>
-<div class="layout">
-  <div class="panel panel-editor">
-    <h2>Source HTML</h2>
+<div class="container">
+  <div class="card">
+    <h3>Source HTML</h3>
     <textarea id="editor"></textarea>
-    <div class="status" id="status">Prêt.</div>
+    <div id="status">Prêt.</div>
   </div>
 
-  <div class="panel panel-preview">
-    <h2>Prévisualisation</h2>
+  <div class="card">
+    <h3>Prévisualisation</h3>
     <iframe id="preview"></iframe>
   </div>
 </div>
