@@ -416,20 +416,10 @@ function showLoupe(x, y){
     var lh = 200;
 
     // Position horizontale basée sur la position interne
-    var lx;
-    if (x > canvas.width * 0.75) {
-        lx = rect.left + scrollX + x - lw - 40;
-    } else {
-        lx = rect.left + scrollX + x + 40;
-    }
+    lx = rect.left + scrollX + x - 40;
 
     // Position verticale basée sur la position interne
-    var ly;
-    if (y > canvas.height * 0.75) {
-        ly = rect.top + scrollY + y - lh - 40;
-    } else {
-        ly = rect.top + scrollY + y + 40;
-    }
+    ly = rect.top + scrollY + y + 40;
 
     loupe.style.left = lx + "px";
     loupe.style.top  = ly + "px";
