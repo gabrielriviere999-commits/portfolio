@@ -73,10 +73,20 @@ hr {
 }
 label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 #dropZoneMulti {
+  position: relative;
   border: 2px dashed #808080;
   background: #e0e0e0;
   padding: 10px;
   text-align: center;
+}
+#multiFileInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -130,8 +140,9 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 
 <div class="card">
 <h3>Traitement par lots</h3>
-<div id="dropZoneMulti">Glissez-déposez plusieurs fichiers ici</div>
-<input type="file" id="multiFileInput" multiple>
+<div id="dropZoneMulti">Cliquer ou glisser-déposer une image ici
+  <input type="file" id="multiFileInput" multiple>
+</div>
 <div id="multiFileList"></div>
 <label>Suffixe fichiers :</label>
 <input id="fileSuffix" type="text" value="_remplace"><br>
