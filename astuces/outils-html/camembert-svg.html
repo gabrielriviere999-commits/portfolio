@@ -134,7 +134,7 @@ input, textarea {
 <div class="scrollZone">
 <table id="tbl">
   <thead>
-    <tr><th style="width:100px">Libellé</th><th style="width:20px">Valeur</th><th style="width:60px";>Couleur</th><th></th></tr>
+    <tr><th style="width:100px">Libellé</th><th style="width:50px">Val %</th><th style="width:60px";>Couleur</th><th></th></tr>
   </thead>
   <tbody></tbody>
 </table>
@@ -228,20 +228,22 @@ function rebuildTable() {
 
     // POURCENTAGE
     var td2 = document.createElement("td");
+
     var inp2 = document.createElement("input");
-    inp2.type = "text";
+    inp2.type = "number";
+    inp2.min = "0";
+    inp2.max = "100";
+    inp2.step = "0.1";
 
     var pct = total > 0 ? (s.value / total) * 100 : 0;
     pct = Math.round(pct * 10) / 10;
-    inp2.value = pct + "%";
+    inp2.value = pct;
 
     inp2.oninput = function(index){ return function(){
-      var raw = this.value.replace("%","").replace(",",".");
-      var p = parseFloat(raw);
+      var p = parseFloat(this.value);
       if (isNaN(p) || p < 0) p = 0;
       if (p > 100) p = 100;
 
-      // Valeur brute = pourcentage
       slices[index].value = p;
     }}(i);
 
