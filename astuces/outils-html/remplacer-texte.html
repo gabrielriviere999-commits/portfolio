@@ -14,7 +14,8 @@ h2, h3 { margin-top: 0; }
   padding: 10px;
   display: block;
 }
-textarea { width:100%; height:200px; box-sizing:border-box; font-family:monospace; resize:vertical; }
+.texte { width:100%; height:200px; box-sizing:border-box; font-family:monospace; resize:vertical; }
+textarea { width:100%; height:100px; box-sizing:border-box; font-family:monospace; resize:vertical; }
 @media (hover: none) and (pointer: coarse) {
 ::-webkit-scrollbar {
   width: 24px;
@@ -113,7 +114,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 
 <div class="card">
 <h3>Source</h3>
-<textarea id="input" wrap="off"></textarea><br>
+<textarea id="input" class="texte" wrap="off"></textarea><br>
 <button onclick="appliquerTransformations()" class="btn-color" style="background-color:#ff8800;">Appliquer</button>
 <button onclick="effacerTout()" class="btn-color" style="background-color:#ff4444;">Effacer tout</button>
 <button id="importFileBtn">Importer fichier…</button>
@@ -123,8 +124,20 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <div class="card">
 <h3>Résultat</h3>
 <button onclick="copier()" class="btn-color" style="background-color:#4caf50;">Copier</button>
-<br><textarea id="output" wrap="off" readonly></textarea>
+<br><textarea id="output" class="texte" wrap="off" readonly></textarea>
 <div id="stats" style="font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
+</div>
+
+<div class="card">
+<h3>Traitement par lots</h3>
+<div id="dropZoneMulti">
+Glissez-déposez plusieurs fichiers ici
+</div>
+<input type="file" id="multiFileInput" multiple>
+<div id="multiFileList"></div>
+<label>Suffixe fichiers :</label>
+<input id="fileSuffix" type="text" value="_remplace"><br>
+<button onclick="telechargerTousFichiers()" class="btn-color" style="background-color:#4caf50;">Appliquer et télécharger tous les résultats</button>
 </div>
 
 <script>
@@ -209,74 +222,9 @@ function updateStats(text) {
 
 function appliquerTransformations() {
   var txt = document.getElementById("input").value;
-
-  // 1) minuscule
-  if (document.getElementById("chk_min").checked) {
-    txt = txt.toLowerCase();
-  }
-
-  // 2) majuscule
-  if (document.getElementById("chk_maj").checked) {
-    txt = txt.toUpperCase();
-  }
-
-  // 3) inverser casse
-  if (document.getElementById("chk_inv").checked) {
-    var out = "";
-    for (var i = 0; i < txt.length; i++) {
-      var c = txt.charAt(i);
-      var lower = c.toLowerCase();
-      var upper = c.toUpperCase();
-      out += (c === lower) ? upper : lower;
-    }
-    txt = out;
-  }
-
-  // 4) sans accents
-  if (document.getElementById("chk_acc").checked) {
-    txt = sansAccents(txt);
-  }
-
-  // 5) nettoyer espaces
-  if (document.getElementById("chk_spc").checked) {
-    // tabulations → _
-    txt = txt.replace(/\t/g, "_");
-    // espaces multiples → un seul espace
-    txt = txt.replace(/ +/g, " ");
-    // espace simple → _
-    txt = txt.replace(/ /g, "_");
-  }
-
-  // 6) convertir guillemets typographiques → "
-  if (document.getElementById("chk_quo").checked) {
-    txt = txt.replace(/[«»“”„‟❝❞⹂〝〞〟＂『』「」]/g, '"');
-  }
-
-  // 7) convertir demi-guillemets typographiques → '
-  if (document.getElementById("chk_squo").checked) {
-    txt = txt.replace(/[‘’‚‛`]/g, "'");
-  }
-
-  // 8) remplacements personnalksés
-  txt = appliquerRemplacementsPersonnalises(txt);
-
-  // 9) Préfixe
-  var prefix = document.getElementById("addPrefix").value;
-  txt = applyPrefix(txt, prefix);
-  var prefix = document.getElementById("removePrefix").value;
-  txt = removePrefix(txt, prefix);
-
-  // 10) Suffixe
-  var suffix = document.getElementById("addSuffix").value;
-  txt = applySuffix(txt, suffix);
-  var suffix = document.getElementById("removeSuffix").value;
-  txt = removeSuffix(txt, suffix);
-
-  // 11) mettre a jour les stats
+  txt = transformerTexte(txt);
   updateStats(txt);
-
-  // 12) afficher résultat
-  setText(document.getElementById("output"), txt);
+  document.getElementById("output").value = txt;
 }
 
 function exclusiviteCasse(chk) {
@@ -395,7 +343,7 @@ function sansAccents(str) {
 // Bouton copier
 function copier() {
   var btn = event.target;
-  var texte = document.getElementById("output").textContent;
+  var texte = document.getElementById("output").value;
 
   var temp = document.createElement("textarea");
   temp.value = texte;
@@ -411,7 +359,7 @@ function copier() {
 // Boutons Effacer
 function effacerTout() {
   document.getElementById("input").value = "";
-  setText(document.getElementById("output"), "");
+  document.getElementById("output").value = "";
   updateStats("");
 }
 
@@ -536,6 +484,13 @@ document.getElementById("chk_spc").onchange = saveChecks;
 document.getElementById("chk_quo").onchange = saveChecks;
 document.getElementById("chk_squo").onchange = saveChecks;
 
+document.getElementById("fileSuffix").oninput = function () {
+    localStorage.setItem(
+        "file_suffix",
+        this.value
+    );
+};
+
 window.onload = function() {
   var cmin = localStorage.getItem("chk_min");
   var cmaj = localStorage.getItem("chk_maj");
@@ -553,29 +508,27 @@ window.onload = function() {
   if (cquo !== null) document.getElementById("chk_quo").checked = (cquo === "1");
   if (csquo !== null) document.getElementById("chk_squo").checked = (csquo === "1");
 
-  var savedPrefix = localStorage.getItem("add_prefix_value");
-  if (savedPrefix !== null) {
-    document.getElementById("addPrefix").value = savedPrefix;
-  }
+  var v;
 
-  var savedSuffix = localStorage.getItem("add_suffix_value");
-  if (savedSuffix !== null) {
-    document.getElementById("addSuffix").value = savedSuffix;
-  }
+  v = localStorage.getItem("add_prefix_value");
+  if (v !== null) document.getElementById("addPrefix").value = v;
 
-  var savedPrefix = localStorage.getItem("remove_prefix_value");
-  if (savedPrefix !== null) {
-    document.getElementById("removePrefix").value = savedPrefix;
-  }
+  v = localStorage.getItem("add_suffix_value");
+  if (v !== null) document.getElementById("addSuffix").value = v;
 
-  var savedSuffix = localStorage.getItem("remove_suffix_value");
-  if (savedSuffix !== null) {
-    document.getElementById("removeSuffix").value = savedSuffix;
-  }
+  v = localStorage.getItem("remove_prefix_value");
+  if (v !== null) document.getElementById("removePrefix").value = v;
 
-  chargerReplacements();
-  document.getElementById("repl_ignore_case").onchange = saveReplacements;
-};
+  v = localStorage.getItem("remove_suffix_value");
+  if (v !== null) document.getElementById("removeSuffix").value = v;
+
+  var s = localStorage.getItem("file_suffix");
+  if (s !== null)
+      document.getElementById("fileSuffix").value = s;
+
+    chargerReplacements();
+    document.getElementById("repl_ignore_case").onchange = saveReplacements;
+  };
 
 // Exporter options
 function exportOptions() {
@@ -618,19 +571,32 @@ function exportOptions() {
 }
 
 function getReplacements() {
+
     var cont = document.getElementById("repl_container");
     var list = [];
     var divs = cont.getElementsByTagName("div");
 
     for (var i = 0; i < divs.length; i++) {
-        var inputs = divs[i].getElementsByTagName("input");
-        if (inputs.length === 2) {
-            list.push({
-                from: inputs[0].value,
-                to: inputs[1].value
-            });
+
+        var ta = divs[i].getElementsByTagName("textarea");
+
+        var from = "";
+        var to = "";
+
+        for (var j = 0; j < ta.length; j++) {
+
+            var t = ta[j].getAttribute("data-type");
+
+            if (t === "from") from = ta[j].value;
+            if (t === "to") to = ta[j].value;
         }
+
+        list.push({
+            from: from,
+            to: to
+        });
     }
+
     return list;
 }
 
@@ -730,29 +696,40 @@ function ajouterRemplacement(from, to) {
   };
 
   // Champ "chercher"
-  var inp1 = document.createElement("input");
-  inp1.type = "text";
+  var inp1 = document.createElement("textarea");
   inp1.setAttribute("data-type", "from");
   inp1.value = from || "";
   inp1.placeholder = "chercher";
+  inp1.rows = 4;
+  inp1.style.width = "100%";
+  inp1.style.fontFamily = "monospace";
   inp1.oninput = saveReplacements;
 
   // Champ "remplacer"
-  var inp2 = document.createElement("input");
-  inp2.type = "text";
+  var inp2 = document.createElement("textarea");
   inp2.setAttribute("data-type", "to");
   inp2.value = to || "";
   inp2.placeholder = "remplacer";
+  inp2.rows = 4;
+  inp2.style.width = "100%";
+  inp2.style.fontFamily = "monospace";
   inp2.oninput = saveReplacements;
 
   // Construction de la ligne
+  div.appendChild(document.createTextNode("Chercher :"));
+  div.appendChild(document.createElement("br"));
+  div.appendChild(inp1);
+
+  div.appendChild(document.createElement("br"));
+
+  div.appendChild(document.createTextNode("Remplacer par :"));
+  div.appendChild(document.createElement("br"));
+  div.appendChild(inp2);
+
+  div.appendChild(document.createElement("br"));
   div.appendChild(up);
   div.appendChild(down);
   div.appendChild(del);
-  div.appendChild(document.createTextNode(" "));
-  div.appendChild(inp1);
-  div.appendChild(document.createTextNode(" → "));
-  div.appendChild(inp2);
 
   var hr = document.createElement("hr");
   hr.style.border = "0";
@@ -764,13 +741,192 @@ function ajouterRemplacement(from, to) {
   saveReplacements();
 }
 
+/* --- Fichiers multiples --- */
+var fichiersMultiples = [];
+
+function afficherFichiersMultiples() {
+
+    var zone = document.getElementById("multiFileList");
+
+    if (!zone) return;
+
+    var html = "";
+
+    for (var i = 0; i < fichiersMultiples.length; i++) {
+
+        html +=
+        "<div>" +
+        (i + 1) +
+        " - " +
+        fichiersMultiples[i].nom +
+        " (" +
+        fichiersMultiples[i].contenu.length +
+        " caractères)" +
+        "</div>";
+    }
+
+    zone.innerHTML = html;
+}
+
+function chargerFichiers(files) {
+
+    fichiersMultiples = [];
+
+    var restant = files.length;
+
+    if (restant === 0) return;
+
+    for (var i = 0; i < files.length; i++) {
+
+        (function(file) {
+
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+
+                fichiersMultiples.push({
+                    nom: file.name,
+                    contenu: e.target.result
+                });
+
+                restant--;
+
+                if (restant === 0) {
+                    afficherFichiersMultiples();
+                }
+            };
+
+            reader.readAsText(file);
+
+        })(files[i]);
+    }
+}
+
+function transformerTexte(txt) {
+
+  if (document.getElementById("chk_min").checked) {
+    txt = txt.toLowerCase();
+  }
+
+  if (document.getElementById("chk_maj").checked) {
+    txt = txt.toUpperCase();
+  }
+
+  if (document.getElementById("chk_inv").checked) {
+    var out = "";
+    for (var i = 0; i < txt.length; i++) {
+      var c = txt.charAt(i);
+      var lower = c.toLowerCase();
+      var upper = c.toUpperCase();
+      out += (c === lower) ? upper : lower;
+    }
+    txt = out;
+  }
+
+  if (document.getElementById("chk_acc").checked) {
+    txt = sansAccents(txt);
+  }
+
+  if (document.getElementById("chk_spc").checked) {
+    txt = txt.replace(/\t/g, "_");
+    txt = txt.replace(/ +/g, " ");
+    txt = txt.replace(/ /g, "_");
+  }
+
+  if (document.getElementById("chk_quo").checked) {
+    txt = txt.replace(/[«»“”„‟❝❞⹂〝〞〟＂『』「」]/g, '"');
+  }
+
+  if (document.getElementById("chk_squo").checked) {
+    txt = txt.replace(/[‘’‚‛`]/g, "'");
+  }
+
+  txt = appliquerRemplacementsPersonnalises(txt);
+
+  txt = applyPrefix(txt, document.getElementById("addPrefix").value);
+  txt = removePrefix(txt, document.getElementById("removePrefix").value);
+
+  txt = applySuffix(txt, document.getElementById("addSuffix").value);
+  txt = removeSuffix(txt, document.getElementById("removeSuffix").value);
+
+  return txt;
+}
+
+function traiterTousFichiers() {
+    if (fichiersMultiples.length === 0) {
+        alert("Aucun fichier chargé");
+        return;
+    }
+
+    for (var i = 0; i < fichiersMultiples.length; i++) {
+        fichiersMultiples[i].resultat =
+            transformerTexte(
+                fichiersMultiples[i].contenu
+            );
+    }
+}
+
+function telechargerTousFichiers() {
+	traiterTousFichiers();
+	var suffixeTelechargement = document.getElementById("fileSuffix").value;
+    for (var i = 0; i < fichiersMultiples.length; i++) {
+
+        var blob = new Blob(
+            [fichiersMultiples[i].resultat],
+            { type: "text/plain" }
+        );
+
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+
+        a.download =
+            fichiersMultiples[i].nom.replace(
+                /(\.[^.]+)?$/,
+                suffixeTelechargement + "$1"
+            );
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+    }
+}
+
+document.getElementById("multiFileInput")
+.addEventListener("change", function() {
+
+    chargerFichiers(this.files);
+});
+
+var dz = document.getElementById("dropZoneMulti");
+
+dz.addEventListener("dragover", function(e) {
+
+    e.preventDefault();
+});
+
+dz.addEventListener("drop", function(e) {
+
+    e.preventDefault();
+
+    chargerFichiers(
+        e.dataTransfer.files
+    );
+});
+
 function saveReplacements() {
   var cont = document.getElementById("repl_container");
   var list = [];
 
   for (var i = 0; i < cont.children.length; i++) {
     var div = cont.children[i];
-    var inputs = div.getElementsByTagName("input");
+    var inputs = [];
+
+    var ta = div.getElementsByTagName("textarea");
+
+    for(var j=0;j<ta.length;j++){
+        inputs.push(ta[j]);
+    }
 
     var from = "";
     var to = "";
@@ -814,7 +970,13 @@ function appliquerRemplacementsPersonnalises(txt) {
 
   for (var i = 0; i < cont.children.length; i++) {
     var div = cont.children[i];
-    var inputs = div.getElementsByTagName("input");
+    var inputs = [];
+
+    var ta = div.getElementsByTagName("textarea");
+
+    for(var j=0;j<ta.length;j++){
+        inputs.push(ta[j]);
+    }
 
     var from = "";
     var to = "";
