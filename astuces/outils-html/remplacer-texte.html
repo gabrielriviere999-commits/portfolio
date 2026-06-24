@@ -72,6 +72,12 @@ hr {
   margin: 8px 0;
 }
 label { display:inline-block; white-space:nowrap; vertical-align:middle; }
+#dropZoneMulti {
+  border: 2px dashed #808080;
+  background: #e0e0e0;
+  padding: 10px;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -129,7 +135,6 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <div id="multiFileList"></div>
 <label>Suffixe fichiers :</label>
 <input id="fileSuffix" type="text" value="_remplace"><br>
-<button onclick="telechargerTousFichiers()" class="btn-color" style="background-color:#4caf50;">Appliquer et télécharger tous les résultats</button>
 </div>
 </div>
 
@@ -151,15 +156,6 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
-function setText(el, txt) {
-    if (el.textContent !== undefined) el.textContent = txt;
-    else el.innerText = txt; // IE6/IE7
-}
-
-function getText(el) {
-    return (el.textContent !== undefined) ? el.textContent : el.innerText;
-}
-
 function applyPrefix(text, prefix) {
     if (!prefix) return text;
 
@@ -459,17 +455,14 @@ function saveChecks() {
 
 document.getElementById("chk_min").onchange = function() {
   exclusiviteCasse("min");
-  saveChecks();
 };
 
 document.getElementById("chk_maj").onchange = function() {
   exclusiviteCasse("maj");
-  saveChecks();
 };
 
 document.getElementById("chk_inv").onchange = function() {
   exclusiviteCasse("inv");
-  saveChecks();
 };
 
 document.getElementById("addPrefix").oninput = function () {
@@ -770,11 +763,45 @@ function afficherFichiersMultiples() {
         fichiersMultiples[i].nom +
         " (" +
         fichiersMultiples[i].contenu.length +
-        " caractères)" +
+        " caractères) " +
+        '<button onclick="telechargerFichier(' + i + ')">' +
+        'Télécharger' +
+        '</button>' +
         "</div>";
     }
 
     zone.innerHTML = html;
+}
+
+function telechargerFichier(index) {
+
+    traiterTousFichiers();
+
+    var suffixeTelechargement =
+        document.getElementById("fileSuffix").value;
+
+    var fichier = fichiersMultiples[index];
+
+    var blob = new Blob(
+        [fichier.resultat],
+        { type: "text/plain" }
+    );
+
+    var a = document.createElement("a");
+
+    a.href = URL.createObjectURL(blob);
+
+    a.download =
+        fichier.nom.replace(
+            /(\.[^.]+)?$/,
+            suffixeTelechargement + "$1"
+        );
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(a.href);
 }
 
 function chargerFichiers(files) {
@@ -872,32 +899,6 @@ function traiterTousFichiers() {
             transformerTexte(
                 fichiersMultiples[i].contenu
             );
-    }
-}
-
-function telechargerTousFichiers() {
-	traiterTousFichiers();
-	var suffixeTelechargement = document.getElementById("fileSuffix").value;
-    for (var i = 0; i < fichiersMultiples.length; i++) {
-
-        var blob = new Blob(
-            [fichiersMultiples[i].resultat],
-            { type: "text/plain" }
-        );
-
-        var a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-
-        a.download =
-            fichiersMultiples[i].nom.replace(
-                /(\.[^.]+)?$/,
-                suffixeTelechargement + "$1"
-            );
-
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
     }
 }
 
