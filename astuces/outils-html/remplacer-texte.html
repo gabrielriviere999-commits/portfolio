@@ -79,10 +79,11 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
   padding: 10px;
   text-align: center;
 }
-#dropZoneMulti.dragover {
+#dropZoneMulti.hover {
   border-color: #000080;
   background: #d0e4ff;
 }
+
 #multiFileInput {
   position: absolute;
   top: 0;
@@ -925,26 +926,23 @@ document.getElementById("multiFileInput")
 
 var dz = document.getElementById("dropZoneMulti");
 
-var dragCounter = 0;
-
 dz.addEventListener("dragenter", function(e) {
     e.preventDefault();
-    dragCounter++;
-    dz.classList.add("dragover");
+    dz.classList.add("hover");
+});
+
+dz.addEventListener("dragover", function(e) {
+    e.preventDefault();
+    dz.classList.add("hover");
 });
 
 dz.addEventListener("dragleave", function(e) {
-    dragCounter--;
-    if (dragCounter <= 0) {
-        dz.classList.remove("dragover");
-        dragCounter = 0;
-    }
+    dz.classList.remove("hover");
 });
 
 dz.addEventListener("drop", function(e) {
     e.preventDefault();
-    dragCounter = 0;
-    dz.classList.remove("dragover");
+    dz.classList.remove("hover");
 
     chargerFichiers(e.dataTransfer.files);
 });
