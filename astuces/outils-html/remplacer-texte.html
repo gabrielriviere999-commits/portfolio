@@ -79,6 +79,10 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
   padding: 10px;
   text-align: center;
 }
+#dropZoneMulti.dragover {
+  border-color: #000080;
+  background: #d0e4ff;
+}
 #multiFileInput {
   position: absolute;
   top: 0;
@@ -921,18 +925,28 @@ document.getElementById("multiFileInput")
 
 var dz = document.getElementById("dropZoneMulti");
 
-dz.addEventListener("dragover", function(e) {
+var dragCounter = 0;
 
+dz.addEventListener("dragenter", function(e) {
     e.preventDefault();
+    dragCounter++;
+    dz.classList.add("dragover");
+});
+
+dz.addEventListener("dragleave", function(e) {
+    dragCounter--;
+    if (dragCounter <= 0) {
+        dz.classList.remove("dragover");
+        dragCounter = 0;
+    }
 });
 
 dz.addEventListener("drop", function(e) {
-
     e.preventDefault();
+    dragCounter = 0;
+    dz.classList.remove("dragover");
 
-    chargerFichiers(
-        e.dataTransfer.files
-    );
+    chargerFichiers(e.dataTransfer.files);
 });
 
 function saveReplacements() {
