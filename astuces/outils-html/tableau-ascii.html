@@ -55,7 +55,7 @@ input, textarea {
 
 Séparateur : <input id="tableau_ascii_sep" value=";" size="1">
 &nbsp;&nbsp;
-Largeur max : <input id="tableau_ascii_maxwidth" value="120" size="4">
+Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" size="4" min="5">
 <button onclick="resetParams()" class="btn-color" style="background-color:#ff4444;">Valeurs par défaut</button>
 <p></p><textarea id="input" wrap="off"></textarea><p></p>
 <button onclick="convertir()" class="btn-color" style="background-color:#ff8800;">Convertir</button>
