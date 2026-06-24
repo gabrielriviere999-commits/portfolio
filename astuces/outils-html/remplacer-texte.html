@@ -703,6 +703,19 @@ function ajouterRemplacement(from, to) {
     }
   };
 
+  // Bouton ajouter après
+  var add = document.createElement("button");
+  add.textContent = "+";
+  add.onclick = function () {
+    // créer un nouveau remplacement vide
+    var newDiv = ajouterRemplacement("", "");
+
+    // déplacer le nouveau bloc juste après celui-ci
+    cont.insertBefore(newDiv, div.nextSibling);
+
+    saveReplacements();
+  };
+
   // Bouton supprimer
   var del = document.createElement("button");
   del.textContent = "x";
@@ -747,6 +760,7 @@ function ajouterRemplacement(from, to) {
   div.appendChild(document.createElement("br"));
   div.appendChild(up);
   div.appendChild(down);
+  div.appendChild(add);
   div.appendChild(del);
 
   var hr = document.createElement("hr");
@@ -757,6 +771,7 @@ function ajouterRemplacement(from, to) {
   cont.appendChild(div);
 
   saveReplacements();
+  return div;
 }
 
 /* --- Fichiers multiples --- */
