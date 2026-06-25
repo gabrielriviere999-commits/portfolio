@@ -99,6 +99,9 @@ button:hover { background:#e0e0e0; }
   <button id="btnText" onclick="setTool('text')">Texte libre</button>
   <button id="btnEdit" onclick="setTool('edit')">Édition texte</button>
   |
+  <button id="btnFill" onclick="setTool('fill')">Remplir</button>
+  <input id="fillChar" value="#" maxlength="1">
+  |
   <button id="btnErase" onclick="setTool('erase')">Gomme</button>
   <button onclick="undo()">Annuler</button>
   <button onclick="redo()">Rétablir</button>
@@ -189,6 +192,7 @@ function setTool(t) {
     document.getElementById("btnCopy").className = "";
     document.getElementById("btnText").className = "";
     document.getElementById("btnEdit").className = "";
+    document.getElementById("btnFill").className = "";
     document.getElementById("btnErase").className = "";
 
     if (t === "free") btnFree.className = "active";
@@ -206,6 +210,7 @@ function setTool(t) {
         moveSelection = null;
        copyMode = 0;
     }
+    if (t === "fill") btnFill.className = "active";
     if (t === "erase") btnErase.className = "active";
     if (t === "text") btnText.className = "active";
     if (t === "edit") btnEdit.className = "active";
@@ -679,6 +684,38 @@ view.addEventListener("input", function() {
     }, 300); // 300 ms après la dernière frappe
 });
 
+/* --- REMPLISSAGE --- */
+function floodFill(x, y) {
+    ensureCell(x, y);
+
+    var target = grid[y][x];
+    var fillChar = document.getElementById("fillChar").value;
+
+    if (!fillChar || fillChar.length === 0) fillChar = "#";
+    if (fillChar === target) return;
+
+    var stack = [];
+    stack.push({x:x, y:y});
+
+    while (stack.length > 0) {
+        var p = stack.pop();
+        var px = p.x;
+        var py = p.y;
+
+        if (py < 0 || px < 0) continue;
+        if (!grid[py] || grid[py][px] == null) continue;
+
+        if (grid[py][px] !== target) continue;
+
+        grid[py][px] = fillChar;
+
+        stack.push({x:px+1, y:py});
+        stack.push({x:px-1, y:py});
+        stack.push({x:px,   y:py+1});
+        stack.push({x:px,   y:py-1});
+    }
+}
+
 /* --- GOMME --- */
 function eraseAt(x, y) {
     ensureCell(x, y);
@@ -731,7 +768,12 @@ view.onmousedown = function(e) {
         isDown = false;
         return;
     }
-
+    if (tool === "fill") {
+        floodFill(pos.x, pos.y);
+        render();
+        isDown = false;
+        return;
+    }
     if (tool === "free")  drawFree(pos.x, pos.y);
     if (tool === "erase") eraseAt(pos.x, pos.y);
 };
