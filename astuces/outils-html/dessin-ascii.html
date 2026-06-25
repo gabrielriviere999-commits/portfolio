@@ -593,12 +593,11 @@ function pasteSelection(destX,destY) {
 
 function previewMove(destX, destY) {
 
-    if (!moveSelection || !tempGrid) return;
+    if (!moveSelection) return;
 
     var realGrid = grid;
 
-    var previewGrid = copyGrid(tempGrid);
-
+    var previewGrid = copyGrid(grid);
     grid = previewGrid;
 
     var x, y;
@@ -607,18 +606,14 @@ function previewMove(destX, destY) {
         for (x = 0; x < moveSelection.w; x++) {
 
             var c = moveSelection.data[y][x];
-            safeSet(destX + x, destY + y, c);
-
             if (c === " ") continue;
 
             ensureCell(destX + x, destY + y);
-
             grid[destY + y][destX + x] = c;
         }
     }
 
     render();
-
     grid = realGrid;
 }
 
