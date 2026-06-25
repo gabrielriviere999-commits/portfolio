@@ -308,7 +308,7 @@ function drawLine(x1, y1, x2, y2) {
         ensureCell(x1, y1);
 
         var c = document.getElementById("lineChar").value;
-        if (c === " ") c = "*";
+        // if (c === " ") c = "*";
         if (!c || c.length === 0) c = "*";
         grid[y1][x1] = c;
 
@@ -384,7 +384,8 @@ function drawRectangle(x1, y1, x2, y2) {
     var c = document.getElementById("rectChar").value;
 
     // mode normal si input vide
-    var useCustom = (c && c.length > 0 && c !== " ");
+    // var useCustom = (c && c.length > 0 && c !== " ");
+    var useCustom = (c && c.length > 0);
 
     var corner = useCustom ? c : "+";
     var horiz  = useCustom ? c : "-";
@@ -434,7 +435,7 @@ function drawEllipse(x1, y1, x2, y2) {
                 ensureCell(px, py);
 
                 var c = document.getElementById("ellipseChar").value;
-                if (c === " ") c = "o";
+                // if (c === " ") c = "o";
                 if (!c || c.length === 0) c = "o";
                 grid[py][px] = c;
             }
