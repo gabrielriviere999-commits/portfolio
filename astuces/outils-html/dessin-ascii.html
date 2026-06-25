@@ -289,7 +289,7 @@ function drawFree(x, y) {
     ensureCell(x, y);
 
     var c = document.getElementById("freeChar").value;
-    if (c === " ") c = "#";
+    // if (c === " ") c = "#";
     if (!c || c.length === 0) c = "#"; // caractère par défaut
     grid[y][x] = c;
 
