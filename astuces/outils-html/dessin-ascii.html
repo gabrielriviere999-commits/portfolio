@@ -73,7 +73,10 @@ button:hover { background:#e0e0e0; }
 </head>
 <body>
 
-<h2>Dessin ASCII</h2>
+<textarea id="view" wrap="off"></textarea><br>
+<button id="copyDraw" class="btn-color" style="background-color:#4caf50;">Copier</button>
+<button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
+<input type="file" id="fileInput" style="display:none;">
 
 <div id="toolbar">
   <button id="btnFree" onclick="setTool('free')">Tracé libre</button>
@@ -107,11 +110,6 @@ background:#c0c0c0; border:1px solid #000; padding:10px; z-index:9999;opacity: 0
   <button onclick="confirmText()">OK</button>
   <button onclick="cancelText()">Annuler</button>
 </div>
-
-<button id="copyDraw" class="btn-color" style="background-color:#4caf50;">Copier</button>
-<br><textarea id="view" wrap="off"></textarea><br>
-<button id="importFileBtn" style="background-color:#d4d0c8;">Importer fichier…</button>
-<input type="file" id="fileInput" style="display:none;">
 
 <script>
 /* --- CONFIG --- */
