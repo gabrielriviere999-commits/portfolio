@@ -293,14 +293,9 @@ function startInlineRename(id, nodeEl) {
     if (ev.keyCode === 13 && !ev.shiftKey) return;
   });
 
-  ta.addEventListener("blur", function() {
-    if (clickOnToolbar) {
-      clickOnToolbar = false;
-      ta.focus();
-      return;
-    }
-    finishInlineRename(id, ta.value);
-  });
+  ta.onblur = function() {
+      finishInlineRename(id, ta.value);
+  };
 }
 
 function finishInlineRename(id, newText) {
