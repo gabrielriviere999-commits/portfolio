@@ -80,55 +80,15 @@ textarea {
 }
 }
 
-.org-root {
-  display: inline-block;
-  padding: 10px;
-  background: transparent;
-  color: #000000;
-  text-align: center;
-}
-
-/* Chaque nœud est un bloc inline stable */
-.org-node {
-  display: inline-block;
-  vertical-align: top;
-  margin: 10px;
-  text-align: center;
-  background: transparent;
-}
-
-/* Le carré */
-.org-label {
-  border: 1px solid #000;
-  padding: 4px 8px;
-  font-size: 12px;
-  background: white;
-  color: inherit;
-}
-
-.org-label img {
-  display: block;
-  margin: 4px auto 0 auto;
-  max-width: 80px;
-  height: auto;
-}
+.org-root { display:inline-block; color:yellow; }
+.org-node { display:inline-block; text-align:center; margin:10px 5px; vertical-align:top; }
+.org-label { border:1px solid #000; padding:4px 8px; background:red; }
+.org-children { margin-top:10px; text-align:center; }
 
 /* Sélection */
 .org-node.selected .org-label {
   border: 2px solid #0078d7;
   padding: 3px 7px; /* compense l’épaisseur du border */
-}
-
-.org-children {
-  display: table;
-  margin: 0 auto;
-  margin-top:10px;
-}
-
-.org-children > .org-node {
-  display: table-cell;
-  vertical-align: top;
-  padding: 0 10px;
 }
 </style>
 </head>
@@ -732,10 +692,10 @@ function exportFullHtml() {
 
   var css =
     "<style>\n" +
-    ".org-root { display:inline-block; padding:10px; background:transparent; color:" + globalText + "; }\n" +
-    ".org-node { text-align:center; display:inline-block; margin:10px; background:transparent; }\n" +
-    ".org-label { border:1px solid #000; padding:4px 8px; background:" + globalBoxBg + "; color:inherit; font-size:12px; }\n" +
-    ".org-children { margin-top:10px; display:flex; justify-content:center; gap:10px; }\n" +
+    ".org-root { display:inline-block; color:" + globalText + "; }\n" +
+    ".org-node { display:inline-block; text-align:center; margin:10px 5px; vertical-align:top; }\n" +
+    ".org-label { border:1px solid #000; padding:4px 8px; background:" + globalBoxBg + "; }\n" +
+    ".org-children { margin-top:10px; text-align:center; }\n" +
     "</style>\n";
 
   var html =
