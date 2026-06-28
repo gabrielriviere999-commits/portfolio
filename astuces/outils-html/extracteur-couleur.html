@@ -536,77 +536,47 @@ canvas.ontouchend = function(e){
 var wrapper = document.getElementById("canvasWrapper");
 var scrollTimer = null;
 
-function doScroll(dx, dy) {
-    wrapper.scrollLeft += dx;
-    wrapper.scrollTop += dy;
-}
-
-function scrollUp() {
-    doScroll(0, -20);
-}
-
-function scrollDown() {
-    doScroll(0, 20);
-}
-
-function scrollLeft() {
-    doScroll(-20, 0);
-}
-
-function scrollRight() {
-    doScroll(20, 0);
-}
-
 function startScroll(dx, dy) {
-    stopScroll();
-
-    doScroll(dx, dy); // premier déplacement immédiat
-
+    if (scrollTimer !== null) return;
     scrollTimer = setInterval(function () {
-        doScroll(dx, dy);
-    }, 30);
+        wrapper.scrollLeft += dx;
+        wrapper.scrollTop += dy;
+    }, 60);
 }
 
-function stopScroll() {
-    if (scrollTimer !== null) {
-        clearInterval(scrollTimer);
-        scrollTimer = null;
-    }
+function stopScroll(){
+    if (scrollTimer) clearInterval(scrollTimer);
+    scrollTimer = null;
 }
 
-function startScrollTouch(dx, dy) {
+function startScrollTouch(dx, dy){
     startScroll(dx, dy);
 }
 
-function stopScrollTouch() {
+function stopScrollTouch(){
     stopScroll();
 }
 
-function startScrollKey(e) {
+function startScrollKey(e){
     var key = e.keyCode || e.which;
 
-    // Entrée ou Espace
-    if (key === 13 || key === 32) {
-        var el = e.target || e.srcElement;
+    // Espace (32) ou Entrée (13)
+    if (key === 32 || key === 13) {
+        var el = e.target;
         var dx = parseInt(el.getAttribute("data-dx"), 10);
         var dy = parseInt(el.getAttribute("data-dy"), 10);
-
         startScroll(dx, dy);
-
         if (e.preventDefault) e.preventDefault();
-        e.returnValue = false;
         return false;
     }
 }
 
-function stopScrollKey(e) {
+function stopScrollKey(e){
     var key = e.keyCode || e.which;
 
-    if (key === 13 || key === 32) {
+    if (key === 32 || key === 13) {
         stopScroll();
-
         if (e.preventDefault) e.preventDefault();
-        e.returnValue = false;
         return false;
     }
 }
