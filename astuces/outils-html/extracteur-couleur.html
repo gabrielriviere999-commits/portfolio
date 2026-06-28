@@ -184,10 +184,10 @@ button:hover { background:#e0e0e0; }
     <div id="info">
         <div class="line" style="user-select:none;-webkit-user-select:none;-ms-user-select:none;">
             <div id="preview"></div>
-            <button onmousedown="startScroll(0,-20)" onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">↑</button>
-            <button onmousedown="startScroll(0,20)"  onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">↓</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button onmousedown="startScroll(-20,0)" onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">←</button>
-            <button onmousedown="startScroll(20,0)"  onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">→</button>
+            <button onmousedown="startScroll(0,-20)" onmouseup="stopScroll()" onmouseleave="stopScroll()" ontouchstart="startScrollTouch(0,-20)" ontouchend="stopScrollTouch()">↑</button>
+            <button onmousedown="startScroll(0,20)" onmouseup="stopScroll()" onmouseleave="stopScroll()" ontouchstart="startScrollTouch(0,20)" ontouchend="stopScrollTouch()">↓</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button onmousedown="startScroll(-20,0)" onmouseup="stopScroll()" onmouseleave="stopScroll()" ontouchstart="startScrollTouch(-20,0)" ontouchend="stopScrollTouch()">←</button>
+            <button onmousedown="startScroll(20,0)" onmouseup="stopScroll()" onmouseleave="stopScroll()" ontouchstart="startScrollTouch(20,0)" ontouchend="stopScrollTouch()">→</button>
         </div>
 
         <div class="line">
@@ -523,6 +523,14 @@ function startScroll(dx, dy){
 function stopScroll(){
     if (scrollTimer) clearInterval(scrollTimer);
     scrollTimer = null;
+}
+
+function startScrollTouch(dx, dy){
+    startScroll(dx, dy);
+}
+
+function stopScrollTouch(){
+    stopScroll();
 }
 </script>
 
