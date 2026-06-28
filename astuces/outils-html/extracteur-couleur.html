@@ -33,7 +33,14 @@ button:active {
   border-bottom-color: #ffffff;
 }
 button:hover { background:#e0e0e0; }
-.scroll-btn { width:36px; height:36px; }
+.scroll-btn {
+  width:36px;
+  height:36px;
+  touch-action:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
 
 #dropzone {
   border: 2px dashed #808080;
