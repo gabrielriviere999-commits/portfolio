@@ -97,10 +97,10 @@ textarea {
 <div class="toolbar" style="opacity:0.8;">
   <button onclick="addChild()">Ajouter enfant</button>
   <button onclick="addSibling()">Ajouter frère</button>
-  <button onclick="moveLeft()">←</button>
-  <button onclick="moveRight()">→</button>
   <button onclick="moveUp()">↑</button>
   <button onclick="moveDown()">↓</button>
+  <button onclick="moveLeft()">←</button>
+  <button onclick="moveRight()">→</button>
   <label>
   <input type="checkbox" id="editMode">Mode édition texte</label>
   <button onclick="deleteNode()" class="btn-color" style="background-color:#ff4444;">Supprimer</button>
@@ -348,44 +348,6 @@ function addSibling() {
   updateSelectionHighlight();
 }
 
-function moveLeft() {
-  if (!selectedId) return;
-  var parent = findParent(orgRoot, selectedId);
-  if (!parent) return;
-
-  for (var i = 0; i < parent.children.length; i++) {
-    if (parent.children[i].id === selectedId) {
-      if (i === 0) return;
-      var tmp = parent.children[i - 1];
-      parent.children[i - 1] = parent.children[i];
-      parent.children[i] = tmp;
-      renderOrgTree(orgRoot);
-      updateSelectionHighlight();
-      return;
-    }
-  }
-
-}
-
-function moveRight() {
-  if (!selectedId) return;
-  var parent = findParent(orgRoot, selectedId);
-  if (!parent) return;
-
-  for (var i = 0; i < parent.children.length; i++) {
-    if (parent.children[i].id === selectedId) {
-      if (i >= parent.children.length - 1) return;
-      var tmp = parent.children[i + 1];
-      parent.children[i + 1] = parent.children[i];
-      parent.children[i] = tmp;
-      renderOrgTree(orgRoot);
-      updateSelectionHighlight();
-      return;
-    }
-  }
-
-}
-
 function moveUp() {
   if (!selectedId) return;
   var parent = findParent(orgRoot, selectedId);
@@ -449,6 +411,44 @@ function moveDown() {
   newParent.children.push(node);
   renderOrgTree(orgRoot);
   updateSelectionHighlight();
+}
+
+function moveLeft() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      if (i === 0) return;
+      var tmp = parent.children[i - 1];
+      parent.children[i - 1] = parent.children[i];
+      parent.children[i] = tmp;
+      renderOrgTree(orgRoot);
+      updateSelectionHighlight();
+      return;
+    }
+  }
+
+}
+
+function moveRight() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      if (i >= parent.children.length - 1) return;
+      var tmp = parent.children[i + 1];
+      parent.children[i + 1] = parent.children[i];
+      parent.children[i] = tmp;
+      renderOrgTree(orgRoot);
+      updateSelectionHighlight();
+      return;
+    }
+  }
+
 }
 
 function deleteNode() {
