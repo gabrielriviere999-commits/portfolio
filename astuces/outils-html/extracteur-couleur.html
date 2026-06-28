@@ -191,41 +191,41 @@ button:hover { background:#e0e0e0; }
     <div id="info">
         <div class="line" style="user-select:none;-webkit-user-select:none;-ms-user-select:none;">
             <div id="preview"></div>
-            <button class="scroll-btn"
-                data-dx="0" data-dy="-20"
-                onclick="scrollUp()"
-                onmousedown="startScroll(0,-20)"
-                onmouseup="stopScroll(0,-20)" onmouseleave="stopScroll(0,-20)"
-                ontouchstart="startScroll(0,-20)" ontouchend="stopScroll(0,-20)"
-                onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
-            >↑</button>
+                <button class="scroll-btn"
+                    data-dx="0" data-dy="-20"
+                    onmousedown="startScroll(0,-20)"
+                    onmouseup="stopScroll(0,-20)"
+                    ontouchstart="startScroll(0,-20)"
+                    ontouchend="stopScroll(0,-20)"
+                    onclick="startScroll(0,-20); stopScroll(0,-20);">
+                ↑</button>
 
-            <button class="scroll-btn"
-                data-dx="0" data-dy="20"
-                onclick="scrollDown()"
-                onmousedown="startScroll(0,20)"
-                onmouseup="stopScroll(0,20)" onmouseleave="stopScroll(0,20)"
-                ontouchstart="startScroll(0,20)" ontouchend="stopScroll(0,20)"
-                onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
-            >↓</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="scroll-btn"
+                    data-dx="0" data-dy="20"
+                    onmousedown="startScroll(0,20)"
+                    onmouseup="stopScroll(0,20)"
+                    ontouchstart="startScroll(0,20)"
+                    ontouchend="stopScroll(0,20)"
+                    onclick="startScroll(0,20); stopScroll(0,20);">
+                ↓</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <button class="scroll-btn"
-                data-dx="-20" data-dy="0"
-                onclick="scrollLeft()"
-                onmousedown="startScroll(-20,0)"
-                onmouseup="stopScroll(-20,0)" onmouseleave="stopScroll(-20,0)"
-                ontouchstart="startScroll(-20,0)" ontouchend="stopScroll(-20,0)"
-                onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
-            >←</button>
+                <button class="scroll-btn"
+                    data-dx="-20" data-dy="0"
+                    onmousedown="startScroll(-20,0)"
+                    onmouseup="stopScroll(-20,0)"
+                    ontouchstart="startScroll(-20,0)"
+                    ontouchend="stopScroll(-20,0)"
+                    onclick="startScroll(-20,0); stopScroll(-20,0);">
+                ←</button>
 
-            <button class="scroll-btn"
-                data-dx="20" data-dy="0"
-                onclick="scrollRight()"
-                onmousedown="startScroll(20,0)"
-                onmouseup="stopScroll(20,0)" onmouseleave="stopScroll(20,0)"
-                ontouchstart="startScroll(20,0)" ontouchend="stopScroll(20,0)"
-                onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
-            >→</button>
+                <button class="scroll-btn"
+                    data-dx="20" data-dy="0"
+                    onmousedown="startScroll(20,0)"
+                    onmouseup="stopScroll(20,0)"
+                    ontouchstart="startScroll(20,0)"
+                    ontouchend="stopScroll(20,0)"
+                    onclick="startScroll(20,0); stopScroll(20,0);">
+                →</button>
         </div>
 
         <div class="line">
@@ -559,51 +559,14 @@ function startScroll(dx, dy){
 }
 
 function stopScroll(dx, dy){
-    if (dx !== 0 && timerX !== null) {
+    if (timerX !== null) {
         clearInterval(timerX);
         timerX = null;
     }
 
-    if (dy !== 0 && timerY !== null) {
+    if (timerY !== null) {
         clearInterval(timerY);
         timerY = null;
-    }
-}
-
-function startScrollTouch(dx, dy){
-    startScroll(dx, dy);
-}
-
-function stopScrollTouch(){
-    stopScroll();
-}
-
-function startScrollKey(e){
-    var key = e.keyCode || e.which;
-
-    // Espace (32) ou Entrée (13)
-    if (key === 32 || key === 13) {
-        var el = e.target;
-        var dx = parseInt(el.getAttribute("data-dx"), 10);
-        var dy = parseInt(el.getAttribute("data-dy"), 10);
-        startScroll(dx, dy);
-        if (e.preventDefault) e.preventDefault();
-        return false;
-    }
-}
-
-function stopScrollKey(e){
-    var key = e.keyCode || e.which;
-
-    if (key === 32 || key === 13) {
-        var el = e.target;
-        var dx = parseInt(el.getAttribute("data-dx"), 10);
-        var dy = parseInt(el.getAttribute("data-dy"), 10);
-
-        stopScroll(dx, dy);
-
-        if (e.preventDefault) e.preventDefault();
-        return false;
     }
 }
 </script>
