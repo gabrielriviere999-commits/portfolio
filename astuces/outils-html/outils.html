@@ -429,17 +429,28 @@ Inverser De et Vers
 
 <script>
 document.getElementById("filter").onkeyup = function () {
-    var filter = this.value.toLowerCase();
+    var filter = sansAccents(this.value.toLowerCase());
     var cards = document.getElementsByClassName("tool-card");
     var i, title, txt;
 
     for (i = 0; i < cards.length; i++) {
         title = cards[i].getElementsByClassName("tool-title")[0];
-        txt = title.innerHTML.toLowerCase();
+        txt = sansAccents(title.innerHTML.toLowerCase());
 
         cards[i].style.display = (txt.indexOf(filter) !== -1) ? "" : "none";
     }
 };
+function sansAccents(str) {
+    return str
+        .replace(/[àáâãäå]/g, "a")
+        .replace(/[ç]/g, "c")
+        .replace(/[èéêë]/g, "e")
+        .replace(/[ìíîï]/g, "i")
+        .replace(/[ñ]/g, "n")
+        .replace(/[òóôõö]/g, "o")
+        .replace(/[ùúûü]/g, "u")
+        .replace(/[ýÿ]/g, "y");
+}
 </script>
 
 </main>
