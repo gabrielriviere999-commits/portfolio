@@ -191,41 +191,14 @@ button:hover { background:#e0e0e0; }
     <div id="info">
         <div class="line" style="user-select:none;-webkit-user-select:none;-ms-user-select:none;">
             <div id="preview"></div>
-                <button class="scroll-btn"
-                    data-dx="0" data-dy="-20"
-                    onmousedown="startScroll(0,-20)"
-                    onmouseup="stopScroll(0,-20)"
-                    ontouchstart="startScroll(0,-20)"
-                    ontouchend="stopScroll(0,-20)"
-                    onclick="startScroll(0,-20); stopScroll(0,-20);">
-                ↑</button>
+<button class="scroll-btn" onmousedown="active.up = true" onmouseup="active.up = false" ontouchstart="active.up = true" ontouchend="active.up = false">↑</button>
 
-                <button class="scroll-btn"
-                    data-dx="0" data-dy="20"
-                    onmousedown="startScroll(0,20)"
-                    onmouseup="stopScroll(0,20)"
-                    ontouchstart="startScroll(0,20)"
-                    ontouchend="stopScroll(0,20)"
-                    onclick="startScroll(0,20); stopScroll(0,20);">
-                ↓</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="scroll-btn" onmousedown="active.down = true" onmouseup="active.down = false" ontouchstart="active.down = true" ontouchend="active.down = false">↓</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                <button class="scroll-btn"
-                    data-dx="-20" data-dy="0"
-                    onmousedown="startScroll(-20,0)"
-                    onmouseup="stopScroll(-20,0)"
-                    ontouchstart="startScroll(-20,0)"
-                    ontouchend="stopScroll(-20,0)"
-                    onclick="startScroll(-20,0); stopScroll(-20,0);">
-                ←</button>
+<button class="scroll-btn" onmousedown="active.left = true" onmouseup="active.left = false" ontouchstart="active.left = true" ontouchend="active.left = false">←</button>
 
-                <button class="scroll-btn"
-                    data-dx="20" data-dy="0"
-                    onmousedown="startScroll(20,0)"
-                    onmouseup="stopScroll(20,0)"
-                    ontouchstart="startScroll(20,0)"
-                    ontouchend="stopScroll(20,0)"
-                    onclick="startScroll(20,0); stopScroll(20,0);">
-                →</button>
+<button class="scroll-btn" onmousedown="active.right = true" onmouseup="active.right = false" ontouchstart="active.right = true" ontouchend="active.right = false">→</button>
         </div>
 
         <div class="line">
@@ -541,34 +514,38 @@ canvas.ontouchend = function(e){
 
 /* --- Boutons de scroll --- */
 var wrapper = document.getElementById("canvasWrapper");
-var timerX = null;
-var timerY = null;
 
-function startScroll(dx, dy){
-    if (dx !== 0 && timerX === null) {
-        timerX = setInterval(function(){
-            wrapper.scrollLeft += dx;
-        }, 60);
+/* état des boutons */
+var active = {
+    up: false,
+    down: false,
+    left: false,
+    right: false
+};
+
+/* vitesse */
+var speed = 15;
+
+/* boucle unique */
+setInterval(function () {
+
+    if (active.up) {
+        wrapper.scrollTop -= speed;
     }
 
-    if (dy !== 0 && timerY === null) {
-        timerY = setInterval(function(){
-            wrapper.scrollTop += dy;
-        }, 60);
-    }
-}
-
-function stopScroll(dx, dy){
-    if (timerX !== null) {
-        clearInterval(timerX);
-        timerX = null;
+    if (active.down) {
+        wrapper.scrollTop += speed;
     }
 
-    if (timerY !== null) {
-        clearInterval(timerY);
-        timerY = null;
+    if (active.left) {
+        wrapper.scrollLeft -= speed;
     }
-}
+
+    if (active.right) {
+        wrapper.scrollLeft += speed;
+    }
+
+}, 30);
 </script>
 
 </body>
