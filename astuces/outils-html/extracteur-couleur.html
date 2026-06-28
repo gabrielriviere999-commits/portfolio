@@ -188,8 +188,8 @@ button:hover { background:#e0e0e0; }
                 data-dx="0" data-dy="-20"
                 onclick="scrollUp()"
                 onmousedown="startScroll(0,-20)"
-                onmouseup="stopScroll()" onmouseleave="stopScroll()"
-                ontouchstart="startScrollTouch(0,-20)" ontouchend="stopScrollTouch()"
+                onmouseup="stopScroll(0,-20)" onmouseleave="stopScroll(0,-20)"
+                ontouchstart="startScroll(0,-20)" ontouchend="stopScroll(0,-20)"
                 onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
             >↑</button>
 
@@ -197,8 +197,8 @@ button:hover { background:#e0e0e0; }
                 data-dx="0" data-dy="20"
                 onclick="scrollDown()"
                 onmousedown="startScroll(0,20)"
-                onmouseup="stopScroll()" onmouseleave="stopScroll()"
-                ontouchstart="startScrollTouch(0,20)" ontouchend="stopScrollTouch()"
+                onmouseup="stopScroll(0,20)" onmouseleave="stopScroll(0,20)"
+                ontouchstart="startScroll(0,20)" ontouchend="stopScroll(0,20)"
                 onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
             >↓</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -206,8 +206,8 @@ button:hover { background:#e0e0e0; }
                 data-dx="-20" data-dy="0"
                 onclick="scrollLeft()"
                 onmousedown="startScroll(-20,0)"
-                onmouseup="stopScroll()" onmouseleave="stopScroll()"
-                ontouchstart="startScrollTouch(-20,0)" ontouchend="stopScrollTouch()"
+                onmouseup="stopScroll(-20,0)" onmouseleave="stopScroll(-20,0)"
+                ontouchstart="startScroll(-20,0)" ontouchend="stopScroll(-20,0)"
                 onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
             >←</button>
 
@@ -215,8 +215,8 @@ button:hover { background:#e0e0e0; }
                 data-dx="20" data-dy="0"
                 onclick="scrollRight()"
                 onmousedown="startScroll(20,0)"
-                onmouseup="stopScroll()" onmouseleave="stopScroll()"
-                ontouchstart="startScrollTouch(20,0)" ontouchend="stopScrollTouch()"
+                onmouseup="stopScroll(20,0)" onmouseleave="stopScroll(20,0)"
+                ontouchstart="startScroll(20,0)" ontouchend="stopScroll(20,0)"
                 onkeydown="startScrollKey(event)" onkeyup="stopScrollKey(event)"
             >→</button>
         </div>
@@ -534,19 +534,33 @@ canvas.ontouchend = function(e){
 
 /* --- Boutons de scroll --- */
 var wrapper = document.getElementById("canvasWrapper");
-var scrollTimer = null;
+var timerX = null;
+var timerY = null;
 
-function startScroll(dx, dy) {
-    if (scrollTimer !== null) return;
-    scrollTimer = setInterval(function () {
-        wrapper.scrollLeft += dx;
-        wrapper.scrollTop += dy;
-    }, 60);
+function startScroll(dx, dy){
+    if (dx !== 0 && timerX === null) {
+        timerX = setInterval(function(){
+            wrapper.scrollLeft += dx;
+        }, 60);
+    }
+
+    if (dy !== 0 && timerY === null) {
+        timerY = setInterval(function(){
+            wrapper.scrollTop += dy;
+        }, 60);
+    }
 }
 
-function stopScroll(){
-    if (scrollTimer) clearInterval(scrollTimer);
-    scrollTimer = null;
+function stopScroll(dx, dy){
+    if (dx !== 0 && timerX !== null) {
+        clearInterval(timerX);
+        timerX = null;
+    }
+
+    if (dy !== 0 && timerY !== null) {
+        clearInterval(timerY);
+        timerY = null;
+    }
 }
 
 function startScrollTouch(dx, dy){
@@ -575,7 +589,12 @@ function stopScrollKey(e){
     var key = e.keyCode || e.which;
 
     if (key === 32 || key === 13) {
-        stopScroll();
+        var el = e.target;
+        var dx = parseInt(el.getAttribute("data-dx"), 10);
+        var dy = parseInt(el.getAttribute("data-dy"), 10);
+
+        stopScroll(dx, dy);
+
         if (e.preventDefault) e.preventDefault();
         return false;
     }
