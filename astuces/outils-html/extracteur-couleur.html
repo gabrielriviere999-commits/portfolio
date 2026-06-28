@@ -534,14 +534,6 @@ canvas.ontouchend = function(e){
 
 /* --- Boutons de scroll --- */
 var wrapper = document.getElementById("canvasWrapper");
-
-function scrollUp(){ wrapper.scrollBy(0, -100); }
-
-function scrollDown(){ wrapper.scrollBy(0, 100); }
-
-function scrollLeft(){ wrapper.scrollBy(-100, 0); }
-
-function scrollRight(){ wrapper.scrollBy(100, 0); }
 var scrollTimer = null;
 
 function startScroll(dx, dy){
