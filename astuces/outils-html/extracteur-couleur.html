@@ -33,6 +33,7 @@ button:active {
   border-bottom-color: #ffffff;
 }
 button:hover { background:#e0e0e0; }
+.scroll-btn { width:36px; height:36px; }
 
 #dropzone {
   border: 2px dashed #808080;
@@ -123,6 +124,7 @@ button:hover { background:#e0e0e0; }
   border: 2px inset #ffffff;
   display: inline-block;
   margin-right: 6px;
+  vertical-align: top;
 }
 .line {
   margin: 3px 0;
@@ -178,10 +180,14 @@ button:hover { background:#e0e0e0; }
 <div id="cross" class="cross" style="display:none;"></div>
 
 <div class="win98-box">
+
     <div id="info">
-        <div class="line">
+        <div class="line" style="user-select:none; -webkit-user-select:none; -ms-user-select:none;">
             <div id="preview"></div>
-            <span id="label">Cliquer ou toucher l'image.</span>
+            <button onmousedown="startScroll(0,-20)" onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">↑</button>
+            <button onmousedown="startScroll(0,20)"  onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">↓</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button onmousedown="startScroll(-20,0)" onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">←</button>
+            <button onmousedown="startScroll(20,0)"  onmouseup="stopScroll()" onmouseleave="stopScroll()" class="scroll-btn">→</button>
         </div>
 
         <div class="line">
@@ -494,6 +500,30 @@ canvas.ontouchend = function(e){
     hideLoupe();
     e.preventDefault();
 };
+
+/* --- Boutons de scroll --- */
+var wrapper = document.getElementById("canvasWrapper");
+
+function scrollUp(){ wrapper.scrollBy(0, -100); }
+
+function scrollDown(){ wrapper.scrollBy(0, 100); }
+
+function scrollLeft(){ wrapper.scrollBy(-100, 0); }
+
+function scrollRight(){ wrapper.scrollBy(100, 0); }
+var scrollTimer = null;
+
+function startScroll(dx, dy){
+    stopScroll();
+    scrollTimer = setInterval(function(){
+        wrapper.scrollBy(dx, dy);
+    }, 30);
+}
+
+function stopScroll(){
+    if (scrollTimer) clearInterval(scrollTimer);
+    scrollTimer = null;
+}
 </script>
 
 </body>
