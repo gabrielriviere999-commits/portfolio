@@ -480,40 +480,65 @@ document.addEventListener("touchend", function(){
     dragging = false;
 });
 
+// --- Système multi-touches pour le carré SV ---
+var keys = {};
+
+// Enregistrer les touches pressées
 document.addEventListener("keydown", function(e){
-
-    // Ne bouger que si le carré a le focus
-    if (document.activeElement !== svArea) return;
-
-    var step = 0.005;
-    var changed = false;
-
-    if(e.key === "ArrowLeft"){
-        s = clamp(s - step, 0, 1);
-        changed = true;
-    }
-    else if(e.key === "ArrowRight"){
-        s = clamp(s + step, 0, 1);
-        changed = true;
-    }
-    else if(e.key === "ArrowUp"){
-        v = clamp(v + step, 0, 1);
-        changed = true;
-    }
-    else if(e.key === "ArrowDown"){
-        v = clamp(v - step, 0, 1);
-        changed = true;
-    }
-
-    if(!changed) return;
-
-    var rgb = hsvToRgb(h, s * 100, v * 100);
-    r = rgb.r;
-    g = rgb.g;
-    b = rgb.b;
-
-    updateUI();
+    keys[e.key] = true;
 });
+
+// Enregistrer les touches relâchées
+document.addEventListener("keyup", function(e){
+    keys[e.key] = false;
+});
+
+// Boucle d'animation
+function svKeyboardLoop(){
+    // Ne bouger que si le carré a le focus
+    if (document.activeElement === svArea){
+
+        var step = 0.001;
+        var changed = false;
+
+        // Gauche
+        if(keys["ArrowLeft"]){
+            s = clamp(s - step, 0, 1);
+            changed = true;
+        }
+
+        // Droite
+        if(keys["ArrowRight"]){
+            s = clamp(s + step, 0, 1);
+            changed = true;
+        }
+
+        // Haut
+        if(keys["ArrowUp"]){
+            v = clamp(v + step, 0, 1);
+            changed = true;
+        }
+
+        // Bas
+        if(keys["ArrowDown"]){
+            v = clamp(v - step, 0, 1);
+            changed = true;
+        }
+
+        if(changed){
+            var rgb = hsvToRgb(h, s * 100, v * 100);
+            r = rgb.r;
+            g = rgb.g;
+            b = rgb.b;
+            updateUI();
+        }
+    }
+
+    requestAnimationFrame(svKeyboardLoop);
+}
+
+// Démarrer la boucle
+svKeyboardLoop();
 
 var step = 0.005;
 var holdIntervals = {};
