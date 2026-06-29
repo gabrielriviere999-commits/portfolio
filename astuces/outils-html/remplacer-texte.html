@@ -689,6 +689,7 @@ function ajouterRemplacement(from, to) {
   // Bouton monter
   var up = document.createElement("button");
   up.textContent = "↑";
+  up.style = "width:28px;height:28px;vertical-align:middle;";
   up.onclick = function () {
     var prev = div.previousSibling;
     if (prev) {
@@ -700,6 +701,7 @@ function ajouterRemplacement(from, to) {
   // Bouton descendre
   var down = document.createElement("button");
   down.textContent = "↓";
+  down.style = "width:28px;height:28px;vertical-align:middle;";
   down.onclick = function () {
     var next = div.nextSibling;
     if (next) {
@@ -711,6 +713,7 @@ function ajouterRemplacement(from, to) {
   // Bouton ajouter après
   var add = document.createElement("button");
   add.textContent = "+";
+  add.style = "width:28px;height:28px;vertical-align:middle;";
   add.onclick = function () {
     // créer un nouveau remplacement vide
     var newDiv = ajouterRemplacement("", "");
@@ -725,7 +728,7 @@ function ajouterRemplacement(from, to) {
   var del = document.createElement("button");
   del.textContent = "x";
   del.className = "btn-color";
-  del.style = "background-color:#ff4444;";
+  del.style = "background-color:#ff4444;width:28px;height:28px;vertical-align:middle;";
   del.onclick = function () {
     cont.removeChild(div);
     saveReplacements();

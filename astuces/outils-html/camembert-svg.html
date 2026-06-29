@@ -280,6 +280,7 @@ function rebuildTable() {
     // ↑
     var upBtn = document.createElement("button");
     upBtn.innerHTML = "↑";
+    upBtn.style = "width:28px;height:28px;vertical-align:middle;";
     upBtn.onclick = function(index){ return function(){
       if (index > 0) {
         var tmp = slices[index - 1];
@@ -294,6 +295,7 @@ function rebuildTable() {
     // ↓
     var downBtn = document.createElement("button");
     downBtn.innerHTML = "↓";
+    downBtn.style = "width:28px;height:28px;vertical-align:middle;";
     downBtn.onclick = function(index){ return function(){
       if (index < slices.length - 1) {
         var tmp = slices[index + 1];
@@ -309,7 +311,7 @@ function rebuildTable() {
     var delBtn = document.createElement("button");
     delBtn.innerHTML = "x";
     delBtn.className = "btn-color";
-    delBtn.style = "background-color:#ff4444;";
+    delBtn.style = "background-color:#ff4444;width:28px;height:28px;vertical-align:middle;";
     delBtn.onclick = function(index){ return function(){
       slices.splice(index,1);
       renderPie();

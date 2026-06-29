@@ -178,10 +178,10 @@ function refreshEditor() {
       '</textarea><br>' +
 
       // Boutons ↑ ↓ + x
-      '<button onclick="moveEventUp(' + i + ')">↑</button> ' +
-      '<button onclick="moveEventDown(' + i + ')">↓</button> ' +
-      '<button onclick="addEventAfter(' + i + ')">+</button> ' +
-      '<button onclick="removeEvent(' + i + ')" class="btn-color" style="background-color:#ff4444;">x</button>' +
+      '<button onclick="moveEventUp(' + i + ')" style="width:28px;height:28px;vertical-align:middle;">↑</button> ' +
+      '<button onclick="moveEventDown(' + i + ')" style="width:28px;height:28px;vertical-align:middle;">↓</button> ' +
+      '<button onclick="addEventAfter(' + i + ')" style="width:28px;height:28px;vertical-align:middle;">+</button> ' +
+      '<button onclick="removeEvent(' + i + ')" class="btn-color" style="background-color:#ff4444;width:28px;height:28px;vertical-align:middle;">x</button>' +
       '</div>';
   }
   document.getElementById("eventList").innerHTML = html;
