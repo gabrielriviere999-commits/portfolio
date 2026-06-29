@@ -125,7 +125,8 @@ textarea {
 <div id="org-container">
   <div class="org-root"></div>
 </div>
-<button onclick="copyToClipboard(exportFullHtml())" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
+<button onclick="generateCode(buildHtml())" class="btn-color" style="background-color:#ff8800;">Générer le code</button>
+<button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
 <br><textarea id="io" style="width:100%;height:200px;" wrap="off"></textarea><br>
 <button onclick="doImport()" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
 <button id="importFileBtn">Importer fichier…</button>
@@ -579,19 +580,30 @@ function escapeHtml(str) {
   });
 }
 
-function copyToClipboard(text) {
-  var btn = event.target;
-  var ta = document.createElement("textarea");
+function generateCode(text) {
+  var ta = document.getElementById("io");
   ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.opacity = "0";
-  document.body.appendChild(ta);
   ta.focus();
-  ta.select();
-  document.execCommand("copy");
-  document.body.removeChild(ta);
-  btn.focus();
 }
+
+// Bouton copier
+function copyFrom(id, btn) {
+    var code = document.getElementById(id);
+
+    var temp = document.createElement("textarea");
+    temp.value = code.value;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try { document.execCommand("copy"); } catch (err) {}
+
+    document.body.removeChild(temp);
+    btn.focus();
+}
+
+document.getElementById('copyCode').onclick = function(e) {
+    copyFrom('io', e.target);
+};
 
 /* --- Styles --- */
 function changeGlobalTextColor() {
@@ -681,7 +693,7 @@ function exportHtmlNode(node, indent) {
   return html;
 }
 
-function exportFullHtml() {
+function buildHtml() {
 
   var root = document.querySelector(".org-root");
   var globalText = root.style.color || "#000000";
