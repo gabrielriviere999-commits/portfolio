@@ -100,7 +100,6 @@ body {
 .tab-button:hover:not(.tab-button-active), .win98-select:hover { text-decoration:underline; }
 
 .win98-select {
-  /* Style Win98 */
   font-size: 14px;
   background-color: #c0c0c0;
   border: 2px solid;
@@ -108,19 +107,15 @@ body {
   color: black;
   cursor: pointer;
   box-sizing: border-box;
-  /* Forme carrée */
   width: 36px;
   height: 36px;
   padding: 0;
   margin: 0;
-  /* Supprimer le style moderne du select */
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  /* Centrage du symbole */
   text-align: center;
   line-height: 32px;
-  /* Empêche les décalages */
   display: inline-block;
   vertical-align: middle;
 }
@@ -248,12 +243,14 @@ body {
   .tableau { zoom: 0.4; }
 }
 
-/* --- Bouton de téléchargement --- */
 select {
   height: 40px;
   line-height: 40px;
-  color: brown;
+  background: #d4d0c8;
+  border: 2px solid;
+  border-color: #404040 #fff #fff #404040;
 }
+select:hover { background:#e0e0e0; }
 
 summary {
   cursor: pointer;
