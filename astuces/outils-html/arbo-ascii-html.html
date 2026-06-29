@@ -121,7 +121,10 @@ textarea {
   <p>Dossier courant : <span id="currentPath"></span></p>
   <div id="ascii"></div>
   <button onclick="copyTree(this)" class="btn-color" style="background-color:#4caf50;">Copier texte</button>
-  <button onclick="copyTreeColored(this)" class="btn-color" style="background-color:#4caf50;">Copier HTML couleur</button>
+  <button onclick="copyTreeHtml(this)" class="btn-color" style="background-color:#4caf50;">Copier HTML couleur</button><br><hr>
+  <button onclick="showTreeText()" class="btn-color" style="background-color:#4caf50;">Afficher texte</button>
+  <button onclick="showTreeHtml()" class="btn-color" style="background-color:#4caf50;">Afficher HTML couleur</button>
+  <br><textarea id="previewBox" wrap="off" style="display:none; width:100%; height:200px; margin-top:10px;"></textarea>
 </div>
 
 <div class="card">
@@ -224,7 +227,13 @@ function copyTree(btn) {
     btn.focus();
 }
 
-function copyTreeColored(btn) {
+function showTreeText() {
+    var box = document.getElementById("previewBox");
+    box.style.display = "block";
+    box.value = lastAsciiText;
+}
+
+function buildHtml() {
     var html = document.getElementById("ascii").innerHTML;
 
     // 1. Supprimer les boutons [C][R][X]
@@ -246,28 +255,14 @@ function copyTreeColored(btn) {
     html = html.replace(/│/g,   '<span class="ascii">│</span>');
 
     // 5. Colorer les fichiers
-    //    Règle : si après le symbole ASCII il n'y a PAS <span class="folder">
-    //    alors c'est un fichier → ajouter un espace + <span class="file">
     html = html.replace(
         /(<span class="ascii">(?:├──|└──)<\/span>)(\s*)([^<\n][^<\n]*)/g,
         function(_, ascii, spaces, name) {
 
-            // Si c'est un dossier → NE PAS toucher
-            if (name.indexOf('<span class="folder">') === 0) {
-                return ascii + spaces + name;
-            }
+            if (name.indexOf('<span class="folder">') === 0) return ascii + spaces + name;
+            if (name.indexOf('<span class="comment">') === 0) return ascii + spaces + name;
+            if (name.replace(/\s+/g, "") === "") return ascii + spaces + name;
 
-            // Si c'est un commentaire → NE PAS toucher
-            if (name.indexOf('<span class="comment">') === 0) {
-                return ascii + spaces + name;
-            }
-
-            // Si c'est vide → NE PAS ajouter d'espace
-            if (name.replace(/\s+/g, "") === "") {
-                return ascii + spaces + name;
-            }
-
-            // Sinon → fichier
             return ascii + spaces + '<span class="file">' + name + '</span>';
         }
     );
@@ -291,15 +286,29 @@ function copyTreeColored(btn) {
         html +
         '</pre>';
 
-    // 8. Copier
-    var btn = event.target;
+    return finalHtml;
+}
+
+function copyTreeHtml(btn) {
+    var finalHtml = buildHtml();
+
     var textarea = document.createElement("textarea");
     textarea.value = finalHtml;
     document.body.appendChild(textarea);
+
     textarea.select();
     document.execCommand("copy");
     document.body.removeChild(textarea);
+
     btn.focus();
+}
+
+function showTreeHtml() {
+    var finalHtml = buildHtml();
+
+    var box = document.getElementById("previewBox");
+    box.style.display = "block";
+    box.value = finalHtml;
 }
 
 function restoreTree() {
