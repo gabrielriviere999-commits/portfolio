@@ -854,6 +854,19 @@ view.onmousemove = function(e) {
     render();
 };
 
+// Correction Chromium Linux
+document.addEventListener("mousemove", function(e) {
+    if (!isDown) return;
+    // si la souris est déjà sur le textarea, inutile de doubler le traitement
+    if (e.target === view) return;
+    view.onmousemove(e);
+});
+document.addEventListener("mouseup", function(e) {
+    if (isDown) {
+        view.onmouseup(e);
+    }
+});
+
 view.onmouseup = function(e) {
     if (tool === "edit") return;
 
