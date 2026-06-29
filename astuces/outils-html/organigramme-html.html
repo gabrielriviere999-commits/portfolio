@@ -25,13 +25,13 @@ body {
   padding: 4px;
   z-index: 9999;
 }
-
 .toolbar.hidden {
   visibility: hidden;
   height: 0;
   padding: 0;
   overflow: hidden;
 }
+.toolbar button { line-height:1.2; }
 
 button {
   background: #c0c0c0;
@@ -49,6 +49,8 @@ button:active {
   background: #b0b0b0;
 }
 .btn-color:active { filter:brightness(0.9) }
+
+label { display:inline-block; }
 
 textarea {
   border:2px solid;
@@ -102,8 +104,7 @@ textarea {
   <button onclick="moveRight()">→</button>
   <button onclick="moveUp()">↑</button>
   <button onclick="moveDown()">↓</button>
-  <label>
-  <input type="checkbox" id="editMode">Édition texte</label>
+  <label><input type="checkbox" id="editMode">Édition texte</label>
   <button onclick="deleteNode()" class="btn-color" style="background-color:#ff4444;">Supprimer</button>
   |
   <button onclick="addImageToNode()">Ajouter image</button>
