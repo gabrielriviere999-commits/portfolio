@@ -161,9 +161,10 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <hr>
 <button type="button" onclick="exportOptions()">Exporter</button>
 <button type="button" onclick="showImportBox()">Importer</button>
-<div id="importBox" style="display:none; margin-top:10px;">
+<div id="importBox" style="display:none;">
   <textarea id="importText" rows="8" cols="40"></textarea><br>
   <button type="button" onclick="applyImport()">Valider l'import</button>
+  <button id="copyjson" class="btn-color" style="background-color:#4caf50;">Copier</button>
 </div>
 </fieldset>
 </div>
@@ -190,7 +191,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 
 <div class="card4">
 <h3>Résultat</h3>
-<button onclick="copier()" class="btn-color" style="background-color:#4caf50;">Copier</button>
+<button id="copyresult" class="btn-color" style="background-color:#4caf50;">Copier</button>
 <br><textarea id="output" class="texte" readonly></textarea>
 <div id="stats" style="font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
 </div>
@@ -387,20 +388,27 @@ function sansAccents(str) {
 }
 
 // Bouton copier
-function copier() {
-  var btn = event.target;
-  var texte = document.getElementById("output").value;
+function copyFrom(id, btn) {
+    var code = document.getElementById(id);
 
-  var temp = document.createElement("textarea");
-  temp.value = texte;
-  document.body.appendChild(temp);
-  temp.select();
+    var temp = document.createElement("textarea");
+    temp.value = code.value;
+    document.body.appendChild(temp);
+    temp.select();
 
-  try { document.execCommand("copy"); } catch (e) {}
+    try { document.execCommand("copy"); } catch (err) {}
 
-  document.body.removeChild(temp);
-  btn.focus();
+    document.body.removeChild(temp);
+    btn.focus();
 }
+
+document.getElementById('copyresult').onclick = function(e) {
+    copyFrom('output', e.target);
+};
+
+document.getElementById('copyjson').onclick = function(e) {
+    copyFrom('importText', e.target);
+};
 
 // Boutons Effacer
 function effacerTout() {
@@ -601,16 +609,11 @@ function exportOptions() {
 
     var json = JSON.stringify(data, null, 2);
 
-    var btn = event.target;
-    var temp = document.createElement("textarea");
-    temp.value = json;
-    document.body.appendChild(temp);
-    temp.select();
-    try { document.execCommand("copy"); } catch(e) {}
-    document.body.removeChild(temp);
-    btn.focus();
-
-    alert("Options copiées dans le presse‑papiers.");
+    // envoyer dans le textarea d'import
+    var ta = document.getElementById("importText");
+    ta.value = json;
+    // afficher la boîte d'import
+    document.getElementById("importBox").style.display = "block";
 }
 
 function getReplacements() {
