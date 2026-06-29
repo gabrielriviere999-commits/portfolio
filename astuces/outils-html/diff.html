@@ -8,15 +8,33 @@
 body { font-family: sans-serif; background: #c0c0c0; }
 h2, h3 { margin-top: 0; }
 .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 .card {
+  display: table-cell;
+  width: 50%;
+  padding: 10px;
+  box-sizing: border-box;
   background: #c0c0c0;
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
+  vertical-align: top;
+}
+@media (max-width: 700px) {
+  .container, .card {
+    display: block;
+    width: 100%;
+  }
+}
+.card3 {
   padding: 10px;
-  display: block;
+  box-sizing: border-box;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  width: 100%;
 }
 /* scrollbar */
 @media (hover: none) and (pointer: coarse) {
@@ -132,7 +150,7 @@ button:active {
 
 </div>
 
-<div class="card">
+<div class="card3">
 <button onclick="compare()" class="btn-color" style="background-color:#ff8800;">Comparer</button>
 <div id="summary" style="margin-top:10px; font-weight:bold;"></div>
 <div id="result"></div>
