@@ -8,15 +8,33 @@
 body { background-color:#c0c0c0; }
 h2, h3 { margin-top: 0; }
 .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 .card {
+  display: table-cell;
+  width: 50%;
+  padding: 10px;
+  box-sizing: border-box;
   background: #c0c0c0;
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
+  vertical-align: top;
+}
+@media (max-width: 700px) {
+  .container, .card {
+    display: block;
+    width: 100%;
+  }
+}
+.card3, .card4 {
   padding: 10px;
-  display: block;
+  box-sizing: border-box;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  width: 100%;
 }
 #repl_container {
   overflow-y: auto;
@@ -161,7 +179,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 </div>
 </div>
 
-<div class="card">
+<div class="card3">
 <h3>Source</h3>
 <textarea id="input" class="texte"></textarea><br>
 <button onclick="appliquerTransformations()" class="btn-color" style="background-color:#ff8800;">Appliquer</button>
@@ -170,7 +188,7 @@ label { display:inline-block; white-space:nowrap; vertical-align:middle; }
 <input type="file" id="fileInput" style="display:none;">
 </div>
 
-<div class="card">
+<div class="card4">
 <h3>Résultat</h3>
 <button onclick="copier()" class="btn-color" style="background-color:#4caf50;">Copier</button>
 <br><textarea id="output" class="texte" readonly></textarea>
