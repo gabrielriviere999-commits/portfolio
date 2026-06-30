@@ -35,6 +35,8 @@ textarea {
   box-sizing: border-box;
   font-family: monospace;
   resize: vertical;
+  white-space: pre;
+  overflow-x-:auto;
 }
 input[type="number"], input[type="text"] { width:50px; }
 input, textarea {
@@ -104,7 +106,7 @@ label { display: inline-block; margin: 2px 0; }
 <div class="card">
   <h3>Données : libellé;valeur</h3>
   <button id="copydata" class="btn-color" style="background-color:#4caf50;">Copier</button>
-  <br><textarea id="data" wrap="off">A;3
+  <br><textarea id="data">A;3
 B;7
 C;5
 D;10</textarea><br>
@@ -140,7 +142,7 @@ D;10</textarea><br>
 <div class="card">
   <h3>Aperçu / texte</h3>
   <button id="copyoutput" class="btn-color" style="background-color:#4caf50;">Copier</button>
-  <br><textarea id="output" wrap="off"></textarea><br>
+  <br><textarea id="output"></textarea><br>
   <button id="importFileBtnoutput">Importer fichier…</button>
   <input type="file" id="fileInputoutput" style="display:none;">
 </div>
