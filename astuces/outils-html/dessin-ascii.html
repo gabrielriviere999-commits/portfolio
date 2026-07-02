@@ -652,6 +652,12 @@ function placeText(x, y) {
 
     textInput.value = "";
     textBox.style.display = "block";
+
+    // focus automatique
+    setTimeout(function() {
+        textInput.focus();
+        textInput.select();
+    }, 0);
 }
 
 function confirmText() {
