@@ -11,7 +11,7 @@ body {
 }
 
 .block block-cat, .block block-value, .block block-from, .block block-to, block {
-  background: #c0c0c0;
+  background: #e0e0e0;
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
   padding: 10px;
@@ -35,7 +35,7 @@ body {
 }
 
 .dropdown:hover {
-  background: #cccccc;
+  background: #c0c0c0;
 }
 
 .dropdown-list {
@@ -787,7 +787,7 @@ function createDropdown(selectedId, listId, onSelect) {
 function highlight() {
   var i;
   for (i = 0; i < options.length; i++) {
-    options[i].style.background = (i === activeIndex) ? "#ddd" : "";
+    options[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
   }
 
   if (activeIndex >= 0 && activeIndex < options.length) {
@@ -1014,7 +1014,7 @@ document.getElementById("searchFrom").oninput = function () {
 function highlight() {
   var i;
   for (i = 0; i < searchOptions.length; i++) {
-    searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
+    searchOptions[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
   }
 
   if (activeIndex >= 0 && activeIndex < searchOptions.length) {
@@ -1136,7 +1136,7 @@ document.getElementById("searchTo").oninput = function () {
 function highlight() {
   var i;
   for (i = 0; i < searchOptions.length; i++) {
-    searchOptions[i].style.background = (i === activeIndex) ? "#ddd" : "";
+    searchOptions[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
   }
 
   if (activeIndex >= 0 && activeIndex < searchOptions.length) {
