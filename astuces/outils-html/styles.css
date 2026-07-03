@@ -66,6 +66,14 @@ button:active, button.active, #file-input:active {
 
 a { color:#33b5e5; }
 
+select {
+  background:#202020;
+  color:#ffffff;
+  border:2px solid;
+  border-color:#111 #888 #888 #111;
+}
+select:hover { background:#404040; }
+
 .container {
   display:table;
   width:100%;
