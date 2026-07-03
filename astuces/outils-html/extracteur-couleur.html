@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extracteur couleur</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.scroll-btn {
+  width:36px;
+  height:36px;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+}
+#canvasWrapper {
+  background: #000000;
+  padding: 2px;
+  overflow: auto;
+  max-height: 500px;
+  max-height: 70vh;
+}
+#loupe {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 2px solid #000000;
+  background: #c0c0c0;
+  display: none;
+  pointer-events: none;
+  image-rendering: pixelated;
+  box-shadow: 2px 2px 0 #000000;
+}
+#loupeCanvas {
+  width: 100%;
+  height: 100%;
+}
+/* Croix au centre */
+#loupe:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: red;
+}
+#loupe:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: red;
+}
+/* Croix sur l'image */
+.cross {
+  position:absolute;
+  width:36px;
+  height:36px;
+  pointer-events:none;
+}
+.cross:before, .cross:after {
+  content:"";
+  position:absolute;
+  background:#c0c0c0;
+}
+.cross:before {
+  left:50%; top:0; bottom:0;
+  width:1px;
+  margin-left:-1px;
+}
+.cross:after {
+  top:50%; left:0; right:0;
+  height:1px;
+  margin-top:-1px;
+}
+#preview {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: top;
+}
+.line {
+  margin: 3px 0;
+}
+.value {
+  display: inline-block;
+  min-width: 140px;
+}
+/* scrollbar */
+::-webkit-scrollbar {
+  width:24px;
+  height:24px;
+  background:#000000;
+}
+::-webkit-scrollbar-track {
+  background:#000000;
+  border-top:2px solid #888;
+  border-left:2px solid #888;
+  border-bottom:2px solid #111;
+  border-right:2px solid #111;
+}
+::-webkit-scrollbar-thumb {
+  background:#202020;
+  border-top:2px solid #888;
+  border-left:2px solid #888;
+  border-bottom:2px solid #111;
+  border-right:2px solid #111;
+}
+::-webkit-resizer {background:#000000;}
+</style>
+</head>
+<body>
+<h2>Extracteur couleur</h2>
+
+<div class="section">
+    <div id="dropzone">Cliquer ou glisser-déposer une image ici
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div id="pastezone" class="section" style="margin-top:10px; text-align:center;">
+        <input id="pasteInput" maxlength="0" style="width:100%;height:30px;box-sizing:border-box;" placeholder="Ou cliquer ici puis faire Ctrl+V">
+    </div>
+
+    <div id="canvasWrapper" class="border-interne">
+        <canvas id="canvas" width="1200" height="900"></canvas>
+    </div>
+</div>
+
+<div id="loupe">
+    <canvas id="loupeCanvas" width="20" height="20"></canvas>
+</div>
+
+<div id="cross" class="cross" style="display:none;"></div>
+
+<div class="section">
+
+    <div id="info">
+        <div class="line" style="user-select:none;-webkit-user-select:none;-ms-user-select:none;">
+            <div id="preview" class="border-interne"></div>
+                <button class="scroll-btn" onmousedown="active.left = true" onmouseup="active.left = false" ontouchstart="active.left = true" ontouchend="active.left = false">←</button>
+                <button class="scroll-btn" onmousedown="active.right = true" onmouseup="active.right = false" ontouchstart="active.right = true" ontouchend="active.right = false">→</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="scroll-btn" onmousedown="active.up = true" onmouseup="active.up = false" ontouchstart="active.up = true" ontouchend="active.up = false">↑</button>
+                <button class="scroll-btn" onmousedown="active.down = true" onmouseup="active.down = false" ontouchstart="active.down = true" ontouchend="active.down = false">↓</button>
+        </div>
+
+        <div class="line">
+            HEX :
+            <span id="hexValue" class="value">-</span>
+            <button onclick="copyText('hexValue', this)">Copier</button>
+        </div>
+
+        <div class="line">
+            RGB :
+            <span id="rgbValue" class="value">-</span>
+            <button onclick="copyText('rgbValue', this)">Copier</button>
+        </div>
+
+        <div class="line">
+            HSL :
+            <span id="hslValue" class="value">-</span>
+            <button onclick="copyText('hslValue', this)">Copier</button>
+        </div>
+
+        <div class="line">
+            HSV :
+            <span id="hsvValue" class="value">-</span>
+            <button onclick="copyText('hsvValue', this)">Copier</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* --- Variables --- */
+var dropzone = document.getElementById("dropzone");
+var fileInput = document.getElementById("fileInput");
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var loupe = document.getElementById("loupe");
+var loupeCanvas = document.getElementById("loupeCanvas");
+var cross = document.getElementById("cross");
+var lctx = loupeCanvas.getContext("2d");
+
+var preview = document.getElementById("preview");
+var hexSpan = document.getElementById("hexValue");
+var rgbSpan = document.getElementById("rgbValue");
+var hslSpan = document.getElementById("hslValue");
+var hsvSpan = document.getElementById("hsvValue");
+var label = document.getElementById("label");
+
+var currentImage = null;
+
+/* --- Utils --- */
+function prevent(e) {
+    if (e.preventDefault) e.preventDefault();
+    e.returnValue = false;
+    return false;
+}
+
+/* --- Drag & Drop --- */
+dropzone.onclick = function(){ fileInput.click(); };
+dropzone.ondragover = function(e){ prevent(e); dropzone.className = "hover"; };
+dropzone.ondragenter = function(e){ prevent(e); dropzone.className = "hover"; };
+dropzone.ondragleave = function(e){ prevent(e); dropzone.className = ""; };
+dropzone.ondrop = function(e){
+    prevent(e);
+    dropzone.className = "";
+    var f = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files[0] : null;
+    if (f) loadFile(f);
+};
+
+fileInput.onchange = function(){
+    if (fileInput.files && fileInput.files.length > 0) {
+        loadFile(fileInput.files[0]);
+    }
+};
+
+/* --- Chargement image --- */
+function loadFile(file){
+    if (!/image\//.test(file.type)) {
+        alert("Veuillez sélectionner un fichier image.");
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+        var img = new Image();
+        img.onload = function(){
+            currentImage = img;
+            drawImageToCanvas(img);
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function drawImageToCanvas(img){
+    // largeur affichée réelle du canvas (CSS)
+    var displayWidth = canvas.clientWidth;
+    if (!displayWidth || displayWidth === 0) {
+        // fallback : utiliser largeur fenêtre
+        displayWidth = document.documentElement.clientWidth || 400;
+    }
+    var ratio = img.height / img.width;
+    var displayHeight = Math.round(displayWidth * ratio);
+
+    // taille interne du canvas = taille affichée
+    canvas.width = displayWidth;
+    canvas.height = displayHeight;
+
+    ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
+    label.innerHTML = "Cliquez ou touchez l'image pour lire une couleur.";
+}
+
+/* --- Coller l'image --- */
+var pastezone = document.getElementById("pastezone");
+
+pastezone.onclick = function(){
+    pastezone.focus();
+};
+
+pastezone.onpaste = function(e){
+    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    var file = null;
+
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            file = items[i].getAsFile();
+            break;
+        }
+    }
+
+    if (file) {
+        loadFile(file);
+    } else {
+        alert("Aucune image trouvée dans le presse‑papier.");
+    }
+};
+
+/* --- Copier --- */
+function copyText(id, btn){
+	var btn = event.target;
+    var text = document.getElementById(id).innerHTML;
+    var t = document.createElement("textarea");
+    t.value = text;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand("copy");
+    document.body.removeChild(t);
+    btn.focus();
+}
+
+/* --- Conversions couleurs --- */
+function toHex(c){ var h = c.toString(16); return h.length == 1 ? "0" + h : h; }
+function rgbToHex(r,g,b){ return "#" + toHex(r) + toHex(g) + toHex(b); }
+
+function rgbToHsl(r,g,b){
+    var rf = r/255, gf = g/255, bf = b/255;
+    var max = Math.max(rf,gf,bf), min = Math.min(rf,gf,bf);
+    var h, s, l = (max + min) / 2;
+    var d = max - min;
+
+    if (d == 0) {
+        h = 0; s = 0;
+    } else {
+        s = l < 0.5 ? d / (max + min) : d / (2 - max - min);
+        if (max == rf) {
+            h = (gf - bf) / d + (gf < bf ? 6 : 0);
+        } else if (max == gf) {
+            h = (bf - rf) / d + 2;
+        } else {
+            h = (rf - gf) / d + 4;
+        }
+        h *= 60;
+    }
+    return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+function rgbToHsv(r,g,b){
+    var rf = r/255, gf = g/255, bf = b/255;
+    var max = Math.max(rf,gf,bf), min = Math.min(rf,gf,bf);
+    var d = max - min, h, s, v = max;
+
+    if (max == 0) {
+        s = 0; h = 0;
+    } else {
+        s = d / max;
+        if (d == 0) {
+            h = 0;
+        } else {
+            if (max == rf) {
+                h = (gf - bf) / d + (gf < bf ? 6 : 0);
+            } else if (max == gf) {
+                h = (bf - rf) / d + 2;
+            } else {
+                h = (rf - gf) / d + 4;
+            }
+            h *= 60;
+        }
+    }
+    return { h: Math.round(h), s: Math.round(s * 100), v: Math.round(v * 100) };
+}
+
+/* --- Lecture pixel + loupe --- */
+function readPixel(x,y){
+    if (!ctx) return;
+    if (x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) return;
+
+    var d = ctx.getImageData(x,y,1,1).data;
+    var r = d[0], g = d[1], b = d[2];
+
+    preview.style.backgroundColor = "rgb(" + r + "," + g + "," + b + ")";
+
+    var hex = rgbToHex(r,g,b);
+    var hsl = rgbToHsl(r,g,b);
+    var hsv = rgbToHsv(r,g,b);
+
+    hexSpan.innerHTML = hex;
+    rgbSpan.innerHTML = "rgb(" + r + "," + g + "," + b + ")";
+    hslSpan.innerHTML = "hsl(" + hsl.h + "," + hsl.s + "%," + hsl.l + "%)";
+    hsvSpan.innerHTML = "hsv(" + hsv.h + "," + hsv.s + "%," + hsv.v + "%)";
+}
+
+function showLoupe(x, y){
+    var rect = canvas.getBoundingClientRect();
+
+    var scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    var scrollX = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+
+    // Dessin loupe
+    lctx.clearRect(0,0,20,20);
+    lctx.drawImage(canvas, x-10, y-10, 20, 20, 0, 0, 20, 20);
+
+    var lw = 200;
+    var lh = 200;
+
+    // Position horizontale basée sur la position interne
+    lx = rect.left + scrollX + x - 40;
+
+    // Position verticale basée sur la position interne
+    ly = rect.top + scrollY + y + 40;
+
+    loupe.style.left = lx + "px";
+    loupe.style.top  = ly + "px";
+    loupe.style.display = "block";
+}
+
+function hideLoupe(){
+    loupe.style.display = "none";
+}
+
+function showCross(x, y){
+    var rect = canvas.getBoundingClientRect();
+
+    var scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    var scrollX = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+
+    cross.style.left = (rect.left + scrollX + x - 18) + "px";
+    cross.style.top  = (rect.top  + scrollY + y - 18) + "px";
+    cross.style.display = "block";
+}
+
+function hideCross(){
+    cross.style.display = "none";
+}
+
+/* --- Coordonnées souris / touch --- */
+function getPos(e){
+    var rect = canvas.getBoundingClientRect();
+    var x, y;
+    if (e.touches && e.touches.length > 0) {
+        x = e.touches[0].clientX - rect.left;
+        y = e.touches[0].clientY - rect.top;
+    } else {
+        x = e.clientX - rect.left;
+        y = e.clientY - rect.top;
+    }
+    return { x: Math.floor(x), y: Math.floor(y) };
+}
+
+/* --- Events --- */
+canvas.onmousemove = function(e){
+    var p = getPos(e);
+    showLoupe(p.x, p.y);
+};
+
+canvas.onmouseleave = function(){
+    hideLoupe();
+};
+
+canvas.onclick = function(e){
+    var p = getPos(e);
+    readPixel(p.x, p.y);
+    showCross(p.x,p.y);
+};
+
+canvas.ontouchstart = function(e){
+    var p = getPos(e);
+    showLoupe(p.x, p.y);
+    readPixel(p.x, p.y);
+    showCross(p.x,p.y);
+    e.preventDefault();
+};
+
+canvas.ontouchmove = function(e){
+    var p = getPos(e);
+    showLoupe(p.x, p.y);
+    readPixel(p.x, p.y);
+    showCross(p.x,p.y);
+    e.preventDefault();
+};
+
+canvas.ontouchend = function(e){
+    hideLoupe();
+    e.preventDefault();
+};
+
+/* --- Boutons de scroll --- */
+var wrapper = document.getElementById("canvasWrapper");
+
+/* état des boutons */
+var active = {
+    up: false,
+    down: false,
+    left: false,
+    right: false
+};
+
+/* vitesse */
+var speed = 15;
+
+/* boucle unique */
+setInterval(function () {
+
+    if (active.up) {
+        wrapper.scrollTop -= speed;
+    }
+
+    if (active.down) {
+        wrapper.scrollTop += speed;
+    }
+
+    if (active.left) {
+        wrapper.scrollLeft -= speed;
+    }
+
+    if (active.right) {
+        wrapper.scrollLeft += speed;
+    }
+
+}, 30);
+</script>
+
+</body>
+</html>

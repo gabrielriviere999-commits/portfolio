@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organigramme HTML</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+body { padding-top:200px; }
+.org-root {
+  display:inline-block;
+  color:yellow;
+}
+.org-node {
+  display:inline-block;
+  text-align:center;
+  margin:10px 5px;
+  vertical-align:top;
+}
+.org-label {
+  border:1px solid #000;
+  padding:4px 8px;
+  background:red;
+}
+.org-children {
+  margin-top:10px;
+  text-align:center;
+}
+.org-node.selected .org-label {
+  border:2px solid #0078d7;
+}
+</style>
+</head>
+
+<body>
+<h2>Organigramme HTML</h2>
+<div class="toolbar" style="opacity:0.8;">
+  <button onclick="addChild()">Ajouter enfant</button>
+  <button onclick="addSibling()">Ajouter frère</button>
+  <button onclick="moveLeft()">←</button>
+  <button onclick="moveRight()">→</button>
+  <button onclick="moveUp()">↑</button>
+  <button onclick="moveDown()">↓</button>
+  <label><input type="checkbox" id="editMode">Édition texte</label>
+  <button onclick="deleteNode()" class="btn-color" style="background-color:#ff4444;">Supprimer</button>
+  |
+  <button onclick="addImageToNode()">Ajouter image</button>
+  <button onclick="removeImageFromNode()" class="btn-color" style="background-color:#ff4444;">Supprimer image</button>
+  <input type="file" id="imgInput" style="display:none" accept="image/*" onchange="loadNodeImage(this)">
+  |
+  <button onclick="changeGlobalTextColor()">Texte global</button>
+  <button onclick="changeSelectedTextColor()">Texte sélectionné</button>
+  |
+  <button onclick="changeGlobalColor()">Fond global</button>
+  <button onclick="changeSelectedBgColor()">Fond sélectionné</button>
+  |
+  <button onclick="clearGlobalStyle()" class="btn-color" style="background-color:#ff4444;">Effacer style global</button>
+  <button onclick="clearSelectedStyle()" class="btn-color" style="background-color:#ff4444;">Effacer style sélectionné</button>
+</div>
+<button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity:0.8;">≡</button>
+
+<div id="org-container">
+  <div class="org-root"></div>
+</div>
+<button onclick="generateCode(buildHtml())" class="btn-color" style="background-color:#ff8800;">Générer le code</button>
+<button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
+<br><textarea id="io" style="width:100%;height:200px;" wrap="off"></textarea><br>
+<button onclick="doImport()" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
+<button id="importFileBtn">Importer fichier…</button>
+<input type="file" id="fileInput" style="display:none;">
+
+<script>
+/* --- VARIABLES GLOBALES --- */
+var globalBoxBg = "white";
+var selectedId = null;
+var clickOnToolbar = false;
+var nextId = 1;
+
+/* --- DONNÉES --- */
+var orgRoot = {
+  hidden: true,
+  children: [
+    {
+      label: "CEO",
+      children: [
+        {
+          label: "CTO",
+          children: [
+            { label: "Dev 1", children: [] },
+            { label: "Dev 2", children: [] }
+          ]
+        },
+        {
+          label: "CFO",
+          children: [
+            { label: "Comptable", children: [] }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+/* --- ASSIGNATION DES IDS --- */
+function assignIds(node) {
+
+  if (!node.id) {
+    node.id = nextId++;
+  }
+
+  if (!node.children) {
+    node.children = [];
+  }
+
+  for (var i = 0; i < node.children.length; i++) {
+    assignIds(node.children[i]);
+  }
+
+}
+assignIds(orgRoot);
+
+/* --- RENDU HTML --- */
+function renderOrgTree(root) {
+
+  var container = document.getElementById("org-container");
+  var rootEl = document.querySelector(".org-root");
+
+  var globalText = "#000000";
+
+  if (rootEl) {
+    globalText = rootEl.style.color || "#000000";
+  }
+
+  var html = '<div class="org-root" style="color:' + globalText + ';">\n';
+
+  // Affiche uniquement les enfants du conteneur invisible
+  for (var i = 0; i < root.children.length; i++) {
+    html += renderOrgNode(root.children[i], globalText, 2);
+  }
+
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+/* --- TOOLBAR --- */
+var toolbar = document.getElementsByClassName('toolbar')[0];
+var toggleBtn = document.getElementById('toggleToolbarBtn');
+var editMode = document.getElementById("editMode");
+var toolbarVisible = true;
+
+toolbar.onmousedown = function(e) {
+  clickOnToolbar = true;
+  e.stopPropagation();
+};
+
+toggleBtn.onmousedown = function(e) {
+  clickOnToolbar = true;
+  e.stopPropagation();
+};
+
+toggleBtn.onclick = function(e) {
+  clickOnToolbar = true;
+  e.stopPropagation();
+  toolbarVisible = !toolbarVisible;
+  toolbar.className = toolbarVisible ? 'toolbar' : 'toolbar hidden';
+};
+
+/* --- SÉLECTION / ÉDITION --- */
+document.addEventListener('click', function(e) {
+  var node = findNodeElement(e.target);
+  if (!node) return;
+
+  var id = parseInt(node.getAttribute('data-id'), 10);
+
+  if (editMode.checked) {
+    startInlineRename(id, node);
+  } else {
+    selectedId = id;
+    updateSelectionHighlight();
+  }
+});
+
+/* --- RENDU --- */
+function renderOrgNode(node, globalText, indent) {
+  var pad = "";
+  for (var i = 0; i < indent; i++) pad += " ";
+
+  var bg = (node.bg != null) ? node.bg : globalBoxBg;
+  var color = node.textColor || globalText;
+
+  var html = pad + '<div class="org-node" data-id="' + node.id + '">\n';
+  html += pad + '  <div class="org-label" style="background:' + bg + '; color:' + color + ';">' +
+          nl2br(escapeHtml(node.label));
+
+  if (node.img) {
+    html += '<br><img src="' + node.img + '" style="max-width:80px; margin-top:4px;">';
+  }
+
+  html += '</div>\n';
+
+  if (node.children.length > 0) {
+    html += pad + '  <div class="org-children">\n';
+    for (var j = 0; j < node.children.length; j++) {
+      html += renderOrgNode(node.children[j], globalText, indent + 4);
+    }
+    html += pad + '  </div>\n';
+  }
+
+  html += pad + '</div>\n';
+  return html;
+}
+
+window.onload = function() {
+  renderOrgTree(orgRoot);
+};
+
+/* --- ÉDITION INLINE --- */
+function startInlineRename(id, nodeEl) {
+  var node = findNodeById(orgRoot, id);
+  var labelEl = nodeEl.getElementsByClassName("org-label")[0];
+
+  var old = node.label;
+
+  labelEl.innerHTML =
+    '<textarea id="inlineEdit" style="width:90%;height:60px;"></textarea>';
+
+  var ta = document.getElementById("inlineEdit");
+  ta.value = old;
+  ta.focus();
+
+  ta.addEventListener("keydown", function(ev) {
+    if (ev.keyCode === 13 && !ev.shiftKey) return;
+  });
+
+  ta.onblur = function() {
+      finishInlineRename(id, ta.value);
+  };
+}
+
+function finishInlineRename(id, newText) {
+  var node = findNodeById(orgRoot, id);
+  node.label = newText;
+
+  renderOrgTree(orgRoot);
+  selectedId = id;
+  updateSelectionHighlight();
+}
+
+/* --- ACTIONS - AJOUT / SUPPRESSION --- */
+function addChild() {
+  if (!selectedId) return;
+  var node = findNodeById(orgRoot, selectedId);
+  var label = prompt("Nom du nouveau nœud :");
+  if (!label) return;
+  var newNode = { label: label, children: [] };
+  assignIds(newNode);
+  node.children.push(newNode);
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function addSibling() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+  var label = prompt("Nom du nouveau nœud :");
+  if (!label) return;
+
+  var newNode = {
+    label: label,
+    children: []
+  };
+
+  assignIds(newNode);
+
+  // Recherche la position du nœud sélectionné
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      // Insertion juste après le nœud sélectionné
+      parent.children.splice(i + 1, 0, newNode);
+      break;
+    }
+  }
+
+  renderOrgTree(orgRoot);
+  selectedId = newNode.id;
+  updateSelectionHighlight();
+}
+
+function moveLeft() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      if (i === 0) return;
+      var tmp = parent.children[i - 1];
+      parent.children[i - 1] = parent.children[i];
+      parent.children[i] = tmp;
+      renderOrgTree(orgRoot);
+      updateSelectionHighlight();
+      return;
+    }
+  }
+
+}
+
+function moveRight() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      if (i >= parent.children.length - 1) return;
+      var tmp = parent.children[i + 1];
+      parent.children[i + 1] = parent.children[i];
+      parent.children[i] = tmp;
+      renderOrgTree(orgRoot);
+      updateSelectionHighlight();
+      return;
+    }
+  }
+
+}
+
+function moveUp() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+
+  // Déjà racine
+  if (parent === orgRoot)
+    return;
+
+  var grandParent = findParent(orgRoot, parent.id);
+  if (!grandParent) return;
+
+  var node = null;
+  var index = -1;
+
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      node = parent.children[i];
+      index = i;
+      break;
+    }
+  }
+
+  if (!node) return;
+  parent.children.splice(index, 1);
+  for (i = 0; i < grandParent.children.length; i++) {
+    if (grandParent.children[i].id === parent.id) {
+      grandParent.children.splice(i + 1, 0, node);
+      break;
+    }
+  }
+
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function moveDown() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+
+  var node = null;
+  var index = -1;
+
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      node = parent.children[i];
+      index = i;
+      break;
+    }
+  }
+
+  if (!node) return;
+
+  // premier frère → impossible
+  if (index === 0)
+    return;
+
+  var newParent = parent.children[index - 1];
+  parent.children.splice(index, 1);
+  newParent.children.push(node);
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function deleteNode() {
+  if (!selectedId) return;
+  var parent = findParent(orgRoot, selectedId);
+  if (!parent) return;
+
+  // Empêche la suppression du conteneur invisible
+  if (selectedId === orgRoot.id) return;
+
+  for (var i = 0; i < parent.children.length; i++) {
+    if (parent.children[i].id === selectedId) {
+      parent.children.splice(i, 1);
+      break;
+    }
+  }
+
+  selectedId = null;
+  renderOrgTree(orgRoot);
+}
+
+/* --- ACTIONS - IMAGES --- */
+function addImageToNode() {
+  if (!selectedId) return;
+  document.getElementById("imgInput").click();
+}
+
+function loadNodeImage(input) {
+  if (!selectedId) return;
+  var file = input.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var node = findNodeById(orgRoot, selectedId);
+    node.img = e.target.result;
+    renderOrgTree(orgRoot);
+    updateSelectionHighlight();
+  };
+  reader.readAsDataURL(file);
+
+  input.value = "";
+}
+
+function removeImageFromNode() {
+  if (!selectedId) return;
+
+  var node = findNodeById(orgRoot, selectedId);
+  if (!node.img) return; // aucune image → rien à faire
+
+  delete node.img;       // on supprime l'image
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+/* --- SÉLECTION --- */
+function findNodeElement(el) {
+  while (el && el !== document) {
+    if (el.className && el.className.indexOf('org-node') !== -1) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+function updateSelectionHighlight() {
+  var nodes = document.getElementsByClassName('org-node');
+  for (var i = 0; i < nodes.length; i++) {
+    var id = parseInt(nodes[i].getAttribute('data-id'), 10);
+    nodes[i].className = (id === selectedId) ? 'org-node selected' : 'org-node';
+  }
+}
+
+/* --- RECHERCHE --- */
+function findNodeById(node, id) {
+
+  if (!node) return null;
+
+  if (node.id === id) {
+    return node;
+  }
+
+  for (var i = 0; i < node.children.length; i++) {
+    var found = findNodeById(node.children[i], id);
+    if (found) {
+      return found;
+    }
+  }
+
+  return null;
+}
+
+function findParent(node, id) {
+
+  if (!node) return null;
+
+  for (var i = 0; i < node.children.length; i++) {
+
+    if (node.children[i].id === id) {
+      return node;
+    }
+
+    var found = findParent(node.children[i], id);
+
+    if (found) {
+      return found;
+    }
+  }
+
+  return null;
+}
+
+/* --- UTILITAIRES --- */
+function nl2br(str) {
+  return str.replace(/\n/g, "<br>");
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, function(m) {
+    return ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[m];
+  });
+}
+
+function generateCode(text) {
+  var ta = document.getElementById("io");
+  ta.value = text;
+}
+
+// Bouton copier
+function copyFrom(id, btn) {
+    var code = document.getElementById(id);
+
+    var temp = document.createElement("textarea");
+    temp.value = code.value;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try { document.execCommand("copy"); } catch (err) {}
+
+    document.body.removeChild(temp);
+    btn.focus();
+}
+
+document.getElementById('copyCode').onclick = function(e) {
+    copyFrom('io', e.target);
+};
+
+/* --- Styles --- */
+function changeGlobalTextColor() {
+  var col = prompt("Couleur globale du texte :");
+  if (!col) return;
+  col = col.toLowerCase().replace(/^([0-9a-f]{6})$/, "#$1").replace(/^([0-9a-f]{3})$/, "#$1");
+  var root = document.querySelector(".org-root");
+  root.style.color = col;
+  renderOrgTree(orgRoot);
+}
+
+function changeSelectedTextColor() {
+  if (!selectedId) return;
+  var col = prompt("Couleur du texte :");
+  if (!col) return;
+  col = col.toLowerCase().replace(/^([0-9a-f]{6})$/, "#$1").replace(/^([0-9a-f]{3})$/, "#$1");
+  var node = findNodeById(orgRoot, selectedId);
+  node.textColor = col;
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function changeGlobalColor() {
+  var col = prompt("Couleur globale du fond des carrés :");
+  if (!col) return;
+  col = col.toLowerCase().replace(/^([0-9a-f]{6})$/, "#$1").replace(/^([0-9a-f]{3})$/, "#$1");
+  globalBoxBg = col;
+  renderOrgTree(orgRoot);
+}
+
+function changeSelectedBgColor() {
+  if (!selectedId) return;
+  var col = prompt("Couleur du fond du carré sélectionné :");
+  if (!col) return;
+  col = col.toLowerCase().replace(/^([0-9a-f]{6})$/, "#$1").replace(/^([0-9a-f]{3})$/, "#$1");
+  var node = findNodeById(orgRoot, selectedId);
+  node.bg = col;
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+function clearGlobalStyle() {
+  globalBoxBg = "white";
+  var root = document.querySelector(".org-root");
+  root.style.color = "#000000";
+  renderOrgTree(orgRoot);
+}
+
+function clearSelectedStyle() {
+  if (!selectedId) return;
+  var node = findNodeById(orgRoot, selectedId);
+  delete node.bg;
+  delete node.textColor;
+  renderOrgTree(orgRoot);
+  updateSelectionHighlight();
+}
+
+/* --- Export HTML --- */
+function exportHtmlNode(node, indent) {
+  var pad = "";
+  for (var i = 0; i < indent; i++) pad += " ";
+
+  var style = "";
+  if (node.bg != null) style += "background:" + escapeHtml(node.bg) + ";";
+  if (node.textColor) style += "color:" + escapeHtml(node.textColor) + ";";
+  if (style) style = ' style="' + style + '"';
+
+  var html = pad + '<div class="org-node" data-id="' + node.id + '">\n';
+  html += pad + '  <div class="org-label"' + style + '>' +
+        nl2br(escapeHtml(node.label));
+
+  if (node.img) {
+    html += '<br><img src="' + node.img + '" style="max-width:80px; margin-top:4px;">';
+  }
+
+  html += '</div>\n';
+
+  if (node.children.length > 0) {
+    html += pad + '  <div class="org-children">\n';
+    for (var j = 0; j < node.children.length; j++) {
+      html += exportHtmlNode(node.children[j], indent + 4);
+    }
+    html += pad + '  </div>\n';
+  }
+
+  html += pad + '</div>\n';
+  return html;
+}
+
+function buildHtml() {
+
+  var root = document.querySelector(".org-root");
+  var globalText = root.style.color || "#000000";
+
+  var css =
+    "<style>\n" +
+    ".org-root { display:inline-block; color:" + globalText + "; }\n" +
+    ".org-node { display:inline-block; text-align:center; margin:10px 5px; vertical-align:top; }\n" +
+    ".org-label { border:1px solid #000; padding:4px 8px; background:" + globalBoxBg + "; }\n" +
+    ".org-children { margin-top:10px; text-align:center; }\n" +
+    "</style>\n";
+
+  var html =
+    '<div class="org-root" data-global-bg="' + globalBoxBg + '" style="color:' + globalText + ';">\n';
+
+  // Exporte toutes les racines
+  for (var i = 0; i < orgRoot.children.length; i++) {
+    html += exportHtmlNode(orgRoot.children[i], 2);
+  }
+
+  html += '</div>';
+
+  return css + html;
+}
+
+/* --- IMPORT HTML --- */
+function importHtml(html) {
+
+  var container = document.createElement("div");
+  container.innerHTML = html;
+
+  function parseNode(el) {
+
+    var labelEl = el.getElementsByClassName("org-label")[0];
+
+    var imgEl = labelEl.getElementsByTagName("img")[0];
+    var imgSrc = null;
+
+    if (imgEl) {
+      imgSrc = imgEl.src;
+    }
+
+    var raw = labelEl.innerHTML;
+
+    raw = raw.replace(/<img[^>]*>/gi, "");
+
+    var label = raw.replace(/<br\s*\/?>/gi, "\n");
+
+    label = label.replace(/^\s+|\s+$/g, "");
+
+    var node = {
+      label: label,
+      children: []
+    };
+
+    if (imgSrc) {
+      node.img = imgSrc;
+    }
+
+    if (labelEl.style.color) {
+      node.textColor = labelEl.style.color;
+    }
+
+    if (labelEl.style.background) {
+      node.bg = labelEl.style.background;
+    }
+
+    var childrenContainer = null;
+
+    for (var i = 0; i < el.children.length; i++) {
+        if (el.children[i].className === "org-children") {
+            childrenContainer = el.children[i];
+            break;
+        }
+    }
+
+    if (childrenContainer) {
+
+      for (var i = 0; i < childrenContainer.children.length; i++) {
+
+        node.children.push(parseNode(childrenContainer.children[i]));
+
+      }
+
+    }
+
+    return node;
+
+  }
+
+  var rootEl = container.getElementsByClassName("org-root")[0];
+
+  if (!rootEl) return null;
+
+  var global = rootEl.getAttribute("data-global-bg");
+
+  if (global) {
+    globalBoxBg = global;
+  }
+
+  var realRoot = document.querySelector(".org-root");
+
+  if (realRoot) {
+    realRoot.style.color = rootEl.style.color || "#000000";
+  }
+
+  // Création du conteneur invisible
+  var root = {
+    hidden: true,
+    children: []
+  };
+
+  // Lecture de toutes les racines
+  for (var i = 0; i < rootEl.children.length; i++) {
+
+    var child = rootEl.children[i];
+
+    if (child.className.indexOf("org-node") !== -1) {
+
+      root.children.push(parseNode(child));
+
+    }
+
+  }
+
+  assignIds(root);
+
+  return root;
+
+}
+
+function importData(text) {
+  if (text.indexOf("<div") !== -1) {
+    orgRoot = importHtml(text);
+  }
+  renderOrgTree(orgRoot);
+  selectedId = null;
+}
+
+function doImport() {
+  var txt = document.getElementById("io").value;
+  importData(txt);
+}
+
+// Glisser-déposer
+var io = document.getElementById("io");
+
+io.addEventListener("dragover", function(e) {
+
+    // Si un fichier est glissé → empêcher le comportement natif
+    if (e.dataTransfer.types &&
+        (e.dataTransfer.types.indexOf("Files") !== -1 ||
+         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+
+        e.preventDefault(); // autorise le drop fichier
+    }
+
+    // Sinon → NE RIEN FAIRE
+    // Le navigateur affiche le curseur d’insertion
+});
+
+io.addEventListener("drop", function(e) {
+
+    // Si fichier → on gère nous-même
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+
+        var file = e.dataTransfer.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(ev) {
+            // On met le fichier brut dans la zone
+            io.value = ev.target.result;
+        };
+
+        reader.readAsText(file);
+        return;
+    }
+
+    // Sinon → laisser le navigateur coller le texte
+});
+
+// Bouton Importer fichier…
+document.getElementById("importFileBtn").onclick = function () {
+    document.getElementById("fileInput").click();
+};
+
+document.getElementById("fileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("io").value = e.target.result;
+    };
+    reader.readAsText(file);
+});
+</script>
+
+</body>
+</html>

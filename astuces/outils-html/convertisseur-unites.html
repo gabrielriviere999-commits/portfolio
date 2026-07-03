@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertisseur d'unités</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 12px;
+}
+.dropdown {
+  padding: 4px;
+  cursor:pointer;
+  user-select:none;
+}
+.dropdown-list {
+  margin-top: 2px;
+  max-height:200px;
+  overflow-y:auto;
+  display:none;
+}
+.dropdown-list div {
+  padding:4px;
+  border-bottom:1px solid #c0c0c0;
+}
+.dropdown-list div:hover {
+  background: #000080;
+  color: white;
+}
+.dropdown-selected {
+  font-weight:bold;
+}
+.block-cat {
+  background:#e35f5f;
+}
+.block-value {
+  background:#ffd700;
+}
+.block-from {
+  background:#8ec582;
+}
+.block-to {
+  background:#7dc343;
+}
+.block {
+  padding: 10px;
+  margin-top: 15px;
+}
+.block h2 {
+  background: #000080;
+  color: white;
+  padding: 4px;
+  margin: -10px -10px 10px -10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+#fromSearchList,
+#toSearchList {
+  max-height: 150px;
+  overflow-y: auto;
+}
+label { color:black; }
+</style>
+</head>
+<body>
+
+<h2>Convertisseur d'unités</h2>
+
+<div class="container">
+<!-- CATEGORIE -->
+<div class="block block-cat border-externe">
+  <label>Catégorie :</label>
+  <div class="dropdown border-interne" id="catDrop">
+    <div class="dropdown-selected" id="catSelected" tabindex="0">—</div>
+    <div class="dropdown-list" id="catList"></div>
+  </div>
+</div>
+
+<div class="block block-value border-externe">
+  <label for="inputValue">Valeur à convertir :</label>
+  <input type="text" id="inputValue" value="1">
+</div>
+</div>
+
+<div class="container">
+<!-- DE -->
+<div class="block block-from border-externe">
+  <label>Rechercher "De" :</label>
+  <input type="text" id="searchFrom">
+
+  <!-- MENU DE RECHERCHE SÉPARÉ -->
+  <div class="dropdown-list" id="fromSearchList" style="display:none;"></div>
+
+  <div class="dropdown border-interne" id="fromDrop">
+    <div class="dropdown-selected" id="fromSelected" tabindex="0">—</div>
+    <div class="dropdown-list" id="fromList"></div>
+  </div>
+</div>
+
+<!-- VERS -->
+<div class="block block-to border-externe">
+  <label>Rechercher "Vers" :</label>
+  <input type="text" id="searchTo">
+
+  <!-- MENU DE RECHERCHE SÉPARÉ POUR VERS -->
+  <div class="dropdown-list" id="toSearchList" style="display:none;"></div>
+
+  <div class="dropdown border-interne" id="toDrop">
+    <div class="dropdown-selected" id="toSelected" tabindex="0">—</div>
+    <div class="dropdown-list" id="toList"></div>
+  </div>
+</div>
+</div>
+
+<div class="block border-externe" style="text-align:center;">
+  <button id="swapBtn">Inverser De ↔ Vers</button>
+</div>
+	
+<p>
+  Résultat : <strong id="result">—</strong>
+  <button id="copyBtn">Copier</button>
+</p>
+
+<script>
+/* --- 1. Catégories --- */
+var categories = {
+
+  // DISTANCE
+  distance:{
+    base:"m",
+    units:{
+      // Métrique
+      mm:0.001,
+      cm:0.01,
+      dm:0.1,
+      m:1,
+      dam:10,
+      hm:100,
+      km:1000,
+
+      // Impérial / US
+      in:0.0254,
+      ft:0.3048,
+      yd:0.9144,
+      mi:1609.344,
+
+      // Nautique
+      nmi:1852
+    }
+  },
+
+  // ACCÉLÉRATION
+  accélération:{
+    base:"m/s²",
+    units:{
+      // Métrique
+      "cm/s²":0.01,
+      "m/s²":1,
+      "km/h·s":1000/3600,
+      g_acceleration:9.80665,
+
+      // Impérial / US
+      "in/s²":0.0254,
+      "ft/s²":0.3048,
+      "mi/h·s":1609.344/3600,
+      "mi/h·min":1609.344/(3600*60)
+    }
+  },
+
+  // MASSE
+  masse:{
+    base:"kg",
+    units:{
+      // Métrique
+      mg:0.000001,
+      cg:0.00001,
+      dg:0.0001,
+      g:0.001,
+      dag:0.01,
+      hg:0.1,
+      kg:1,
+      t:1000,
+
+      // Impérial / US
+      oz:0.0283495231,
+      lb:0.45359237,
+      stone:6.35029318
+    }
+  },
+
+  // VOLUME (liquide)
+  volume:{
+    base:"L",
+    units:{
+      // Métrique
+      mL:0.001,
+      cL:0.01,
+      dL:0.1,
+      L:1,
+      dm3:1,
+      cm3:0.001,
+      m3:1000,
+
+      // US (liquide)
+      cup_US:0.2365882365,
+      pt_US:0.473176473,
+      qt_US:0.946352946,
+      gal_US:3.785411784,
+
+      // Impérial (approx via ft³)
+      "ft3":28.316846592
+    }
+  },
+
+  // VOLUME (sec)
+  volume_sec:{
+    base:"L_dry",
+    units:{
+      // US (sec)
+      cup_dry_US:0.2365882365,
+      pt_dry_US:0.550610471,
+      qt_dry_US:1.101220942,
+      gal_dry_US:4.40488377,
+      bushel_US:35.23907017,
+
+      // Métrique
+      L_dry:1
+    }
+  },
+
+  // SURFACE
+  surface:{
+    base:"m²",
+    units:{
+      // Métrique
+      "mm²":0.000001,
+      "cm²":0.0001,
+      "m²":1,
+      ha:10000,
+      "km²":1000000,
+
+      // Impérial / US
+      "in²":0.00064516,
+      "ft²":0.09290304,
+      acre:4046.8564224
+    }
+  },
+
+  // VITESSE
+  vitesse:{
+    base:"m/s",
+    units:{
+      // Impérial / US
+      "ft/s":0.3048,
+      "mph":1609.344/3600,
+
+      // Métrique
+      "km/h":1000/3600,
+      "m/s":1,
+
+      // Nautique
+      "kn":1852/3600
+    }
+  },
+
+  // TEMPS
+  temps:{
+    base:"s",
+    units:{
+      ms:0.001,
+      s:1,
+      min:60,
+      h:3600,
+      jour:86400,
+      semaine:604800,
+      mois:2629746, // mois moyen (30,44 jours)
+      an:31557600
+    }
+  },
+
+  // ÉNERGIE
+  énergie:{
+    base:"J",
+    units:{
+      // SI
+      J:1,
+      kJ:1000,
+      Wh:3600,
+      kWh:3600000,
+
+      // Alimentaire
+      cal:4.184,
+      kcal:4184,
+
+      // Impérial / US
+      BTU:1055.05585
+    }
+  },
+
+  // PUISSANCE
+  puissance:{
+    base:"W",
+    units:{
+      // SI
+      W:1,
+      kW:1000,
+      MW:1000000,
+
+      // Chevaux
+      hp_met:735.49875,
+      hp_mec:745.699872
+    }
+  },
+
+  // FORCE
+  force:{
+    base:"N",
+    units:{
+      // Très petit (CGS)
+      dyn:0.00001,
+
+      // SI
+      N:1,
+      kN:1000,
+
+      // Impérial / US
+      lbf:4.4482216152605,
+
+      // Technique
+      kgf:9.80665
+    }
+  },
+
+  // PRESSION
+  pression:{
+    base:"Pa",
+    units:{
+      // SI
+      Pa:1,
+      kPa:1000,
+      bar:100000,
+
+      // Atmosphérique
+      atm:101325,
+      mmHg:133.3223684211,
+
+      // US
+      psi:6894.757293168,
+
+      // Sous-multiples
+      mbar:100
+    }
+  },
+
+  // DENSITÉ
+  densité:{
+    base:"kg/m³",
+    units:{
+      // SI
+      "kg/m³":1,
+      "g/L":1,
+
+      // US
+      "lb/ft³":16.01846337,
+
+      // Chimie
+      "g/cm³":1000
+    }
+  },
+
+  // DÉBIT
+  débit:{
+    base:"m³/s",
+    units:{
+      // Métrique
+      "L/h":0.001/3600,
+      "L/min":0.001/60,
+      "L/s":0.001,
+      "m³/h":1/3600,
+      "m³/s":1,
+
+      // US
+      "gal_US/min":3.785411784/60
+    }
+  },
+
+  // ANGLE
+  angle:{
+    base:"rad",
+    units:{
+      // Sous-unités
+      deg:Math.PI/180,
+      grad:Math.PI/200,
+
+      // SI
+      rad:1,
+
+      // Tours
+      tour:2*Math.PI
+    }
+  },
+
+  // LUMIÈRE
+  lumière:{
+    base:"lx",
+    units:{
+      lx:1,
+      "foot-candle":10.76391041671
+    }
+  },
+
+  // TEMPÉRATURE
+  température:{
+    special:true,
+    units:["C","F","K"]
+  },
+
+  // DONNÉES (SI / IEC)
+  données:{
+    units:{
+      // --- SI (base 10) : bits ---
+      b:1,
+      kb:1000,
+      Mb:1000000,
+      Gb:1000000000,
+      Tb:1000000000000,
+      Pb:1000000000000000,
+      Eb:1000000000000000000,
+
+      // --- SI (base 10) : octets ---
+      B:8,
+      kB:8000,
+      MB:8000000,
+      GB:8000000000,
+      TB:8000000000000,
+      PB:8000000000000000,
+      EB:8000000000000000000,
+
+      // --- IEC (base 2) : bits ---
+      Kib:1024,
+      Mib:1048576,
+      Gib:1073741824,
+      Tib:1099511627776,
+      Pib:1125899906842624,
+      Eib:1152921504606846976,
+
+      // --- IEC (base 2) : octets ---
+      KiB:8192,
+      MiB:8388608,
+      GiB:8589934592,
+      TiB:8796093022208,
+      PiB:9007199254740992,
+      EiB:9223372036854775808
+    }
+  },
+
+};
+
+/* --- 2. Dictionnaire --- */
+var unitNames = {
+
+  // --- Distance ---
+  "mm": "millimètre",
+  "cm": "centimètre",
+  "dm":"décimètre",
+  "m": "mètre",
+  "dam":"décamètre",
+  "hm":"hectomètre",
+  "km": "kilomètre",
+
+  "in": "pouce",
+  "ft": "pied",
+  "yd": "yard",
+  "mi": "mile",
+
+  "nmi": "mille nautique",
+
+  // --- Accélération ---
+  "cm/s²": "centimètre par seconde carrée",
+  "m/s²": "mètre par seconde carrée",
+  "km/h·s": "kilomètre par heure par seconde",
+  "g_acceleration": "accélération gravitationnelle",
+
+  "in/s²": "pouce par seconde carrée",
+  "ft/s²": "pied par seconde carrée",
+  "mi/h·s": "mile par heure par seconde",
+  "mi/h·min": "mile par heure par minute",
+
+  // --- Masse ---
+  "mg": "milligramme",
+  "cg":"centigramme",
+  "dg":"décigramme",
+  "g": "gramme",
+  "dag":"décagramme",
+  "hg":"hectogramme",
+  "kg": "kilogramme",
+  "t": "tonne",
+
+  "oz": "once",
+  "lb": "livre",
+  "stone": "stone",
+
+  // --- Volume liquide ---
+  "mL": "millilitre",
+  "cL": "centilitre",
+  "dL": "décilitre",
+  "L": "litre (liquide)",
+  "dm3": "décimètre cube",
+  "cm3": "centimètre cube",
+  "m3": "mètre cube",
+
+  "cup_US": "tasse US (liquide)",
+  "pt_US": "pinte US (liquide)",
+  "qt_US": "quart US (liquide)",
+  "gal_US": "gallon US (liquide)",
+
+  "ft3": "pied cube",
+
+  // --- Volume sec ---
+  "cup_dry_US": "tasse US (sec)",
+  "pt_dry_US": "pinte US (sec)",
+  "qt_dry_US": "quart US (sec)",
+  "gal_dry_US": "gallon US (sec)",
+  "bushel_US": "boisseau US",
+  "L_dry": "litre (sec)",
+
+  // --- Surface ---
+  "mm²": "millimètre carré",
+  "cm²": "centimètre carré",
+  "m²": "mètre carré",
+  "ha": "hectare",
+  "km²": "kilomètre carré",
+
+  "in²": "pouce carré",
+  "ft²": "pied carré",
+  "acre": "acre",
+
+  // --- Vitesse ---
+  "ft/s": "pied par seconde",
+  "mph": "mile par heure",
+
+  "km/h": "kilomètre par heure",
+  "m/s": "mètre par seconde",
+
+  "kn": "nœud",
+
+  // --- Temps ---
+  "ms": "milliseconde",
+  "s": "seconde",
+  "min": "minute",
+  "h": "heure",
+  "jour": "jour",
+  "semaine": "semaine",
+  "mois": "mois",
+  "an": "année",
+
+  // --- Énergie ---
+  "J": "joule",
+  "kJ": "kilojoule",
+  "Wh": "watt-heure",
+  "kWh": "kilowatt-heure",
+
+  "cal": "calorie",
+  "kcal": "kilocalorie",
+
+  "BTU": "British thermal unit",
+
+  // --- Puissance ---
+  "W": "watt",
+  "kW": "kilowatt",
+  "MW": "mégawatt",
+
+  "hp_met": "cheval-vapeur (métrique)",
+  "hp_mec": "cheval-vapeur (mécanique)",
+
+  // --- Force ---
+  "dyn": "dyne",
+  "N": "newton",
+  "kN": "kilonewton",
+  "lbf": "livre-force",
+  "kgf": "kilogramme-force",
+
+  // --- Pression ---
+  "Pa": "pascal",
+  "kPa": "kilopascal",
+  "bar": "bar",
+  "atm": "atmosphère",
+  "mmHg": "millimètre de mercure",
+  "psi": "livre par pouce carré",
+  "mbar": "millibar",
+
+  // --- Densité ---
+  "kg/m³": "kilogramme par mètre cube",
+  "g/L": "gramme par litre",
+  "lb/ft³": "livre par pied cube",
+  "g/cm³": "gramme par centimètre cube",
+
+  // --- Débit ---
+  "L/h": "litre par heure",
+  "L/min": "litre par minute",
+  "L/s": "litre par seconde",
+  "m³/h": "mètre cube par heure",
+  "m³/s": "mètre cube par seconde",
+  "gal_US/min": "gallon US par minute",
+
+  // --- Angle ---
+  "deg": "degré",
+  "grad": "grade",
+  "rad": "radian",
+  "tour": "tour complet",
+
+  // --- Lumière ---
+  "lx": "lux",
+  "foot-candle": "foot-candle",
+
+  // --- Température ---
+  "C": "celsius",
+  "F": "fahrenheit",
+  "K": "kelvin",
+
+  // Bits SI
+  "b":"bit",
+  "kb":"kilobit",
+  "Mb":"mégabit",
+  "Gb":"gigabit",
+  "Tb":"térabit",
+  "Pb":"pétabit",
+  "Eb":"exabit",
+
+  // Octets SI
+  "B":"octet",
+  "kB":"kilooctet",
+  "MB":"mégaoctet",
+  "GB":"gigaoctet",
+  "TB":"téraoctet",
+  "PB":"pétaoctet",
+  "EB":"exa-octet",
+
+  // Bits IEC
+  "Kib":"kibibit",
+  "Mib":"mébibit",
+  "Gib":"gibibit",
+  "Tib":"tébibit",
+  "Pib":"pébibit",
+  "Eib":"exbibit",
+
+  // Octets IEC
+  "KiB":"kibioctet",
+  "MiB":"mébioctet",
+  "GiB":"gibioctet",
+  "TiB":"tébioctet",
+  "PiB":"pébioctet",
+  "EiB":"exbioctet",
+};
+
+/* --- 3. Extraire les unités --- */
+function getUnitList(cat) {
+  if (!cat) return [];
+  if (cat.special === true) return cat.units;
+
+  var arr = [];
+  for (var k in cat.units) arr.push(k);
+  return arr;
+}
+
+/* --- 4. Liste globale des unités + map unité → catégorie --- */
+
+var allUnits = [];
+var unitToCategory = {};
+
+function buildGlobalUnitList() {
+  var catName, cat, units, i;
+
+  for (catName in categories) {
+    cat = categories[catName];
+    units = getUnitList(cat);
+
+    for (i = 0; i < units.length; i++) {
+      var u = units[i];
+      allUnits.push(u);
+      unitToCategory[u] = catName;
+    }
+  }
+}
+
+/* --- 5. Dropdown --- */
+function createDropdown(selectedId, listId, onSelect) {
+  var selected = document.getElementById(selectedId);
+  var list = document.getElementById(listId);
+  var isOpen = false;
+  var options = [];
+  var activeIndex = -1;
+
+  list.style.display = "none";
+
+function highlight() {
+  var i;
+  for (i = 0; i < options.length; i++) {
+    options[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
+  }
+
+  if (activeIndex >= 0 && activeIndex < options.length) {
+    options[activeIndex].scrollIntoView();
+  }
+}
+
+  selected.onclick = function () {
+    if (isOpen) {
+      list.style.display = "none";
+      isOpen = false;
+      activeIndex = -1;
+      highlight();
+    } else {
+      list.style.display = "block";
+      isOpen = true;
+      activeIndex = (options.length > 0) ? 0 : -1;
+      highlight();
+    }
+  };
+
+  selected.onkeydown = function (e) {
+    var code = e.keyCode || e.which;
+
+    // Entrée ou Espace : ouvrir / valider
+    if (code === 13 || code === 32) {
+      if (!isOpen) {
+        selected.onclick(); // ouvre le menu
+      } else {
+        if (activeIndex >= 0 && activeIndex < options.length) {
+          options[activeIndex].onclick(); // sélectionne l'option
+        }
+      }
+      if (e.preventDefault) e.preventDefault();
+      return false;
+    }
+
+    if (!isOpen) return;
+
+    if (code === 40) { // ↓
+      activeIndex++;
+      if (activeIndex >= options.length) activeIndex = 0;
+      highlight();
+      if (e.preventDefault) e.preventDefault();
+      return false;
+    }
+
+    if (code === 38) { // ↑
+      activeIndex--;
+      if (activeIndex < 0) activeIndex = options.length - 1;
+      highlight();
+      if (e.preventDefault) e.preventDefault();
+      return false;
+    }
+  };
+
+  function fill(arr) {
+    list.innerHTML = "";
+    options = [];
+    activeIndex = -1;
+
+    var i;
+    for (i = 0; i < arr.length; i++) {
+      (function (opt) {
+        var div = document.createElement("div");
+
+        var label = opt;
+        if (unitNames[opt]) {
+          label = opt + " — " + unitNames[opt];
+        }
+
+        div.appendChild(document.createTextNode(label));
+
+        div.onclick = function () {
+          selected.innerHTML = label;
+          list.style.display = "none";
+          isOpen = false;
+          activeIndex = -1;
+          highlight();
+          onSelect(opt);
+        };
+
+        list.appendChild(div);
+        options.push(div);
+      })(arr[i]);
+    }
+  }
+
+  return fill;
+}
+
+/* --- 6. Variables global + création des 3 menus --- */
+var selectedCategory = null;
+var selectedFrom = null;
+var selectedTo = null;
+
+var fillCategory = createDropdown("catSelected", "catList", function(opt){
+  selectedCategory = opt;
+  updateUnits();
+});
+
+var fillFrom = createDropdown("fromSelected", "fromList", function(opt){
+  selectedFrom = opt;
+
+  // Trouver la catégorie de cette unité
+  var catName = unitToCategory[opt];
+
+  // Si la catégorie change
+  if (catName && selectedCategory !== catName) {
+    selectedCategory = catName;
+    document.getElementById("catSelected").innerHTML = catName;
+
+    // Mettre à jour les unités
+    updateUnits();
+
+    // Réappliquer la sélection automatiquement
+    document.getElementById("fromSelected").innerHTML = opt;
+    selectedFrom = opt;
+  }
+
+  convert();
+});
+
+var fillTo = createDropdown("toSelected", "toList", function(opt){
+  selectedTo = opt;
+
+  var catName = unitToCategory[opt];
+
+  if (catName && selectedCategory !== catName) {
+    selectedCategory = catName;
+    document.getElementById("catSelected").innerHTML = catName;
+
+    updateUnits();
+
+    document.getElementById("toSelected").innerHTML = opt;
+    selectedTo = opt;
+  }
+
+  convert();
+});
+
+/* --- 7. Mise à jour des unités --- */
+function updateUnits() {
+  var cat = categories[selectedCategory];
+  var units = getUnitList(cat);
+
+  fillFrom(units);
+  fillTo(units);
+
+  selectedFrom = null;
+  selectedTo = null;
+
+  document.getElementById("fromSelected").innerHTML = "—";
+  document.getElementById("toSelected").innerHTML = "—";
+  document.getElementById("result").innerHTML = "—";
+}
+
+/* --- 8. Recherche globale (De + Vers) --- */
+// Recherche "De" avec noms + clavier + scroll
+document.getElementById("searchFrom").oninput = function () {
+  var q = this.value.toLowerCase();
+  var list = document.getElementById("fromSearchList");
+  var i;
+
+  list.innerHTML = "";
+
+  if (q === "") {
+    list.style.display = "none";
+    return;
+  }
+
+  var filtered = [];
+  for (i = 0; i < allUnits.length; i++) {
+    var u = allUnits[i];
+    var name = unitNames[u] ? unitNames[u].toLowerCase() : "";
+
+    if (u.toLowerCase().indexOf(q) !== -1 || name.indexOf(q) !== -1) {
+      filtered.push(u);
+    }
+  }
+
+  for (i = 0; i < filtered.length; i++) {
+    (function(unit){
+      var div = document.createElement("div");
+
+      var label = unit;
+      if (unitNames[unit]) {
+        label = unit + " — " + unitNames[unit];
+      }
+
+      div.appendChild(document.createTextNode(label));
+
+      div.onclick = function () {
+        var catName = unitToCategory[unit];
+
+        if (selectedCategory !== catName) {
+          selectedCategory = catName;
+          document.getElementById("catSelected").innerHTML = catName;
+          updateUnits();
+        }
+
+        selectedFrom = unit;
+        document.getElementById("fromSelected").innerHTML = label;
+
+        list.style.display = "none";
+        convert();
+      };
+
+      list.appendChild(div);
+    })(filtered[i]);
+  }
+
+  list.style.display = filtered.length ? "block" : "none";
+};
+
+
+// Navigation clavier pour la recherche "De"
+(function(){
+  var input = document.getElementById("searchFrom");
+  var list  = document.getElementById("fromSearchList");
+  var searchOptions = [];
+  var activeIndex = -1;
+
+function highlight() {
+  var i;
+  for (i = 0; i < searchOptions.length; i++) {
+    searchOptions[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
+  }
+
+  if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+    var item = searchOptions[activeIndex];
+    item.scrollIntoView();
+  }
+}
+
+  var oldInput = input.oninput;
+  input.oninput = function(){
+    oldInput.call(this);
+
+    searchOptions = [];
+    var children = list.children;
+    var i;
+    for (i = 0; i < children.length; i++) {
+      searchOptions.push(children[i]);
+    }
+
+    activeIndex = (searchOptions.length > 0) ? 0 : -1;
+    highlight();
+  };
+
+  input.onkeydown = function(e){
+    var code = e.keyCode || e.which;
+
+    if (list.style.display !== "block") return;
+
+    if (code === 40) { // ↓
+      activeIndex++;
+      if (activeIndex >= searchOptions.length) activeIndex = 0;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 38) { // ↑
+      activeIndex--;
+      if (activeIndex < 0) activeIndex = searchOptions.length - 1;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 13) { // Entrée
+      if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+        searchOptions[activeIndex].onclick();
+      }
+      e.preventDefault();
+      return false;
+    }
+  };
+})();
+
+// Recherche "Vers" avec noms + clavier + scroll
+document.getElementById("searchTo").oninput = function () {
+  var q = this.value.toLowerCase();
+  var list = document.getElementById("toSearchList");
+  var i;
+
+  list.innerHTML = "";
+
+  if (q === "") {
+    list.style.display = "none";
+    return;
+  }
+
+  var filtered = [];
+  for (i = 0; i < allUnits.length; i++) {
+    var u = allUnits[i];
+    var name = unitNames[u] ? unitNames[u].toLowerCase() : "";
+
+    if (u.toLowerCase().indexOf(q) !== -1 || name.indexOf(q) !== -1) {
+      filtered.push(u);
+    }
+  }
+
+  for (i = 0; i < filtered.length; i++) {
+    (function(unit){
+      var div = document.createElement("div");
+
+      var label = unit;
+      if (unitNames[unit]) {
+        label = unit + " — " + unitNames[unit];
+      }
+
+      div.appendChild(document.createTextNode(label));
+
+      div.onclick = function () {
+        var catName = unitToCategory[unit];
+
+        if (selectedCategory !== catName) {
+          selectedCategory = catName;
+          document.getElementById("catSelected").innerHTML = catName;
+          updateUnits();
+        }
+
+        selectedTo = unit;
+        document.getElementById("toSelected").innerHTML = label;
+
+        list.style.display = "none";
+        convert();
+      };
+
+      list.appendChild(div);
+    })(filtered[i]);
+  }
+
+  list.style.display = filtered.length ? "block" : "none";
+};
+
+// Navigation clavier pour la recherche "Vers"
+(function(){
+  var input = document.getElementById("searchTo");
+  var list  = document.getElementById("toSearchList");
+  var searchOptions = [];
+  var activeIndex = -1;
+
+function highlight() {
+  var i;
+  for (i = 0; i < searchOptions.length; i++) {
+    searchOptions[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
+  }
+
+  if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+    var item = searchOptions[activeIndex];
+    item.scrollIntoView();
+  }
+}
+
+  var oldInput = input.oninput;
+  input.oninput = function(){
+    oldInput.call(this);
+
+    searchOptions = [];
+    var children = list.children;
+    var i;
+    for (i = 0; i < children.length; i++) {
+      searchOptions.push(children[i]);
+    }
+
+    activeIndex = (searchOptions.length > 0) ? 0 : -1;
+    highlight();
+  };
+
+  input.onkeydown = function(e){
+    var code = e.keyCode || e.which;
+
+    if (list.style.display !== "block") return;
+
+    if (code === 40) { // ↓
+      activeIndex++;
+      if (activeIndex >= searchOptions.length) activeIndex = 0;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 38) { // ↑
+      activeIndex--;
+      if (activeIndex < 0) activeIndex = searchOptions.length - 1;
+      highlight();
+      e.preventDefault();
+      return false;
+    }
+
+    if (code === 13) { // Entrée
+      if (activeIndex >= 0 && activeIndex < searchOptions.length) {
+        searchOptions[activeIndex].onclick();
+      }
+      e.preventDefault();
+      return false;
+    }
+  };
+})();
+
+/* --- 9. Conversion --- */
+function cleanNumber(n) {
+  return Number(n.toFixed(12));
+}
+
+function convert() {
+  if (!selectedCategory || !selectedFrom || !selectedTo) return;
+
+  var cat = categories[selectedCategory];
+
+  // Récupérer la valeur entrée
+  var raw = document.getElementById("inputValue").value;
+
+  // Remplace la virgule par un point
+  raw = raw.replace(",", ".");
+
+  var val = parseFloat(raw);
+
+  if (isNaN(val)) {
+    document.getElementById("result").innerHTML = "—";
+    return;
+  }
+
+  // CAS SPÉCIAL : TEMPÉRATURE
+  if (cat.special === true) {
+    var res;
+
+    if (selectedFrom === "C" && selectedTo === "F") res = val * 9/5 + 32;
+    else if (selectedFrom === "F" && selectedTo === "C") res = (val - 32) * 5/9;
+    else if (selectedFrom === "C" && selectedTo === "K") res = val + 273.15;
+    else if (selectedFrom === "K" && selectedTo === "C") res = val - 273.15;
+    else if (selectedFrom === "F" && selectedTo === "K") res = (val - 32) * 5/9 + 273.15;
+    else if (selectedFrom === "K" && selectedTo === "F") res = (val - 273.15) * 9/5 + 32;
+    else res = val;
+
+    res = cleanNumber(res);
+
+    document.getElementById("result").innerHTML =
+      val + " " + selectedFrom + " = " + res + " " + selectedTo;
+    return;
+  }
+
+  // CAS NORMAL : BASE MULTIPLICATIVE
+  var units = cat.units;
+  var baseFrom = units[selectedFrom];
+  var baseTo = units[selectedTo];
+
+  if (!baseFrom || !baseTo) return;
+
+  var ratio = baseFrom / baseTo;
+  var res = cleanNumber(val * ratio);
+
+  document.getElementById("result").innerHTML =
+    val + " " + selectedFrom + " = " + res + " " + selectedTo;
+}
+
+document.getElementById("inputValue").oninput = convert;
+
+/* --- 10. Initialisation --- */
+(function init() {
+  buildGlobalUnitList();
+
+  var catNames = [];
+  for (var k in categories) catNames.push(k);
+
+  fillCategory(catNames);
+})();
+
+/* --- 11. COPIER --- */
+document.getElementById("copyBtn").onclick = function () {
+  var btn = event.target;
+  var text = document.getElementById("result").innerHTML;
+
+  // Créer un textarea caché
+  var temp = document.createElement("textarea");
+  temp.value = text;
+  temp.style.position = "absolute";
+  temp.style.left = "-9999px";
+  document.body.appendChild(temp);
+
+  // Sélectionner + copier
+  temp.select();
+  try { document.execCommand("copy"); } catch (e) {}
+
+  // Supprimer le textarea
+  document.body.removeChild(temp);
+  btn.focus();
+};
+
+document.getElementById("inputValue").value = "1";
+convert();
+
+/* --- 12. bouton Inverser De ↔ Vers --- */
+document.getElementById("swapBtn").onclick = function () {
+
+  // On échange les unités sélectionnées
+  var oldFrom = selectedFrom;
+  var oldTo   = selectedTo;
+
+  if (!oldFrom || !oldTo) return;
+
+  // On met à jour les variables internes
+  selectedFrom = oldTo;
+  selectedTo   = oldFrom;
+
+  // On met à jour l'affichage (avec noms si disponibles)
+  var labelFrom = selectedFrom;
+  if (unitNames[selectedFrom]) {
+    labelFrom = selectedFrom + " — " + unitNames[selectedFrom];
+  }
+
+  var labelTo = selectedTo;
+  if (unitNames[selectedTo]) {
+    labelTo = selectedTo + " — " + unitNames[selectedTo];
+  }
+
+  document.getElementById("fromSelected").innerHTML = labelFrom;
+  document.getElementById("toSelected").innerHTML   = labelTo;
+
+  // On recalcule
+  convert();
+};
+</script>
+
+</body>
+</html>

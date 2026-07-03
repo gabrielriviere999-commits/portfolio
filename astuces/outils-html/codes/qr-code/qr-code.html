@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur & Lecteur de QR Code</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+p { word-break:break-all; }
+label { font-weight:bold; }
+textarea, input {
+  width:100%;
+  padding:4px;
+  margin:4px 0;
+  box-sizing:border-box;
+  font-family:monospace;
+  font-size:14px;
+}
+textarea {
+  height:150px;
+  resize:vertical;
+}
+.hex-input { width:90px; }
+.color-picker { margin-bottom:10px; }
+.color-row {
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.color-preview {
+  width:24px;
+  height:24px;
+  border:2px inset #808080;
+}
+#qrPreview { background-color:black; }
+#bgPreview { background-color:white; }
+.palette { margin-top:6px; }
+.palette div {
+  width:20px;
+  height:20px;
+  border:2px outset #808080;
+  cursor:pointer;
+  display:inline-block;
+  margin:2x;
+}
+#qrcode, #qrResult, #decode-file {
+  margin-top:1rem;
+  padding:10px;
+  border:2px inset #808080;
+  overflow-x:auto;
+}
+#video {
+  width:100%;
+  max-width:320px;
+  background:#000000;
+  border:2px inset #808080;
+}
+</style>
+</head>
+<body>
+
+<h1>Générateur & Lecteur de QR Code</h1>
+
+<div class="section">
+  <h2>Générer un QR Code</h2>
+
+  <textarea id="text" wrap="off"></textarea><br>
+  <button id="importFileBtn">Importer fichier…</button><p></p>
+  <input type="file" id="fileInput" style="display:none;">
+
+  <!-- === COLOR PICKER QR === -->
+  <div class="color-picker">
+    <label>Couleur du QR Code :</label>
+    <div class="color-row">
+      <div id="qrPreview" class="color-preview"></div>
+      <input id="qrHex" class="hex-input" value="#000000">
+    </div>
+
+    <div class="palette">
+      <div data-col="#000000" style="background:#000"></div>
+      <div data-col="#ffffff" style="background:#fff"></div>
+      <div data-col="#ff0000" style="background:#f00"></div>
+      <div data-col="#00ff00" style="background:#0f0"></div>
+      <div data-col="#0000ff" style="background:#00f"></div>
+      <div data-col="#ffff00" style="background:#ff0"></div>
+      <div data-col="#ff00ff" style="background:#f0f"></div>
+      <div data-col="#00ffff" style="background:#0ff"></div>
+    </div>
+  </div>
+
+  <!-- === COLOR PICKER BACKGROUND === -->
+  <div class="color-picker">
+    <label>Couleur du fond :</label>
+    <div class="color-row">
+      <div id="bgPreview" class="color-preview"></div>
+      <input id="bgHex" class="hex-input" value="#ffffff">
+    </div>
+
+    <div class="palette">
+      <div data-col="#ffffff" style="background:#fff"></div>
+      <div data-col="#000000" style="background:#000"></div>
+      <div data-col="#cccccc" style="background:#ccc"></div>
+      <div data-col="#808080" style="background:#808080"></div>
+      <div data-col="#ffaaaa" style="background:#faa"></div>
+      <div data-col="#aaffaa" style="background:#afa"></div>
+      <div data-col="#aaaaff" style="background:#aaf"></div>
+      <div data-col="#ffffaa" style="background:#ffa"></div>
+    </div>
+
+    <label>Opacité du fond :</label>
+    <input type="range" id="bgOpacity" min="0" max="1" step="0.01" value="1">
+
+    <input type="number" id="bgOpacityPercent" min="0" max="100" value="100" style="width:70px;">
+    <span>%</span>
+  </div>
+
+  <!-- === HIDDEN INPUTS POUR LE JS EXISTANT === -->
+  <input type="hidden" id="qrColor" value="#000000">
+  <input type="hidden" id="bgColor" value="#ffffff">
+
+  <button id="btn-generate">Générer</button>
+
+  <div id="qrcode" class="border-interne"></div>
+
+  <button id="export-png">Exporter PNG</button>
+  <button id="export-jpg">Exporter JPG</button>
+  <button id="export-svg">Exporter SVG</button>
+</div>
+
+<div class="section">
+  <h2>Décoder un QR Code (fichier)</h2>
+
+  <input type="file" id="file-input" accept="image/*">
+  <canvas id="canvas-file" style="display:none;"></canvas>
+  <div id="pastezone" class="win98-box" style="margin-top:10px; text-align:center;">
+    <input id="pasteInput" maxlength="0" placeholder="Ou cliquer ici puis faire Ctrl+V">
+  </div>
+  <pre id="decode-file"></pre>
+  <button id="copy-btn" class="win98-btn">Copier</button>
+</div>
+
+<div class="section">
+  <h2>Décoder un QR Code (caméra)</h2>
+
+  <video id="qrVideo" autoplay playsinline muted style="width:300px;"></video>
+  <pre id="qrResult"></pre>
+  <button id="copyQR" class="win98-btn">Copier</button>
+  <button id="startScan">Scanner</button>
+  <button id="switchCam">Changer de caméra</button>
+  <button id="toggleTorch">Torche</button>
+  <button id="stopScan">Stop</button>
+</div>
+
+<details><summary>Bibliothèques utilisées</summary>
+<p>https://kazuhikoarase.github.io/qrcode-generator/js/dist/qrcode.js - MIT - Kazuhiko Arase</p>
+<p>https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js - Apache 2.0 - ZXing Team</p>
+<p>https://unpkg.com/@zxing/browser@0.2.0/umd/zxing-browser.min.js - Apache 2.0 - ZXing Team</p>
+</details>
+
+<!-- Bibliothèques -->
+<script src="qrcode.js"></script>
+<script src="../zxing-es5.min.js"></script>
+<script src="../zxing-browser.min.js"></script>
+
+<script>
+// Glisser-déposer
+var text = document.getElementById("text");
+
+text.addEventListener("dragover", function(e) {
+
+    // Si un fichier est glissé → empêcher le comportement natif
+    if (e.dataTransfer.types &&
+        (e.dataTransfer.types.indexOf("Files") !== -1 ||
+         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+
+        e.preventDefault(); // autorise le drop fichier
+    }
+
+    // Sinon → NE RIEN FAIRE
+    // Le navigateur affiche le curseur d’insertion
+});
+
+text.addEventListener("drop", function(e) {
+
+    // Si fichier → on gère nous-même
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+
+        var file = e.dataTransfer.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(ev) {
+            // On met le fichier brut dans la zone
+            text.value = ev.target.result;
+        };
+
+        reader.readAsText(file);
+        return;
+    }
+
+    // Sinon → laisser le navigateur coller le texte
+});
+
+// Bouton Importer fichier…
+document.getElementById("importFileBtn").onclick = function () {
+    document.getElementById("fileInput").click();
+};
+
+document.getElementById("fileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("text").value = e.target.result;
+    };
+    reader.readAsText(file);
+});
+
+/* --- RÉFÉRENCES DE BASE --- */
+var text = document.getElementById("text");
+var qrDiv = document.getElementById("qrcode");
+var btnGen = document.getElementById("btn-generate");
+
+/* --- COLOR PICKERS INIT --- */
+btnGen.onclick = generateCode;
+initColorPicker("qrHex", "qrPreview", function(hex){
+  document.getElementById("qrColor").value = hex;
+  generateCode();
+});
+
+initColorPicker("bgHex", "bgPreview", function(hex){
+  document.getElementById("bgColor").value = hex;
+  generateCode();
+});
+
+/* --- COLOR PICKER --- */
+function cssNameToHex(name) {
+  var ctx = document.createElement("canvas").getContext("2d");
+  ctx.fillStyle = "#000"; // valeur par défaut
+  ctx.fillStyle = name;   // si invalide, reste "#000"
+  var computed = ctx.fillStyle;
+
+  // Si le navigateur n'a pas reconnu le nom → retourne null
+  if (computed === "#000000" && name.toLowerCase() !== "black") {
+    return null;
+  }
+
+  return computed; // retourne "#rrggbb"
+}
+
+function initColorPicker(hexInputId, previewId, callback, skipInit) {
+  var input = document.getElementById(hexInputId);
+  var preview = document.getElementById(previewId);
+
+  function applyColor(hex, trigger) {
+    preview.style.background = hex;
+    input.value = hex;
+    if (trigger !== false) callback(hex);
+  }
+
+  input.onchange = function () {
+    this.value = this.value.toLowerCase();
+    var v = input.value.trim();
+
+    // 0) Ajouter # si hex sans #
+    if (/^[0-9A-Fa-f]{6}$/.test(v)) {
+      v = "#" + v;
+    }
+    else if (/^[0-9A-Fa-f]{3}$/.test(v)) {
+      v = "#" + v;
+    }
+
+    // 1) Si c'est un hex valide (#xxxxxx)
+    if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
+      applyColor(v);
+      return;
+    }
+
+    // 2) Sinon, essayer comme nom CSS
+    var hex = cssNameToHex(v);
+    if (hex) {
+      applyColor(hex);
+    }
+  };
+
+  var palette = input.parentNode.parentNode.querySelector(".palette");
+  var items = palette.querySelectorAll("div");
+
+  for (var i = 0; i < items.length; i++) {
+    items[i].onclick = function () {
+      applyColor(this.dataset.col);
+    };
+  }
+
+  // Ne déclenche pas au chargement
+  applyColor(input.value, false);
+}
+
+/* --- SLIDER OPACITÉ FOND (QR) --- */
+var bgSlider = document.getElementById("bgOpacity");
+var bgPercent = document.getElementById("bgOpacityPercent");
+
+// Slider → met juste à jour le pourcentage
+bgSlider.oninput = function () {
+  var v = parseFloat(bgSlider.value);
+  bgPercent.value = Math.round(v * 100);
+};
+
+//Quand on lâche le slider → générer
+bgSlider.onmouseup = function () {
+  generateCode();
+};
+bgSlider.ontouchend = function () {
+  generateCode();
+};
+
+// Pourcentage → met juste à jour le slider
+bgPercent.onchange = function () {
+  var p = parseInt(bgPercent.value, 10);
+  if (isNaN(p)) p = 0;
+  if (p < 0) p = 0;
+  if (p > 100) p = 100;
+  bgSlider.value = p / 100;
+};
+
+// Quand on valide le pourcentage → générer
+bgPercent.onchange = function () {
+  var p = parseInt(bgPercent.value, 10);
+  if (isNaN(p)) p = 0;
+  if (p < 0) p = 0;
+  if (p > 100) p = 100;
+  bgPercent.value = p;
+  bgSlider.value = p / 100;
+  generateCode();
+};
+
+/* --- GÉNÉRATION QR (SVG) --- */
+function generateSVG(qrObj) {
+    var count = qrObj.getModuleCount();
+    var cell = 10;
+    var size = count * cell;
+
+    var fg = document.getElementById("qrColor").value;
+    var bg = document.getElementById("bgColor").value;
+    var bgOpacity = parseFloat(document.getElementById("bgOpacity").value);
+
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">';
+    svg += '<rect width="100%" height="100%" fill="' + bg + '" fill-opacity="' + bgOpacity + '"/>';
+
+    for (var y = 0; y < count; y++) {
+        for (var x = 0; x < count; x++) {
+            if (qrObj.isDark(y, x)) {
+                svg += '<rect x="' + (x * cell) + '" y="' + (y * cell) + '" width="' + cell + '" height="' + cell + '" fill="' + fg + '"/>';
+            }
+        }
+    }
+
+    svg += '</svg>';
+    return svg;
+}
+
+function generateQR() {
+    var value = text.value.trim();
+    qr = qrcode(0, 'H');
+    qr.addData(value, 'Byte');
+    qr.make();
+    qrDiv.innerHTML = generateSVG(qr);
+}
+
+function generateCode() {
+    var value = text.value.trim();
+    qrDiv.innerHTML = "";
+    if (!value) return;
+
+    generateQR();
+}
+
+btnGen.onclick = generateCode;
+
+/* --- EXPORT PNG / JPG / SVG --- */
+function download(filename, dataUrl) {
+  var a = document.createElement("a");
+  a.href = dataUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function exportCanvas(type) {
+  if (!qr) return;
+
+  var count = qr.getModuleCount();
+  var cell  = 10;
+  var size  = count * cell;
+
+  var fg = document.getElementById("qrColor").value;
+  var bg = document.getElementById("bgColor").value;
+  var bgOpacity = parseFloat(document.getElementById("bgOpacity").value);
+
+  var canvas = document.createElement("canvas");
+  canvas.width  = size;
+  canvas.height = size;
+  var ctx = canvas.getContext("2d");
+
+  // fond transparent si opacité = 0
+  if (bgOpacity > 0) {
+    ctx.fillStyle = bg;
+    ctx.globalAlpha = bgOpacity;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = 1;
+  }
+
+  // modules
+  ctx.fillStyle = fg || "#000000";
+  for (var y = 0; y < count; y++) {
+    for (var x = 0; x < count; x++) {
+      if (qr.isDark(y, x)) {
+        ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+    }
+  }
+
+  var mime = "image/" + type;
+  var data = canvas.toDataURL(mime);
+
+  download("qr-code." + (type === "jpeg" ? "jpg" : type), data);
+}
+
+document.getElementById("export-png").onclick = function () {
+  exportCanvas("png");
+};
+
+document.getElementById("export-jpg").onclick = function () {
+  exportCanvas("jpeg");
+};
+
+document.getElementById("export-svg").onclick = function () {
+    if (!qr) return;
+
+    var svg = generateSVG(qr);
+    var blob = new Blob([svg], { type: "image/svg+xml" });
+    var url = URL.createObjectURL(blob);
+
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "qr-code.svg";
+    a.click();
+
+    URL.revokeObjectURL(url);
+};
+
+/* --- DÉCODAGE FICHIER --- */
+var fileInput = document.getElementById("file-input");
+var canvasFile = document.getElementById("canvas-file");
+var ctxFile = canvasFile.getContext("2d");
+var decodeFile = document.getElementById("decode-file");
+
+// On suppose ZXing chargé (zxing-browser.min.js)
+var readerZX = new ZXing.BrowserMultiFormatReader();
+
+fileInput.onchange = function (e) {
+  var file = e.target.files[0];
+  if (!file) return;
+
+  var img = new Image();
+  img.onload = function () {
+    var maxSize = 1000;
+    var scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+
+    canvasFile.width = img.width * scale;
+    canvasFile.height = img.height * scale;
+
+    ctxFile.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvasFile.width, canvasFile.height);
+
+    var tempImg = new Image();
+    tempImg.onload = function () {
+      readerZX.decodeFromImageElement(tempImg)
+        .then(function(result){ decodeFile.innerText = result.text; })
+        .catch(function(){ decodeFile.innerText = "Aucun code détecté."; });
+    };
+
+    tempImg.src = canvasFile.toDataURL("image/png");
+  };
+
+  img.src = URL.createObjectURL(file);
+};
+
+// Coller une image depuis le presse‑papier
+var pasteInput = document.getElementById("pasteInput");
+
+pasteInput.onpaste = function(e) {
+    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    var file = null;
+
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            file = items[i].getAsFile();
+            break;
+        }
+    }
+
+    if (file) {
+        loadFile(file);
+    } else {
+        alert("Aucune image trouvée dans le presse‑papier.");
+    }
+};
+
+function loadFile(file) {
+    var img = new Image();
+    img.onload = function () {
+        var canvas = document.getElementById("canvas-file");
+        var ctx = canvas.getContext("2d");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.drawImage(img, 0, 0);
+
+        var tempImg = new Image();
+        tempImg.onload = function () {
+            readerZX.decodeFromImageElement(tempImg)
+                .then(function(result){ decodeFile.innerText = result.text; })
+                .catch(function(){ decodeFile.innerText = "Aucun QR détecté."; });
+        };
+
+        tempImg.src = canvas.toDataURL("image/png");
+    };
+
+    img.src = URL.createObjectURL(file);
+}
+
+// Décodage caméra
+var qrReader = new ZXing.BrowserQRCodeReader();
+var camList = [];
+var currentCam = 0;
+var torchOn = false;
+
+// 1) Récupérer les caméras via l'API native
+navigator.mediaDevices.enumerateDevices()
+  .then(function (devices) {
+    camList = devices.filter(function (d) {
+      return d.kind === "videoinput";
+    });
+  });
+
+// 2) Démarrer la caméra
+function flashHighlight(el) {
+  el.style.background = "yellow";
+  el.style.color = "black";
+
+  setTimeout(function () {
+    el.style.background = "";
+    el.style.color = "";
+  }, 300);
+}
+
+function toggleTorch() {
+  var video = document.getElementById("qrVideo");
+  if (!video.srcObject) return;
+
+  var track = video.srcObject.getVideoTracks()[0];
+  if (!track) return;
+
+  torchOn = !torchOn;
+
+  track.applyConstraints({
+    advanced: [{ torch: torchOn }]
+  }).catch(function(e) {
+    console.log("Torch error:", e);
+  });
+}
+
+function startCamera() {
+  var video = document.getElementById("qrVideo");
+  var resultBox = document.getElementById("qrResult");
+
+  if (camList.length === 0) {
+    resultBox.innerHTML = "Aucune caméra détectée.";
+    return;
+  }
+
+  // IMPORTANT : arrêter l'ancienne caméra
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(function (t) { t.stop(); });
+    video.srcObject = null;
+  }
+  qrReader.reset();
+
+  // 3) Forcer ZXing à utiliser le bon deviceId
+  qrReader.decodeFromVideoDevice(
+    camList[currentCam].deviceId,
+    video,
+    function (result, err) {
+      if (result) {
+        resultBox.innerHTML = result.getText();
+        flashHighlight(resultBox);
+      }
+    }
+  );
+}
+
+document.getElementById("startScan").onclick = function () {
+  startCamera();
+};
+
+// 4) Changer de caméra
+document.getElementById("switchCam").onclick = function () {
+  if (camList.length < 2) return;
+
+  currentCam = (currentCam + 1) % camList.length;
+
+  startCamera();
+};
+
+document.getElementById("toggleTorch").onclick = function () {
+  var video = document.getElementById("qrVideo");
+  if (!video.srcObject) return;
+
+  var track = video.srcObject.getVideoTracks()[0];
+  if (!track) return;
+
+  var caps = track.getCapabilities();
+
+  if (!caps.torch) {
+    alert("Allumez la torche via les réglages rapides pour cette caméra.");
+    return;
+  }
+
+  toggleTorch();
+};
+
+// 5) Stop
+document.getElementById("stopScan").onclick = function () {
+  torchOn = false;
+
+  var video = document.getElementById("qrVideo");
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(function (t) { t.stop(); });
+    video.srcObject = null;
+  }
+  qrReader.reset();
+};
+
+// Copier
+function copyTextFrom(elementId, btn) {
+  var btn = event.target;
+  var txt = document.getElementById(elementId).textContent;
+
+  var t = document.createElement("textarea");
+  t.value = txt;
+  document.body.appendChild(t);
+  t.select();
+
+  try { document.execCommand("copy"); } catch (e) {}
+
+  document.body.removeChild(t);
+  btn.focus();
+}
+
+document.getElementById("copyQR").onclick = function (e) {
+  copyTextFrom("qrResult", e.target);
+};
+
+/* --- COPIER --- */
+document.getElementById("copy-btn").onclick = function () {
+  var btn = event.target;
+  var text = document.getElementById("decode-file").innerText;
+
+  var temp = document.createElement("textarea");
+  temp.value = text;
+  temp.style.position = "fixed";
+  temp.style.opacity = "0";
+  document.body.appendChild(temp);
+
+  temp.select();
+  document.execCommand("copy");
+  document.body.removeChild(temp);
+  btn.focus();
+};
+</script>
+</body>
+</html>

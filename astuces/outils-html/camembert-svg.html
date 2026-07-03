@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camembert SVG</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Tableaux */
+table {
+  width:100;
+  border-collapse:collapse;
+}
+td, th {
+  border-bottom:2px groove #fff;
+  padding:4px;
+  font-size:13px;
+}
+input[type=text], input[type=number] {
+  width:100%;
+}
+#preview svg {
+  max-width:100%;
+  height:auto;
+}
+/* Légende */
+.pie-legend {
+  list-style:none;
+  padding:0;
+  margin-top:10px;
+  font-size:14px;
+}
+.pie-legend li {
+  margin:3px 0;
+  display:block;
+}
+.pie-legend span {
+  width:12px;
+  height:12px;
+  display:inline-block;
+  margin-right:6px;
+  border-radius:50%;
+}
+
+.container-camembert {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+}
+.card-camembert {
+  padding:10px;
+  display:block;
+}
+</style>
+</head>
+<body>
+<h2>Diagramme circulaire (camembert) SVG</h2>
+<div class="container-camembert">
+
+<div class="card-camembert border-externe">
+<h3>Parts</h3>
+<div class="scrollZone">
+<table id="tbl">
+  <thead>
+    <tr><th style="width:100px">Libellé</th><th style="width:50px">Val %</th><th style="width:60px";>Couleur</th><th></th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</div>
+<button id="addBtn">Ajouter une part</button>
+<button id="validateBtn" class="btn-color" style="background-color:#ff8800;">Valider</button>
+<p></p>
+<label>Taille du camembert : <input type="number" id="pieSize" value="200" style="width:40px;"></label>
+</div>
+
+<div class="card-camembert border-externe">
+  <h3>Aperçu</h3>
+  <div id="preview" class="scrollZone"></div>
+</div>
+
+<div class="card-camembert border-externe">
+  <h3>Code SVG</h3>
+  <button id="copyBtn" class="btn-color" style="background-color:#4caf50;">Copier</button>
+  <input type="file" id="fileInput" style="display:none;">
+  <br><textarea id="code"></textarea><br>
+  <button id="importBtn" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
+  <button id="importFileBtn">Importer fichier…</button>
+</div>
+
+</div>
+<script>
+/* --- Données --- */
+var slices = [
+  { label: "A", value: 40, color: "#e74c3c" },
+  { label: "B", value: 30, color: "#3498db" },
+  { label: "C", value: 20, color: "#2ecc71" }
+];
+
+var tblBody = document.getElementById("tbl").getElementsByTagName("tbody")[0];
+var preview = document.getElementById("preview");
+var codeArea = document.getElementById("code");
+var pieSize = 200;
+
+/* --- Construction du tableau --- */
+function normalizeColor(col) {
+  // élément temporaire
+  var tmp = document.createElement("div");
+  tmp.style.color = col;
+
+  // si le navigateur ne comprend pas → ignore
+  if (!tmp.style.color) return null;
+
+  // obtenir la couleur calculée (souvent en rgb())
+  document.body.appendChild(tmp);
+  var rgb = window.getComputedStyle ?
+            window.getComputedStyle(tmp).color :
+            tmp.currentStyle.color;
+  document.body.removeChild(tmp);
+
+  // convertir rgb(...) → #rrggbb
+  var m = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  if (!m) return null;
+
+  var r = parseInt(m[1], 10).toString(16);
+  var g = parseInt(m[2], 10).toString(16);
+  var b = parseInt(m[3], 10).toString(16);
+
+  if (r.length < 2) r = "0" + r;
+  if (g.length < 2) g = "0" + g;
+  if (b.length < 2) b = "0" + b;
+
+  return "#" + r + g + b;
+}
+
+function rebuildTable() {
+  tblBody.innerHTML = "";
+
+  // Calcul du total pour afficher les pourcentages
+  var total = 0;
+  for (var t = 0; t < slices.length; t++) total += slices[t].value;
+
+  for (var i = 0; i < slices.length; i++) {
+    var s = slices[i];
+    var tr = document.createElement("tr");
+
+    // LABEL
+    var td1 = document.createElement("td");
+    var inp1 = document.createElement("input");
+    inp1.type = "text";
+    inp1.value = s.label;
+    inp1.oninput = function(index){ return function(){
+      slices[index].label = this.value;
+    }}(i);
+    td1.appendChild(inp1);
+    tr.appendChild(td1);
+
+    // POURCENTAGE
+    var td2 = document.createElement("td");
+
+    var inp2 = document.createElement("input");
+    inp2.type = "number";
+    inp2.min = "0";
+    inp2.max = "100";
+    inp2.step = "0.1";
+
+    var pct = total > 0 ? (s.value / total) * 100 : 0;
+    pct = Math.round(pct * 10) / 10;
+    inp2.value = pct;
+
+    inp2.oninput = function(index){ return function(){
+      var p = parseFloat(this.value);
+      if (isNaN(p) || p < 0) p = 0;
+      if (p > 100) p = 100;
+
+      slices[index].value = p;
+    }}(i);
+
+    td2.appendChild(inp2);
+    tr.appendChild(td2);
+
+    // COULEUR (HEX + noms CSS)
+    var td3 = document.createElement("td");
+    var inp3 = document.createElement("input");
+    inp3.type = "text";
+    inp3.value = s.color;
+    inp3.maxLength = 20;
+
+    inp3.onchange = function(index){ return function(){
+      var v = this.value.trim();
+
+      if (/^[0-9A-Fa-f]{6}$/.test(v)) v = "#" + v;
+      else if (/^[0-9A-Fa-f]{3}$/.test(v)) v = "#" + v;
+
+      var hex = normalizeColor(v);
+      if (hex) {
+        slices[index].color = hex;
+        this.value = hex;
+      }
+    }}(i);
+
+    td3.appendChild(inp3);
+    tr.appendChild(td3);
+
+    // BOUTONS ↑ ↓ x
+    var td4 = document.createElement("td");
+
+    // ↑
+    var upBtn = document.createElement("button");
+    upBtn.innerHTML = "↑";
+    upBtn.style = "width:28px;height:28px;vertical-align:middle;";
+    upBtn.onclick = function(index){ return function(){
+      if (index > 0) {
+        var tmp = slices[index - 1];
+        slices[index - 1] = slices[index];
+        slices[index] = tmp;
+        renderPie();
+        rebuildTable();
+      }
+    }}(i);
+    td4.appendChild(upBtn);
+
+    // ↓
+    var downBtn = document.createElement("button");
+    downBtn.innerHTML = "↓";
+    downBtn.style = "width:28px;height:28px;vertical-align:middle;";
+    downBtn.onclick = function(index){ return function(){
+      if (index < slices.length - 1) {
+        var tmp = slices[index + 1];
+        slices[index + 1] = slices[index];
+        slices[index] = tmp;
+        renderPie();
+        rebuildTable();
+      }
+    }}(i);
+    td4.appendChild(downBtn);
+
+    // x
+    var delBtn = document.createElement("button");
+    delBtn.innerHTML = "x";
+    delBtn.className = "btn-color";
+    delBtn.style = "background-color:#ff4444;width:28px;height:28px;vertical-align:middle;";
+    delBtn.onclick = function(index){ return function(){
+      slices.splice(index,1);
+      renderPie();
+      rebuildTable();
+    }}(i);
+    td4.appendChild(delBtn);
+
+    tr.appendChild(td4);
+
+    tblBody.appendChild(tr);
+  }
+}
+
+document.getElementById("addBtn").onclick = function() {
+  slices.push({
+    label: "Nouvelle",
+    value: 10,
+    color: "#"+("000000"+Math.floor(Math.random()*16777215).toString(16)).slice(-6)
+  });
+  renderPie();
+  rebuildTable();
+};
+
+document.getElementById("validateBtn").onclick = function() {
+  renderPie();
+  rebuildTable();
+};
+
+document.getElementById("pieSize").oninput = function() {
+  var v = parseInt(this.value, 10);
+  if (isNaN(v) || v < 50) v = 50;
+  if (v > 800) v = 800;
+  pieSize = v;
+};
+
+/* --- Génération du SVG + LÉGENDE --- */
+function renderPie() {
+  var total = 0;
+  for (var i = 0; i < slices.length; i++) total += slices[i].value;
+
+  if (total <= 0) {
+    preview.innerHTML = "<em>Aucune donnée</em>";
+    codeArea.value = "";
+    return;
+  }
+
+  // Taille dynamique
+  var size = pieSize;
+  var cx = size / 2;
+  var cy = size / 2;
+  var r  = (size / 2) - 10;
+
+  var angle = -Math.PI / 2;
+
+  // SVG début
+  var svg = '<svg width="'+size+'" height="'+(size+ (slices.length*20)+20)+'" '+
+            'viewBox="0 0 '+size+' '+(size+ (slices.length*20)+20)+'" '+
+            'xmlns="http://www.w3.org/2000/svg">';
+
+  // PARTIES DU CAMEMBERT
+  if (slices.length === 1) {
+    // Cas spécial : cercle complet
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+slices[0].color+'">' +
+           '<title>'+escapeHtml(slices[0].label)+' (100%)</title>' +
+           '</circle>';
+  } else {
+    for (var i = 0; i < slices.length; i++) {
+      var s = slices[i];
+      var a = (s.value / total) * Math.PI * 2;
+
+      var x1 = cx + r * Math.cos(angle);
+      var y1 = cy + r * Math.sin(angle);
+      var x2 = cx + r * Math.cos(angle + a);
+      var y2 = cy + r * Math.sin(angle + a);
+
+      var large = a > Math.PI ? 1 : 0;
+
+      var d = "M "+cx+" "+cy+
+              " L "+x1+" "+y1+
+              " A "+r+" "+r+" 0 "+large+" 1 "+x2+" "+y2+
+              " Z";
+
+      var pct = (s.value / total) * 100;
+      pct = Math.round(pct * 10) / 10;
+
+      svg += '<path fill="'+s.color+'" d="'+d+'">' +
+             '<title>'+escapeHtml(s.label)+' ('+pct+'%)</title>' +
+             '</path>';
+
+      angle += a;
+    }
+  }
+
+  // LÉGENDE DANS LE SVG
+  var legendY = size + 15;
+
+  for (var i = 0; i < slices.length; i++) {
+    var s = slices[i];
+    var pct = (s.value / total) * 100;
+    pct = Math.round(pct * 10) / 10;
+
+    // Point coloré
+    svg += '<circle cx="10" cy="'+legendY+'" r="6" fill="'+s.color+'"></circle>';
+
+    // Fond derrière le texte
+    svg += '<rect x="20" y="'+(legendY-8)+'" width="200" height="18" fill="black"></rect>';
+
+    // Texte
+    svg += '<text x="25" y="'+(legendY+4)+'" font-size="12" font-family="sans-serif" fill="white">'+
+           escapeHtml(s.label)+' - '+pct+'%'+
+           '</text>';
+
+    legendY += 20;
+  }
+
+  svg += "</svg>";
+
+  preview.innerHTML = svg;
+  codeArea.value = svg;
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/* --- Import depuis le SVG + légende --- */
+document.getElementById("importBtn").onclick = function() {
+  var txt = codeArea.value;
+  if (!txt) return;
+
+  preview.innerHTML = txt;
+
+  var div = document.createElement("div");
+  div.innerHTML = txt;
+
+  var svg = div.getElementsByTagName("svg")[0];
+  if (svg) {
+      var w = parseInt(svg.getAttribute("width"), 10);
+      if (!isNaN(w) && w > 0) {
+          pieSize = w;
+          document.getElementById("pieSize").value = w;
+      }
+  }
+
+  var paths = div.getElementsByTagName("path");
+  var newSlices = [];
+
+  for (var i = 0; i < paths.length; i++) {
+    var p = paths[i];
+    var color = p.getAttribute("fill");
+
+    var title = p.getElementsByTagName("title")[0];
+    var raw = title ? title.textContent : "Part";
+    var label = raw;
+    var pct = 0;
+
+    // Format attendu : "Label (40%)"
+    var pos1 = raw.lastIndexOf("(");
+    var pos2 = raw.lastIndexOf("%)");
+
+    if (pos1 !== -1 && pos2 !== -1) {
+      label = raw.substring(0, pos1 - 1);
+      pct = parseFloat(raw.substring(pos1 + 1, pos2));
+    }
+
+    // Valeur brute reconstruite (total = 100)
+    var value = pct;
+
+    newSlices.push({
+      label: label,
+      value: isNaN(value) ? 0 : value,
+      color: color || "#cccccc"
+    });
+  }
+
+  slices = newSlices;
+  rebuildTable();
+  renderPie();
+};
+
+// Glisser-déposer
+var code = document.getElementById("code");
+
+code.addEventListener("dragover", function(e) {
+
+    // Si un fichier est glissé → empêcher le comportement natif
+    if (e.dataTransfer.types &&
+        (e.dataTransfer.types.indexOf("Files") !== -1 ||
+         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+
+        e.preventDefault(); // autorise le drop fichier
+    }
+
+    // Sinon → NE RIEN FAIRE
+    // Le navigateur affiche le curseur d’insertion
+});
+
+code.addEventListener("drop", function(e) {
+
+    // Si fichier → on gère nous-même
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+
+        var file = e.dataTransfer.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(ev) {
+            // On met le fichier brut dans la zone
+            code.value = ev.target.result;
+        };
+
+        reader.readAsText(file);
+        return;
+    }
+
+    // Sinon → laisser le navigateur coller le texte
+});
+
+// Bouton Importer fichier…
+document.getElementById("importFileBtn").onclick = function () {
+    document.getElementById("fileInput").click();
+};
+
+document.getElementById("fileInput").addEventListener("change", function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById("code").value = e.target.result;
+    };
+    reader.readAsText(file);
+});
+
+/* --- Copier --- */
+document.getElementById("copyBtn").onclick = function(e) {
+  var btn = event.target;
+  var txt = codeArea.value;
+
+  var temp = document.createElement("textarea");
+  temp.value = txt;
+  document.body.appendChild(temp);
+  temp.select();
+
+  try { 
+    document.execCommand("copy"); 
+  } catch (err) {}
+
+  document.body.removeChild(temp);
+  btn.focus();
+};
+
+rebuildTable();
+renderPie();
+</script>
+</body>
+</html>
