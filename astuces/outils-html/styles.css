@@ -16,8 +16,7 @@ textarea {
 input, textarea {
   background:#000000;
   color:#ffffff;
-  border:2px solid;
-  border-color:#111 #888 #888 #111;
+  border:2px groove #808080;
 }
 @media (hover:none) and (pointer:coarse) {
 ::-webkit-scrollbar {
