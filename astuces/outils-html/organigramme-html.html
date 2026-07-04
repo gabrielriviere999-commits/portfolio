@@ -168,6 +168,8 @@ toggleBtn.onclick = function(e) {
 
 /* --- SÉLECTION / ÉDITION --- */
 document.addEventListener('click', function(e) {
+  if (e.target.id === "inlineEdit") return;
+
   var node = findNodeElement(e.target);
   if (!node) return;
 
