@@ -14,6 +14,8 @@ textarea {
   box-sizing:border-box;
   font-family:monospace;
   resize:vertical;
+  white-space:pre;
+  overflow-x:auto;
 }
 input, textarea {
   background:#000000;
