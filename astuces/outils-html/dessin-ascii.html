@@ -919,32 +919,36 @@ document.getElementById('copyDraw').onclick = function(e) {
 };
 
 // Glisser-déposer
-var textarea = document.getElementById("view");
+function enableDragDrop(targetTextarea) {
+    targetTextarea.addEventListener("dragover", function(e) {
+        if (e.dataTransfer.types &&
+            (e.dataTransfer.types.indexOf("Files") !== -1 ||
+             e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
 
-textarea.addEventListener("dragover", function(e) {
-    if (e.dataTransfer.types &&
-        (e.dataTransfer.types.indexOf("Files") !== -1 ||
-         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+            e.preventDefault();
+        }
+    });
 
-        e.preventDefault();
-    }
-});
+    targetTextarea.addEventListener("drop", function(e) {
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            e.preventDefault();
 
-textarea.addEventListener("drop", function(e) {
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        e.preventDefault();
+            var file = e.dataTransfer.files[0];
+            var reader = new FileReader();
 
-        var file = e.dataTransfer.files[0];
-        var reader = new FileReader();
+            reader.onload = function(ev) {
+                targetTextarea.value = ev.target.result;
+            };
 
-        reader.onload = function(ev) {
-            textarea.value = ev.target.result;
-        };
+            reader.readAsText(file);
+        }
+    });
+}
+var dragdroptextareaview = document.getElementById("view");
+var dragdroptextareatextInput = document.getElementById("textInput");
 
-        reader.readAsText(file);
-        return;
-    }
-});
+enableDragDrop(dragdroptextareaview);
+enableDragDrop(dragdroptextareatextInput);
 
 // Bouton Importer fichier…
 document.getElementById("importFileBtn").onclick = function () {
