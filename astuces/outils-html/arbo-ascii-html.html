@@ -6,16 +6,16 @@
 <title>Arborescence ASCII & HTML</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-body { font-family:monospace; }
 button { line-height:1.2; }
 #ascii {
   background:black;
   color:#0f0;
+  font-family:monospace;
   padding:15px;
-  white-space:pre;
-  overflow:auto;
   max-height:500px;
   max-height:70vh;
+  white-space:pre;
+  overflow:auto;
 }
 .folder {
   color:#4af;
@@ -199,7 +199,7 @@ function buildHtml() {
     // 7. Générer le bloc HTML complet
     var finalHtml =
         '<style>\n' +
-        'pre.tree{font-family:monospace;white-space:pre;background:black;padding:5px;overflow-x:auto;}\n' +
+        'pre.tree{background:black;font-family:monospace;padding:5px;white-space:pre;overflow-x:auto;}\n' +
         'pre.tree .folder{color:#4af;}\n' +
         'pre.tree .file{color:#0f0;}\n' +
         'pre.tree .ascii{color:#0f0;}\n' +
