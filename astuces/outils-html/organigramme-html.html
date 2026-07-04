@@ -7,6 +7,10 @@
 <link rel="stylesheet" href="styles.css">
 <style>
 body { padding-top:200px; }
+.org-scroll {
+  white-space:nowrap;
+  overflow-x:auto;
+}
 .org-root {
   display:inline-block;
 }
@@ -58,8 +62,10 @@ body { padding-top:200px; }
 </div>
 <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity:0.8;">≡</button>
 
-<div id="org-container">
-  <div class="org-root"></div>
+<div class="org-scroll">
+  <div id="org-container">
+      <div class="org-root"></div>
+  </div>
 </div>
 <button onclick="generateCode(buildHtml())" class="btn-color" style="background-color:#ff8800;">Générer le code</button>
 <button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
@@ -637,6 +643,7 @@ function buildHtml() {
 
   var css =
     "<style>\n" +
+    ".org-scroll { white-space:nowrap; overflow-x:auto; }\n" +
     ".org-root { display:inline-block; color:" + globalText + "; }\n" +
     ".org-node { display:inline-block; text-align:center; margin:10px 5px; vertical-align:top; }\n" +
     ".org-label { border:1px solid #000; padding:4px 8px; background:" + globalBoxBg + "; }\n" +
@@ -644,6 +651,7 @@ function buildHtml() {
     "</style>\n";
 
   var html =
+    '<div class="org-scroll">\n' +
     '<div class="org-root" data-global-bg="' + globalBoxBg + '" style="color:' + globalText + ';">\n';
 
   // Exporte toutes les racines
@@ -651,7 +659,9 @@ function buildHtml() {
     html += exportHtmlNode(orgRoot.children[i], 2);
   }
 
-  html += '</div>';
+  html +=
+    '</div>\n' +
+    '</div>';
 
   return css + html;
 }
