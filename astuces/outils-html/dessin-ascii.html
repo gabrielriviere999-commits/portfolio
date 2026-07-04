@@ -54,7 +54,7 @@ input { width:15px; }
 </div>
 
 <div id="textBox" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
-background:#c0c0c0; border:1px solid #000; padding:10px; z-index:9999; opacity:0.8;">
+background:#202020; border:1px solid #000; padding:10px; z-index:9999; opacity:0.8;">
   <textarea id="textInput" wrap="off" style="width:300px; height:120px;"></textarea><br>
   <button onclick="confirmText()">OK</button>
   <button onclick="cancelText()">Annuler</button>
@@ -922,7 +922,6 @@ document.getElementById('copyDraw').onclick = function(e) {
 var textarea = document.getElementById("view");
 
 textarea.addEventListener("dragover", function(e) {
-
     if (e.dataTransfer.types &&
         (e.dataTransfer.types.indexOf("Files") !== -1 ||
          e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
@@ -932,7 +931,6 @@ textarea.addEventListener("dragover", function(e) {
 });
 
 textarea.addEventListener("drop", function(e) {
-
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         e.preventDefault();
 
