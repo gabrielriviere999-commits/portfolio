@@ -176,6 +176,27 @@
 
 <!-- Scripts -->
 <script src="script.js"></script>
+<script>
+(function () {
+    var elements = document.querySelectorAll("[data-include]");
+
+    for (var i = 0; i < elements.length; i++) {
+        (function (el) {
+            var file = el.getAttribute("data-include");
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", file, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    el.innerHTML = xhr.responseText;
+                }
+            };
+
+            xhr.send();
+        })(elements[i]);
+    }
+})();
+</script>
 </main>
 </body>
 </html>
