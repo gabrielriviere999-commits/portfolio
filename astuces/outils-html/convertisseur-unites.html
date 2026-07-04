@@ -7,28 +7,28 @@
 <link rel="stylesheet" href="styles.css">
 <style>
 .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 12px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+  gap:12px;
 }
 .dropdown {
-  padding: 4px;
+  padding:4px;
   cursor:pointer;
   user-select:none;
 }
 .dropdown-list {
-  margin-top: 2px;
+  margin-top:2px;
   max-height:200px;
   overflow-y:auto;
   display:none;
 }
 .dropdown-list div {
   padding:4px;
-  border-bottom:1px solid #c0c0c0;
+  border-bottom:1px solid #202020;
 }
 .dropdown-list div:hover {
-  background: #000080;
-  color: white;
+  background:#000080;
+  color:white;
 }
 .dropdown-selected {
   font-weight:bold;
@@ -46,21 +46,21 @@
   background:#7dc343;
 }
 .block {
-  padding: 10px;
-  margin-top: 15px;
+  padding:10px;
+  margin-top:15px;
 }
 .block h2 {
-  background: #000080;
-  color: white;
-  padding: 4px;
-  margin: -10px -10px 10px -10px;
-  font-size: 14px;
-  font-weight: bold;
+  background:#000080;
+  color:white;
+  padding:4px;
+  margin:-10px -10px 10px -10px;
+  font-size:14px;
+  font-weight:bold;
 }
 #fromSearchList,
 #toSearchList {
-  max-height: 150px;
-  overflow-y: auto;
+  max-height:150px;
+  overflow-y:auto;
 }
 label { color:black; }
 </style>
@@ -699,7 +699,7 @@ function createDropdown(selectedId, listId, onSelect) {
 function highlight() {
   var i;
   for (i = 0; i < options.length; i++) {
-    options[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
+    options[i].style.background = (i === activeIndex) ? "#202020" : "";
   }
 
   if (activeIndex >= 0 && activeIndex < options.length) {
@@ -926,7 +926,7 @@ document.getElementById("searchFrom").oninput = function () {
 function highlight() {
   var i;
   for (i = 0; i < searchOptions.length; i++) {
-    searchOptions[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
+    searchOptions[i].style.background = (i === activeIndex) ? "#202020" : "";
   }
 
   if (activeIndex >= 0 && activeIndex < searchOptions.length) {
@@ -1048,7 +1048,7 @@ document.getElementById("searchTo").oninput = function () {
 function highlight() {
   var i;
   for (i = 0; i < searchOptions.length; i++) {
-    searchOptions[i].style.background = (i === activeIndex) ? "#c0c0c0" : "";
+    searchOptions[i].style.background = (i === activeIndex) ? "#202020" : "";
   }
 
   if (activeIndex >= 0 && activeIndex < searchOptions.length) {
