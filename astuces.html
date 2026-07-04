@@ -7,20 +7,12 @@
 <meta name="description" content="Astuces">
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="stylesheet" href="styles.css">
-<style>
-pre {
-  white-space:pre-wrap;
-  word-wrap:break-word;
-  overflow-wrap:break-word;
-  margin-top:0;
-}
-</style>
 </head>
 <body>
 <main>
 <!-- Barre de navigation -->
-<div class="navbar" style="opacity: 0.8;">
-<select class="select" aria-label="Menu du site"
+<div class="navbar" style="opacity:0.8;">
+<select class="select" style="text-decoration:none;" aria-label="Menu du site"
         onchange="
             if(this.value==='__search__'){
                 window.open('search.html','_blank');
@@ -31,7 +23,7 @@ pre {
             } else if(this.value!==''){
                 location.href=this.value;
             }
-            this.selectedIndex = 0;
+            this.selectedIndex=0;
         ">
     <option value="">≡</option>
     <option value="search.html">Rechercher</option>
@@ -42,7 +34,7 @@ pre {
     <option value="__github__">Dépôt GitHub (nouvel onglet)</option>
 </select>
 <a href="search.html" class="select">Q</a>
-		<select class="select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex = 0;" style="text-decoration:none;">
+		<select class="select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex=0;" style="text-decoration:none;">
             <option value="">tab?</option>
             <option value="index.html">Accueil</option>
             <option value="bts.html">BTS</option>
@@ -57,10 +49,10 @@ pre {
 
 <!-- Contenu -->
 <fieldset><legend><h1>Astuces</h1></legend>
-<pre>Cette page rassemble des astuces, <a class="link" href="astuces/outils-html/outils.html">outils</a> utilisables directement dans le navigateur, scripts, et applications.
+<pre style="margin-top:0;">Cette page rassemble des astuces, <a class="link" href="astuces/outils-html/outils.html">outils</a> utilisables directement dans le navigateur, scripts, et applications.
 Si ce travail vous est utile, vous pouvez le soutenir grâce à un don volontaire.
 Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</pre>
-<a href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal" class="a a-yellow" style="color:black;background-color:#ffd700;">💙 Faire un don via PayPal</a>
+<a href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal" class="a" style="color:black;background-color:#ffd700;">💙 Faire un don via PayPal</a>
 </fieldset>
 
 <h2>Linux</h2>

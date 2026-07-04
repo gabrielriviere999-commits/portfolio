@@ -6,6 +6,11 @@ body {
   font-family:monospace;
   padding-top:50px;
 }
+pre {
+  white-space:pre-wrap;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+}
 a { color:#33b5e5; }
 .a {
   color:#ffffff;

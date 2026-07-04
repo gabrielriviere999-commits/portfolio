@@ -11,8 +11,8 @@
 <body>
 <main>
 <!-- Barre de navigation -->
-<div class="navbar" style="opacity: 0.8;">
-<select class="select" aria-label="Menu du site"
+<div class="navbar" style="opacity:0.8;">
+<select class="select" style="text-decoration:none;" aria-label="Menu du site"
         onchange="
             if(this.value==='__search__'){
                 window.open('search.html','_blank');
@@ -23,7 +23,7 @@
             } else if(this.value!==''){
                 location.href=this.value;
             }
-            this.selectedIndex = 0;
+            this.selectedIndex=0;
         ">
     <option value="">≡</option>
     <option value="search.html">Rechercher</option>
@@ -34,7 +34,7 @@
     <option value="__github__">Dépôt GitHub (nouvel onglet)</option>
 </select>
 <a href="search.html" class="select">Q</a>
-		<select class="select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex = 0;" style="text-decoration:none;">
+		<select class="select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex=0;" style="text-decoration:none;">
             <option value="">tab?</option>
             <option value="index.html">Accueil</option>
             <option value="bts.html">BTS</option>
