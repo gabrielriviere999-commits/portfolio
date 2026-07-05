@@ -75,7 +75,11 @@ button:active, button.active, #file-input:active {
   border-color:#404040 #fff #fff #404040;
 }
 
-a { color:#33b5e5; }
+a {
+  color:#33b5e5;
+  text-decoration:none;
+}
+a:hover { text-decoration:underline; }
 
 select {
   background:#202020;
