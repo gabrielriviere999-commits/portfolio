@@ -10,7 +10,11 @@ pre {
   word-wrap:break-word;
   overflow-wrap:break-word;
 }
-a { color:#33b5e5; }
+a {
+  color:#33b5e5;
+  text-decoration:none;
+}
+a:hover { text-decoration:underline; }
 .a {
   color:#fff;
   border:2px solid;
