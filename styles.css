@@ -89,13 +89,13 @@ fieldset { border:2px groove #808080; display:inline-block; }
 }
 .tab-button:hover:not(.tab-button-active) {
   background-color:#404040;
+  text-decoration:underline;
 }
 .tab-button-active {
   border-color:#111 #888 #888 #111;
   background:#101010;
 }
 .tab-button, .select { text-decoration:none; }
-.tab-button:hover:not(.tab-button-active), .select:hover { text-decoration:underline; }
 
 .select {
   font-size:14px;
@@ -124,6 +124,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
   border-color:#111 #888 #888 #111;
   background:#101010;
 }
+.q:hover { text-decoration:underline; }
 
 /* --- Galerie slideshow --- */
 .slideshow-container {
