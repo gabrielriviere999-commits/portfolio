@@ -122,14 +122,14 @@ select:hover { background:#404040; }
   position:relative;
   border:2px dashed #c0c0c0;
   background:#505050;
-  color:white;
+  color:#fff;
   padding:10px;
   text-align:center;
 }
 #dropzone.hover {
   border-color:#000080;
   background:#d0e4ff;
-  color:black;
+  color:#000;
 }
 
 .toolbar {
