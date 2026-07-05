@@ -3,6 +3,7 @@ body {
   background-color:#000;
   color:#fff;
 }
+p { word-break:break-all; }
 h2, h3 { margin-top:0; }
 fieldset { border:2px groove #808080; }
 hr { border:1px solid #808080; }
