@@ -1,7 +1,7 @@
 body {
   font-family:sans-serif;
-  background-color:#000000;
-  color:#ffffff;
+  background-color:#000;
+  color:#fff;
 }
 h2, h3 { margin-top:0; }
 fieldset { border:2px groove #808080; }
@@ -18,18 +18,18 @@ textarea {
   overflow-x:auto;
 }
 input, textarea {
-  background:#000000;
-  color:#ffffff;
+  background:#000;
+  color:#fff;
   border:2px groove #808080;
 }
 @media (hover:none) and (pointer:coarse) {
 ::-webkit-scrollbar {
   width:24px;
   height:24px;
-  background:#000000;
+  background:#000;
 }
 ::-webkit-scrollbar-track {
-  background:#000000;
+  background:#000;
   border-top:2px solid #888;
   border-left:2px solid #888;
   border-bottom:2px solid #111;
@@ -43,7 +43,7 @@ input, textarea {
   border-right:2px solid #111;
 }
 ::-webkit-scrollbar-corner {
-  background: #000000;
+  background: #000;
   border-top: 2px solid #888;
   border-left: 2px solid #888;
   border-bottom: 2px solid #111;
@@ -52,7 +52,7 @@ input, textarea {
 }
 button, #file-input {
   background:#202020;
-  color:#ffffff;
+  color:#fff;
   border:2px solid;
   border-color:#888 #111 #111 #888;
   padding:4px 8px;
@@ -65,7 +65,7 @@ button:active, button.active, #file-input:active {
   background:#101010;
 }
 .btn-color {
-  color:#000000;
+  color:#000;
   border-color:#fff #404040 #404040 #fff;
 }
 .btn-color:hover { filter:brightness(1.2) }
@@ -78,7 +78,7 @@ a { color:#33b5e5; }
 
 select {
   background:#202020;
-  color:#ffffff;
+  color:#fff;
   border:2px solid;
   border-color:#111 #888 #888 #111;
 }
@@ -94,7 +94,7 @@ select:hover { background:#404040; }
   width:50%;
   padding:10px;
   box-sizing:border-box;
-  background:#000000;
+  background:#000;
   border:2px solid;
   border-color:#888 #111 #111 #888;
   vertical-align:top;
@@ -112,7 +112,7 @@ select:hover { background:#404040; }
 }
 
 .section {
-  background:#000000;
+  background:#000;
   border:2px solid;
   border-color:#888 #111 #111 #888;
   padding:10px;
@@ -144,7 +144,7 @@ select:hover { background:#404040; }
   overflow-y:auto;
   max-height:225px;
   padding:4px;
-  z-index:8889;
+  z-index:9999;
 }
 .toolbar.hidden {
   visibility:hidden;
@@ -164,12 +164,12 @@ select:hover { background:#404040; }
 }
 
 .border-interne {
-  background:#000000;
+  background:#000;
   border:2px solid;
   border-color:#111 #888 #888 #111;
 }
 .border-externe {
-  background:#000000;
+  background:#000;
   border:2px solid;
   border-color:#888 #111 #111 #888;
 }
