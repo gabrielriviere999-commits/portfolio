@@ -14,7 +14,7 @@ a {
   color:#33b5e5;
   text-decoration:none;
 }
-a:hover { text-decoration:underline; }
+a:hover:not(.tab-button-active) { text-decoration:underline; }
 .a {
   color:#fff;
   border:2px solid;
