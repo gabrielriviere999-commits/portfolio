@@ -35,6 +35,8 @@ iframe { background:#fff !important; }
     <button type="button" onclick="insertList('ul')">ul</button>
     <button type="button" onclick="insertList('ol')">ol</button>
     |
+    <button type="button" onclick="insertTemplate('link')">Lien</button>
+    |
     <button class="btn-toggle" onclick="formatText(this, 'bold')"><b>Gras</b></button>
     <button class="btn-toggle" onclick="formatText(this, 'italic')"><i>Italique</i></button>
     <button class="btn-toggle" onclick="formatText(this, 'underline')"><u>Souligné</u></button>
@@ -149,6 +151,9 @@ function insertTemplate(type) {
   } else if (type === 'note') {
     snippet =
 '<div class="note"><b>Note :</b> texte de la note.</div>\n';
+  } else if (type === 'link') {
+    snippet =
+'<a href="lien.html">lien</a>';
   }
 
   // Vérifier si le curseur est dans l'aperçu
