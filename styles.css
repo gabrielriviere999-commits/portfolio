@@ -1,6 +1,6 @@
 body {
-  background-color:#000000;
-  color:#ffffff;
+  background-color:#000;
+  color:#fff;
   font-size:14px;
   font-family:monospace;
   padding-top:50px;
@@ -12,7 +12,7 @@ pre {
 }
 a { color:#33b5e5; }
 .a {
-  color:#ffffff;
+  color:#fff;
   border:2px solid;
   border-color:#fff #404040 #404040 #fff;
   padding:4px 8px;
@@ -34,10 +34,10 @@ fieldset { border:2px groove #808080; display:inline-block; }
 ::-webkit-scrollbar {
   width:24px;
   height:24px;
-  background:#000000;
+  background:#000;
 }
 ::-webkit-scrollbar-track {
-  background:#000000;
+  background:#000;
   border-top:2px solid #888;
   border-left:2px solid #888;
   border-bottom:2px solid #111;
@@ -50,7 +50,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
   border-bottom:2px solid #111;
   border-right:2px solid #111;
 }
-::-webkit-resizer {background:#000000;}
+::-webkit-resizer {background:#000;}
 }
 
 /* --- Barre de navigation --- */
@@ -80,7 +80,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
   font-size:14px;
   padding:8px 10px;
   background:#202020;
-  color:#ffffff;
+  color:#fff;
   border:2px solid;
   border-color:#888 #111 #111 #888;
   cursor:pointer;
@@ -100,7 +100,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
 .select {
   font-size:14px;
   background:#202020;
-  color:#ffffff;
+  color:#fff;
   border:2px solid;
   border-color:#888 #111 #111 #888;
   cursor:pointer;
@@ -141,7 +141,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
   text-align:left;
   border:2px solid;
   border-color:#111 #888 #888 #111;
-  background-color:#000000;
+  background-color:#000;
   padding:4px;
   box-sizing:border-box;
 }
@@ -198,7 +198,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
 
 .slide-btn {
   background:#202020;
-  color:#ffffff;
+  color:#fff;
   border:2px solid;
   border-color:#888 #111 #111 #888;
   font-family:monospace;
@@ -237,7 +237,7 @@ select {
   height:40px;
   line-height:40px;
   background:#202020;
-  color:#ffffff;
+  color:#fff;
   border:2px solid;
   border-color:#111 #888 #888 #111;
 }
