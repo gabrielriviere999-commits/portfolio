@@ -1,7 +1,7 @@
 body {
   font-family:sans-serif;
   background-color:#000;
-  color:#fff;
+  color:#ddd;
 }
 p { word-break:break-all; }
 h2, h3 { margin-top:0; }
@@ -20,7 +20,7 @@ textarea {
 }
 input, textarea {
   background:#000;
-  color:#fff;
+  color:#ddd;
   border:2px groove #808080;
 }
 @media (hover:none) and (pointer:coarse) {
@@ -53,7 +53,7 @@ input, textarea {
 }
 button, #file-input {
   background:#202020;
-  color:#fff;
+  color:#ddd;
   border:2px solid;
   border-color:#888 #111 #111 #888;
   min-width:28px;
@@ -70,12 +70,12 @@ button:active, button.active, #file-input:active {
 }
 .btn-color {
   color:#000;
-  border-color:#fff #404040 #404040 #fff;
+  border-color:#ddd #404040 #404040 #ddd;
 }
 .btn-color:hover { filter:brightness(1.2) }
 .btn-color:active {
   filter:brightness(0.9);
-  border-color:#404040 #fff #fff #404040;
+  border-color:#404040 #ddd #ddd #404040;
 }
 
 a {
@@ -86,7 +86,7 @@ a:hover { text-decoration:underline; }
 
 select {
   background:#202020;
-  color:#fff;
+  color:#ddd;
   border:2px solid;
   border-color:#111 #888 #888 #111;
 }
@@ -130,7 +130,7 @@ select:hover { background:#404040; }
   position:relative;
   border:2px dashed #c0c0c0;
   background:#505050;
-  color:#fff;
+  color:#ddd;
   padding:10px;
   text-align:center;
   cursor:pointer;
