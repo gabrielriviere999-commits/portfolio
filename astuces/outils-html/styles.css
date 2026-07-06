@@ -133,6 +133,7 @@ select:hover { background:#404040; }
   color:#fff;
   padding:10px;
   text-align:center;
+  cursor:pointer;
 }
 #dropzone.hover {
   border-color:#000080;
