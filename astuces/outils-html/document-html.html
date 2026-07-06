@@ -75,7 +75,7 @@ iframe { background:#fff !important; }
 '  <title>Titre du document</title>\n' +
 '  <style>\n' +
 '    * { box-sizing:border-box; }\n' +
-'    body { background:black; color:white; margin:0; padding:20px; font-family:sans-serif; font-size:14px; }\n' +
+'    body { background:black; color:#ddd; margin:0; padding:20px; font-family:sans-serif; font-size:14px; }\n' +
 '    .page { max-width:900px; margin:0 auto 30px; padding:20px 30px; border:2px solid #808080; }\n' +
 '    h1, h2, h3, h4 { font-weight:600; margin-top:1.2em; margin-bottom:0.4em; }\n' +
 '    h1 { text-align:center; margin-top:0; }\n' +
@@ -366,7 +366,7 @@ function formatText(btn, cmd, value) {
     }
 
     if (cmd === "foreColor") {
-      doc.execCommand("foreColor", false, "#ffffff");
+      doc.execCommand("foreColor", false, "#ddd");
     }
 
     if (cmd === "bold" || cmd === "italic" || cmd === "underline" || cmd === "strikethrough") {
