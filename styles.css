@@ -54,7 +54,13 @@ hr { border:1px inset #808080; }
   border-bottom:2px solid #111;
   border-right:2px solid #111;
 }
-::-webkit-resizer {background:#000;}
+::-webkit-scrollbar-corner {
+  background: #000;
+  border-top: 2px solid #888;
+  border-left: 2px solid #888;
+  border-bottom: 2px solid #111;
+  border-right: 2px solid #111;
+}
 }
 
 /* --- Barre de navigation --- */
