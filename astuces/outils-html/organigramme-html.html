@@ -652,7 +652,7 @@ function buildHtml() {
 
   var html =
     '<div class="org-scroll">\n' +
-    '<div class="org-root" data-global-bg="' + globalBoxBg + '" style="color:' + globalText + ';">\n';
+    '<div class="org-root">\n';
 
   // Exporte toutes les racines
   for (var i = 0; i < orgRoot.children.length; i++) {
@@ -735,16 +735,22 @@ function importHtml(html) {
 
   if (!rootEl) return null;
 
-  var global = rootEl.getAttribute("data-global-bg");
+  var style = container.getElementsByTagName("style")[0];
 
-  if (global) {
-    globalBoxBg = global;
-  }
+  if (style) {
 
-  var realRoot = document.querySelector(".org-root");
+      var css = style.textContent;
 
-  if (realRoot) {
-    realRoot.style.color = rootEl.style.color || "inherit";
+      var m = css.match(/\.org-root\s*\{[^}]*color\s*:\s*([^;]+);/i);
+      if (m) {
+          document.querySelector(".org-root").style.color = m[1].trim();
+      }
+
+      m = css.match(/\.org-label\s*\{[^}]*background\s*:\s*([^;]+);/i);
+      if (m) {
+          globalBoxBg = m[1].trim();
+      }
+
   }
 
   // Création du conteneur invisible
