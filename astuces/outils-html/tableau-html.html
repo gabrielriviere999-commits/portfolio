@@ -125,7 +125,7 @@ td.selected {
 <label for="importTableId">ID tableau :</label> <input id="importTableId" type="text" value="tableau1">
 <br><textarea id="codeBox"></textarea><br>
 <button id="updateFromCode" class="btn-color" style="background-color:#ff8800;">Mettre à jour le tableau</button>
-<label><input type="checkbox" id="cleanLibreOffice">Nettoyer LibreOffice</label>
+<button id="cleanLibreOfficeBtn">Nettoyer LibreOffice</button>
 <button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 <p><a href="notices/notice-tableau-html.html">Notice</a></p>
@@ -969,78 +969,11 @@ function repeat(str, count) {
 document.getElementById('generateCode').onclick = updateCodeBox;
 
 /* --- IMPORT HTML --- */
-function cleanLibreOfficeHTML(html) {
-
-  var container = document.createElement("div");
-  container.innerHTML = html;
-
-  var table = container.querySelector("table");
-  if (!table) return html;
-
-  var all = table.querySelectorAll("*");
-
-  // 1. Supprimer classes LibreOffice
-  forEachNode(all, function(el) {
-      el.removeAttribute("class");
-  });
-
-  // 2. Supprimer balises parasites MAIS garder <br>, <b>, <i>, <u>, <strong>, <em>
-  var garbageTags = ["span", "font", "p"]; 
-  garbageTags.forEach(function(tag) {
-      var nodes = table.querySelectorAll(tag);
-      forEachNode(nodes, function(n) {
-          while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n);
-          n.parentNode.removeChild(n);
-      });
-  });
-
-  // 3. Convertir align="center" → style="text-align:center"
-  forEachNode(all, function(el) {
-      var a = el.getAttribute("align");
-      if (a) {
-          el.style.textAlign = a;
-          el.removeAttribute("align");
-      }
-  });
-
-  // 4. Supprimer attributs inutiles
-  forEachNode(all, function(el) {
-      el.removeAttribute("valign");
-      el.removeAttribute("width");
-      el.removeAttribute("height");
-      el.removeAttribute("bgcolor");
-      el.removeAttribute("border");
-      el.removeAttribute("cellpadding");
-      el.removeAttribute("cellspacing");
-      el.removeAttribute("sdval");
-      el.removeAttribute("sdnum");
-  });
-
-  // 5. Supprimer bordures inline
-  forEachNode(all, function(el) {
-      el.style.border = "";
-      el.style.borderColor = "";
-      el.style.borderWidth = "";
-  });
-
-  // 6. Supprimer styles vides
-  forEachNode(all, function(el) {
-      if (el.getAttribute("style") === "") {
-          el.removeAttribute("style");
-      }
-  });
-
-  return table.outerHTML;
-}
-
 document.getElementById('updateFromCode').onclick = function() {
-  var code = document.getElementById('codeBox').value;
+    importTableFromHTML(document.getElementById('codeBox').value);
+};
 
-  // Nettoyage LibreOffice seulement si la case est cochée
-  if (document.getElementById('cleanLibreOffice').checked) {
-      code = cleanLibreOfficeHTML(code);
-  }
-
+function importTableFromHTML(code) {
   var container = document.createElement('div');
   container.innerHTML = code;
 
@@ -1138,7 +1071,89 @@ document.getElementById('updateFromCode').onclick = function() {
         document.documentElement.style.setProperty("--global-text-align", globalStyles.textAlign);
     }
   }
+}
+
+// Nettoyer LibreOffice
+document.getElementById("cleanLibreOfficeBtn").onclick = function () {
+    var code = document.getElementById("codeBox").value;
+    if (!code) return;
+
+    // Nettoyage
+    var cleaned = cleanLibreOfficeHTML(code);
+
+    // Remplacer le contenu du textarea
+    document.getElementById("codeBox").value = cleaned;
+
+    // Mettre à jour le tableau automatiquement
+    importTableFromHTML(cleaned);
+    
+    // Remplacer le contenu du textarea
+    updateCodeBox();
 };
+
+function cleanLibreOfficeHTML(html) {
+
+  var container = document.createElement("div");
+  container.innerHTML = html;
+
+  var table = container.querySelector("table");
+  if (!table) return html;
+
+  var all = table.querySelectorAll("*");
+
+  // 1. Supprimer classes LibreOffice
+  forEachNode(all, function(el) {
+      el.removeAttribute("class");
+  });
+
+  // 2. Supprimer balises parasites MAIS garder <br>, <b>, <i>, <u>, <strong>, <em>
+  var garbageTags = ["span", "font", "p"]; 
+  garbageTags.forEach(function(tag) {
+      var nodes = table.querySelectorAll(tag);
+      forEachNode(nodes, function(n) {
+          while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n);
+          n.parentNode.removeChild(n);
+      });
+  });
+
+  // 3. Convertir align="center" → style="text-align:center"
+  forEachNode(all, function(el) {
+      var a = el.getAttribute("align");
+      if (a) {
+          el.style.textAlign = a;
+          el.removeAttribute("align");
+      }
+  });
+
+  // 4. Supprimer attributs inutiles
+  forEachNode(all, function(el) {
+      el.removeAttribute("valign");
+      el.removeAttribute("width");
+      el.removeAttribute("height");
+      el.removeAttribute("bgcolor");
+      el.removeAttribute("border");
+      el.removeAttribute("cellpadding");
+      el.removeAttribute("cellspacing");
+      el.removeAttribute("sdval");
+      el.removeAttribute("sdnum");
+  });
+
+  // 5. Supprimer bordures inline
+  forEachNode(all, function(el) {
+      el.style.border = "";
+      el.style.borderColor = "";
+      el.style.borderWidth = "";
+  });
+
+  // 6. Supprimer styles vides
+  forEachNode(all, function(el) {
+      if (el.getAttribute("style") === "") {
+          el.removeAttribute("style");
+      }
+  });
+
+  return table.outerHTML;
+}
 
 function rebindTableEvents() {
   for (var r = 0; r < table.rows.length; r++) {
