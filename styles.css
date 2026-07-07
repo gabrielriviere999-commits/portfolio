@@ -31,6 +31,7 @@ a:hover { text-decoration:underline; }
   filter:brightness(0.8);
 }
 fieldset { border:2px groove #808080; display:inline-block; }
+hr { border:1px inset #808080; }
 
 /* scrollbar */
 @media (hover:none) and (pointer:coarse) {
