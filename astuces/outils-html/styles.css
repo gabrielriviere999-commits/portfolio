@@ -128,13 +128,14 @@ select:hover { background:#404040; }
 
 #dropzone {
   position:relative;
-  border:2px dashed #ccc;
-  background:#505050;
+  border:2px dashed #808080;
+  background:#202020;
   color:#ccc;
   padding:10px;
   text-align:center;
   cursor:pointer;
 }
+#dropzone:hover { background:#404040; }
 #dropzone.hover {
   border-color:#000080;
   background:#d0e4ff;
