@@ -1078,16 +1078,40 @@ document.getElementById("cleanLibreOfficeBtn").onclick = function () {
     var code = document.getElementById("codeBox").value;
     if (!code) return;
 
-    // Nettoyage
+    // Nettoyage LibreOffice
     var cleaned = cleanLibreOfficeHTML(code);
 
     // Remplacer le contenu du textarea
     document.getElementById("codeBox").value = cleaned;
 
-    // Mettre à jour le tableau automatiquement
+    // RESET COMPLET DES STYLES GLOBAUX
+    globalStyles.borderWidth = "";
+    globalStyles.borderColor = "";
+    globalStyles.textColor = "";
+    globalStyles.bgColor = "";
+    globalStyles.textAlign = "";
+
+    document.documentElement.style.removeProperty("--cell-border-width");
+    document.documentElement.style.removeProperty("--table-border-width");
+    document.documentElement.style.removeProperty("--cell-border-color");
+    document.documentElement.style.removeProperty("--table-border-color");
+    document.documentElement.style.removeProperty("--global-text-color");
+    document.documentElement.style.removeProperty("--global-bg-color");
+    document.documentElement.style.removeProperty("--global-text-align");
+
+    // VALEURS PAR DÉFAUT APRÈS RESET
+    globalStyles.borderWidth = "1px";
+    globalStyles.borderColor = "#808080";
+
+    document.documentElement.style.setProperty("--cell-border-width", "1px");
+    document.documentElement.style.setProperty("--table-border-width", "1px");
+    document.documentElement.style.setProperty("--cell-border-color", "#808080");
+    document.documentElement.style.setProperty("--table-border-color", "#808080");
+
+    // Importer le tableau nettoyé
     importTableFromHTML(cleaned);
-    
-    // Remplacer le contenu du textarea
+
+    // Regénérer le code propre final
     updateCodeBox();
 };
 
