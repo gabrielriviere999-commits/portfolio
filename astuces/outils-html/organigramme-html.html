@@ -76,7 +76,7 @@ body { padding-top:200px; }
 
 <script>
 /* --- VARIABLES GLOBALES --- */
-var globalBoxBg = "#000";
+var globalBoxBg = "transparent";
 var selectedId = null;
 var clickOnToolbar = false;
 var nextId = 1;
@@ -130,10 +130,10 @@ function renderOrgTree(root) {
   var container = document.getElementById("org-container");
   var rootEl = document.querySelector(".org-root");
 
-  var globalText = "#ddd";
+  var globalText = "inherit";
 
   if (rootEl) {
-    globalText = rootEl.style.color || "#ddd";
+    globalText = rootEl.style.color || "inherit";
   }
 
   var html = '<div class="org-root" style="color:' + globalText + ';">\n';
@@ -589,9 +589,9 @@ function changeSelectedBgColor() {
 }
 
 function clearGlobalStyle() {
-  globalBoxBg = "#000";
+  globalBoxBg = "transparent";
   var root = document.querySelector(".org-root");
-  root.style.color = "#ddd";
+  root.style.color = "inherit";
   renderOrgTree(orgRoot);
 }
 
@@ -639,7 +639,7 @@ function exportHtmlNode(node, indent) {
 function buildHtml() {
 
   var root = document.querySelector(".org-root");
-  var globalText = root.style.color || "#ddd";
+  var globalText = root.style.color || "inherit";
 
   var css =
     "<style>\n" +
@@ -744,7 +744,7 @@ function importHtml(html) {
   var realRoot = document.querySelector(".org-root");
 
   if (realRoot) {
-    realRoot.style.color = rootEl.style.color || "#ddd";
+    realRoot.style.color = rootEl.style.color || "inherit";
   }
 
   // Création du conteneur invisible
