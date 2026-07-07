@@ -29,7 +29,7 @@ a:hover { text-decoration:underline; }
 .a:hover { filter:brightness(1.2); text-decoration:underline; }
 .a:active {
   border-color:#404040 #ccc #ccc #404040;
-  filter:brightness(0.9);
+  filter:brightness(0.8);
 }
 fieldset { border:2px groove #808080; display:inline-block; }
 
