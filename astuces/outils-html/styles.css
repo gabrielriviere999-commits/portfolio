@@ -74,7 +74,7 @@ button:active, button.active, #file-input:active {
 }
 .btn-color:hover { filter:brightness(1.2) }
 .btn-color:active {
-  filter:brightness(0.9);
+  filter:brightness(0.8);
   border-color:#404040 #ccc #ccc #404040;
 }
 
