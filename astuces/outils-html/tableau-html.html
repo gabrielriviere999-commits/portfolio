@@ -865,7 +865,10 @@ function updateCodeBox() {
 
   var styleBlock = "<style>\n";
 
-  styleBlock += "#" + newId + " td{border:" + globalStyles.borderWidth + " solid " + globalStyles.borderColor + ";}\n";
+  // Bordure : toujours générée, avec fallback si vide
+  var bw = globalStyles.borderWidth || "1px";
+  var bc = globalStyles.borderColor || "#808080";
+  styleBlock += "#" + newId + " td{border:" + bw + " solid " + bc + ";}\n";
 
   if (globalStyles.textColor)
     styleBlock += "#" + newId + " td{color:" + globalStyles.textColor + ";}\n";
