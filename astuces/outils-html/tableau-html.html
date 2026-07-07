@@ -1045,7 +1045,7 @@ function importTableFromHTML(code) {
     }
 
     // Couleur texte globale
-    var tMatch = css.match(/color:\s*([^;]+)/i);
+    var tMatch = css.match(/(?:^|[;{])\s*color\s*:\s*([^;}\n]+)/i);
     if (tMatch) {
         globalStyles.textColor = tMatch[1].replace(/^\s+|\s+$/g, "");
         document.documentElement.style.setProperty("--global-text-color", globalStyles.textColor);
