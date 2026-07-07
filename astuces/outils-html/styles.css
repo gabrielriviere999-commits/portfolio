@@ -6,7 +6,7 @@ body {
 p { word-break:break-all; }
 h2, h3 { margin-top:0; }
 fieldset { border:2px groove #808080; }
-hr { border:1px solid #808080; }
+hr { border:1px inset #808080; }
 
 label { display:inline-block; margin:2px 0; }
 textarea {
