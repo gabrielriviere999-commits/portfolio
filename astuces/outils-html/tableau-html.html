@@ -7,12 +7,14 @@
 <link rel="stylesheet" href="styles.css">
 <style>
 body { padding-top:250px }
+<*--
 table {
   color:#000000;
   background:#ffffff;
 }
+-->
 td {
-  border:var(--cell-border-width, 1px) solid var(--cell-border-color, #000000);
+  border:var(--cell-border-width, 1px) solid var(--cell-border-color, #808080);
   padding:6px;
   color:var(--global-text-color, inherit);
   background-color:var(--global-bg-color, inherit);
@@ -173,10 +175,10 @@ function forEachNode(list, fn) {
 var table = document.getElementById('editorTable');
 var selectedCells = [];
 var colorMode = "text";
-var globalBorderColor = "#000000";
+var globalBorderColor = "#808080";
 var globalBorderWidth = "1px";
 var globalStyles = {
-  textColor: "#000000",
+  textColor: "",
   bgColor: "",
   textAlign: "",
   borderColor: globalBorderColor,

@@ -21,16 +21,15 @@ body { padding-top:200px; }
   vertical-align:top;
 }
 .org-label {
-  border:1px solid #000;
+  border:1px solid #808080;
   padding:4px 8px;
-  background:red;
 }
 .org-children {
   margin-top:10px;
   text-align:center;
 }
 .org-node.selected .org-label {
-  border:2px solid #0078d7;
+  border:5px solid #0078d7;
 }
 </style>
 </head>
@@ -77,7 +76,7 @@ body { padding-top:200px; }
 
 <script>
 /* --- VARIABLES GLOBALES --- */
-var globalBoxBg = "white";
+var globalBoxBg = "#000";
 var selectedId = null;
 var clickOnToolbar = false;
 var nextId = 1;
@@ -131,10 +130,10 @@ function renderOrgTree(root) {
   var container = document.getElementById("org-container");
   var rootEl = document.querySelector(".org-root");
 
-  var globalText = "#000000";
+  var globalText = "#ddd";
 
   if (rootEl) {
-    globalText = rootEl.style.color || "#000000";
+    globalText = rootEl.style.color || "#ddd";
   }
 
   var html = '<div class="org-root" style="color:' + globalText + ';">\n';
@@ -590,9 +589,9 @@ function changeSelectedBgColor() {
 }
 
 function clearGlobalStyle() {
-  globalBoxBg = "white";
+  globalBoxBg = "#000";
   var root = document.querySelector(".org-root");
-  root.style.color = "#000000";
+  root.style.color = "#ddd";
   renderOrgTree(orgRoot);
 }
 
@@ -640,14 +639,14 @@ function exportHtmlNode(node, indent) {
 function buildHtml() {
 
   var root = document.querySelector(".org-root");
-  var globalText = root.style.color || "#000000";
+  var globalText = root.style.color || "#ddd";
 
   var css =
     "<style>\n" +
     ".org-scroll { white-space:nowrap; overflow-x:auto; }\n" +
     ".org-root { display:inline-block; color:" + globalText + "; }\n" +
     ".org-node { display:inline-block; text-align:center; margin:10px 5px; vertical-align:top; }\n" +
-    ".org-label { border:1px solid #000; padding:4px 8px; background:" + globalBoxBg + "; }\n" +
+    ".org-label { border:1px solid #808080; padding:4px 8px; background:" + globalBoxBg + "; }\n" +
     ".org-children { margin-top:10px; text-align:center; }\n" +
     "</style>\n";
 
@@ -745,7 +744,7 @@ function importHtml(html) {
   var realRoot = document.querySelector(".org-root");
 
   if (realRoot) {
-    realRoot.style.color = rootEl.style.color || "#000000";
+    realRoot.style.color = rootEl.style.color || "#ddd";
   }
 
   // Création du conteneur invisible
