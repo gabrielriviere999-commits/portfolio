@@ -13,18 +13,18 @@
 <main>
 <!-- Barre de navigation -->
 <div class="navbar" style="opacity:0.8;">
-<select class="select" aria-label="Menu du site"
-        onchange="
-            if(this.value==='__search__'){
-                window.open('search.html','_blank');
-            } else if(this.value==='__github__'){
-                window.open('https://github.com/gabrielriviere999-commits/portfolio','_blank');
-            } else if(this.value==='__arbo__'){
-                window.open('arbo.html','_blank');
-            } else if(this.value!==''){
-                location.href=this.value;
-            }
-            this.selectedIndex=0;">
+  <select class="select" aria-label="Menu du site"
+    onchange="
+      if(this.value==='__search__'){
+          window.open('search.html','_blank');
+      } else if(this.value==='__github__'){
+          window.open('https://github.com/gabrielriviere999-commits/portfolio','_blank');
+      } else if(this.value==='__arbo__'){
+          window.open('arbo.html','_blank');
+      } else if(this.value!==''){
+          location.href=this.value;
+      }
+      this.selectedIndex=0;">
     <option value="">≡</option>
     <option value="search.html">Rechercher</option>
     <option value="__search__">Rechercher (nouvel onglet)</option>
@@ -32,19 +32,19 @@
     <option value="__arbo__">Arborescence (nouvel onglet)</option>
     <option value="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub</option>
     <option value="__github__">Dépôt GitHub (nouvel onglet)</option>
-</select>
-<a href="search.html" class="select q">Q</a>
-		<a><select class="select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex=0;">
-            <option value="">tab?</option>
-            <option disabled="index.html">Accueil</option>
-            <option value="bts.html">BTS</option>
-            <option value="stages.html">Stages</option>
-            <option value="astuces.html">Astuces</option>
-        </select></a>
-    <a class="tab-button tab-button-active">Accueil</a>
-    <a class="tab-button" href="bts.html">BTS</a>
-    <a class="tab-button" href="stages.html">Stages</a>
-    <a class="tab-button" href="astuces.html">Astuces</a>
+  </select>
+  <a href="search.html" class="select q">Q</a>
+  <a><select class="select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex=0;">
+      <option value="">tab?</option>
+      <option disabled="index.html">Accueil</option>
+      <option value="bts.html">BTS</option>
+      <option value="stages.html">Stages</option>
+      <option value="astuces.html">Astuces</option>
+    </select></a>
+  <a class="tab-button tab-button-active">Accueil</a>
+  <a class="tab-button" href="bts.html">BTS</a>
+  <a class="tab-button" href="stages.html">Stages</a>
+  <a class="tab-button" href="astuces.html">Astuces</a>
 </div>
 
 <!-- Contenu -->

@@ -1,5 +1,4 @@
 var lastScroll = 0;
-
 window.addEventListener("scroll", function () {
     var navbar = document.querySelector(".navbar");
     var current = window.scrollY;
@@ -130,14 +129,60 @@ function showSlides(n, group) {
     }
     scrollThumbnailIntoView(slideIndex[group], group);
 
-    // Création dynamique de l'iframe
-    var holder = current.querySelector(".iframe-holder");
-    if (holder && !holder.dataset.loaded) {
-        var iframe = document.createElement("iframe");
-        iframe.src = holder.getAttribute("data-src");
-        holder.appendChild(iframe);
-        holder.dataset.loaded = "1";
+    // Création dynamique
+    var url = current.getAttribute("data-src");
+    if (url && !current.dataset.loaded) {
+
+        if (/\.(txt|html|htm)$/i.test(url)) {
+            // Fichier texte → XHR
+            loadIntoDiv(current, url);
+
+        } else if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
+            // Image → <img>
+            var img = document.createElement("img");
+            img.src = url;
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
+            current.appendChild(img);
+
+        } else if (/\.(mp4|webm|ogg)$/i.test(url)) {
+            // Vidéo → <video>
+            var video = document.createElement("video");
+            video.src = url;
+            video.controls = true;
+            video.style.maxWidth = "100%";
+            video.style.maxHeight = "100%";
+            current.appendChild(video);
+
+        } else if (/\.pdf$/i.test(url)) {
+            // PDF → iframe
+            var iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            current.appendChild(iframe);
+        }
+
+        current.dataset.loaded = "1";
     }
+}
+
+function loadIntoDiv(div, url) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200 || xhr.status === 0) {
+                div.textContent = xhr.responseText;
+            } else {
+                div.textContent = "Erreur de chargement";
+            }
+        }
+    };
+
+    xhr.send(null);
 }
 
 function openFullscreen(group) {
@@ -148,24 +193,21 @@ function openFullscreen(group) {
     var activeSlide = slides[index - 1];
     if (!activeSlide) return;
 
-    // 1) iframe (HTmL, TXT, PDF)
-    var iframe = activeSlide.querySelector("iframe");
-    if (iframe) {
-        var url = iframe.src || iframe.getAttribute("data-src");
-        if (url) {
-            window.open(url, "_blank");
-            return;
-        }
+    // fichier texte / HTML / TXT
+    var url = activeSlide.getAttribute("data-src");
+    if (url) {
+        window.open(url, "_blank");
+        return;
     }
 
-    // 2) image
+    // image
     var img = activeSlide.querySelector("img");
     if (img && img.src) {
         window.open(img.src, "_blank");
         return;
     }
 
-    // 3) vidéo
+    // vidéo
     var video = activeSlide.querySelector("video");
     if (video && video.src) {
         window.open(video.src, "_blank");
@@ -183,35 +225,24 @@ function downloadSlide(group) {
     var activeSlide = slides[index - 1];
     if (!activeSlide) return;
 
-    var url = null;
+    var url = activeSlide.getAttribute("data-src");
 
-    // 1) iframe (HTmL, TXT, PDF)
-    var iframe = activeSlide.querySelector("iframe");
-    if (iframe) {
-        url = iframe.src || iframe.getAttribute("data-src");
-    }
-
-    // 2) image
+    // image
     var img = activeSlide.querySelector("img");
-    if (!url && img) {
-        url = img.src;
-    }
+    if (!url && img) url = img.src;
 
-    // 3) vidéo
+    // vidéo
     var video = activeSlide.querySelector("video");
-    if (!url && video) {
-        url = video.src;
-    }
+    if (!url && video) url = video.src;
 
     if (!url) {
         console.log("Aucun contenu téléchargeable trouvé");
         return;
     }
 
-    // Création d'un lien invisible pour forcer le téléchargement
     var a = document.createElement("a");
     a.href = url;
-    a.download = url.split('/').pop(); // nom du fichier
+    a.download = url.split('/').pop();
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -227,32 +258,21 @@ function initAllSelects() {
 
             for (var i = 0; i < slides.length; i++) {
 
-                var file = null;
+                var file = slides[i].getAttribute("data-src");
 
-                // 1) iframe-holder (HTML, TXT, PDF…)
-                var holder = slides[i].querySelector(".iframe-holder");
-                if (holder) {
-                    file = holder.getAttribute("data-src");
-                }
+                // image
+                var img = slides[i].querySelector("img[data-src]");
+                if (!file && img) file = img.getAttribute("data-src");
 
-                // 2) image (JPG, PNG…)
-                if (!file) {
-                    var img = slides[i].querySelector("img[data-src]");
-                    if (img) file = img.getAttribute("data-src");
-                }
+                // vidéo
+                var video = slides[i].querySelector("video[data-src]");
+                if (!file && video) file = video.getAttribute("data-src");
 
-                // 3) vidéo
-                if (!file) {
-                    var video = slides[i].querySelector("video[data-src]");
-                    if (video) file = video.getAttribute("data-src");
-                }
-
-                // Création de l’option
                 var opt = document.createElement("option");
                 opt.value = i + 1;
 
                 if (file) {
-                    opt.text = file.split("/").pop(); // nom du fichier
+                    opt.text = file.split("/").pop();
                 } else {
                     opt.text = "Slide " + (i + 1);
                 }
@@ -260,7 +280,6 @@ function initAllSelects() {
                 select.appendChild(opt);
             }
 
-            // Quand on change → aller à la slide
             select.onchange = function () {
                 if (this.value !== "") {
                     currentSlide(parseInt(this.value, 10), group);
