@@ -133,9 +133,18 @@ function showSlides(n, group) {
     var url = current.getAttribute("data-src");
     if (url && !current.dataset.loaded) {
 
-        if (/\.(txt|html|htm)$/i.test(url)) {
+        if (/\.(txt)$/i.test(url)) {
             // Fichier texte → XHR
             loadIntoDiv(current, url);
+
+        } else if (/\.(html|htm)$/i.test(url)) {
+            // HTML → iframe
+            var iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            current.appendChild(iframe);
 
         } else if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
             // Image → <img>
