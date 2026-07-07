@@ -174,11 +174,21 @@ function loadIntoDiv(div, url) {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
-            if (xhr.status === 200 || xhr.status === 0) {
+
+            // Cas 1 : XHR OK (HTTP)
+            if (xhr.status === 200) {
                 div.textContent = xhr.responseText;
-            } else {
-                div.textContent = "Erreur de chargement";
+                return;
             }
+
+            // Cas 2 : XHR KO → fallback iframe
+            // (file://, CORS, vieux navigateurs...)
+            var iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            div.appendChild(iframe);
         }
     };
 

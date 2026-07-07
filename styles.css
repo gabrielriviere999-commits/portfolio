@@ -123,9 +123,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
   -webkit-appearance:none;
   -moz-appearance:none;
 }
-.select:hover {
-  background-color:#404040;
-}
+.select:hover { background-color:#404040; }
 .select:active {
   border-color:#111 #888 #888 #111;
   background:#101010;
@@ -133,10 +131,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
 .q:hover { text-decoration:underline; }
 
 /* --- Galerie slideshow --- */
-.slideshow-container {
-  position:relative;
-  max-width:100%;
-}
+.slideshow-container { position:relative; }
 
 .slide {
   display:none;
@@ -145,24 +140,18 @@ fieldset { border:2px groove #808080; display:inline-block; }
   height:70vh;
   white-space:pre;
   overflow:auto;
-  text-align:left;
   border:2px solid;
   border-color:#111 #888 #888 #111;
   background-color:#000;
   padding:4px;
   box-sizing:border-box;
 }
-.slide img {
-  max-height:100%;
-  max-width:100%;
-  object-fit:contain;
-}
+iframe { background:#808080; }
 
 .thumbnail-row {
   display:block;
   white-space:nowrap;
   overflow-x:auto;
-  overflow-y:hidden; 
   padding:4px;
   box-sizing:border-box;
   margin-top:10px;
@@ -174,7 +163,6 @@ fieldset { border:2px groove #808080; display:inline-block; }
   width:80px;
   height:60px;
   margin:2px;
-  object-fit:cover;
   border:2px solid #808080;
   cursor:pointer;
   font-size:12px;
@@ -184,9 +172,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
   -webkit-user-select:none;
   -ms-user-select:none;
 }
-.thumbnail:hover {
-  opacity:0.7;
-}
+.thumbnail:hover { opacity:0.7; }
 .thumbnail.active {
   border:2px solid #00f;
   opacity:1;
@@ -204,9 +190,7 @@ fieldset { border:2px groove #808080; display:inline-block; }
   cursor:pointer;
   vertical-align:middle;
 }
-.slide-btn:hover {
-  background-color:#404040;
-}
+.slide-btn:hover { background-color:#404040; }
 .slide-btn:active {
   border-color:#111 #888 #888 #111;
   background:#101010;
@@ -244,17 +228,9 @@ summary {
 summary:hover { background:#404040; }
 /* --- Niveau 1 --- */
 details > summary,
-details > *:not(summary) {
-  margin-left:0;
-}
-details {
-  margin-bottom:12px;
-}
+details > *:not(summary) { margin-left:0; }
+details { margin-bottom:12px; }
 /* --- Niveau 2 --- */
 details details > summary,
-details details > *:not(summary) {
-  margin-left:10px;
-}
-details details {
-  margin-bottom:4px;
-}
+details details > *:not(summary) { margin-left:10px; }
+details details { margin-bottom:4px; }
