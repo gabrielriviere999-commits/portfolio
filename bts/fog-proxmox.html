@@ -3,145 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>FOG + Proxmox</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .page {
-      max-width: 900px;
-      margin: 0 auto 30px auto;
-      padding: 20px 30px;
-      border: 2px solid;
-    }
-
-    h1, h2, h3, h4 {
-      font-weight: 600;
-      margin-top: 1.2em;
-      margin-bottom: 0.4em;
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }i
-
-    h2 {
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 4px;
-    }
-
-    p {
-      margin: 0.3em 0;
-    }
-
-    ul, ol {
-      margin: 0.4em 0 0.4em 1.4em;
-    }
-
-    code {
-      font-family: monospace;
-      font-size: 0.95em;
-      background-color: #f0f0f0;
-      padding: 1px 3px;
-    }
-
-    pre {
-      margin: 0;
-      font-family: monospace;
-      font-size: 0.9em;
-      white-space: pre;
-      overflow-x: auto;
-    }
-
-    .code-block {
-      margin: 0.6em 0;
-      padding: 10px 12px;
-      background-color: black;
-      color: white;
-      border: 1px solid #000;
-    }
-
-    .figure {
-      margin: 0.8em 0;
-      padding: 10px 12px;
-      background-color: #E2E6F0;
-      border: 1px solid;
-      border-left-width: 4px;
-      border-left-color: #2B4F81;
-      font-family: monospace;
-      font-size: 0.9em;
-      white-space: pre;
-      overflow-x: auto;
-    }
-
-    .section-title {
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-top: 1em;
-      margin-bottom: 0.3em;
-    }
-
-    .note {
-      margin: 0.6em 0;
-      padding: 8px 10px;
-      border-left: 4px solid #f0ad4e;
-      background-color: #fff8e5;
-      font-size: 0.95em;
-    }
-
-    .table-wrapper {
-      margin: 0.8em 0;
-      overflow-x: auto;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 100%;
-      font-size: 0.95em;
-    }
-
-    th, td {
-      border: 1px solid #999;
-      padding: 6px 8px;
-      text-align: left;
-    }
-
-    th {
-      font-weight: 600;
-    }
-
-    .page-break {
-      margin: 20px auto;
-      border: none;
-      border-top: 2px dashed #000;
-      max-width: 200px;
-    }
-
-    a {
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .inline-title {
-      font-weight: 600;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -167,7 +29,7 @@
 <pre>sudo nano /etc/network/interfaces</pre>
 </div>
 <p>Contenu à adapter selon votre réseau :</p>
-<div class="figure">auto eth0
+<div class="blue-block">auto eth0
 iface eth0 inet static
     address 172.17.4.16
     netmask 255.255.254.0
@@ -196,9 +58,9 @@ cd fogproject/bin
 sudo ./installfog.sh</pre>
 </div>
 
-<h3>1.3 Réponses à donner au script d’installation</h3>
+<h3>1.3 Réponses à donner au script d'installation</h3>
 <h4>Écran 1 - Choix de la distribution</h4>
-<table class="table-wrapper">
+<table>
   <tbody>
     <tr><td>Question</td><td>Réponse</td>
     </tr>
@@ -214,7 +76,7 @@ sudo ./installfog.sh</pre>
 </table>
 
 <h4>Écran 2 - Configuration DHCP</h4>
-<table class="table-wrapper">
+<table>
   <tbody>
     <tr><td>Question</td><td>Réponse</td>
     </tr>
@@ -228,10 +90,10 @@ sudo ./installfog.sh</pre>
     </tr>
   </tbody>
 </table>
-<p>Important : réponses n aux 3 questions DHCP car c’est votre routeur qui gère le DHCP, pas FOG.</p>
+<p>Important : réponses n aux 3 questions DHCP car c'est votre routeur qui gère le DHCP, pas FOG.</p>
 
 <h4>Écran 3 - HTTPS et hostname</h4>
-<table class="table-wrapper">
+<table>
   <tbody>
     <tr><td>Question</td><td>Réponse</td>
     </tr>
@@ -245,12 +107,12 @@ sudo ./installfog.sh</pre>
 </table>
 
 <h3>1.4 Finalisation de la base de données</h3>
-<p>À la fin de l’installation, le script affiche :
-<div class="figure">You still need to install/update your database schema.
+<p>À la fin de l'installation, le script affiche :
+<div class="blue-block">You still need to install/update your database schema.
 http://10.0.9.9/fog/management
 Press [Enter] key when database is updated/installed.</div>
 <pre>
-Avant d’appuyer sur Entrée dans la console :
+Avant d'appuyer sur Entrée dans la console :
 1. Ouvrir un navigateur
 2. Aller sur : http://IP_DU_SERVEUR_FOG/fog/management
 3. Cliquer sur le bouton bleu Install/Update Now
@@ -258,7 +120,7 @@ Avant d’appuyer sur Entrée dans la console :
 5. Retourner dans la console et appuyer sur Entrée
 </pre>
 
-<h3>1.5 Premier accès à l’interface FOG</h3>
+<h3>1.5 Premier accès à l'interface FOG</h3>
 <p>URL : http://172.17.4.16/fog/management</p>
 <p>Identifiants :</p>
 <ul>
@@ -283,7 +145,7 @@ sudo apt install dnsmasq
 sudo nano /etc/dnsmasq.d/ltsp.conf</pre>
 </div>
 
-<div class="figure"># ProxyDHCP pour FOG - coexiste avec le DHCP du routeur
+<div class="blue-block"># ProxyDHCP pour FOG - coexiste avec le DHCP du routeur
 log-dhcp
 
 # Mode proxy sur le réseau 172.17.4.0/24
@@ -319,7 +181,7 @@ sudo ss -tulpn | grep -E ':53|:67|:69'</pre>
 <hr class="page-break">
 
 <h2>Partie 3 - Paramètres VM Proxmox</h2>
-<table class="table-wrapper">
+<table>
   <tbody>
     <tr><td>Paramètre</td><td>Valeur</td>
     </tr>
@@ -345,7 +207,7 @@ sudo ss -tulpn | grep -E ':53|:67|:69'</pre>
 <ul>
 <li>Installer Debian 12 (partitionnement : tout dans une seule partition, pas de LVM/LUKS)</li>
 <li>Réseau en DHCP (jamais en IP fixe)</li>
-<li>Installer et configurer tout ce qu’on veut dans les clones</li>
+<li>Installer et conblue-blockr tout ce qu'on veut dans les clones</li>
 </ul>
 
 <h3>4.2 Enregistrer la VM dans FOG</h3>
@@ -380,7 +242,7 @@ sudo ss -tulpn | grep -E ':53|:67|:69'</pre>
 <pre>sudo nano /root/generalize.sh</pre>
 </div>
 
-<div class="figure">#!/bin/bash
+<div class="blue-block">#!/bin/bash
 echo "=== Suppression des cles SSH host ==="
 rm -v /etc/ssh/ssh_host_*
 
@@ -420,7 +282,7 @@ shutdown -h now</div>
 <div class="code-block">
 <pre>sudo /root/generalize.sh</pre>
 </div>
-<p>La VM s’éteint. La redémarrer (avec net0 en premier) → capture automatique. Durée : 1545 min.</p>
+<p>La VM s'éteint. La redémarrer (avec net0 en premier) → capture automatique. Durée : 1545 min.</p>
 
 <h3>4.7 Déployer sur une nouvelle VM</h3>
 <ul>
@@ -446,12 +308,12 @@ sudo reboot<pre>
 <h2>Partie 6 - Dépannage</h2>
 <p>La VM ne boot pas en PXE</p>
 <ul>
-<li>Vérifier : net0 en premier dans l’ordre de boot Proxmox</li>
+<li>Vérifier : net0 en premier dans l'ordre de boot Proxmox</li>
 <li>VM sur le même bridge/VLAN que le serveur FOG</li>
 <li>Logs : sudo journalctl -u dnsmasq -f pendant le boot</li>
 </ul>
 
-<p>Menu iPXE s’affiche mais pas de tâche</p>
+<p>Menu iPXE s'affiche mais pas de tâche</p>
 <ul>
 <li>Vérifier dans FOG → Tasks que la tâche est Queued</li>
 <li>Vérifier que Bios Exit Type = SANBOOT</li>
@@ -470,7 +332,7 @@ sudo reboot<pre>
 
 <hr class="page-break">
 <p>Fichiers importants</p>
-<table class="table-wrapper">
+<table>
   <tbody>
     <tr><td>Chemin</td><td>Contenu</td>
     </tr>
@@ -489,7 +351,7 @@ sudo reboot<pre>
 
 <hr class="page-break">
 <p>URLs et identifiants</p>
-<table class="table-wrapper">
+<table>
   <tbody>
     <tr><td>Ressource</td><td>Valeur</td>
     </tr>
