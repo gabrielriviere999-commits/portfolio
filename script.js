@@ -232,8 +232,6 @@ function openFullscreen(group) {
         window.open(video.src, "_blank");
         return;
     }
-
-    console.log("Aucun contenu ouvrable trouvé dans cette slide");
 }
 
 function downloadSlide(group) {
@@ -255,7 +253,6 @@ function downloadSlide(group) {
     if (!url && video) url = video.src;
 
     if (!url) {
-        console.log("Aucun contenu téléchargeable trouvé");
         return;
     }
 
