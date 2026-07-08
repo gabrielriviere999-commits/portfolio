@@ -3,145 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Documentation HAProxy web1 et web2 avec MySQL</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .page {
-      max-width: 900px;
-      margin: 0 auto 30px auto;
-      padding: 20px 30px;
-      border: 2px solid;
-    }
-
-    h1, h2, h3, h4 {
-      font-weight: 600;
-      margin-top: 1.2em;
-      margin-bottom: 0.4em;
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    h2 {
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 4px;
-    }
-
-    p {
-      margin: 0.3em 0;
-    }
-
-    ul, ol {
-      margin: 0.4em 0 0.4em 1.4em;
-    }
-
-    code {
-      font-family: monospace;
-      font-size: 0.95em;
-      background-color: #f0f0f0;
-      padding: 1px 3px;
-    }
-
-    pre {
-      margin: 0;
-      font-family: monospace;
-      font-size: 0.9em;
-      white-space: pre;
-      overflow-x: auto;
-    }
-
-    .code-block {
-      margin: 0.6em 0;
-      padding: 10px 12px;
-      background-color: black;
-      color: white;
-      border: 1px solid #000;
-    }
-
-    .figure {
-      margin: 0.8em 0;
-      padding: 10px 12px;
-      background-color: #E2E6F0;
-      border: 1px solid;
-      border-left-width: 4px;
-      border-left-color: #2B4F81;
-      font-family: monospace;
-      font-size: 0.9em;
-      white-space: pre;
-      overflow-x: auto;
-    }
-
-    .section-title {
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-top: 1em;
-      margin-bottom: 0.3em;
-    }
-
-    .note {
-      margin: 0.6em 0;
-      padding: 8px 10px;
-      border-left: 4px solid #f0ad4e;
-      background-color: #fff8e5;
-      font-size: 0.95em;
-    }
-
-    .table-wrapper {
-      margin: 0.8em 0;
-      overflow-x: auto;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 100%;
-      font-size: 0.95em;
-    }
-
-    th, td {
-      border: 1px solid #999;
-      padding: 6px 8px;
-      text-align: left;
-    }
-
-    th {
-      font-weight: 600;
-    }
-
-    .page-break {
-      margin: 20px auto;
-      border: none;
-      border-top: 2px dashed #000;
-      max-width: 200px;
-    }
-
-    a {
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .inline-title {
-      font-weight: 600;
-    }
-  </style>
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 
@@ -181,7 +43,7 @@
 sudo nano /etc/netplan/50-cloud-init.yaml</pre>
     </div>
 
-<div class="figure">network:
+<div class="blue-block">network:
   version: 2
   ethernets:
     ens18:
@@ -222,7 +84,7 @@ sudo netplan apply</pre>
 
     <p>Ajouter les lignes suivantes :</p>
 
-    <div class="figure">frontend http_front
+    <div class="blue-block">frontend http_front
 	bind *:80
 	stats uri /stats
 	default_backend http_back
@@ -272,7 +134,7 @@ ping google.com</pre>
 sudo nano /etc/netplan/50-cloud-init.yaml</pre>
     </div>
 
-    <div class="figure">network:
+    <div class="blue-block">network:
   version: 2
   ethernets:
     ens18:
@@ -291,7 +153,7 @@ sudo netplan apply</pre>
       <pre>sudo nano /var/www/html/index.html</pre>
     </div>
 
-    <div class="figure">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    <div class="blue-block">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
 
@@ -343,7 +205,7 @@ See: https://launchpad.net/bugs/1966004
 sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
     </div>
 
-    <div class="figure">network:
+    <div class="blue-block">network:
   version: 2
   ethernets:
     ens18:
@@ -364,11 +226,10 @@ sudo netplan apply</pre>
 
     <h3>Tests web1</h3>
 
-    <div class="table-wrapper">
       <table>
         <tr>
-          <th>Commande</th>
-          <th>Résultat attendu</th>
+          <td>Commande</td>
+          <td>Résultat attendu</td>
         </tr>
         <tr>
           <td><code>ping 172.17.4.13</code></td>
@@ -379,7 +240,6 @@ sudo netplan apply</pre>
           <td># ping web2</td>
         </tr>
       </table>
-    </div>
 
     <hr class="page-break">
 
@@ -410,7 +270,7 @@ sudo netplan apply</pre>
 sudo nano /etc/netplan/50-cloud-init.yaml</pre>
     </div>
 
-    <div class="figure">network:
+    <div class="blue-block">network:
   version: 2
   ethernets:
     ens18:
@@ -429,7 +289,7 @@ sudo netplan apply</pre>
       <pre>sudo nano /var/www/html/index.html</pre>
     </div>
 
-    <div class="figure">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    <div class="blue-block">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
 
@@ -481,7 +341,7 @@ See: https://launchpad.net/bugs/1966004
 sudo chmod 600 /etc/netplan/00-installer-config.yaml</pre>
     </div>
 
-    <div class="figure">network:
+    <div class="blue-block">network:
   version: 2
   ethernets:
     ens18:
@@ -502,10 +362,9 @@ sudo netplan apply</pre>
 
     <h3>Tests web2</h3>
 
-    <div class="table-wrapper">
       <table>
         <tr>
-          <th colspan="2">Test :</th>
+          <th colspan="2">Test :</td>
         </tr>
         <tr>
           <td><code>ping 172.17.4.13</code></td>
@@ -516,7 +375,6 @@ sudo netplan apply</pre>
           <td># ping web1</td>
         </tr>
       </table>
-    </div>
 
     <hr class="page-break">
 
@@ -530,7 +388,7 @@ ip route</pre>
     </div>
 
     <p>Il doit y avoir :</p>
-    <div class="figure">default via 172.17.4.13 dev ens18</div>
+    <div class="blue-block">default via 172.17.4.13 dev ens18</div>
 
     <h3>Configuration du routage et du NAT sur HAProxy</h3>
 
@@ -542,7 +400,7 @@ ip route</pre>
 
     <p>Décommenter la ligne :</p>
 
-    <div class="figure">net.ipv4.ip_forward=1</div>
+    <div class="blue-block">net.ipv4.ip_forward=1</div>
 
     <h3>Configuration du NAT avec iptables</h3>
 
@@ -552,7 +410,7 @@ ip route</pre>
 
     <p>Il doit y avoir une règle de type :</p>
 
-    <div class="figure">MASQUERADE all -- 172.17.4.0/24 anywhere</div>
+    <div class="blue-block">MASQUERADE all -- 172.17.4.0/24 anywhere</div>
 
     <p>Sinon, ajouter la règle :</p>
 
@@ -593,14 +451,14 @@ sudo netfilter-persistent save</pre>
 
     <p>Depuis un navigateur de la machine physique :</p>
 
-    <div class="figure">http://172.17.4.12
+    <div class="blue-block">http://172.17.4.12
 http://172.17.4.12/stats</div>
 
     <p>La première URL permet d'accéder au service web équilibré, la seconde à la page de statistiques HAProxy (<code>stats uri /stats</code>).</p>
 
 
 <b>Note : Utiliser systemd-networkd pour debian car il n'utilise pas netplan</b>
-<div class="figure">sudo systemctl enable systemd-networkd --now
+<div class="blue-block">sudo systemctl enable systemd-networkd --now
 sudo systemctl enable systemd-resolved --now
 
 sudo nano /etc/systemd/network/10-ethernet.network
