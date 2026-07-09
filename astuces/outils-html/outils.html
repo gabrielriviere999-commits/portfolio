@@ -167,10 +167,21 @@ pre.tree .comment{color:#888;}
 <a href="arbo-zip.html" class="tool-card">
   <div class="tool-title">Arborescence ZIP</div>
   <div class="tool-visual" style="text-align:left;">
-
+<style>
+.download{display:inline-block;width:12px;height:12px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M10 7 V19 M5 13 L10 19 L15 13' stroke='cyan' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center;background-size:contain;}
+</style>
+<pre class="tree">
+<span class="folder">racine/</span>
+<span class="ascii">├──</span> <span class="folder">Dossier 1/</span>
+<span class="ascii">│</span>   <span class="ascii">└──</span> <span class="file">Fichier.txt</span><span class="download"></span>
+<span class="ascii">└──</span> <span class="folder">Dossier 2/</span>
+    <span class="ascii">└──</span> <span class="file">Fichier.txt</span></span><span class="download"></span>
+</pre>
   </div>
   <div class="tool-desc">
-    <p>• Générer une structure de dossiers et fichiers au format HTML à partir d'un fichier zip contenant tous les dossiers et fichiers.</p>
+    <p>• Générer une structure de dossiers et fichiers au format HTML à partir d'un fichier ZIP contenant tous les dossiers et fichiers.</p>
+    <p>• Chaque fichier est un lien vers celui-ci et à droite il y a une flèche pour le télécharger.</p>
+    <p>• La nom de la racine est le nom sans extension du fichier ZIP.</p>
   </div>
 </a>
 
