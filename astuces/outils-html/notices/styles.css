@@ -8,9 +8,9 @@ h2 { border-bottom:1px solid #808080; padding-bottom:4px; }
 p { margin:0; white-space:pre-wrap; overflow-wrap:break-word; }
 a { color:#4af; text-decoration:none; } a:hover { text-decoration:underline; }
 pre { margin:0; }
-.code-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background-color:black; color:#ccc; border:1px solid #808080; font-family:monospace; overflow-x:auto; }
-.blue-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background-color:#aaaaff; color:black; border:1px solid #808080; border-left-width:4px; border-left-color:#2b4f81; font-family:monospace; white-space:pre; overflow-x:auto; }
-.note { margin-top:0.4em; margin-bottom:0.4em; padding:8px 10px; border-left:4px solid #f0ad4e; background-color:#fff8e5; color:black; }
+.code-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background:black; color:#ccc; border:1px solid #808080; font-family:monospace; overflow-x:auto; }
+.blue-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background:#aaaaff; color:black; border:1px solid #808080; border-left-width:4px; border-left-color:#2b4f81; font-family:monospace; white-space:pre; overflow-x:auto; }
+.note { margin-top:0.4em; margin-bottom:0.4em; padding:8px 10px; border-left:4px solid #f0ad4e; background:#fff8e5; color:black; }
 table { border-collapse:collapse; width:100%; }
 td { border:1px solid #808080; }
 @media (hover:none) and (pointer:coarse) {::-webkit-scrollbar { width:24px; height:24px; background:#000; } ::-webkit-scrollbar-track { background:#000; border-top:2px solid #888; border-left:2px solid #888; border-bottom:2px solid #111; border-right:2px solid #111; } ::-webkit-scrollbar-thumb { background:#202020; border-top:2px solid #888; border-left:2px solid #888; border-bottom:2px solid #111; border-right:2px solid #111; } ::-webkit-scrollbar-corner { background: #000; border-top: 2px solid #888; border-left: 2px solid #888; border-bottom: 2px solid #111; border-right: 2px solid #111; }}
