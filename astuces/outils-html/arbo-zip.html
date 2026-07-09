@@ -48,6 +48,15 @@ h2,h3,#stats,details{user-select:none;-webkit-user-select:none;-ms-user-select:n
 /* --- VARIABLES GLOBALES ES3 --- */
 var rootName = "";   // nom du dossier racine affiché
 var zipName = "";    // nom du ZIP sans .zip
+// Dossiers et fichiers à exclure pour GitHub Pages
+var EXCLUDE_DIRS = {
+    ".git":1, ".github":1, "_site":1, "_sass":1, "_includes":1, "_layouts":1,
+    "__pycache__":1, "node_modules":1
+};
+
+var EXCLUDE_FILES = {
+    ".gitignore":1, ".gitattributes":1, "arbo.html":1
+};
 
 /* --- IMPORT ZIP --- */
 document.getElementById("zipInput").onchange = function (e) {
@@ -118,12 +127,16 @@ function buildTree(node, parts, isDir, fullPath) {
 
     // Fichier
     if (rest.length === 0 && !isDir) {
+		// Exclusions fichiers
+		if (EXCLUDE_FILES[name]) return;
         var cleanPath = fullPath.replace(rootName + "/", "");
         node.files.push({ name: name, path: cleanPath });
         return;
     }
 
     // Dossier
+    // Exclusions dossiers
+    if (EXCLUDE_DIRS[name]) return;
     var i, folder = null;
     for (i = 0; i < node.folders.length; i++) {
         if (node.folders[i].name === name) {
