@@ -41,7 +41,7 @@ iframe { background:#fff !important; }
     <button class="btn-toggle" onclick="formatText(this, 'italic')"><i>Italique</i></button>
     <button class="btn-toggle" onclick="formatText(this, 'underline')"><u>Souligné</u></button>
     <button class="btn-toggle" onclick="formatText(this, 'strikethrough')"><s>Barré</s></button>
-    <button class="btn-toggle" onclick="formatText(this, 'hiliteColor', 'orange')"><span style="background-color:orange;">Surligné</span></button>
+    <button class="btn-toggle" onclick="formatText(this, 'hiliteColor', 'orange')"><span style="background:orange;">Surligné</span></button>
     <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#ff0000')" style="color:#ff0000;">Rouge</button>
     <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#00aa00')" style="color:#00aa00;">Vert</button>
     <button class="btn-toggle" onclick="formatText(this, 'foreColor', '#00aaff')" style="color:#00aaff;">Bleu</button>
@@ -54,9 +54,9 @@ iframe { background:#fff !important; }
 
   <div class="card">
     <h3>Code HTML</h3>
-    <button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
+    <button id="copyCode" class="btn-color" style="background:#4caf50;">Copier le code</button>
     <br><textarea id="editor"></textarea><br>
-    <button type="button" onclick="updatePreview()" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
+    <button type="button" onclick="updatePreview()" class="btn-color" style="background:#ff8800;">Mettre à jour</button>
     <button id="importHtmlFile">Importer fichier...</button>
     <input type="file" id="htmlFileInput" style="display:none;">
     <div id="status">Prêt.</div>
@@ -85,9 +85,9 @@ iframe { background:#fff !important; }
 '    p { margin:0; white-space:pre-wrap; overflow-wrap:break-word; }\n' +
 '    a { color:#4af; text-decoration:none; } a:hover { text-decoration:underline; }\n' +
 '    pre { margin:0; }\n' +
-'    .code-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background-color:black; color:#ccc; border:1px solid #808080; font-family:monospace; overflow-x:auto; }\n' +
-'    .blue-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background-color:#aaaaff; color:black; border:1px solid #808080; border-left-width:4px; border-left-color:#2b4f81; font-family:monospace; white-space:pre; overflow-x:auto; }\n' +
-'    .note { margin-top:0.4em; margin-bottom:0.4em; padding:8px 10px; border-left:4px solid #f0ad4e; background-color:#fff8e5; color:black; }\n' +
+'    .code-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background:black; color:#ccc; border:1px solid #808080; font-family:monospace; overflow-x:auto; }\n' +
+'    .blue-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background:#aaaaff; color:black; border:1px solid #808080; border-left-width:4px; border-left-color:#2b4f81; font-family:monospace; white-space:pre; overflow-x:auto; }\n' +
+'    .note { margin-top:0.4em; margin-bottom:0.4em; padding:8px 10px; border-left:4px solid #f0ad4e; background:#fff8e5; color:black; }\n' +
 '    table { border-collapse:collapse; width:100%; }\n' +
 '    td { border:1px solid #808080; }\n' +
 '    @media (hover:none) and (pointer:coarse) {::-webkit-scrollbar { width:24px; height:24px; background:#000; } ::-webkit-scrollbar-track { background:#000; border-top:2px solid #888; border-left:2px solid #888; border-bottom:2px solid #111; border-right:2px solid #111; } ::-webkit-scrollbar-thumb { background:#202020; border-top:2px solid #888; border-left:2px solid #888; border-bottom:2px solid #111; border-right:2px solid #111; } ::-webkit-scrollbar-corner { background: #000; border-top: 2px solid #888; border-left: 2px solid #888; border-bottom: 2px solid #111; border-right: 2px solid #111; }}\n' +

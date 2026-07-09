@@ -11,7 +11,7 @@ td {
   border:var(--cell-border-width, 1px) solid var(--cell-border-color, #808080);
   padding:6px;
   color:var(--global-text-color, inherit);
-  background-color:var(--global-bg-color, inherit);
+  background:var(--global-bg-color, inherit);
   text-align:var(--global-text-align, inherit);
 }
 td.selected {
@@ -53,12 +53,12 @@ td.selected {
   <!-- Lignes -->
   <button id="addRowAbove">↑ Ligne au dessus</button>
   <button id="addRowBelow">↓ Ligne en dessous</button>
-  <button id="delRow" class="btn-color" style="background-color:#ff4444;">X Supprimer ligne</button>
+  <button id="delRow" class="btn-color" style="background:#ff4444;">X Supprimer ligne</button>
 |
   <!-- Colonnes -->
   <button id="addColLeft">← Colonne à gauche</button>
   <button id="addColRight">→ Colonne à droite</button>
-  <button id="delCol" class="btn-color" style="background-color:#ff4444;">X Supprimer colonne</button>
+  <button id="delCol" class="btn-color" style="background:#ff4444;">X Supprimer colonne</button>
 | 
   <!-- Fusionner/défusionner -->
   <button id="mergeCellsBtn">□ Fusionner</button>
@@ -89,7 +89,7 @@ td.selected {
       <option value="10px">10</option>
     </select>
   </label>
-  <button id="clearTdStyle" class="btn-color" style="background-color:#ff4444;">Effacer style</button>
+  <button id="clearTdStyle" class="btn-color" style="background:#ff4444;">Effacer style</button>
   </div>
 
   <!-- Palette de couleurs -->
@@ -114,12 +114,12 @@ td.selected {
 
 <!-- CODE HTML -->
 <br><h3>Code du tableau</h3>
-<button id="generateCode" class="btn-color" style="background-color:#ff8800;">Générer le code</button>
-<button id="copyCode" class="btn-color" style="background-color:#4caf50;">Copier le code</button>
+<button id="generateCode" class="btn-color" style="background:#ff8800;">Générer le code</button>
+<button id="copyCode" class="btn-color" style="background:#4caf50;">Copier le code</button>
 <label for="importTableId">ID tableau :</label> <input id="importTableId" type="text" value="tableau1">
 <br><textarea id="codeBox"></textarea><br>
-<button id="updateFromCode" class="btn-color" style="background-color:#ff8800;">Mettre à jour le tableau</button>
-<button id="cleanLibreOfficeBtn" class="btn-color" style="background-color:#ff8800;">Nettoyer LibreOffice</button>
+<button id="updateFromCode" class="btn-color" style="background:#ff8800;">Mettre à jour le tableau</button>
+<button id="cleanLibreOfficeBtn" class="btn-color" style="background:#ff8800;">Nettoyer LibreOffice</button>
 <button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 <p><a href="notices/notice-tableau-html.html">Notice</a></p>
@@ -874,7 +874,7 @@ function updateCodeBox() {
     styleBlock += "#" + newId + " td{color:" + globalStyles.textColor + ";}\n";
 
   if (globalStyles.bgColor)
-    styleBlock += "#" + newId + " td{background-color:" + globalStyles.bgColor + ";}\n";
+    styleBlock += "#" + newId + " td{background:" + globalStyles.bgColor + ";}\n";
 
   if (globalStyles.textAlign)
     styleBlock += "#" + newId + " td{text-align:" + globalStyles.textAlign + ";}\n";
@@ -1018,7 +1018,7 @@ function importTableFromHTML(code) {
     }
 
     // Reset background color
-    if (!css.includes("background-color:")) {
+    if (!css.includes("background:")) {
         document.documentElement.style.removeProperty("--global-bg-color");
         globalStyles.bgColor = "";
     }
@@ -1055,7 +1055,7 @@ function importTableFromHTML(code) {
     }
 
     // Fond global
-    var bgMatch = css.match(/background-color:\s*([^;]+)/i);
+    var bgMatch = css.match(/background:\s*([^;]+)/i);
     if (bgMatch) {
         globalStyles.bgColor = bgMatch[1].replace(/^\s+|\s+$/g, "");
         document.documentElement.style.setProperty("--global-bg-color", globalStyles.bgColor);

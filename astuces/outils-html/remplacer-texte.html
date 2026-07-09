@@ -66,7 +66,7 @@ textarea {
 <label><input type="checkbox" id="chk_quo">Guillemets → "</label>
 <label><input type="checkbox" id="chk_squo">Demi-guillemets → '</label>
 <br>
-<button onclick="decocherTout()" class="btn-color" style="background-color:#ff4444;">Décocher tout</button>
+<button onclick="decocherTout()" class="btn-color" style="background:#ff4444;">Décocher tout</button>
 <br>
 <hr>
 <label>Ajouter en début de ligne :</label>
@@ -85,14 +85,14 @@ textarea {
 <button onclick="ajouterRemplacement()">Ajouter un remplacement</button>
 <label><input type="checkbox" id="repl_ignore_case">Ignorer casse</label>
 <br>
-<button onclick="effacerRemplacements()" class="btn-color" style="background-color:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
+<button onclick="effacerRemplacements()" class="btn-color" style="background:#ff4444;margin-top:10px;">Effacer préfixes/suffixes et remplacements</button>
 <hr>
 <button type="button" onclick="exportOptions()">Exporter</button>
 <button type="button" onclick="showImportBox()">Importer</button>
 <div id="importBox" style="display:none;">
   <textarea id="importText" rows="8" cols="40"></textarea><br>
   <button type="button" onclick="applyImport()">Valider l'import</button>
-  <button id="copyjson" class="btn-color" style="background-color:#4caf50;">Copier</button>
+  <button id="copyjson" class="btn-color" style="background:#4caf50;">Copier</button>
 </div>
 </fieldset>
 </div>
@@ -115,8 +115,8 @@ textarea {
 <div class="card3 border-externe">
 <h3>Source</h3>
 <textarea id="input" class="texte"></textarea><br>
-<button onclick="appliquerTransformations()" class="btn-color" style="background-color:#ff8800;">Appliquer</button>
-<button onclick="effacerTout()" class="btn-color" style="background-color:#ff4444;">Effacer tout</button>
+<button onclick="appliquerTransformations()" class="btn-color" style="background:#ff8800;">Appliquer</button>
+<button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
 <button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 
@@ -124,7 +124,7 @@ textarea {
 
 <div class="card4 border-externe">
 <h3>Résultat</h3>
-<button id="copyresult" class="btn-color" style="background-color:#4caf50;">Copier</button>
+<button id="copyresult" class="btn-color" style="background:#4caf50;">Copier</button>
 <br><textarea id="output" class="texte" readonly></textarea>
 <div id="stats" style="font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
 </div>
@@ -685,7 +685,7 @@ function ajouterRemplacement(from, to) {
   var del = document.createElement("button");
   del.textContent = "x";
   del.className = "btn-color";
-  del.style = "background-color:#ff4444;width:28px;height:28px;vertical-align:middle;";
+  del.style = "background:#ff4444;width:28px;height:28px;vertical-align:middle;";
   del.onclick = function () {
     cont.removeChild(div);
     saveReplacements();

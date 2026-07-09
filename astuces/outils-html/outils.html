@@ -14,7 +14,7 @@ body {
 }
 a:not(.tool-card) { color:#4af; text-decoration:none; }
 a:hover:not(.tool-card) { text-decoration:underline; }
-.a {
+.a, button {
   color:#ccc;
   border:2px solid;
   border-color:#ccc #404040 #404040 #ccc;
@@ -89,7 +89,7 @@ pre { margin-top:0; margin-bottom:0; }
 
 <body>
 <main>
-<a href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal" class="a" style="color:black;background-color:#ffd700;">💙 Faire un don via PayPal</a>
+<a href="https://paypal.me/gabrielriviere999" target="_blank" rel="noopener" aria-label="Faire un don via PayPal" class="a" style="color:black;background:#ffd700;">💙 Faire un don via PayPal</a>
 <p></p><a href="../../astuces.html">Remonter vers astuces.html</a>
 <h1>Outils</h1>
 
@@ -121,7 +121,7 @@ pre { margin-top:0; margin-bottom:0; }
 <style>
 #tableau1 td{border:1px solid #00ff00;}
 #tableau1 td{color:#00ff00;}
-#tableau1 td{background-color:#000000;}
+#tableau1 td{background:#000000;}
 </style>
 <table id="tableau1" style="border-collapse: collapse;">
   <tbody>
@@ -345,13 +345,21 @@ code
   </div>
 </a>
 
+<a href="make-search-index.html" class="tool-card">
+  <div class="tool-title">Générateur d'index de recherche</div>
+  <div class="tool-visual"><button style="background">Q</button></div>
+  <div class="tool-desc">
+    <p>• Générer un index de recherche (docs.js) à partir d'un fichier ZIP contenant tous les dossiers et fichiers.</p>
+  </div>
+</a>
+
 <a href="diff.html" class="tool-card">
   <div class="tool-title">Diff (comparer texte)</div>
   <div class="tool-visual" style="color:black;">
 <pre>
- <span style="background-color:#e0e0e0;">   <font color="#777">1</font> Texte inchangé</span>
- <span style="background-color:#ffd6d6;">-  <font color="#777">2</font> Texte A       </span>
- <span style="background-color:#d4f8d4;">+  <font color="#777">2</font> Texte B       </span>
+ <span style="background:#e0e0e0;">   <font color="#777">1</font> Texte inchangé</span>
+ <span style="background:#ffd6d6;">-  <font color="#777">2</font> Texte A       </span>
+ <span style="background:#d4f8d4;">+  <font color="#777">2</font> Texte B       </span>
 </pre>
   </div>
   <div class="tool-desc">

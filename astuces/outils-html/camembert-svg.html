@@ -67,7 +67,7 @@ input[type=text], input[type=number] {
 </table>
 </div>
 <button id="addBtn">Ajouter une part</button>
-<button id="validateBtn" class="btn-color" style="background-color:#ff8800;">Valider</button>
+<button id="validateBtn" class="btn-color" style="background:#ff8800;">Valider</button>
 <p></p>
 <label>Taille du camembert : <input type="number" id="pieSize" value="200" style="width:60px;"></label>
 </div>
@@ -79,10 +79,10 @@ input[type=text], input[type=number] {
 
 <div class="card-camembert border-externe">
   <h3>Code SVG</h3>
-  <button id="copyBtn" class="btn-color" style="background-color:#4caf50;">Copier</button>
+  <button id="copyBtn" class="btn-color" style="background:#4caf50;">Copier</button>
   <input type="file" id="fileInput" style="display:none;">
   <br><textarea id="code"></textarea><br>
-  <button id="importBtn" class="btn-color" style="background-color:#ff8800;">Mettre à jour</button>
+  <button id="importBtn" class="btn-color" style="background:#ff8800;">Mettre à jour</button>
   <button id="importFileBtn">Importer fichier…</button>
 </div>
 
@@ -237,7 +237,7 @@ function rebuildTable() {
     var delBtn = document.createElement("button");
     delBtn.innerHTML = "x";
     delBtn.className = "btn-color";
-    delBtn.style = "background-color:#ff4444;width:28px;height:28px;vertical-align:middle;";
+    delBtn.style = "background:#ff4444;width:28px;height:28px;vertical-align:middle;";
     delBtn.onclick = function(index){ return function(){
       slices.splice(index,1);
       renderPie();
