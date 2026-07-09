@@ -118,6 +118,8 @@ function buildTree(node, parts, isDir, fullPath) {
 
     // Fichier
     if (rest.length === 0 && !isDir) {
+		// Ignorer arbo.html à la racine
+		if (name === "arbo.html") return;
         var cleanPath = fullPath.replace(rootName + "/", "");
         node.files.push({ name: name, path: cleanPath });
         return;
