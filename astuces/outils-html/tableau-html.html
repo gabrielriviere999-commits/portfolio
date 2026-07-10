@@ -908,10 +908,8 @@ function updateCodeBox() {
     cell.removeAttribute("contenteditable");
     removeClass(cell, "selected");
 
-    // convertir les rgb inline en hex
     convertInlineRGBToHex(cell);
 
-    // nettoyer uniquement les bordures
     cell.style.border = "";
     cell.style.borderColor = "";
     cell.style.borderWidth = "";
@@ -919,27 +917,34 @@ function updateCodeBox() {
     if (!cell.className.replace(" ", "")) cell.removeAttribute("class");
   }
 
-  var styleBlock = "<style>\n";
+  var styleBlock = "<style>";
 
-  // Bordure : toujours générée, avec fallback si vide
+  // Bordure
   var bw = globalStyles.borderWidth || "1px";
   var bc = globalStyles.borderColor || "#808080";
-  styleBlock += "#" + newId + " td{border:" + bw + " solid " + bc + ";}\n";
+
+  // Construire une seule ligne CSS
+  var cssLine = "#"+newId+" td{";
+  cssLine += "border:"+bw+" solid "+bc+";";
 
   if (globalStyles.textColor)
-    styleBlock += "#" + newId + " td{color:" + globalStyles.textColor + ";}\n";
+    cssLine += "color:"+globalStyles.textColor+";";
 
   if (globalStyles.bgColor)
-    styleBlock += "#" + newId + " td{background:" + globalStyles.bgColor + ";}\n";
+    cssLine += "background:"+globalStyles.bgColor+";";
 
   if (globalStyles.textAlign)
-    styleBlock += "#" + newId + " td{text-align:" + globalStyles.textAlign + ";}\n";
+    cssLine += "text-align:"+globalStyles.textAlign+";";
 
-  styleBlock += "</style>";
+  cssLine += "}";
+
+  styleBlock += cssLine + "\n</style>";
 
   var html = styleBlock + clone.outerHTML;
   html = beautifyHTML(html);
-  html = html.replace(/\n\n<\/style>/, "\n</style>");
+
+  // supprimer saut de ligne avant </style>
+  html = html.replace(/\n\s*<\/style>/, "</style>");
 
   document.getElementById('codeBox').value = html;
 }
