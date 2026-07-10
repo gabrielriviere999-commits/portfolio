@@ -1097,7 +1097,7 @@ function importTableFromHTML(code) {
     }
 
     // Fond global
-    var bgMatch = css.match(/background:\s*([^;]+)/i);
+    var bgMatch = css.match(/background(?:-color)?:\s*([^;]+)/i);
     if (bgMatch) {
         globalStyles.bgColor = bgMatch[1].replace(/^\s+|\s+$/g, "");
         document.documentElement.style.setProperty("--global-bg-color", globalStyles.bgColor);
