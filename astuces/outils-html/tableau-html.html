@@ -13,7 +13,6 @@ td {
   color:var(--global-text-color, inherit);
   background:var(--global-bg-color, inherit);
   text-align:var(--global-text-align, inherit);
-  font-weight: var(--global-font-weight, normal);
 }
 td.selected {
   outline:5px solid #0078d7;
@@ -105,9 +104,6 @@ td.selected {
     <input type="text" id="hexColorInput" placeholder="#rrggbb">
   <button id="applyHexColor">OK</button>
   </div>
-<label>Paramètres CSS globaux personnalisés :</label><br>
-<input id="globalCustomCss" type="text">
-<button id="applyCustomCss">OK</button>
 </div>
 
 <button id="toggleToolbarBtn" style="position:fixed; top:0; right:0; z-index:10000; opacity:0.8;">≡</button>
@@ -180,9 +176,7 @@ var globalStyles = {
   bgColor: "",
   textAlign: "",
   borderColor: globalBorderColor,
-  borderWidth: globalBorderWidth,
-  fontWeight: "",
-  custom: ""
+  borderWidth: globalBorderWidth
 };
 
 /* --- SÉLECTION MULTIPLE --- */
@@ -886,39 +880,6 @@ function convertInlineRGBToHex(cell) {
     cell.setAttribute("style", style);
 }
 
-document.getElementById("applyCustomCss").onclick = function () {
-    // 1. Lire le champ
-    var css = document.getElementById("globalCustomCss").value;
-    // 2. Mettre à jour globalStyles.custom
-    globalStyles.custom = css;
-    // 3. Appliquer immédiatement au tableau visible
-    applyCustomCssToEditor(css);
-    // 4. Mettre à jour le code exporté
-    //updateCodeBox();
-};
-function applyCustomCssToEditor(css) {
-    var cells = table.getElementsByTagName("td");
-    // Découper les propriétés
-    var parts = css.split(";");
-    var props = {};
-    for (var i = 0; i < parts.length; i++) {
-        var p = parts[i].trim();
-        if (!p) continue;
-        var kv = p.split(":");
-        if (kv.length !== 2) continue;
-        var key = kv[0].trim();
-        var val = kv[1].trim();
-        props[key] = val;
-    }
-    // Appliquer à chaque cellule visible
-    for (var j = 0; j < cells.length; j++) {
-        var cell = cells[j];
-        for (var key in props) {
-            cell.style[key] = props[key];
-        }
-    }
-}
-
 function updateCodeBox() {
   var clone = table.cloneNode(true);
   var newId = document.getElementById("importTableId").value || "tableau1";
@@ -947,32 +908,21 @@ function updateCodeBox() {
 
   var styleBlock = "<style>\n";
 
-  styleBlock += "#" + newId + " td{";
-
-  // Bordure
+  // Bordure : toujours générée, avec fallback si vide
   var bw = globalStyles.borderWidth || "1px";
   var bc = globalStyles.borderColor || "#808080";
-  styleBlock += "border:" + bw + " solid " + bc + ";";
+  styleBlock += "#" + newId + " td{border:" + bw + " solid " + bc + ";}\n";
 
-  // Couleur texte
   if (globalStyles.textColor)
-    styleBlock += "color:" + globalStyles.textColor + ";";
+    styleBlock += "#" + newId + " td{color:" + globalStyles.textColor + ";}\n";
 
-  // Fond
   if (globalStyles.bgColor)
-    styleBlock += "background:" + globalStyles.bgColor + ";";
+    styleBlock += "#" + newId + " td{background:" + globalStyles.bgColor + ";}\n";
 
-  // Alignement
   if (globalStyles.textAlign)
-    styleBlock += "text-align:" + globalStyles.textAlign + ";";
+    styleBlock += "#" + newId + " td{text-align:" + globalStyles.textAlign + ";}\n";
 
-  // Paramètres personnalisés
-  if (globalStyles.custom) {
-      var custom = globalStyles.custom.replace(/[\n\r]+/g, "");
-      styleBlock += custom;
-  }
-
-  styleBlock += "}\n</style>\n";
+  styleBlock += "</style>\n";
 
   var html = styleBlock + clone.outerHTML;
   html = beautifyHTML(html);
@@ -1063,143 +1013,103 @@ document.getElementById('updateFromCode').onclick = function() {
 };
 
 function importTableFromHTML(code) {
-    var container = document.createElement('div');
-    container.innerHTML = code;
+  var container = document.createElement('div');
+  container.innerHTML = code;
 
-    var newTable = container.querySelector('table');
-    var importedStyle = container.querySelector("style");
+  var newTable = container.querySelector('table');
+  var importedStyle = container.querySelector("style");
 
-    if (!newTable) return;
-
-    // 1. Récupérer l'ID original du tableau (ex: gtableau)
-    var originalId = newTable.getAttribute("id");
-
-    // 2. Importer TOUTES les propriétés dans un dictionnaire
-    var propsGlobal = {};   // border, color, background, text-align
-    var propsCustom = {};   // width, padding, etc.
-
-    if (importedStyle) {
-        var css = importedStyle.textContent;
-        var lines = css.split("}");
-
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
-
-            if (line.indexOf("#" + originalId + " td{") !== 0) continue;
-
-            var inside = line.replace("#" + originalId + " td{", "").trim();
-            var parts = inside.split(";");
-
-            for (var j = 0; j < parts.length; j++) {
-                var p = parts[j].trim();
-                if (!p) continue;
-
-                var kv = p.split(":");
-                if (kv.length !== 2) continue;
-
-                var key = kv[0].trim();
-                var val = kv[1].trim();
-
-                // propriétés globales
-                if (key === "border" ||
-                    key === "color" ||
-                    key === "background" ||
-                    key === "text-align" ||
-                    key === "font-weight") {
-                    propsGlobal[key] = val;
-                } else {
-                    // propriétés custom
-                    propsCustom[key] = val;
-                }
-            }
-        }
-    }
-
-    // 3. Appliquer les propriétés globales aux variables CSS
-    // border
-    if ("border" in propsGlobal) {
-        var bw = propsGlobal["border"].match(/[0-9]+px/);
-        var bc = propsGlobal["border"].match(/solid\s*(.*)/);
-
-        if (bw) {
-            globalStyles.borderWidth = bw[0];
-            document.documentElement.style.setProperty("--cell-border-width", bw[0]);
-            document.documentElement.style.setProperty("--table-border-width", bw[0]);
-        }
-
-        if (bc) {
-            var col = bc[1].trim();
-            globalStyles.borderColor = col;
-            document.documentElement.style.setProperty("--cell-border-color", col);
-            document.documentElement.style.setProperty("--table-border-color", col);
-        }
-    } else {
-        globalStyles.borderWidth = "";
-        globalStyles.borderColor = "";
-        document.documentElement.style.removeProperty("--cell-border-width");
-        document.documentElement.style.removeProperty("--table-border-width");
-        document.documentElement.style.removeProperty("--cell-border-color");
-        document.documentElement.style.removeProperty("--table-border-color");
-    }
-
-    // color
-    if ("color" in propsGlobal) {
-        globalStyles.textColor = propsGlobal["color"];
-        document.documentElement.style.setProperty("--global-text-color", propsGlobal["color"]);
-    } else {
-        globalStyles.textColor = "";
-        document.documentElement.style.removeProperty("--global-text-color");
-    }
-
-    // background
-    if ("background" in propsGlobal) {
-        globalStyles.bgColor = propsGlobal["background"];
-        document.documentElement.style.setProperty("--global-bg-color", propsGlobal["background"]);
-    } else {
-        globalStyles.bgColor = "";
-        document.documentElement.style.removeProperty("--global-bg-color");
-    }
-
-    // text-align
-    if ("text-align" in propsGlobal) {
-        globalStyles.textAlign = propsGlobal["text-align"];
-        document.documentElement.style.setProperty("--global-text-align", propsGlobal["text-align"]);
-    } else {
-        globalStyles.textAlign = "";
-        document.documentElement.style.removeProperty("--global-text-align");
-    }
-
-    // font-weight
-    if ("font-weight" in propsGlobal) {
-        globalStyles.fontWeight = propsGlobal["font-weight"];
-        document.documentElement.style.setProperty("--global-font-weight", propsGlobal["font-weight"]);
-    } else {
-        globalStyles.fontWeight = "";
-        document.documentElement.style.removeProperty("--global-font-weight");
-    }
-
-    // 4. Reconstruire le bloc custom propre
-    var custom = "";
-    for (var key in propsCustom) {
-        custom += key + ":" + propsCustom[key] + ";";
-    }
-    globalStyles.custom = custom;
-
-    // 5. Remplacer la table et normaliser
+  // 1. Remplacer la table AVANT de mettre à jour les variables CSS
+  if (newTable) {
     newTable.id = "editorTable";
     table.parentNode.replaceChild(newTable, table);
     table = newTable;
-
     clearSelection();
     selectedCells = [];
-
+    // NORMALISATION MATRICIELLE
     var m = MatrixEngine.build(table);
     var normalized = MatrixEngine.toDOM(m);
     table.parentNode.replaceChild(normalized, table);
     table = normalized;
-
     selectedCells = [];
     rebindTableEvents();
+  }
+
+  // 2. Maintenant appliquer les styles globaux
+  if (importedStyle) {
+    var css = importedStyle.textContent;
+    // RESET automatique si la propriété n'existe plus dans le <style>
+    // Reset border width
+    if (!css.includes("border:")) {
+        document.documentElement.style.removeProperty("--cell-border-width");
+        document.documentElement.style.removeProperty("--table-border-width");
+        globalStyles.borderWidth = "";
+    }
+
+    // Reset border color
+    if (!css.includes("solid")) {
+        document.documentElement.style.removeProperty("--cell-border-color");
+        document.documentElement.style.removeProperty("--table-border-color");
+        globalStyles.borderColor = "";
+    }
+
+    // Reset text color
+    if (!css.includes("color:")) {
+        document.documentElement.style.removeProperty("--global-text-color");
+        globalStyles.textColor = "";
+    }
+
+    // Reset background color
+    if (!css.includes("background:")) {
+        document.documentElement.style.removeProperty("--global-bg-color");
+        globalStyles.bgColor = "";
+    }
+
+    // Reset alignement
+    if (!css.includes("text-align:")) {
+        document.documentElement.style.removeProperty("--global-text-align");
+        globalStyles.textAlign = "";
+    }
+
+    // Extraire épaisseur
+    var wMatch = css.match(/border:\s*([0-9]+px)/);
+    if (wMatch) {
+        globalBorderWidth = wMatch[1];
+        globalStyles.borderWidth = globalBorderWidth;
+        document.documentElement.style.setProperty("--cell-border-width", globalBorderWidth);
+        document.documentElement.style.setProperty("--table-border-width", globalBorderWidth);
+    }
+
+    // Extraire couleur
+    var cMatch = css.match(/solid\s*([^;]+)/i);
+    if (cMatch) {
+        globalBorderColor = cMatch[1].replace(/^\s+|\s+$/g, "");
+        globalStyles.borderColor = globalBorderColor;
+        document.documentElement.style.setProperty("--cell-border-color", globalBorderColor);
+        document.documentElement.style.setProperty("--table-border-color", globalBorderColor);
+    }
+
+    // Couleur texte globale
+    var tMatch = css.match(/(?:^|[;{])\s*color\s*:\s*([^;}\n]+)/i);
+    if (tMatch) {
+        globalStyles.textColor = tMatch[1].replace(/^\s+|\s+$/g, "");
+        document.documentElement.style.setProperty("--global-text-color", globalStyles.textColor);
+    }
+
+    // Fond global
+    var bgMatch = css.match(/background(?:-color)?:\s*([^;]+)/i);
+    if (bgMatch) {
+        globalStyles.bgColor = bgMatch[1].replace(/^\s+|\s+$/g, "");
+        document.documentElement.style.setProperty("--global-bg-color", globalStyles.bgColor);
+    }
+
+    // Alignement global
+    var aMatch = css.match(/text-align:\s*(left|center|right)/);
+    if (aMatch) {
+        globalStyles.textAlign = aMatch[1];
+        document.documentElement.style.setProperty("--global-text-align", globalStyles.textAlign);
+    }
+  }
 }
 
 // Nettoyer LibreOffice
