@@ -857,7 +857,7 @@ function convertInlineRGBToHex(cell) {
     var style = cell.getAttribute("style");
     if (!style) return;
 
-    // Trouver tous les rgb(...) dans l'attribut
+    // 1. Convertir rgb(...) → #hex
     var rgbs = style.match(/rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)/g);
     if (rgbs) {
         for (var i = 0; i < rgbs.length; i++) {
@@ -866,18 +866,31 @@ function convertInlineRGBToHex(cell) {
         }
     }
 
-    // remplacer background-color par background
-    style = style.replace(/background-color\s*:/i, "background:");
+    // 2. Parser toutes les propriétés
+    var parts = style.split(";");
+    var cleaned = [];
 
-    // supprimer espace après background:
-    style = style.replace(/background:\s*/i, "background:");
+    for (var i = 0; i < parts.length; i++) {
+        var p = parts[i].trim();
+        if (!p) continue;
 
-    // supprimer espace après color:
-    style = style.replace(/color:\s*/i, "color:");
-    
-    style = style.replace(/text-align:\s*/i, "text-align:");
+        var kv = p.split(":");
+        if (kv.length !== 2) continue;
 
-    cell.setAttribute("style", style);
+        var key = kv[0].trim();
+        var val = kv[1].trim();
+
+        // 3. Normaliser les noms de propriétés
+        if (key.toLowerCase() === "background-color") key = "background";
+
+        // 4. Reconstruire sans espace
+        cleaned.push(key + ":" + val);
+    }
+
+    // 5. Réassembler proprement
+    var finalStyle = cleaned.join(";") + ";";
+
+    cell.setAttribute("style", finalStyle);
 }
 
 function updateCodeBox() {
