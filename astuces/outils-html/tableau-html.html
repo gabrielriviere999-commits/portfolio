@@ -874,6 +874,8 @@ function convertInlineRGBToHex(cell) {
 
     // supprimer espace après color:
     style = style.replace(/color:\s*/i, "color:");
+    
+    style = style.replace(/text-align:\s*/i, "text-align:");
 
     cell.setAttribute("style", style);
 }
