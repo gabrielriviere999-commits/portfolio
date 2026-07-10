@@ -17,7 +17,7 @@ textarea {
   box-sizing:border-box;
   font-family:monospace;
   resize:vertical;
-  white-space:pre;
+  white-space:nowrap;
   overflow-x:auto;
 }
 input,textarea {
