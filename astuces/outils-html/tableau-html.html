@@ -841,6 +841,43 @@ document.getElementById('borderWidth').onchange = function() {
 };
 
 /* --- EXPORT HTML --- */
+function rgbToHex(rgb) {
+  var m = rgb.match(/\d+/g);
+  if (!m) return rgb;
+  var r = parseInt(m[0], 10).toString(16);
+  var g = parseInt(m[1], 10).toString(16);
+  var b = parseInt(m[2], 10).toString(16);
+  if (r.length < 2) r = "0" + r;
+  if (g.length < 2) g = "0" + g;
+  if (b.length < 2) b = "0" + b;
+  return "#" + r + g + b;
+}
+
+function convertInlineRGBToHex(cell) {
+    var style = cell.getAttribute("style");
+    if (!style) return;
+
+    // Trouver tous les rgb(...) dans l'attribut
+    var rgbs = style.match(/rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)/g);
+    if (rgbs) {
+        for (var i = 0; i < rgbs.length; i++) {
+            var hex = rgbToHex(rgbs[i]);
+            style = style.replace(rgbs[i], hex);
+        }
+    }
+
+    // remplacer background-color par background
+    style = style.replace(/background-color\s*:/i, "background:");
+
+    // supprimer espace après background:
+    style = style.replace(/background:\s*/i, "background:");
+
+    // supprimer espace après color:
+    style = style.replace(/color:\s*/i, "color:");
+
+    cell.setAttribute("style", style);
+}
+
 function updateCodeBox() {
   var clone = table.cloneNode(true);
   var newId = document.getElementById("importTableId").value || "tableau1";
@@ -848,19 +885,23 @@ function updateCodeBox() {
 
   removeEmptyTextNodes(clone);
 
-  for (var r = 0; r < clone.rows.length; r++) {
-    for (var c = 0; c < clone.rows[r].cells.length; c++) {
-      var cell = clone.rows[r].cells[c];
+  // travailler directement sur le clone, sans toucher à table
+  var cells = clone.getElementsByTagName("td");
+  for (var i = 0; i < cells.length; i++) {
+    var cell = cells[i];
 
-      cell.removeAttribute("contenteditable");
-      removeClass(cell, "selected");
+    cell.removeAttribute("contenteditable");
+    removeClass(cell, "selected");
 
-      cell.style.border = "";
-      cell.style.borderColor = "";
-      cell.style.borderWidth = "";
+    // convertir les rgb inline en hex
+    convertInlineRGBToHex(cell);
 
-      if (!cell.className.replace(" ", "")) cell.removeAttribute("class");
-    }
+    // nettoyer uniquement les bordures
+    cell.style.border = "";
+    cell.style.borderColor = "";
+    cell.style.borderWidth = "";
+
+    if (!cell.className.replace(" ", "")) cell.removeAttribute("class");
   }
 
   var styleBlock = "<style>\n";
@@ -882,7 +923,6 @@ function updateCodeBox() {
   styleBlock += "</style>\n";
 
   var html = styleBlock + clone.outerHTML;
-
   html = beautifyHTML(html);
 
   document.getElementById('codeBox').value = html;
