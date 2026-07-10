@@ -30,7 +30,7 @@ a:hover{text-decoration:underline;}
   border-color:#404040 #ccc #ccc #404040;
   filter:brightness(0.8);
 }
-fieldset{border:2px groove #808080;display:inline-block;}
+fieldset{border:2px groove #808080;display:inline flow-root;}
 hr{border:1px inset #808080;}
 
 /* scrollbar */
