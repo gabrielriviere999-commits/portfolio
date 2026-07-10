@@ -935,7 +935,7 @@ function updateCodeBox() {
   if (globalStyles.textAlign)
     styleBlock += "#" + newId + " td{text-align:" + globalStyles.textAlign + ";}\n";
 
-  styleBlock += "</style>\n";
+  styleBlock += "</style>";
 
   var html = styleBlock + clone.outerHTML;
   html = beautifyHTML(html);
