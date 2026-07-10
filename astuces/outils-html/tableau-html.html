@@ -939,6 +939,7 @@ function updateCodeBox() {
 
   var html = styleBlock + clone.outerHTML;
   html = beautifyHTML(html);
+  html = html.replace(/\n\n<\/style>/, "\n</style>");
 
   document.getElementById('codeBox').value = html;
 }
