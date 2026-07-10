@@ -25,16 +25,18 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 <input type="file" id="fileInput" style="display:none;">
 
 <p></p><h3>Résultat</h3>
-<textarea id="output" readonly></textarea>
+<textarea id="output"></textarea>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
 function setText(el, txt) {
-    if (el.textContent !== undefined) el.textContent = txt;
-    else el.innerText = txt; // IE6/IE7
+    if (el.value !== undefined) el.value = txt;
+    else if (el.textContent !== undefined) el.textContent = txt;
+    else el.innerText = txt;
 }
 
 function getText(el) {
+    if (el.value !== undefined) return el.value;
     return (el.textContent !== undefined) ? el.textContent : el.innerText;
 }
 
