@@ -35,6 +35,10 @@ document.getElementById("zipFile").onchange = function () {
 
             var name = path.split("/").pop();
 
+            // exclure tous les fichiers cachés
+            if (name.charAt(0) === ".") return;
+
+            // exclure fichiers spécifiques
             if (IGNORE[name]) return;
 
             var dot = name.lastIndexOf(".");
