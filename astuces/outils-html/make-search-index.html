@@ -23,7 +23,7 @@ document.getElementById("zipFile").onchange = function () {
         var promises = [];
 
         var IGNORE = {"docs.js":1, "search.html":1};
-        var IGNORE_DIRS = {".git":1, ".github":1, "__pycache__":1};
+        var IGNORE_DIRS = {"__pycache__":1};
         var TEXT = {".html":1, ".txt":1};
 
         zip.forEach(function(path, entry) {
