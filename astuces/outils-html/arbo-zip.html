@@ -49,14 +49,9 @@ h2,h3,#stats,details{user-select:none;-webkit-user-select:none;-ms-user-select:n
 var rootName = "";   // nom du dossier racine affiché
 var zipName = "";    // nom du ZIP sans .zip
 // Dossiers et fichiers à exclure pour GitHub Pages
-var EXCLUDE_DIRS = {
-    ".git":1, ".github":1, "_site":1, "_sass":1, "_includes":1, "_layouts":1,
-    "__pycache__":1, "node_modules":1
-};
+var EXCLUDE_DIRS = {".git":1, ".github":1, "__pycache__":1};
 
-var EXCLUDE_FILES = {
-    ".gitignore":1, ".gitattributes":1, "arbo.html":1
-};
+var EXCLUDE_FILES = {".gitignore":1, ".gitattributes":1, "arbo.html":1};
 
 /* --- IMPORT ZIP --- */
 document.getElementById("zipInput").onchange = function (e) {
