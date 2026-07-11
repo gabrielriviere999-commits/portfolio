@@ -5,14 +5,9 @@ import os
 import html
 
 # Dossiers et fichiers à exclure pour GitHub Pages
-EXCLUDE_DIRS = {
-    ".git", ".github", "_site", "_sass", "_includes", "_layouts",
-    "__pycache__", "node_modules"
-}
+EXCLUDE_DIRS = { ".git", ".github", "__pycache__"}
 
-EXCLUDE_FILES = {
-    ".gitignore", ".gitattributes", "arbo.html"
-}
+EXCLUDE_FILES = {".gitignore", ".gitattributes", "arbo.html"}
 
 def build_tree(path):
     """Construit une structure arborescente."""
@@ -26,13 +21,13 @@ def build_tree(path):
     with os.scandir(path) as it:
         for entry in sorted(it, key=lambda e: (not e.is_dir(), e.name.lower())):
 
-            # exclusions GitHub Pages + fichiers cachés
+            # exclusions GitHub Pages
             if entry.name in EXCLUDE_DIRS and entry.is_dir():
                 continue
             if entry.name in EXCLUDE_FILES and entry.is_file():
                 continue
-            if entry.name.startswith("."):
-                continue
+            # if entry.name.startswith("."):
+                # continue
 
             if entry.is_dir():
                 tree["folders"].append(build_tree(entry.path))
