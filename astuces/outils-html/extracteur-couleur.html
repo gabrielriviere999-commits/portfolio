@@ -11,9 +11,6 @@
   height:36px;
   font-size:24px;
   touch-action:none;
-  user-select:none;
-  -webkit-user-select:none;
-  -ms-user-select:none;
 }
 #canvasWrapper {
   background:#000;
@@ -120,7 +117,7 @@
 <div class="section">
 
     <div id="info">
-        <div class="line" style="user-select:none;-webkit-user-select:none;-ms-user-select:none;">
+        <div class="line" style="user-select:none;-webkit-user-select:none;-ms-user-select:none;-moz-user-select:none;">
             <div id="preview" class="border-interne"></div>
                 <button class="scroll-btn" onmousedown="active.left = true" onmouseup="active.left = false" ontouchstart="active.left = true" ontouchend="active.left = false">←</button>
                 <button class="scroll-btn" onmousedown="active.right = true" onmouseup="active.right = false" ontouchstart="active.right = true" ontouchend="active.right = false">→</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
