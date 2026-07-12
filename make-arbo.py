@@ -5,7 +5,7 @@ import os
 import html
 
 # Dossiers et fichiers à exclure pour GitHub Pages
-EXCLUDE_DIRS = { ".git", ".github", "__pycache__"}
+EXCLUDE_DIRS = { ".git", ".github"}
 
 EXCLUDE_FILES = {".gitignore", ".gitattributes", "arbo.html"}
 
