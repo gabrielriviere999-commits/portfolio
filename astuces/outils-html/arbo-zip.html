@@ -17,7 +17,7 @@ pre.tree{white-space:pre;padding:5px;}
   no-repeat center;
   background-size:contain;
 }
-h2,h3,#stats,details{user-select:none;-webkit-user-select:none;-ms-user-select:none;-moz-user-select:none;}
+h2,h3,#stats,details{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 #stats{color:#0f0;font-family:monospace;}
 .tree{overflow:auto;max-height:500px;max-height:70vh;}
 </style>
@@ -101,7 +101,7 @@ document.getElementById("zipInput").onchange = function (e) {
                 'background:url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 20 20\'><path d=\'M10 7 V19 M5 13 L10 19 L15 13\' stroke=\'cyan\' stroke-width=\'2\' fill=\'none\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/></svg>") no-repeat center;' +
                 'background-size:contain;}\n' +
                 '</style>\n</head>\n<body>\n' +
-                '<p style="user-select:none;-webkit-user-select:none;-ms-user-select:none;-moz-user-select:none;">Dossiers : ' + counts.folders + ', Fichiers : ' + counts.files + '</p>\n' +
+                '<p style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">Dossiers : ' + counts.folders + ', Fichiers : ' + counts.files + '</p>\n' +
                 '<pre class="tree">\n' +
                 html +
                 '</pre>\n</body>\n</html>';
