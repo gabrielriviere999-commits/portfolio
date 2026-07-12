@@ -8,15 +8,10 @@
 <style>
 pre.tree{white-space:pre;padding:5px;}
 .folder{color:#4af;}
-.file{color:#0f0;text-decoration:none;}
-.file:hover{text-decoration:underline;}
+.file,.download{{color:#0f0;text-decoration:none;}}
+.file:hover,.download:hover{{text-decoration:underline;}}
+.download::before{{content:" [↓] ";}}
 .ascii{color:#0f0;}
-.download{
-  display:inline-block;width:12px;height:12px;
-  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M10 7 V19 M5 13 L10 19 L15 13' stroke='cyan' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>")
-  no-repeat center;
-  background-size:contain;
-}
 h2,h3,#stats,details{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 #stats{color:#0f0;font-family:monospace;}
 .tree{overflow:auto;max-height:500px;max-height:70vh;}
