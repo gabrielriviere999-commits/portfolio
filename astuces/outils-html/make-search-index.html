@@ -23,13 +23,13 @@ document.getElementById("zipFile").onchange = function () {
         var promises = [];
 
         var IGNORE = {"docs.js":1, "search.html":1};
-        var IGNORE_DIRS = {"__pycache__":1};
+        // var IGNORE_DIRS = {"dossier":1};
         var TEXT = {".html":1, ".txt":1};
 
         zip.forEach(function(path, entry) {
 			// ignore dossier + contenu
 			var parts = path.split("/");
-            if (IGNORE_DIRS[parts[0]]) return;
+            // if (IGNORE_DIRS[parts[0]]) return;
 
             if (entry.dir) return;
 
