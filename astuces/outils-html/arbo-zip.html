@@ -8,9 +8,9 @@
 <style>
 pre.tree{white-space:pre;padding:5px;}
 .folder{color:#4af;}
-.file,.download{{color:#0f0;text-decoration:none;}}
-.file:hover,.download:hover{{text-decoration:underline;}}
-.download::before{{content:" [↓] ";}}
+.file,.download{color:#0f0;text-decoration:none;}
+.file:hover,.download:hover{text-decoration:underline;}
+.download::before{content:" [↓] ";}
 .ascii{color:#0f0;}
 h2,h3,#stats,details{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 #stats{color:#0f0;font-family:monospace;}
@@ -89,12 +89,10 @@ document.getElementById("zipInput").onchange = function (e) {
                 'body{background:black;color:#0f0;font-family:monospace;}\n' +
                 'pre.tree{white-space:pre;padding:5px;}\n' +
                 '.folder{color:#4af;}\n' +
-                '.file{color:#0f0;text-decoration:none;}\n' +
-                '.file:hover{text-decoration:underline;}\n' +
+                '.file,.download{color:#0f0;text-decoration:none;}\n' +
+                '.file:hover,.download:hover{text-decoration:underline;}\n' +
+                '.download::before{content:" [↓] ";}\n' +
                 '.ascii{color:#0f0;}\n' +
-                '.download{display:inline-block;width:12px;height:12px;' +
-                'background:url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 20 20\'><path d=\'M10 7 V19 M5 13 L10 19 L15 13\' stroke=\'cyan\' stroke-width=\'2\' fill=\'none\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/></svg>") no-repeat center;' +
-                'background-size:contain;}\n' +
                 '</style>\n</head>\n<body>\n' +
                 '<p style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">Dossiers : ' + counts.folders + ', Fichiers : ' + counts.files + '</p>\n' +
                 '<pre class="tree">\n' +
