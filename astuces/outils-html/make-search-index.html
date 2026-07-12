@@ -27,19 +27,23 @@ document.getElementById("zipFile").onchange = function () {
         var TEXT = {".html":1, ".txt":1};
 
         zip.forEach(function(path, entry) {
-			// ignore dossier + contenu
-			var parts = path.split("/");
-            // if (IGNORE_DIRS[parts[0]]) return;
 
-            if (entry.dir) return;
+            // exclure tous les dossiers cachés
+            if (path.indexOf("/.") !== -1) return;
 
-            var name = path.split("/").pop();
+            var parts = path.split("/");
 
             // exclure tous les fichiers cachés
+            var name = parts[parts.length - 1];
             if (name.charAt(0) === ".") return;
 
             // exclure fichiers spécifiques
             if (IGNORE[name]) return;
+
+            // exclure dossiers spécifiques
+            // if (IGNORE_DIRS[parts[0]]) return;
+
+            if (entry.dir) return;
 
             var dot = name.lastIndexOf(".");
             var ext = dot >= 0 ? name.substring(dot).toLowerCase() : "";
