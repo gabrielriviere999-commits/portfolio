@@ -51,6 +51,7 @@ input{width:15px;}
   <button id="btnErase" onclick="setTool('erase')">Gomme</button>
   <button onclick="undo()">Annuler</button>
   <button onclick="redo()">Rétablir</button>
+  <div id="shapeInfo"></div>
 </div>
 
 <div id="textBox" style="display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#202020;border:1px solid #000;padding:10px;z-index:9999;opacity:0.8;">
@@ -783,6 +784,14 @@ view.onmousemove = function(e) {
 
     var pos = getPos(e);
 
+    if (isDown && (tool === "line" || tool === "arrow" || tool === "rect" || tool === "ellipse")) {
+
+        var w = Math.abs(pos.x - startX) + 1;
+        var h = Math.abs(pos.y - startY) + 1;
+
+        updateShapeInfo(w, h);
+    }
+
     if (tool === "free") {
         drawFree(pos.x, pos.y);
         return;
@@ -861,6 +870,7 @@ view.onmouseup = function(e) {
     if (tool === "rect")    drawRectangle(startX, startY, pos.x, pos.y);
     if (tool === "ellipse") drawEllipse(startX, startY, pos.x, pos.y);
 
+    clearShapeInfo();
     tempGrid = null;
 };
 
@@ -890,6 +900,16 @@ view.addEventListener("touchend", function(e) {
     var t = e.changedTouches[0];
     view.onmouseup({ clientX:t.clientX, clientY:t.clientY });
 }, { passive:false });
+
+/* --- AFFICHAGE DIMENSIONS --- */
+function updateShapeInfo(w, h) {
+    var box = document.getElementById("shapeInfo");
+    box.textContent = "Largeur : " + w + ",   Hauteur : " + h;
+}
+
+function clearShapeInfo() {
+    document.getElementById("shapeInfo").textContent = "";
+}
 
 /* --- STARTUP --- */
 window.onload = function() {
