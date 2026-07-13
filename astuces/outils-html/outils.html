@@ -450,18 +450,6 @@ Inverser De et Vers
 </div>
 
 <script>
-document.getElementById("filter").onkeyup = function () {
-    var filter = sansAccents(this.value.toLowerCase());
-    var cards = document.getElementsByClassName("tool-card");
-    var i, title, txt;
-
-    for (i = 0; i < cards.length; i++) {
-        title = cards[i].getElementsByClassName("tool-title")[0];
-        txt = sansAccents(title.innerHTML.toLowerCase());
-
-        cards[i].style.display = (txt.indexOf(filter) !== -1) ? "" : "none";
-    }
-};
 function sansAccents(str) {
     return str
         .replace(/[àáâãäå]/g, "a")
@@ -473,6 +461,33 @@ function sansAccents(str) {
         .replace(/[ùúûü]/g, "u")
         .replace(/[ýÿ]/g, "y");
 }
+
+function getByClass(cls) {
+    var all = document.getElementsByTagName("*");
+    var res = [];
+    var needle = " " + cls + " ";
+
+    for (var i = 0; i < all.length; i++) {
+        var hay = " " + all[i].className + " ";
+        if (hay.indexOf(needle) !== -1) {
+            res.push(all[i]);
+        }
+    }
+    return res;
+}
+
+document.getElementById("filter").onkeyup = function () {
+    var filter = sansAccents(this.value.toLowerCase());
+    var cards = getByClass("tool-card");
+    var i, title, txt;
+
+    for (i = 0; i < cards.length; i++) {
+        title = cards[i].getElementsByTagName("div")[0];
+        txt = sansAccents(title.innerHTML.toLowerCase());
+
+        cards[i].style.display = (txt.indexOf(filter) !== -1) ? "" : "none";
+    }
+};
 </script>
 
 </main>
