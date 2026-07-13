@@ -136,7 +136,7 @@ pre.tree{{white-space:pre;padding:5px;}}
 <p>Dossiers : {nb_folders}, Fichiers : {nb_files}</p>
 <pre class="tree">
 {build_ascii_html(tree)}</pre>
-<textarea wrap="off" style="width:100%;height:100px;box-sizing:border-box;resize:vertical;background:#000;color:#ccc;border:2px groove #808080;font-family:monospace;">{ascii_text}</textarea>
+<textarea wrap="off" style="width:100%;height:200px;box-sizing:border-box;background:#000;color:#ccc;border:2px groove #808080;font-family:monospace;">{ascii_text}</textarea>
 </body>
 </html>
 """
