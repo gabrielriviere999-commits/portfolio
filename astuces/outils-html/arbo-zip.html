@@ -6,11 +6,10 @@
 <title>Arborescence ZIP</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-pre.tree{white-space:pre;padding:5px;}
+pre.tree{padding:5px;}
 .folder{color:#4af;}
-.file,.download{color:#0f0;text-decoration:none;}
-.file:hover,.download:hover{text-decoration:underline;}
-.download::before{content:" [↓] ";}
+.file{color:#0f0;text-decoration:none;}
+.file:hover{text-decoration:underline;}
 .ascii{color:#0f0;}
 #stats{color:#0f0;font-family:monospace;}
 .tree{overflow:auto;max-height:500px;max-height:70vh;}
@@ -94,7 +93,7 @@ document.getElementById("zipInput").onchange = function (e) {
                 '<title>Arborescence</title>\n' +
                 '<style>\n' +
                 'body{background:black;color:#0f0;font-family:monospace;}\n' +
-                'pre.tree{white-space:pre;padding:5px;}\n' +
+                'pre.tree{padding:5px;}\n' +
                 '.folder{color:#4af;}\n' +
                 '.file{color:#0f0;text-decoration:none;}\n' +
                 '.file:hover{text-decoration:underline;}\n' +
