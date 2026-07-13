@@ -191,7 +191,8 @@ pre.tree{padding:5px;}
 <span class="ascii">├── </span><a class="file" href="stages.html">stages.html</a><a class="file" href="stages.html" download> [↓] </a>
 <span class="ascii">└── </span><a class="file" href="styles.css">styles.css</a><a class="file" href="styles.css" download> [↓] </a>
 </pre>
-<textarea wrap="off" style="width:100%;height:200px;box-sizing:border-box;background:#000;color:#ccc;border:2px groove #808080;font-family:monospace;">portfolio/
+<button id="copyarbo" style="background:#000;color:#ccc;border:none;cursor:pointer;">[Copier]</button>
+<br><textarea wrap="off" id="arbo" style="width:100%;height:200px;box-sizing:border-box;background:#000;color:#ccc;border:2px groove #808080;font-family:monospace;">portfolio/
 ├── accueil/
 │   └── cv-riviere-gabriel.html
 ├── astuces/
@@ -366,5 +367,6 @@ pre.tree{padding:5px;}
 ├── stages.html
 └── styles.css
 </textarea>
+<script>function copyFrom(id,btn){var code=document.getElementById(id);var temp=document.createElement("textarea");temp.value=code.value;document.body.appendChild(temp);temp.select();try{document.execCommand("copy");}catch(err){}document.body.removeChild(temp);btn.focus();}document.getElementById("copyarbo").onclick=function(e){copyFrom("arbo",e.target);};</script>
 </body>
 </html>
