@@ -108,7 +108,7 @@ pre.tree{{white-space:pre;padding:5px;}}
 </style>
 </head>
 <body>
-<p style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">Dossiers : {nb_folders}, Fichiers : {nb_files}</p>
+<p>Dossiers : {nb_folders}, Fichiers : {nb_files}</p>
 <pre class="tree">
 {build_ascii_html(tree)}</pre>
 </body>
