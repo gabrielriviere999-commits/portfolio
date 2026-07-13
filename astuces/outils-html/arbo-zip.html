@@ -12,7 +12,7 @@ pre.tree{white-space:pre;padding:5px;}
 .file:hover,.download:hover{text-decoration:underline;}
 .download::before{content:" [↓] ";}
 .ascii{color:#0f0;}
-h2,h3,#stats,details{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
+h2,h3,details{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 #stats{color:#0f0;font-family:monospace;}
 .tree{overflow:auto;max-height:500px;max-height:70vh;}
 </style>
@@ -94,7 +94,7 @@ document.getElementById("zipInput").onchange = function (e) {
                 '.download::before{content:" [↓] ";}\n' +
                 '.ascii{color:#0f0;}\n' +
                 '</style>\n</head>\n<body>\n' +
-                '<p style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">Dossiers : ' + counts.folders + ', Fichiers : ' + counts.files + '</p>\n' +
+                '<p>Dossiers : ' + counts.folders + ', Fichiers : ' + counts.files + '</p>\n' +
                 '<pre class="tree">\n' +
                 html +
                 '</pre>\n</body>\n</html>';
