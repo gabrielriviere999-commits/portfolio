@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Arborescence ZIP</title>
+<title>Arborescence ZIP (textarea)</title>
 <link rel="stylesheet" href="styles.css">
 <style>
 pre.tree{white-space:pre;padding:5px;}
@@ -12,18 +12,19 @@ pre.tree{white-space:pre;padding:5px;}
 .file:hover,.download:hover{text-decoration:underline;}
 .download::before{content:" [↓] ";}
 .ascii{color:#0f0;}
-h2,h3,details{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 #stats{color:#0f0;font-family:monospace;}
 .tree{overflow:auto;max-height:500px;max-height:70vh;}
 </style>
 </head>
 <body>
-<h2>Arborescence ZIP</h2>
+<h2>Arborescence ZIP (textarea)</h2>
 
 <div class="container">
 <div class="card">
 <h3>Importer un ZIP</h3>
 <input type="file" id="zipInput">
+<textarea id="asciiTextArea"></textarea><br>
+<button id="copyasciiTextArea" class="btn-color" style="background:#4caf50;">Copier</button>
 <p id="stats"></p>
 <pre class="tree" id="output"></pre>
 <details><summary>Bibliothèque ZIP</summary>
@@ -38,7 +39,7 @@ h2,h3,details{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:non
 </div>
 </div>
 
-<a href="arbo-zip-textarea.html">Arborescence ZIP (textarea)</a>
+<a href="arbo-zip.html">Arborescence ZIP</a>
 
 <script src="libs/jszip.min.js"></script>
 <script>
@@ -80,9 +81,15 @@ document.getElementById("zipInput").onchange = function (e) {
             document.getElementById("stats").innerHTML =
                 "Dossiers : " + counts.folders + ", Fichiers : " + counts.files;
 
+            // Affichage HTML
             document.getElementById("output").innerHTML = html;
 
+            // Affichage ASCII dans textarea
+            var asciiText = buildAsciiText(tree, "", true);
+            document.getElementById("asciiTextArea").value = asciiText;
+
             // Génération du fichier HTML complet
+            var asciiText = buildAsciiText(tree, "", true);
             var fullPage =
                 '<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
@@ -91,15 +98,14 @@ document.getElementById("zipInput").onchange = function (e) {
                 'body{background:black;color:#0f0;font-family:monospace;}\n' +
                 'pre.tree{white-space:pre;padding:5px;}\n' +
                 '.folder{color:#4af;}\n' +
-                '.file,.download{color:#0f0;text-decoration:none;}\n' +
-                '.file:hover,.download:hover{text-decoration:underline;}\n' +
-                '.download::before{content:" [↓] ";}\n' +
+                '.file{color:#0f0;text-decoration:none;}\n' +
+                '.file:hover{text-decoration:underline;}\n' +
                 '.ascii{color:#0f0;}\n' +
                 '</style>\n</head>\n<body>\n' +
                 '<p>Dossiers : ' + counts.folders + ', Fichiers : ' + counts.files + '</p>\n' +
-                '<pre class="tree">\n' +
-                html +
-                '</pre>\n</body>\n</html>';
+                '<pre class="tree">\n' + html + '</pre>\n' +
+                '<textarea wrap="off" style="width:100%;height:100px;box-sizing:border-box;resize:vertical;background:#000;color:#ccc;border:2px groove #808080;font-family:monospace;">' + asciiText + '</textarea>\n' +
+                '</body>\n</html>';
 
             document.getElementById("htmlCode").value = fullPage;
         });
@@ -218,7 +224,42 @@ function buildAscii(node, prefix, isRoot) {
             var rel = entry.path;
             out += ascii +
                 '<a class="file" href="' + rel + '">' + entry.name + '</a>' +
-                '<a class="download" href="' + rel + '" download></a>\n';
+                '<a class="file" href="' + rel + '" download> [↓] </a>\n';
+        }
+    }
+
+    return out;
+}
+
+function buildAsciiText(node, prefix, isRoot) {
+    if (!prefix) prefix = "";
+    if (isRoot === undefined) isRoot = true;
+
+    var out = "";
+    var i;
+
+    // Racine
+    if (isRoot) {
+        out += rootName + "/\n";
+    }
+
+    var entries = [];
+    for (i = 0; i < node.folders.length; i++) entries.push(node.folders[i]);
+    for (i = 0; i < node.files.length; i++) entries.push(node.files[i]);
+
+    var total = entries.length;
+
+    for (i = 0; i < total; i++) {
+        var entry = entries[i];
+        var last = (i === total - 1);
+        var branch = last ? "└── " : "├── ";
+        var newPrefix = prefix + (last ? "    " : "│   ");
+
+        if (entry.folders) {
+            out += prefix + branch + entry.name + "/\n";
+            out += buildAsciiText(entry, newPrefix, false);
+        } else {
+            out += prefix + branch + entry.name + "\n";
         }
     }
 
@@ -242,6 +283,10 @@ function copyFrom(id, btn) {
 
 document.getElementById('copyhtmlCode').onclick = function(e) {
     copyFrom('htmlCode', e.target);
+};
+
+document.getElementById('copyasciiTextArea').onclick = function(e) {
+    copyFrom('asciiTextArea', e.target);
 };
 </script>
 
