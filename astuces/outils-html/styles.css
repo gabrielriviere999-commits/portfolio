@@ -57,9 +57,7 @@ button,#file-input {
   border:2px solid;
   border-color:#888 #111 #111 #888;
   min-width:28px;
-  height:28px;
-  padding:0 8px;
-  line-height:0;
+  padding:4px 8px;
   font-size:12px;
   cursor:pointer;
 }
