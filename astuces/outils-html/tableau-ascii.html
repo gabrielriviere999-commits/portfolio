@@ -17,7 +17,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 &nbsp;&nbsp;
 Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="5">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
-<p></p><textarea id="input"></textarea><p></p>
+<p></p><textarea wrap="off" id="input"></textarea><p></p>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir</button>
 <button onclick="copier()" class="btn-color" style="background:#4caf50;">Copier</button>
 <button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
@@ -25,7 +25,7 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 <input type="file" id="fileInput" style="display:none;">
 
 <p></p><h3>Résultat</h3>
-<textarea id="output"></textarea>
+<textarea wrap="off" id="output"></textarea>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */

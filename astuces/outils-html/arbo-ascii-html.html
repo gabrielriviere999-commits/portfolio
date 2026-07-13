@@ -46,11 +46,11 @@
   <button onclick="copyTreeHtml(this)" class="btn-color" style="background:#4caf50;">Copier HTML couleur</button><br><hr>
   <button onclick="showTreeText()" class="btn-color" style="background:#4caf50;">Afficher texte</button>
   <button onclick="showTreeHtml()" class="btn-color" style="background:#4caf50;">Afficher HTML couleur</button>
-  <br><textarea id="previewBox" style="display:none;"></textarea>
+  <br><textarea wrap="off" id="previewBox" style="display:none;"></textarea>
 </div>
 
 <div class="card">
-  <textarea id="importBox"></textarea><br>
+  <textarea wrap="off" id="importBox"></textarea><br>
   <button onclick="restoreTree()" class="btn-color" style="background:#ff8800;">Mettre à jour à partir du texte</button>
   <button onclick="importTreeFromText()" class="btn-color" style="background:#ff8800;">Importer (commande tree)</button>
   <button id="importFileBtn">Importer fichier…</button>
