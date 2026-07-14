@@ -16,8 +16,6 @@
   max-height:250px;
   max-height:35vh;
 }
-.texte{height:200px;}
-textarea{height:100px;}
 #multiFileInput {
   position:absolute;
   top:0;
@@ -683,8 +681,8 @@ function ajouterRemplacement(from, to) {
   inp1.value = from || "";
   inp1.placeholder = "chercher";
   inp1.rows = 4;
-  inp1.style.width = "100%";
-  inp1.style.fontFamily = "monospace";
+  inp1.wrap = "off";
+  inp1.style.height = "100px";
   inp1.oninput = saveReplacements;
 
   // Champ "remplacer"
@@ -693,8 +691,8 @@ function ajouterRemplacement(from, to) {
   inp2.value = to || "";
   inp2.placeholder = "remplacer";
   inp2.rows = 4;
-  inp2.style.width = "100%";
-  inp2.style.fontFamily = "monospace";
+  inp2.wrap = "off";
+  inp2.style.height = "100px";
   inp2.oninput = saveReplacements;
 
   // Construction de la ligne
