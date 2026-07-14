@@ -42,8 +42,7 @@ body{padding-top:200px;}
   <label><input type="checkbox" id="editMode">Édition texte</label>
   <button onclick="deleteNode()" class="btn-color" style="background:#ff4444;">Supprimer</button>
   |
-  <button onclick="addImageToNode()">Ajouter image</button>
-  <input type="file" id="imgInput" style="display:none" onchange="loadNodeImage(this)">
+  <input type="file" id="imgInput" style="width:115px;" onchange="loadNodeImage(this)">
   <button onclick="removeImageFromNode()" class="btn-color" style="background:#ff4444;">Supprimer image</button>
   |
   <button onclick="changeGlobalTextColor()">Texte global</button>
@@ -414,11 +413,6 @@ function deleteNode() {
 }
 
 /* --- ACTIONS - IMAGES --- */
-function addImageToNode() {
-  if (!selectedId) return;
-  document.getElementById("imgInput").click();
-}
-
 function loadNodeImage(input) {
   if (!selectedId) return;
   var file = input.files[0];
