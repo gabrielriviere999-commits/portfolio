@@ -9,7 +9,7 @@ p { margin:0; white-space:pre-wrap; overflow-wrap:break-word; }
 a { color:#4af; text-decoration:none; } a:hover { text-decoration:underline; }
 pre { margin:0; }
 .code-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background:black; color:#ccc; border:1px solid #808080; font-family:monospace; overflow-x:auto; }
-.blue-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background:#aaaaff; color:black; border:1px solid #808080; border-left-width:4px; border-left-color:#2b4f81; font-family:monospace; white-space:pre; overflow-x:auto; }
+.blue-block { margin-top:0.4em; margin-bottom:0.4em; padding:10px 12px; background:#f4f7f8; color:black; border:1px solid #808080; border-left-width:4px; border-left-color:#558abb; font-family:monospace; white-space:pre; overflow-x:auto; }
 .note { margin-top:0.4em; margin-bottom:0.4em; padding:8px 10px; border-left:4px solid #f0ad4e; background:#fff8e5; color:black; }
 table { border-collapse:collapse; width:100%; }
 td { border:1px solid #808080; }
