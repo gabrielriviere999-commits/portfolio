@@ -93,9 +93,7 @@
 <h2>Extracteur couleur</h2>
 
 <div class="section">
-  <div id="dropzone">Cliquer ou glisser-déposer une image ici
-    <input type="file" id="fileInput" style="display:none">
-  </div>
+  <input type="file" id="fileInput" style="width:100%;">
 
   <div id="pastezone" class="section" style="margin-top:10px; text-align:center;">
     <input id="pasteInput" maxlength="0" style="width:100%;height:30px;box-sizing:border-box;" placeholder="Ou cliquer ici puis faire Ctrl+V">
@@ -145,7 +143,6 @@
 
 <script>
 /* --- Variables --- */
-var dropzone = document.getElementById("dropzone");
 var fileInput = document.getElementById("fileInput");
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
@@ -171,30 +168,14 @@ function prevent(e) {
     return false;
 }
 
-/* --- Drag & Drop --- */
-dropzone.onclick = function(){ fileInput.click(); };
-dropzone.ondragover = function(e){ prevent(e); dropzone.className = "hover"; };
-dropzone.ondragenter = function(e){ prevent(e); dropzone.className = "hover"; };
-dropzone.ondragleave = function(e){ prevent(e); dropzone.className = ""; };
-dropzone.ondrop = function(e){
-    prevent(e);
-    dropzone.className = "";
-    var f = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files[0] : null;
-    if (f) loadFile(f);
-};
-
+/* --- Chargement image --- */
 fileInput.onchange = function(){
     if (fileInput.files && fileInput.files.length > 0) {
         loadFile(fileInput.files[0]);
     }
 };
 
-/* --- Chargement image --- */
 function loadFile(file){
-    if (!/image\//.test(file.type)) {
-        alert("Veuillez sélectionner un fichier image.");
-        return;
-    }
     var reader = new FileReader();
     reader.onload = function(ev){
         var img = new Image();
