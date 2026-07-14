@@ -93,32 +93,33 @@
 <h2>Extracteur couleur</h2>
 
 <div class="section">
-    <div id="dropzone">Cliquer ou glisser-déposer une image ici
-        <input type="file" id="fileInput" accept="image/*" style="display:none">
-    </div>
+  <div id="dropzone">Cliquer ou glisser-déposer une image ici
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
+  </div>
 
-    <div id="pastezone" class="section" style="margin-top:10px; text-align:center;">
-        <input id="pasteInput" maxlength="0" style="width:100%;height:30px;box-sizing:border-box;" placeholder="Ou cliquer ici puis faire Ctrl+V">
-    </div>
+  <div id="pastezone" class="section" style="margin-top:10px; text-align:center;">
+    <input id="pasteInput" maxlength="0" style="width:100%;height:30px;box-sizing:border-box;" placeholder="Ou cliquer ici puis faire Ctrl+V">
+  </div>
 
-    <div id="canvasWrapper" class="border-interne">
-        <canvas id="canvas" width="1200" height="900"></canvas>
-    </div>
+  <div id="canvasWrapper" class="border-interne">
+    <canvas id="canvas" width="1200" height="900"></canvas>
+  </div>
 </div>
 
 <div id="loupe">
-    <canvas id="loupeCanvas" width="20" height="20"></canvas>
+  <canvas id="loupeCanvas" width="20" height="20"></canvas>
 </div>
 
 <div id="cross" class="cross" style="display:none;"></div>
 
 <div class="section">
-  <div class="line" style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">
+  <div style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">
     <div id="preview" class="border-interne"></div>
     <button class="scroll-btn" onmousedown="active.left = true" onmouseup="active.left = false" ontouchstart="active.left = true" ontouchend="active.left = false">←</button>
     <button class="scroll-btn" onmousedown="active.right = true" onmouseup="active.right = false" ontouchstart="active.right = true" ontouchend="active.right = false">→</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class="scroll-btn" onmousedown="active.up = true" onmouseup="active.up = false" ontouchstart="active.up = true" ontouchend="active.up = false">↑</button>
     <button class="scroll-btn" onmousedown="active.down = true" onmouseup="active.down = false" ontouchstart="active.down = true" ontouchend="active.down = false">↓</button>
+  </div>
 
     <div class="line">HEX :
       <span id="hexValue" class="value">-</span>
@@ -139,7 +140,7 @@
       <span id="hsvValue" class="value">-</span>
       <button onclick="copyText('hsvValue', this)">Copier</button>
     </div>
-  </div>
+
 </div>
 
 <script>
