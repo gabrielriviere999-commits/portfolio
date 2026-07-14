@@ -82,9 +82,7 @@
   margin-right:6px;
   vertical-align:top;
 }
-.line {
-  margin:3px 0;
-}
+.line{margin:3px 0;}
 .value {
   display:inline-block;
   min-width:140px;
@@ -115,40 +113,33 @@
 <div id="cross" class="cross" style="display:none;"></div>
 
 <div class="section">
+  <div class="line" style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">
+    <div id="preview" class="border-interne"></div>
+    <button class="scroll-btn" onmousedown="active.left = true" onmouseup="active.left = false" ontouchstart="active.left = true" ontouchend="active.left = false">←</button>
+    <button class="scroll-btn" onmousedown="active.right = true" onmouseup="active.right = false" ontouchstart="active.right = true" ontouchend="active.right = false">→</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="scroll-btn" onmousedown="active.up = true" onmouseup="active.up = false" ontouchstart="active.up = true" ontouchend="active.up = false">↑</button>
+    <button class="scroll-btn" onmousedown="active.down = true" onmouseup="active.down = false" ontouchstart="active.down = true" ontouchend="active.down = false">↓</button>
 
-    <div id="info">
-        <div class="line" style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">
-            <div id="preview" class="border-interne"></div>
-                <button class="scroll-btn" onmousedown="active.left = true" onmouseup="active.left = false" ontouchstart="active.left = true" ontouchend="active.left = false">←</button>
-                <button class="scroll-btn" onmousedown="active.right = true" onmouseup="active.right = false" ontouchstart="active.right = true" ontouchend="active.right = false">→</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="scroll-btn" onmousedown="active.up = true" onmouseup="active.up = false" ontouchstart="active.up = true" ontouchend="active.up = false">↑</button>
-                <button class="scroll-btn" onmousedown="active.down = true" onmouseup="active.down = false" ontouchstart="active.down = true" ontouchend="active.down = false">↓</button>
-        </div>
-
-        <div class="line">
-            HEX :
-            <span id="hexValue" class="value">-</span>
-            <button onclick="copyText('hexValue', this)">Copier</button>
-        </div>
-
-        <div class="line">
-            RGB :
-            <span id="rgbValue" class="value">-</span>
-            <button onclick="copyText('rgbValue', this)">Copier</button>
-        </div>
-
-        <div class="line">
-            HSL :
-            <span id="hslValue" class="value">-</span>
-            <button onclick="copyText('hslValue', this)">Copier</button>
-        </div>
-
-        <div class="line">
-            HSV :
-            <span id="hsvValue" class="value">-</span>
-            <button onclick="copyText('hsvValue', this)">Copier</button>
-        </div>
+    <div class="line">HEX :
+      <span id="hexValue" class="value">-</span>
+      <button onclick="copyText('hexValue', this)">Copier</button>
     </div>
+
+    <div class="line">RGB :
+      <span id="rgbValue" class="value">-</span>
+      <button onclick="copyText('rgbValue', this)">Copier</button>
+    </div>
+
+    <div class="line">HSL :
+      <span id="hslValue" class="value">-</span>
+      <button onclick="copyText('hslValue', this)">Copier</button>
+    </div>
+
+    <div class="line">HSV :
+      <span id="hsvValue" class="value">-</span>
+      <button onclick="copyText('hsvValue', this)">Copier</button>
+    </div>
+  </div>
 </div>
 
 <script>
