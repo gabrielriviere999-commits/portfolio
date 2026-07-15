@@ -131,7 +131,7 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
     totalWidth += widths[c] + style.hPadding;
 
   // 4) Réduction proportionnelle
-  if (totalWidth > MAX_TABLE_WIDTH) {
+  if (!style.noCorners && totalWidth > MAX_TABLE_WIDTH) {
     var espace = MAX_TABLE_WIDTH - (style.hPadding * colCount + 1);
     var sum = 0;
     for (var i = 0; i < widths.length; i++) sum += widths[i];
