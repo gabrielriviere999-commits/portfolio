@@ -9,7 +9,7 @@
 input{width:50px;}
 </style>
 </head>
-<body>			
+<body>
 
 <h2>Tableau ASCII</h2>
 
@@ -17,6 +17,12 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 &nbsp;&nbsp;
 Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="5">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
+<select id="ascii_model">
+  <option value="classic">Classique</option>
+  <option value="dotted">Pointillé (: .)</option>
+  <option value="compact">Compact</option>
+</select>
+<input id="tableau_ascii_custom_char" value="" maxlength="1">
 <p></p><textarea wrap="off" id="input"></textarea><p></p>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir</button>
 <button onclick="copier()" class="btn-color" style="background:#4caf50;">Copier</button>
@@ -101,53 +107,69 @@ function wrapText(str, max) {
   return lines;
 }
 
-function asciiTable(rows, MAX_TABLE_WIDTH) {
+function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   if (!rows || !rows.length) return "";
 
   // 1) Nombre de colonnes
   var colCount = 0;
-  for (var i = 0; i < rows.length; i++) {
+  for (var i = 0; i < rows.length; i++)
     if (rows[i].length > colCount) colCount = rows[i].length;
-  }
 
   // 2) Largeurs naturelles
   var widths = [];
   for (var c = 0; c < colCount; c++) widths[c] = 0;
 
-  for (var r = 0; r < rows.length; r++) {
+  for (var r = 0; r < rows.length; r++)
     for (var c = 0; c < colCount; c++) {
       var cell = rows[r][c] || "";
       if (cell.length > widths[c]) widths[c] = cell.length;
     }
-  }
 
   // 3) Largeur totale
   var totalWidth = 1;
-  for (var c = 0; c < colCount; c++) {
-    totalWidth += widths[c] + 3;
-  }
+  for (var c = 0; c < colCount; c++)
+    totalWidth += widths[c] + style.hPadding;
 
-  // 4) Réduction proportionnelle si trop large
+  // 4) Réduction proportionnelle
   if (totalWidth > MAX_TABLE_WIDTH) {
-    var espace = MAX_TABLE_WIDTH - (3 * colCount + 1);
+    var espace = MAX_TABLE_WIDTH - (style.hPadding * colCount + 1);
     var sum = 0;
     for (var i = 0; i < widths.length; i++) sum += widths[i];
-
     for (var i = 0; i < widths.length; i++) {
       widths[i] = Math.floor(widths[i] * espace / sum);
       if (widths[i] < 1) widths[i] = 1;
     }
   }
 
-  // 5) Ligne de séparation
-  var tableau_ascii_sepLine = "+";
-  for (var c = 0; c < colCount; c++) {
-    tableau_ascii_sepLine += repeat("-", widths[c] + 2) + "+";
+  // 5) Lignes de séparation
+  var sepMid;
+
+  if (style.noCorners) {
+    // MODE COMPACT
+    sepMid = "";
+    for (var c = 0; c < colCount; c++) {
+      sepMid += repeat(style.hBorder, widths[c]);
+      if (c < colCount - 1) sepMid += style.vBorder; // ← pas de | final
+    }
+  } else {
+    // CLASSIQUE + DOTTED
+    sepMid = style.corner;
+    for (var c = 0; c < colCount; c++)
+      sepMid += repeat(style.hBorder, widths[c] + style.hPadding) + style.corner;
   }
 
-  var out = tableau_ascii_sepLine + "\n";
+  // Première ligne spéciale pour le modèle pointillé
+  var sepTop;
+  if (style.firstSep) {
+    // largeur logique du tableau (sans coins) → que des points
+    sepTop = repeat(".", sepMid.length);
+  } else {
+    sepTop = sepMid;
+  }
 
-  // 6) Génération des lignes avec wrap
+  var out = sepTop + "\n";
+
+  // 6) Lignes avec wrap
   for (var r = 0; r < rows.length; r++) {
     var wrappedCells = [];
     var maxHeight = 1;
@@ -159,24 +181,93 @@ function asciiTable(rows, MAX_TABLE_WIDTH) {
       if (wrapped.length > maxHeight) maxHeight = wrapped.length;
     }
 
-    for (var h = 0; h < maxHeight; h++) {
-      var line = "| ";
+  for (var h = 0; h < maxHeight; h++) {
+
+    var line = "";
+
+    if (style.noCorners) {
+      // MODE COMPACT : texte|texte|texte (sans | final)
       for (var c = 0; c < colCount; c++) {
         var txt = wrappedCells[c][h] || "";
-        line += padRight(txt, widths[c]) + " | ";
+        line += padRight(txt, widths[c]);
+        if (c < colCount - 1) line += style.vBorder;
       }
-
-      // Ici : on enlève UNIQUEMENT le dernier espace
+    } else {
+      // CLASSIQUE + DOTTED
+      line = style.vBorder + style.space;
+      for (var c = 0; c < colCount; c++) {
+        var txt = wrappedCells[c][h] || "";
+        line += padRight(txt, widths[c]) + style.space + style.vBorder + style.space;
+      }
       line = line.substring(0, line.length - 1);
-
-      out += line + "\n";
     }
 
-    out += tableau_ascii_sepLine + "\n";
+    out += line + "\n";
+  }
+
+    out += sepMid + "\n";
   }
 
   return out;
 }
+
+var style_classic = {
+  corner: "+",
+  hBorder: "-",
+  vBorder: "|",
+  hPadding: 2,
+  space: " "
+};
+
+var style_dotted = {
+  corner: ":",
+  hBorder: ".",
+  vBorder: ":",
+  hPadding: 2,
+  space: " ",
+  firstSep: true
+};
+
+var style_compact = {
+  corner: "",
+  hBorder: "-",
+  vBorder: "|",
+  hPadding: 0,
+  space: "",
+  noCorners: true
+};
+
+var default_classic = JSON.parse(JSON.stringify(style_classic));
+var default_dotted  = JSON.parse(JSON.stringify(style_dotted));
+var default_compact = JSON.parse(JSON.stringify(style_compact));
+
+document.getElementById("tableau_ascii_custom_char").oninput = function () {
+  var c = this.value;
+
+  // Sauvegarde
+  localStorage.setItem("tableau_ascii_custom_char", c);
+
+  if (!c || c.length === 0) {
+    // Restaurer les styles d'origine
+    style_classic = JSON.parse(JSON.stringify(default_classic));
+    style_dotted  = JSON.parse(JSON.stringify(default_dotted));
+    style_compact = JSON.parse(JSON.stringify(default_compact));
+    return;
+  }
+
+  // Sinon → appliquer le caractère personnalisé
+  style_classic.corner = c;
+  style_classic.hBorder = c;
+  style_classic.vBorder = c;
+
+  style_dotted.corner = c;
+  style_dotted.hBorder = c;
+  style_dotted.vBorder = c;
+  style_dotted.firstSep = false;
+
+  style_compact.hBorder = c;
+  style_compact.vBorder = c;
+};
 
 // Glisser-déposer
 var input = document.getElementById("input");
@@ -235,20 +326,26 @@ document.getElementById("fileInput").addEventListener("change", function () {
 /* --- Conversion CSV → ASCII --- */
 function convertir() {
   var texte = document.getElementById("input").value;
-  var tableau_ascii_sep = document.getElementById("tableau_ascii_sep").value || ";";
-  var tableau_ascii_maxwidth = parseInt(document.getElementById("tableau_ascii_maxwidth").value, 10);
+  var sep = document.getElementById("tableau_ascii_sep").value || ";";
+  var maxwidth = parseInt(document.getElementById("tableau_ascii_maxwidth").value, 10);
+  var model = document.getElementById("ascii_model").value;
 
-  if (!texte) {
-    return;
-  }
+  if (!texte) return;
 
   var lignes = texte.split("\n");
   var rows = [];
-  for (var i = 0; i < lignes.length; i++) {
-    rows.push(lignes[i].split(tableau_ascii_sep));
-  }
+  for (var i = 0; i < lignes.length; i++)
+    rows.push(lignes[i].split(sep));
 
-  var table = asciiTable(rows, tableau_ascii_maxwidth);
+  var table = "";
+
+  if (model === "classic")
+    table = asciiTable_generic(rows, maxwidth, style_classic);
+  else if (model === "dotted")
+    table = asciiTable_generic(rows, maxwidth, style_dotted);
+  else if (model === "compact")
+    table = asciiTable_generic(rows, maxwidth, style_compact);
+
   setText(document.getElementById("output"), table);
 }
 
@@ -278,9 +375,14 @@ function resetParams() {
   document.getElementById("tableau_ascii_sep").value = ";";
   document.getElementById("tableau_ascii_maxwidth").value = "120";
 
+  var custom = document.getElementById("tableau_ascii_custom_char");
+  custom.value = "";
+  custom.oninput();
+
   // Met à jour la sauvegarde
   localStorage.setItem("tableau_ascii_sep", ";");
   localStorage.setItem("tableau_ascii_maxwidth", "120");
+  localStorage.removeItem("tableau_ascii_custom_char");
 }
 
 /* --- Sauvegarde/Restauration --- */
@@ -295,9 +397,15 @@ document.getElementById("tableau_ascii_maxwidth").oninput = saveState;
 window.onload = function() {
   var savedtableau_ascii_sep = localStorage.getItem("tableau_ascii_sep");
   var savedMax = localStorage.getItem("tableau_ascii_maxwidth");
+  var savedChar = localStorage.getItem("tableau_ascii_custom_char");
 
   if (savedtableau_ascii_sep !== null) document.getElementById("tableau_ascii_sep").value = savedtableau_ascii_sep;
   if (savedMax !== null) document.getElementById("tableau_ascii_maxwidth").value = savedMax;
+  if (savedChar !== null) {
+    var custom = document.getElementById("tableau_ascii_custom_char");
+    custom.value = savedChar;
+    custom.oninput();
+  }
 };
 </script>
 </body>
