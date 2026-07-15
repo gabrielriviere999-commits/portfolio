@@ -20,7 +20,7 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 <select id="ascii_model">
   <option value="classic">Classique</option>
   <option value="dotted">Pointillé (: .)</option>
-  <option value="compact">Compact</option>
+  <option value="markdown">Markdown</option>
 </select>
 <input id="tableau_ascii_custom_char" value="" maxlength="1">
 <p></p><textarea wrap="off" id="input"></textarea><p></p>
@@ -145,7 +145,7 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   var sepMid;
 
   if (style.noCorners) {
-    // MODE COMPACT
+    // MODE markdown
     sepMid = "";
     for (var c = 0; c < colCount; c++) {
       sepMid += repeat(style.hBorder, widths[c]);
@@ -159,15 +159,18 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   }
 
   // Première ligne spéciale pour le modèle pointillé
-  var sepTop;
-  if (style.firstSep) {
-    // largeur logique du tableau (sans coins) → que des points
-    sepTop = repeat(".", sepMid.length);
-  } else {
-    sepTop = sepMid;
-  }
+  var out = "";
 
-  var out = sepTop + "\n";
+  // En mode markdown → pas de ligne du haut
+  if (!style.noCorners) {
+    var sepTop;
+    if (style.firstSep) {
+      sepTop = repeat(".", sepMid.length);
+    } else {
+      sepTop = sepMid;
+    }
+    out = sepTop + "\n";
+  }
 
   // 6) Lignes avec wrap
   for (var r = 0; r < rows.length; r++) {
@@ -186,7 +189,7 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
     var line = "";
 
     if (style.noCorners) {
-      // MODE COMPACT : texte|texte|texte (sans | final)
+      // MODE markdown : texte|texte|texte (sans | final)
       for (var c = 0; c < colCount; c++) {
         var txt = wrappedCells[c][h] || "";
         line += padRight(txt, widths[c]);
@@ -203,9 +206,16 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
     }
 
     out += line + "\n";
+    // Ligne de séparation uniquement sous l'entête
+    if (style.noCorners && r == 0) {
+      out += sepMid + "\n";
+    }
   }
 
-    out += sepMid + "\n";
+    // En mode markdown → pas de ligne du bas
+    if (!style.noCorners) {
+      out += sepMid + "\n";
+    }
   }
 
   return out;
@@ -228,7 +238,7 @@ var style_dotted = {
   firstSep: true
 };
 
-var style_compact = {
+var style_markdown = {
   corner: "",
   hBorder: "-",
   vBorder: "|",
@@ -239,7 +249,7 @@ var style_compact = {
 
 var default_classic = JSON.parse(JSON.stringify(style_classic));
 var default_dotted  = JSON.parse(JSON.stringify(style_dotted));
-var default_compact = JSON.parse(JSON.stringify(style_compact));
+var default_markdown = JSON.parse(JSON.stringify(style_markdown));
 
 document.getElementById("tableau_ascii_custom_char").oninput = function () {
   var c = this.value;
@@ -251,7 +261,7 @@ document.getElementById("tableau_ascii_custom_char").oninput = function () {
     // Restaurer les styles d'origine
     style_classic = JSON.parse(JSON.stringify(default_classic));
     style_dotted  = JSON.parse(JSON.stringify(default_dotted));
-    style_compact = JSON.parse(JSON.stringify(default_compact));
+    style_markdown = JSON.parse(JSON.stringify(default_markdown));
     return;
   }
 
@@ -265,8 +275,8 @@ document.getElementById("tableau_ascii_custom_char").oninput = function () {
   style_dotted.vBorder = c;
   style_dotted.firstSep = false;
 
-  style_compact.hBorder = c;
-  style_compact.vBorder = c;
+  style_markdown.hBorder = c;
+  style_markdown.vBorder = c;
 };
 
 // Glisser-déposer
@@ -343,8 +353,8 @@ function convertir() {
     table = asciiTable_generic(rows, maxwidth, style_classic);
   else if (model === "dotted")
     table = asciiTable_generic(rows, maxwidth, style_dotted);
-  else if (model === "compact")
-    table = asciiTable_generic(rows, maxwidth, style_compact);
+  else if (model === "markdown")
+    table = asciiTable_generic(rows, maxwidth, style_markdown);
 
   setText(document.getElementById("output"), table);
 }
