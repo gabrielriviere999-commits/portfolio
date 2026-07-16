@@ -16,8 +16,11 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 <select id="ascii_model">
   <option value="classic">Classique +-|</option>
   <option value="dotted">Pointillé :.:</option>
+  <option value="custom">Custom</option>
   <option value="markdown">Markdown -|</option>
   <option value="html">HTML</option>
+  <option value="unicode">Unicode</option>
+  <option value="box">Box Drawing</option>
 </select>
 <input id="tableau_ascii_custom_char" value="" maxlength="1">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
@@ -241,6 +244,14 @@ var style_dotted = {
   firstSep: true
 };
 
+var style_custom = {
+  corner: "#",
+  hBorder: "#",
+  vBorder: "#",
+  hPadding: 2,
+  space: " "
+};
+
 var style_markdown = {
   corner: "",
   hBorder: "-",
@@ -250,9 +261,7 @@ var style_markdown = {
   noCorners: true
 };
 
-var default_classic = JSON.parse(JSON.stringify(style_classic));
-var default_dotted  = JSON.parse(JSON.stringify(style_dotted));
-// var default_markdown = JSON.parse(JSON.stringify(style_markdown));
+var default_custom  = JSON.parse(JSON.stringify(style_custom));
 
 document.getElementById("tableau_ascii_custom_char").oninput = function () {
   var c = this.value;
@@ -262,24 +271,124 @@ document.getElementById("tableau_ascii_custom_char").oninput = function () {
 
   if (!c || c.length === 0) {
     // Restaurer les styles d'origine
-    style_classic = JSON.parse(JSON.stringify(default_classic));
-    style_dotted  = JSON.parse(JSON.stringify(default_dotted));
-    // style_markdown = JSON.parse(JSON.stringify(default_markdown));
+    style_custom  = JSON.parse(JSON.stringify(default_custom));
     return;
   }
 
   // Sinon → appliquer le caractère personnalisé
-  style_classic.corner = c;
-  style_classic.hBorder = c;
-  style_classic.vBorder = c;
+  style_custom.corner = c;
+  style_custom.hBorder = c;
+  style_custom.vBorder = c;
+};
 
-  style_dotted.corner = c;
-  style_dotted.hBorder = c;
-  style_dotted.vBorder = c;
-  style_dotted.firstSep = false;
+function asciiTable_multi(rows, MAX_TABLE_WIDTH, C) {
+  if (!rows || !rows.length) return "";
 
-  // style_markdown.hBorder = c;
-  // style_markdown.vBorder = c;
+  var TL=C.TL, TM=C.TM, TR=C.TR;
+  var ML=C.ML, MM=C.MM, MR=C.MR;
+  var BL=C.BL, BM=C.BM, BR=C.BR;
+  var V =C.V;
+  var H =C.H;
+
+  // 1) Nombre de colonnes
+  var colCount = 0;
+  for (var i = 0; i < rows.length; i++)
+    if (rows[i].length > colCount) colCount = rows[i].length;
+
+  // 2) Largeurs naturelles
+  var widths = [];
+  for (var c = 0; c < colCount; c++) widths[c] = 0;
+
+  for (var r = 0; r < rows.length; r++)
+    for (var c = 0; c < colCount; c++) {
+      var cell = rows[r][c] || "";
+      if (cell.length > widths[c]) widths[c] = cell.length;
+    }
+
+  // 3) Largeur totale
+  var totalWidth = 1;
+  for (var c = 0; c < colCount; c++)
+    totalWidth += widths[c] + 2;
+
+  // 4) Réduction proportionnelle
+  if (totalWidth > MAX_TABLE_WIDTH) {
+    var espace = MAX_TABLE_WIDTH - (2 * colCount + 1);
+    var sum = 0;
+    for (var i = 0; i < widths.length; i++) sum += widths[i];
+    for (var i = 0; i < widths.length; i++) {
+      widths[i] = Math.floor(widths[i] * espace / sum);
+      if (widths[i] < 1) widths[i] = 1;
+    }
+  }
+
+  function repeat(ch, n) {
+    var s = "";
+    while (n-- > 0) s += ch;
+    return s;
+  }
+
+  // 5) Bordure du haut
+  var out = TL;
+  for (var c = 0; c < colCount; c++) {
+    out += repeat(H, widths[c] + 2);
+    out += (c < colCount - 1 ? TM : TR);
+  }
+  out += "\n";
+
+  // 6) Lignes de données + séparateurs intermédiaires
+  for (var r = 0; r < rows.length; r++) {
+
+    var wrappedCells = [];
+    var maxHeight = 1;
+
+    for (var c = 0; c < colCount; c++) {
+      var cell = rows[r][c] || "";
+      var wrapped = wrapText(cell, widths[c]);
+      wrappedCells[c] = wrapped;
+      if (wrapped.length > maxHeight) maxHeight = wrapped.length;
+    }
+
+    for (var h = 0; h < maxHeight; h++) {
+      var line = V;
+      for (var c = 0; c < colCount; c++) {
+        var txt = wrappedCells[c][h] || "";
+        line += " " + padRight(txt, widths[c]) + " " + V;
+      }
+      out += line + "\n";
+    }
+
+    if (r < rows.length - 1) {
+      var mid = ML;
+      for (var c = 0; c < colCount; c++) {
+        mid += repeat(H, widths[c] + 2);
+        mid += (c < colCount - 1 ? MM : MR);
+      }
+      out += mid + "\n";
+    }
+  }
+
+  // 7) Bordure du bas
+  var bot = BL;
+  for (var c = 0; c < colCount; c++) {
+    bot += repeat(H, widths[c] + 2);
+    bot += (c < colCount - 1 ? BM : BR);
+  }
+  out += bot + "\n";
+
+  return out;
+}
+
+var chars_unicode = {
+  TL:"╔", TM:"╦", TR:"╗",
+  ML:"╠", MM:"╬", MR:"╣",
+  BL:"╚", BM:"╩", BR:"╝",
+  V:"║", H:"═"
+};
+var chars_box = {
+  TL:"┌", TM:"┬", TR:"┐",
+  ML:"├", MM:"┼", MR:"┤",
+  BL:"└", BM:"┴", BR:"┘",
+  V:"│", H:"─"
 };
 
 /* --- Conversion CSV → ASCII --- */
@@ -302,10 +411,16 @@ function convertir() {
     table = asciiTable_generic(rows, maxwidth, style_classic);
   else if (model === "dotted")
     table = asciiTable_generic(rows, maxwidth, style_dotted);
+  else if (model === "custom")
+    table = asciiTable_generic(rows, maxwidth, style_custom);
   else if (model === "markdown")
     table = asciiTable_generic(rows, maxwidth, style_markdown);
   else if (model === "html")
     table = tableToHTML(rows);
+  else if (model === "unicode")
+    table = asciiTable_multi(rows, maxwidth, chars_unicode);
+  else if (model === "box")
+    table = asciiTable_multi(rows, maxwidth, chars_box);
 
   setText(document.getElementById("output"), table);
 }
