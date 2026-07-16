@@ -24,7 +24,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 </select>
 <input id="tableau_ascii_custom_char" style="display:none;" maxlength="1">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
-<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\n• Ne pas utiliser le même caractère ni | pour données et bordure verticale lors du passage output à input.\nNote : Les textes coupés sur plusieurs lignes sont fusionnés avec des espaces alors la conversion n‘est pas totalement réversible.')">?</button>
+<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\nNote : Les textes coupés sur plusieurs lignes sont fusionnés avec des espaces alors la conversion n‘est pas totalement réversible.\n\n⚠ Ne pas utiliser le même caractère ni | pour données et bordure verticale lors du passage output à input.\nUnicode et Box : risque de décalage élevé notamment sur Android.')">?</button>
 <p></p><textarea wrap="off" id="input"></textarea><br>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir en tableau</button>
 <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
