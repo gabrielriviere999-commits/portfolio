@@ -22,9 +22,9 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
   <option value="unicode">Unicode</option>
   <option value="box">Box Drawing</option>
 </select>
-<input id="tableau_ascii_custom_char" value="" maxlength="1">
+<input id="tableau_ascii_custom_char" style="display:none;" maxlength="1">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
-<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : style terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : conçu pour les fichiers .md.\n• HTML : code HTML.\n\n• Ne pas utiliser le même caractère ni | pour données et bordure verticale lors du passage output à input.\nNote : Les textes coupés sur plusieurs lignes sont fusionnés avec des espaces alors la conversion n‘est pas totalement réversible.')">?</button>
+<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max non utilisable pour modèles Markdown et HTML.\n• Classique : style terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Custom : caractère personnalisé pour l‘ensemble des bordures.\n• Markdown : conçu pour les fichiers .md.\n\n• Ne pas utiliser le même caractère ni | pour données et bordure verticale lors du passage output à input.\nNote : Les textes coupés sur plusieurs lignes sont fusionnés avec des espaces alors la conversion n‘est pas totalement réversible.')">?</button>
 <p></p><textarea wrap="off" id="input"></textarea><br>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir en tableau</button>
 <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
@@ -698,6 +698,12 @@ function resetParams() {
   localStorage.removeItem("tableau_ascii_custom_char");
 }
 
+function updateCustomCharVisibility() {
+  var input = document.getElementById("tableau_ascii_custom_char");
+  var model = document.getElementById("ascii_model").value;
+
+  input.style.display = (model === "custom") ? "" : "none";
+}
 /* --- Sauvegarde/Restauration --- */
 function saveState() {
   localStorage.setItem("tableau_ascii_sep", document.getElementById("tableau_ascii_sep").value);
@@ -708,6 +714,7 @@ document.getElementById("tableau_ascii_sep").oninput = saveState;
 document.getElementById("tableau_ascii_maxwidth").oninput = saveState;
 document.getElementById("ascii_model").onchange = function () {
   localStorage.setItem("tableau_ascii_model", this.value);
+  updateCustomCharVisibility();
 };
 
 window.onload = function() {
@@ -721,6 +728,7 @@ window.onload = function() {
   if (savedModel !== null) {
     document.getElementById("ascii_model").value = savedModel;
   }
+  updateCustomCharVisibility();
   if (savedChar !== null) {
     var custom = document.getElementById("tableau_ascii_custom_char");
     custom.value = savedChar;
