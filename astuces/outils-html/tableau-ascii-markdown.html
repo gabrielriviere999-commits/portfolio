@@ -19,10 +19,11 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
   <option value="classic">Classique +-|</option>
   <option value="dotted">Pointillé :.:</option>
   <option value="markdown">Markdown -|</option>
+  <option value="html">HTML</option>
 </select>
 <input id="tableau_ascii_custom_char" value="" maxlength="1">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
-<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : tableau de terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : tableau conçu pour les fichiers .md.')">?</button>
+<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : style terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : conçu pour les fichiers .md.\n• HTML : code HTML')">?</button>
 <p></p><textarea wrap="off" id="input"></textarea><p></p>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir</button>
 <button onclick="copier()" class="btn-color" style="background:#4caf50;">Copier</button>
@@ -355,8 +356,33 @@ function convertir() {
     table = asciiTable_generic(rows, maxwidth, style_dotted);
   else if (model === "markdown")
     table = asciiTable_generic(rows, maxwidth, style_markdown);
+  else if (model === "html")
+    table = tableToHTML(rows);
 
   setText(document.getElementById("output"), table);
+}
+
+/* --- Conversion CSV → HTML --- */
+function tableToHTML(rows) {
+  var out = "<table>\n";
+
+  for (var r = 0; r < rows.length; r++) {
+    out += "  <tr>";
+    for (var c = 0; c < rows[r].length; c++) {
+      out += "<td>" + escapeHTML(rows[r][c]) + "</td>";
+    }
+    out += "</tr>\n";
+  }
+
+  out += "</table>";
+  return out;
+}
+
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 // Bouton copier
