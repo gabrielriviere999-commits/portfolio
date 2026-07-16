@@ -358,7 +358,7 @@ function parseAnyTable(text) {
     return parseHTMLTable(text);
   }
 
-  // 2) Markdown ou compact ?
+  // 2) Markdown ?
   if (text.indexOf("|") !== -1 && text.indexOf("+") === -1) {
     return parsePipeTable(text);
   }
