@@ -16,8 +16,6 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <select id="ascii_model">
   <option value="classic">Classique +-|</option>
   <option value="dotted">Pointillé :.:</option>
-  <option value="round">Rond ○</option>
-  <option value="square">Carré □</option>
   <option value="custom">Custom</option>
   <option value="markdown">Markdown -|</option>
   <option value="html">HTML</option>
@@ -246,22 +244,6 @@ var style_dotted = {
   firstSep: true
 };
 
-var style_round = {
-  corner: "○",
-  hBorder: "○",
-  vBorder: "○",
-  hPadding: 2,
-  space: " "
-};
-
-var style_square = {
-  corner: "□",
-  hBorder: "□",
-  vBorder: "□",
-  hPadding: 2,
-  space: " "
-};
-
 var style_custom = {
   corner: "#",
   hBorder: "#",
@@ -429,10 +411,6 @@ function convertir() {
     table = asciiTable_generic(rows, maxwidth, style_classic);
   else if (model === "dotted")
     table = asciiTable_generic(rows, maxwidth, style_dotted);
-  else if (model === "round")
-    table = asciiTable_generic(rows, maxwidth, style_round);
-  else if (model === "square")
-    table = asciiTable_generic(rows, maxwidth, style_square);
   else if (model === "custom")
     table = asciiTable_generic(rows, maxwidth, style_custom);
   else if (model === "markdown")
