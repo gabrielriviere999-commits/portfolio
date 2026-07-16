@@ -34,6 +34,10 @@ input{width:15px;}
   <button id="btnArrow" onclick="setTool('arrow')">Flèche</button>
   |
   <button id="btnRect" onclick="setTool('rect')">Rectangle</button>
+  <select id="rectMode">
+    <option value="classic">+-|</option>
+    <option value="dotted">:.:</option>
+  </select>
   <input id="rectChar" value="" maxlength="1">
   |
   <button id="btnEllipse" onclick="setTool('ellipse')">Ellipse</button>
@@ -330,39 +334,74 @@ function drawRectangle(x1, y1, x2, y2) {
     ensureCell(xMin, yMin);
     ensureCell(xMax, yMax);
 
+    // lire le mode
+    var mode = document.getElementById("rectMode").value;
+
     // lire le caractère personnalisé
     var c = document.getElementById("rectChar").value;
-
-    // mode normal si input vide
-    // var useCustom = (c && c.length > 0 && c !== " ");
     var useCustom = (c && c.length > 0);
 
+    // mode classique
     var corner = useCustom ? c : "+";
     var horiz  = useCustom ? c : "-";
     var vert   = useCustom ? c : "|";
 
-    // coins
-    grid[yMin][xMin] = corner;
-    grid[yMin][xMax] = corner;
-    grid[yMax][xMin] = corner;
-    grid[yMax][xMax] = corner;
+    // mode pointillé (selon ton modèle)
+    var cornerTop = ".";   // coins du haut
+    var cornerBottom = ":"; // coins du bas
+    var dottedHoriz = ".";  // horizontales
+    var dottedVert  = ":";  // verticales
 
     var x, y;
 
-    // horizontales
-    for (x = xMin + 1; x < xMax; x++) {
-        ensureCell(x, yMin);
-        ensureCell(x, yMax);
-        grid[yMin][x] = horiz;
-        grid[yMax][x] = horiz;
+    if (mode === "classic") {
+
+        // coins
+        grid[yMin][xMin] = corner;
+        grid[yMin][xMax] = corner;
+        grid[yMax][xMin] = corner;
+        grid[yMax][xMax] = corner;
+
+        // horizontales
+        for (x = xMin + 1; x < xMax; x++) {
+            ensureCell(x, yMin);
+            ensureCell(x, yMax);
+            grid[yMin][x] = horiz;
+            grid[yMax][x] = horiz;
+        }
+
+        // verticales
+        for (y = yMin + 1; y < yMax; y++) {
+            ensureCell(xMin, y);
+            ensureCell(xMax, y);
+            grid[y][xMin] = vert;
+            grid[y][xMax] = vert;
+        }
     }
 
-    // verticales
-    for (y = yMin + 1; y < yMax; y++) {
-        ensureCell(xMin, y);
-        ensureCell(xMax, y);
-        grid[y][xMin] = vert;
-        grid[y][xMax] = vert;
+    if (mode === "dotted") {
+
+        // coins pointillés
+        grid[yMin][xMin] = cornerTop;
+        grid[yMin][xMax] = cornerTop;
+        grid[yMax][xMin] = cornerBottom;
+        grid[yMax][xMax] = cornerBottom;
+
+        // horizontales pointillées
+        for (x = xMin + 1; x < xMax; x++) {
+            ensureCell(x, yMin);
+            ensureCell(x, yMax);
+            grid[yMin][x] = dottedHoriz;
+            grid[yMax][x] = dottedHoriz;
+        }
+
+        // verticales pointillées
+        for (y = yMin + 1; y < yMax; y++) {
+            ensureCell(xMin, y);
+            ensureCell(xMax, y);
+            grid[y][xMin] = dottedVert;
+            grid[y][xMax] = dottedVert;
+        }
     }
 
     render();
