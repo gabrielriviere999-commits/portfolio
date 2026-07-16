@@ -23,7 +23,7 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 </select>
 <input id="tableau_ascii_custom_char" value="" maxlength="1">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
-<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : style terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : conçu pour les fichiers .md.\n• HTML : code HTML')">?</button>
+<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : style terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : conçu pour les fichiers .md.\n• HTML : code HTML\n\n• Ne pas utiliser le même caractère pour bordures et données lors du passage output à input, pour classique + et - mais pas |')">?</button>
 <p></p><textarea wrap="off" id="input"></textarea><p></p>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir</button>
 <button onclick="copier()" class="btn-color" style="background:#4caf50;">Copier</button>
@@ -32,7 +32,8 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 <input type="file" id="fileInput" style="display:none;">
 
 <p></p><h3>Résultat</h3>
-<textarea wrap="off" id="output"></textarea>
+<textarea wrap="off" id="output"></textarea><br>
+<button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Mettre à jour depuis le résultat</button>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
@@ -399,6 +400,143 @@ function copier() {
 
   document.body.removeChild(temp);
   btn.focus();
+}
+
+/* --- Output → input --- */
+function importFromOutput() {
+  var out = document.getElementById("output").value;
+  var rows = parseAnyTable(out);
+  var sep = document.getElementById("tableau_ascii_sep").value || ";";
+
+  var txt = "";
+  for (var r = 0; r < rows.length; r++) {
+    if (r > 0) txt += "\n";
+    txt += rows[r].join(sep);
+  }
+
+  document.getElementById("input").value = txt;
+}
+
+function parseAnyTable(text) {
+  text = String(text);
+
+  // 1) HTML ?
+  if (text.indexOf("<table") !== -1) {
+    return parseHTMLTable(text);
+  }
+
+  // 2) Markdown ou compact ?
+  if (text.indexOf("|") !== -1 && text.indexOf("+") === -1) {
+    return parsePipeTable(text);
+  }
+
+  // 3) ASCII classique / pointillé / custom
+  return parseAsciiTable(text);
+}
+
+function parseHTMLTable(text) {
+  var rows = [];
+  var lines = text.split(/\r?\n/);
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    if (line.indexOf("<tr>") !== -1) {
+      var cells = [];
+      var parts = line.split("<td>");
+
+      for (var p = 1; p < parts.length; p++) {
+        var cell = parts[p].split("</td>")[0];
+        cells.push(cell);
+      }
+
+      rows.push(cells);
+    }
+  }
+
+  return rows;
+}
+
+function parsePipeTable(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    // ignorer les lignes de séparation markdown
+    if (line.indexOf("---") !== -1) continue;
+
+    if (line.indexOf("|") !== -1) {
+      var parts = line.split("|");
+      var cells = [];
+
+      for (var p = 0; p < parts.length; p++) {
+        var t = trim(parts[p]);
+        if (t.length > 0) cells.push(t);
+      }
+
+      rows.push(cells);
+    }
+  }
+
+  return rows;
+}
+
+function parseAsciiTable(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+  var currentRow = null;
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+
+    if (!line || line.length === 0) continue;
+
+    var first = line.charAt(0);
+
+    // On ne traite que les lignes qui commencent par un symbole non alphanumérique
+    if (/^[^A-Za-z0-9]/.test(first)) {
+
+      // LIGNE DE BORDURE : aucun caractère alphanumérique dans la ligne
+      if (!/[A-Za-z0-9]/.test(line)) {
+        if (currentRow) {
+          rows.push(currentRow);
+          currentRow = null;
+        }
+        continue;
+      }
+
+      // LIGNE DE DONNÉES : même symbole utilisé comme séparateur
+      var parts = line.split(first);
+      var cells = [];
+
+      // on ignore le premier et le dernier (vides)
+      for (var p = 1; p < parts.length - 1; p++) {
+        cells.push(trim(parts[p]));
+      }
+
+      if (!currentRow) {
+        currentRow = cells;
+      } else {
+        // concat multi-lignes
+        for (var c = 0; c < cells.length; c++) {
+          if (cells[c].length > 0) {
+            currentRow[c] += " " + cells[c];
+          }
+        }
+      }
+    }
+  }
+
+  // Dernière ligne si pas suivie de bordure
+  if (currentRow) rows.push(currentRow);
+
+  return rows;
+}
+
+function trim(str) {
+  return String(str).replace(/^\s+/, "").replace(/\s+$/, "");
 }
 
 // Bouton Effacer tout
