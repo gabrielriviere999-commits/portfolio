@@ -14,15 +14,14 @@ input{width:50px;}
 <h2>Tableau ASCII & Markdown</h2>
 
 Séparateur : <input id="tableau_ascii_sep" value=";">
-&nbsp;&nbsp;
 Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="5">
-<button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
 <select id="ascii_model">
   <option value="classic">Classique +-|</option>
   <option value="dotted">Pointillé :.:</option>
   <option value="markdown">Markdown -|</option>
 </select>
 <input id="tableau_ascii_custom_char" value="" maxlength="1">
+<button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
 <button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : tableau de terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : tableau conçu pour les fichiers .md.')">?</button>
 <p></p><textarea wrap="off" id="input"></textarea><p></p>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir</button>
@@ -385,6 +384,7 @@ function effacerTout() {
 function resetParams() {
   document.getElementById("tableau_ascii_sep").value = ";";
   document.getElementById("tableau_ascii_maxwidth").value = "120";
+  document.getElementById("ascii_model").value = "classic";
 
   var custom = document.getElementById("tableau_ascii_custom_char");
   custom.value = "";
@@ -393,6 +393,7 @@ function resetParams() {
   // Met à jour la sauvegarde
   localStorage.setItem("tableau_ascii_sep", ";");
   localStorage.setItem("tableau_ascii_maxwidth", "120");
+  localStorage.setItem("tableau_ascii_model", "classic");
   localStorage.removeItem("tableau_ascii_custom_char");
 }
 
@@ -404,14 +405,21 @@ function saveState() {
 
 document.getElementById("tableau_ascii_sep").oninput = saveState;
 document.getElementById("tableau_ascii_maxwidth").oninput = saveState;
+document.getElementById("ascii_model").onchange = function () {
+  localStorage.setItem("tableau_ascii_model", this.value);
+};
 
 window.onload = function() {
   var savedtableau_ascii_sep = localStorage.getItem("tableau_ascii_sep");
   var savedMax = localStorage.getItem("tableau_ascii_maxwidth");
+  var savedModel = localStorage.getItem("tableau_ascii_model");
   var savedChar = localStorage.getItem("tableau_ascii_custom_char");
 
   if (savedtableau_ascii_sep !== null) document.getElementById("tableau_ascii_sep").value = savedtableau_ascii_sep;
   if (savedMax !== null) document.getElementById("tableau_ascii_maxwidth").value = savedMax;
+  if (savedModel !== null) {
+    document.getElementById("ascii_model").value = savedModel;
+  }
   if (savedChar !== null) {
     var custom = document.getElementById("tableau_ascii_custom_char");
     custom.value = savedChar;
