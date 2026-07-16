@@ -12,7 +12,7 @@
 <h2>Tableau ASCII & Markdown</h2>
 
 Séparateur : <input id="tableau_ascii_sep" value=";">
-Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="4">
+<span id="maxWidthContainer">Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="4"></span>
 <select id="ascii_model">
   <option value="classic">Classique +-|</option>
   <option value="dotted">Pointillé :.:</option>
@@ -698,11 +698,16 @@ function resetParams() {
   localStorage.removeItem("tableau_ascii_custom_char");
 }
 
-function updateCustomCharVisibility() {
-  var input = document.getElementById("tableau_ascii_custom_char");
+function updateOptionsVisibility() {
   var model = document.getElementById("ascii_model").value;
 
-  input.style.display = (model === "custom") ? "" : "none";
+  // Caractère personnalisé
+  document.getElementById("tableau_ascii_custom_char").style.display =
+    (model === "custom") ? "" : "none";
+
+  // Largeur max
+  document.getElementById("maxWidthContainer").style.display =
+    (model === "html" || model === "markdown") ? "none" : "";
 }
 /* --- Sauvegarde/Restauration --- */
 function saveState() {
@@ -714,7 +719,7 @@ document.getElementById("tableau_ascii_sep").oninput = saveState;
 document.getElementById("tableau_ascii_maxwidth").oninput = saveState;
 document.getElementById("ascii_model").onchange = function () {
   localStorage.setItem("tableau_ascii_model", this.value);
-  updateCustomCharVisibility();
+  updateOptionsVisibility();
 };
 
 window.onload = function() {
@@ -728,7 +733,7 @@ window.onload = function() {
   if (savedModel !== null) {
     document.getElementById("ascii_model").value = savedModel;
   }
-  updateCustomCharVisibility();
+  updateOptionsVisibility();
   if (savedChar !== null) {
     var custom = document.getElementById("tableau_ascii_custom_char");
     custom.value = savedChar;
