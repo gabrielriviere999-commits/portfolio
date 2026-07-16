@@ -23,9 +23,9 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 </select>
 <input id="tableau_ascii_custom_char" value="" maxlength="1">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
-<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : style terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : conçu pour les fichiers .md.\n• HTML : code HTML\n\n• Ne pas utiliser le même caractère pour bordure verticale et données lors du passage output à input.')">?</button>
+<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\n\nLargeur max et caractère de bordures utilisables uniquement pour classique et pointillé.\n• Classique : style terminal similaire à MySQL.\n• Pointillé : comme classique mais avec des . et : comme bordures.\n• Markdown : conçu pour les fichiers .md.\n• HTML : code HTML\n\n• Ne pas utiliser le même caractère pour bordure verticale et données lors du passage output à input.\nNote : Les textes coupés sur plusieurs lignes sont fusionnés avec des espaces alors la conversion n‘est pas totalement réversible.')">?</button>
 <p></p><textarea wrap="off" id="input"></textarea><p></p>
-<button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir</button>
+<button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir en tableau</button>
 <button onclick="copier()" class="btn-color" style="background:#4caf50;">Copier</button>
 <button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
 <button id="importFileBtn">Importer fichier…</button>
@@ -33,7 +33,7 @@ Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="
 
 <p></p><h3>Résultat</h3>
 <textarea wrap="off" id="output"></textarea><br>
-<button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Mettre à jour depuis le résultat</button>
+<button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Convertir en CSV</button>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
