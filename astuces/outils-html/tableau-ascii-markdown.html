@@ -374,16 +374,32 @@ function parseHTMLTable(text) {
   for (var i = 0; i < lines.length; i++) {
     var line = trim(lines[i]);
 
-    if (line.indexOf("<tr>") !== -1) {
+    // détecter une ligne <tr>
+    if (line.indexOf("<tr") !== -1) {
       var cells = [];
-      var parts = line.split("<td>");
+      var pos = 0;
 
-      for (var p = 1; p < parts.length; p++) {
-        var cell = parts[p].split("</td>")[0];
+      while (true) {
+        // trouver <td
+        var tdStart = line.indexOf("<td", pos);
+        if (tdStart === -1) break;
+
+        // trouver >
+        var contentStart = line.indexOf(">", tdStart);
+        if (contentStart === -1) break;
+
+        // trouver </td>
+        var tdEnd = line.indexOf("</td>", contentStart);
+        if (tdEnd === -1) break;
+
+        // extraire contenu
+        var cell = line.substring(contentStart + 1, tdEnd);
         cells.push(cell);
+
+        pos = tdEnd + 5; // avancer après </td>
       }
 
-      rows.push(cells);
+      if (cells.length > 0) rows.push(cells);
     }
   }
 
