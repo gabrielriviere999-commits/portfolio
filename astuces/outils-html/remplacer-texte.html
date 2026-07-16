@@ -626,6 +626,12 @@ function applyImport() {
             document.getElementById("repl_ignore_case").checked = data.ignoreCase;
         }
 
+        saveChecks();
+
+        localStorage.setItem("add_prefix_value", document.getElementById("addPrefix").value);
+        localStorage.setItem("add_suffix_value", document.getElementById("addSuffix").value);
+        localStorage.setItem("remove_prefix_value", document.getElementById("removePrefix").value);
+        localStorage.setItem("remove_suffix_value", document.getElementById("removeSuffix").value);
         saveReplacements();
 
         document.getElementById("importBox").style.display = "none";
