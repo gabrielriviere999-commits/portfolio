@@ -45,6 +45,7 @@ input{width:15px;}
   |
   <button id="btnMove" onclick="setTool('move')">Déplacer</button>
   <button id="btnCopy" onclick="setTool('copy')">Copier</button>
+  <button id="btnClipboard" onclick="setTool('clipboard')">Copier presse-papiers</button>
   |
   <button id="btnText" onclick="setTool('text')">Texte libre</button>
   <button id="btnEdit" onclick="setTool('edit')">Édition texte</button>
@@ -128,7 +129,7 @@ function render() {
     view.value = out;
 }
 
-/* --- SETOOL --- */
+/* --- SETTOOL --- */
 function setTool(t) {
     tool = t;
 
@@ -139,6 +140,7 @@ function setTool(t) {
     document.getElementById("btnEllipse").className = "";
     document.getElementById("btnMove").className = "";
     document.getElementById("btnCopy").className = "";
+    document.getElementById("btnClipboard").className = "";
     document.getElementById("btnText").className = "";
     document.getElementById("btnEdit").className = "";
     document.getElementById("btnFill").className = "";
@@ -157,8 +159,9 @@ function setTool(t) {
     }
     if (t === "copy") {
         moveSelection = null;
-       copyMode = 0;
+        copyMode = 0;
     }
+    if (t === "clipboard") btnClipboard.className = "active";
     if (t === "fill") btnFill.className = "active";
     if (t === "erase") btnErase.className = "active";
     if (t === "text") btnText.className = "active";
@@ -607,6 +610,45 @@ function previewMove(destX, destY) {
     grid = realGrid;
 }
 
+function copySelectionToClipboard(x1, y1, x2, y2) {
+
+    var xMin = Math.min(x1, x2);
+    var xMax = Math.max(x1, x2);
+    var yMin = Math.min(y1, y2);
+    var yMax = Math.max(y1, y2);
+
+    var txt = "";
+    var x, y;
+
+    for (y = yMin; y <= yMax; y++) {
+
+        var line = "";
+
+        for (x = xMin; x <= xMax; x++) {
+            line += safeGet(x, y);
+        }
+
+        // retire les espaces de fin
+        line = line.replace(/\s+$/, "");
+
+        txt += line;
+
+        if (y < yMax)
+            txt += "\n";
+    }
+
+    var temp = document.createElement("textarea");
+    temp.value = txt;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try {
+        document.execCommand("copy");
+    } catch(e) {}
+
+    document.body.removeChild(temp);
+}
+
 /* --- TEXTE --- */
 function placeTextMarker(x, y) {
     textMarkerX = x;
@@ -903,7 +945,10 @@ view.onmouseup = function(e) {
         }
         return;
     }
-
+    if (tool === "clipboard") {
+        copySelectionToClipboard(startX, startY, pos.x, pos.y);
+        return;
+    }
     // formes finales
     if (tool === "line")    drawLine(startX, startY, pos.x, pos.y);
     if (tool === "arrow")   drawArrow(startX, startY, pos.x, pos.y);
