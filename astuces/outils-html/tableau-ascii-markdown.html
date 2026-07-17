@@ -563,7 +563,8 @@ function parsePipeTable(text) {
 
       for (var p = 0; p < parts.length; p++) {
         var t = trim(parts[p]);
-        if (t.length > 0) cells.push(t);
+        // if (t.length > 0) cells.push(t);
+        cells.push(t);
       }
 
       rows.push(cells);
