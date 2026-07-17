@@ -15,6 +15,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <span id="maxWidthContainer">Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="4"></span>
 <select id="ascii_model">
   <option value="classic">Classique +-|</option>
+  <option value="header">Classique (header double)</option>
   <option value="dotted">Pointillé :.:</option>
   <option value="custom">Custom</option>
   <option value="markdown">Markdown -|</option>
@@ -147,9 +148,10 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
     }
   }
 
-  // 5) Lignes de séparation
-  var sepMid;
+  var out = "";
+  var sepMid = "";
 
+  // 5) Lignes de séparation
   if (style.noCorners) {
     // MODE markdown
     sepMid = "";
@@ -164,16 +166,20 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
       sepMid += repeat(style.hBorder, widths[c] + style.hPadding) + style.corner;
   }
 
-  // Première ligne spéciale pour le modèle pointillé
-  var out = "";
-
   // En mode markdown → pas de ligne du haut
   if (!style.noCorners) {
     var sepTop;
     if (style.firstSep) {
       sepTop = repeat(".", sepMid.length);
     } else {
-      sepTop = sepMid;
+      // si hBorderHeader existe, on refait une ligne spéciale pour le haut
+      if (style.hBorderHeader) {
+        sepTop = style.corner;
+        for (var c = 0; c < colCount; c++)
+          sepTop += repeat(style.hBorderHeader, widths[c] + style.hPadding) + style.corner;
+      } else {
+        sepTop = sepMid;
+      }
     }
     out = sepTop + "\n";
   }
@@ -190,37 +196,47 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
       if (wrapped.length > maxHeight) maxHeight = wrapped.length;
     }
 
-  for (var h = 0; h < maxHeight; h++) {
+    for (var h = 0; h < maxHeight; h++) {
 
-    var line = "";
+      var line = "";
 
-    if (style.noCorners) {
-      // MODE markdown : texte|texte|texte (sans | final)
-      for (var c = 0; c < colCount; c++) {
-        var txt = wrappedCells[c][h] || "";
-        line += padRight(txt, widths[c]);
-        if (c < colCount - 1) line += style.vBorder;
+      if (style.noCorners) {
+        // MODE markdown : texte|texte|texte (sans | final)
+        for (var c = 0; c < colCount; c++) {
+          var txt = wrappedCells[c][h] || "";
+          line += padRight(txt, widths[c]);
+          if (c < colCount - 1) line += style.vBorder;
+        }
+      } else {
+        // CLASSIQUE + DOTTED
+        line = style.vBorder + style.space;
+        for (var c = 0; c < colCount; c++) {
+          var txt = wrappedCells[c][h] || "";
+          line += padRight(txt, widths[c]) + style.space + style.vBorder + style.space;
+        }
+        line = line.substring(0, line.length - 1);
       }
-    } else {
-      // CLASSIQUE + DOTTED
-      line = style.vBorder + style.space;
-      for (var c = 0; c < colCount; c++) {
-        var txt = wrappedCells[c][h] || "";
-        line += padRight(txt, widths[c]) + style.space + style.vBorder + style.space;
+
+      out += line + "\n";
+
+      // Ligne de séparation uniquement sous l'entête en markdown
+      if (style.noCorners && r == 0 && h == maxHeight - 1) {
+        out += sepMid + "\n";
       }
-      line = line.substring(0, line.length - 1);
     }
 
-    out += line + "\n";
-    // Ligne de séparation uniquement sous l'entête
-    if (style.noCorners && r == 0) {
-      out += sepMid + "\n";
-    }
-  }
-
-    // En mode markdown → pas de ligne du bas
+    // En mode non-markdown → ligne de séparation après chaque ligne
     if (!style.noCorners) {
-      out += sepMid + "\n";
+      var border = (r === 0 && style.hBorderHeader)
+                   ? style.hBorderHeader
+                   : style.hBorder;
+
+      var sep = style.corner;
+      for (var c = 0; c < colCount; c++) {
+        sep += repeat(border, widths[c] + style.hPadding) + style.corner;
+      }
+
+      out += sep + "\n";
     }
   }
 
@@ -230,6 +246,15 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
 var style_classic = {
   corner: "+",
   hBorder: "-",
+  vBorder: "|",
+  hPadding: 2,
+  space: " "
+};
+
+var style_header = {
+  corner: "+",
+  hBorder: "-",
+  hBorderHeader: "=",
   vBorder: "|",
   hPadding: 2,
   space: " "
@@ -409,6 +434,8 @@ function convertir() {
 
   if (model === "classic")
     table = asciiTable_generic(rows, maxwidth, style_classic);
+  else if (model === "header")
+    table = asciiTable_generic(rows, maxwidth, style_header);
   else if (model === "dotted")
     table = asciiTable_generic(rows, maxwidth, style_dotted);
   else if (model === "custom")
