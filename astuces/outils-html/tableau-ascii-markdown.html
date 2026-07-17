@@ -18,10 +18,11 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
   <option value="header">Classique (header double)</option>
   <option value="dotted">Pointillé :.:</option>
   <option value="custom">Custom</option>
-  <option value="markdown">Markdown -|</option>
-  <option value="html">HTML</option>
   <option value="unicode">Unicode ╠═</option>
   <option value="box">Box ├─</option>
+  <option value="markdown">Markdown -|</option>
+  <option value="html">HTML</option>
+  <option value="wikitable">Wikitable</option>
 </select>
 <input id="tableau_ascii_custom_char" style="display:none;" maxlength="1">
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
@@ -440,14 +441,17 @@ function convertir() {
     table = asciiTable_generic(rows, maxwidth, style_dotted);
   else if (model === "custom")
     table = asciiTable_generic(rows, maxwidth, style_custom);
-  else if (model === "markdown")
-    table = asciiTable_generic(rows, maxwidth, style_markdown);
-  else if (model === "html")
-    table = tableToHTML(rows);
   else if (model === "unicode")
     table = asciiTable_multi(rows, maxwidth, chars_unicode);
   else if (model === "box")
     table = asciiTable_multi(rows, maxwidth, chars_box);
+  else if (model === "markdown")
+    table = asciiTable_generic(rows, maxwidth, style_markdown);
+  else if (model === "html")
+    table = tableToHTML(rows);
+  else if (model === "wikitable") {
+    table = generateWikiTable(rows);
+  }
 
   setText(document.getElementById("output"), table);
 }
@@ -475,10 +479,43 @@ function escapeHTML(str) {
     .replace(/>/g, "&gt;");
 }
 
+/* --- Conversion CSV → WikiTable --- */
+function generateWikiTable(rows) {
+  var out = "{| class=\"wikitable\"\n";
+
+  // Caption optionnelle
+  // out += "|+ Generated table\n";
+
+  for (var r = 0; r < rows.length; r++) {
+    out += "|-\n";
+
+    var row = rows[r];
+
+    // Header row si première ligne
+    if (r === 0) {
+      out += "! " + row.join(" !! ") + "\n";
+    } else {
+      out += "| " + row.join(" || ") + "\n";
+    }
+  }
+
+  out += "|}";
+  return out;
+}
+
 /* --- Output → input --- */
 function importFromOutput() {
   var out = document.getElementById("output").value;
-  var rows = parseAnyTable(out);
+  var rows;
+
+  // 1) Détection wikitable
+  if (out.indexOf("{|") !== -1 && out.indexOf("|}") !== -1) {
+    rows = parseWikiTable(out);
+  } else {
+    // 2) Tous les autres formats (HTML, Markdown, ASCII)
+    rows = parseAnyTable(out);
+  }
+
   var sep = document.getElementById("tableau_ascii_sep").value || ";";
 
   var txt = "";
@@ -505,71 +542,6 @@ function parseAnyTable(text) {
 
   // 3) ASCII classique / pointillé / custom
   return parseAsciiTable(text);
-}
-
-function parseHTMLTable(text) {
-  var rows = [];
-  var lines = text.split(/\r?\n/);
-
-  for (var i = 0; i < lines.length; i++) {
-    var line = trim(lines[i]);
-
-    // détecter une ligne <tr>
-    if (line.indexOf("<tr") !== -1) {
-      var cells = [];
-      var pos = 0;
-
-      while (true) {
-        // trouver <td
-        var tdStart = line.indexOf("<td", pos);
-        if (tdStart === -1) break;
-
-        // trouver >
-        var contentStart = line.indexOf(">", tdStart);
-        if (contentStart === -1) break;
-
-        // trouver </td>
-        var tdEnd = line.indexOf("</td>", contentStart);
-        if (tdEnd === -1) break;
-
-        // extraire contenu
-        var cell = line.substring(contentStart + 1, tdEnd);
-        cells.push(cell);
-
-        pos = tdEnd + 5; // avancer après </td>
-      }
-
-      if (cells.length > 0) rows.push(cells);
-    }
-  }
-
-  return rows;
-}
-
-function parsePipeTable(text) {
-  var lines = text.split(/\r?\n/);
-  var rows = [];
-
-  for (var i = 0; i < lines.length; i++) {
-    var line = trim(lines[i]);
-
-    // ignorer les lignes de séparation markdown
-    if (/^[:\-|\s]+$/.test(line)) continue;
-
-    if (line.indexOf("|") !== -1) {
-      var parts = line.split("|");
-      var cells = [];
-
-      for (var p = 0; p < parts.length; p++) {
-        var t = trim(parts[p]);
-        cells.push(t);
-      }
-
-      rows.push(cells);
-    }
-  }
-
-  return rows;
 }
 
 function parseAsciiTable(text) {
@@ -626,6 +598,113 @@ function parseAsciiTable(text) {
 
 function trim(str) {
   return String(str).replace(/^\s+/, "").replace(/\s+$/, "");
+}
+
+function parsePipeTable(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    // ignorer les lignes de séparation markdown
+    if (/^[:\-|\s]+$/.test(line)) continue;
+
+    if (line.indexOf("|") !== -1) {
+      var parts = line.split("|");
+      var cells = [];
+
+      for (var p = 0; p < parts.length; p++) {
+        var t = trim(parts[p]);
+        cells.push(t);
+      }
+
+      rows.push(cells);
+    }
+  }
+
+  return rows;
+}
+
+function parseHTMLTable(text) {
+  var rows = [];
+  var lines = text.split(/\r?\n/);
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    // détecter une ligne <tr>
+    if (line.indexOf("<tr") !== -1) {
+      var cells = [];
+      var pos = 0;
+
+      while (true) {
+        // trouver <td
+        var tdStart = line.indexOf("<td", pos);
+        if (tdStart === -1) break;
+
+        // trouver >
+        var contentStart = line.indexOf(">", tdStart);
+        if (contentStart === -1) break;
+
+        // trouver </td>
+        var tdEnd = line.indexOf("</td>", contentStart);
+        if (tdEnd === -1) break;
+
+        // extraire contenu
+        var cell = line.substring(contentStart + 1, tdEnd);
+        cells.push(cell);
+
+        pos = tdEnd + 5; // avancer après </td>
+      }
+
+      if (cells.length > 0) rows.push(cells);
+    }
+  }
+
+  return rows;
+}
+
+function parseWikiTable(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+  var current = [];
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    if (line.startsWith("{|")) continue;
+    if (line.startsWith("|}")) continue;
+    if (line.startsWith("|+")) continue; // caption ignorée
+
+    if (line === "|-") {
+      if (current.length > 0) {
+        rows.push(current);
+        current = [];
+      }
+      continue;
+    }
+
+    // Header cells
+    if (line.startsWith("!")) {
+      var parts = line.substring(1).split("!!");
+      for (var p = 0; p < parts.length; p++)
+        current.push(trim(parts[p]));
+      continue;
+    }
+
+    // Normal cells
+    if (line.startsWith("|")) {
+      var parts = line.substring(1).split("||");
+      for (var p = 0; p < parts.length; p++)
+        current.push(trim(parts[p]));
+      continue;
+    }
+  }
+
+  if (current.length > 0) rows.push(current);
+
+  return rows;
 }
 
 /* --- Bouton copier --- */
@@ -734,7 +813,7 @@ function updateOptionsVisibility() {
 
   // Largeur max
   document.getElementById("maxWidthContainer").style.display =
-    (model === "html" || model === "markdown") ? "none" : "";
+    (model === "markdown" || model === "html" || model === "wikitable") ? "none" : "";
 }
 /* --- Sauvegarde/Restauration --- */
 function saveState() {
