@@ -554,7 +554,6 @@ function parsePipeTable(text) {
     var line = trim(lines[i]);
 
     // ignorer les lignes de séparation markdown
-    // if (line.indexOf("---") !== -1) continue;
     if (/^[:\-|\s]+$/.test(line)) continue;
 
     if (line.indexOf("|") !== -1) {
@@ -563,7 +562,6 @@ function parsePipeTable(text) {
 
       for (var p = 0; p < parts.length; p++) {
         var t = trim(parts[p]);
-        // if (t.length > 0) cells.push(t);
         cells.push(t);
       }
 
