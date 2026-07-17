@@ -25,6 +25,8 @@
   <option value="asciidoc">AsciiDoc</option>
   <option value="orgmode">Org‑mode</option>
   <option value="latex">LaTeX tabular</option>
+  <option value="json">JSON</option>
+  <option value="yaml">YAML</option>
 </select>
 <input id="tableau_ascii_custom_char" style="display:none;" maxlength="1">
 Séparateur : <input id="tableau_ascii_sep" value=";">
@@ -438,30 +440,20 @@ function convertir() {
 
   var table = "";
 
-  if (model === "classic")
-    table = asciiTable_generic(rows, maxwidth, style_classic);
-  else if (model === "header")
-    table = asciiTable_generic(rows, maxwidth, style_header);
-  else if (model === "dotted")
-    table = asciiTable_generic(rows, maxwidth, style_dotted);
-  else if (model === "custom")
-    table = asciiTable_generic(rows, maxwidth, style_custom);
-  else if (model === "unicode")
-    table = asciiTable_multi(rows, maxwidth, chars_unicode);
-  else if (model === "box")
-    table = asciiTable_multi(rows, maxwidth, chars_box);
-  else if (model === "markdown")
-    table = asciiTable_generic(rows, maxwidth, style_markdown);
-  else if (model === "html")
-    table = tableToHTML(rows);
-  else if (model === "wikitable")
-    table = generateWikiTable(rows);
-  else if (model === "asciidoc")
-    table = generateAsciiDoc(rows); // rows = CSV déjà découpé
-  else if (model === "orgmode")
-    table = generateOrgMode(rows);
-  else if (model === "latex")
-    table = generateLatexTabular(rows);
+  if (model === "classic") table = asciiTable_generic(rows, maxwidth, style_classic);
+  else if (model === "header") table = asciiTable_generic(rows, maxwidth, style_header);
+  else if (model === "dotted") table = asciiTable_generic(rows, maxwidth, style_dotted);
+  else if (model === "custom") table = asciiTable_generic(rows, maxwidth, style_custom);
+  else if (model === "unicode") table = asciiTable_multi(rows, maxwidth, chars_unicode);
+  else if (model === "box") table = asciiTable_multi(rows, maxwidth, chars_box);
+  else if (model === "markdown") table = asciiTable_generic(rows, maxwidth, style_markdown);
+  else if (model === "html") table = tableToHTML(rows);
+  else if (model === "wikitable") table = generateWikiTable(rows);
+  else if (model === "asciidoc") table = generateAsciiDoc(rows); // rows = CSV déjà découpé
+  else if (model === "orgmode") table = generateOrgMode(rows);
+  else if (model === "latex") table = generateLatexTabular(rows);
+  else if (model === "json") table = generateJSONTable(rows);
+  else if (model === "yaml") table = generateYAMLTable(rows);
 
   setText(document.getElementById("output"), table);
 }
@@ -558,6 +550,18 @@ function generateLatexTabular(rows) {
   return out;
 }
 
+/* --- Conversion CSV → JSON et YAML --- */
+function generateJSONTable(rows) {
+  return JSON.stringify(rows, null, 2);
+}
+function generateYAMLTable(rows) {
+  var out = "";
+  for (var r = 0; r < rows.length; r++) {
+    out += "- [" + rows[r].join(", ") + "]\n";
+  }
+  return out.trim();
+}
+
 /* --- Output → input --- */
 function importFromOutput() {
   var out = document.getElementById("output").value;
@@ -585,27 +589,35 @@ function importFromOutput() {
 function parseAnyTable(text) {
   text = String(text);
 
-  // HTML ?
+  // HTML
   if (text.indexOf("<table") !== -1)
     return parseHTMLTable(text);
 
-  // AsciiDoc ?
+  // AsciiDoc
   if (text.indexOf("|===") !== -1)
     return parseAsciiDoc(text);
 
-  // Org-mode ?
+  // Org-mode
   if (text.trim().startsWith("|") && text.indexOf("|---") !== -1)
     return parseOrgMode(text);
 
-  // LaTeX tabular ?
+  // LaTeX tabular
   if (text.indexOf("\\begin{tabular}") !== -1)
     return parseLatexTabular(text);
 
-  // Markdown ?
+  // JSON array
+  if (text.trim().startsWith("[") && text.trim().endsWith("]"))
+    return parseJSONTable(text);
+
+  // YAML list
+  if (text.trim().startsWith("- "))
+    return parseYAMLTable(text);
+
+  // Markdown
   if (text.indexOf("|") !== -1 && text.indexOf("+") === -1)
     return parsePipeTable(text);
 
-  // ASCII classique / pointillé / custom
+  // ASCII
   return parseAsciiTable(text);
 }
 
@@ -854,6 +866,33 @@ function parseLatexTabular(text) {
   return rows;
 }
 
+function parseJSONTable(text) {
+  try {
+    var arr = JSON.parse(text);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    return [];
+  }
+}
+function parseYAMLTable(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+
+  for (var line of lines) {
+    line = line.trim();
+    if (!line.startsWith("-")) continue;
+
+    var inside = line.replace(/^- */, "").trim();
+    inside = inside.replace(/^\[/, "").replace(/\]$/, "");
+
+    var parts = inside.split(",");
+    var cells = parts.map(x => x.trim());
+    rows.push(cells);
+  }
+
+  return rows;
+}
+
 /* --- Bouton copier --- */
 function copyFrom(id, btn) {
     var code = document.getElementById(id);
@@ -962,7 +1001,7 @@ function updateOptionsVisibility() {
 
   // Largeur max
   document.getElementById("maxWidthContainer").style.display =
-    (model === "markdown" || model === "html" || model === "wikitable" || model === "asciidoc" || model === "orgmode" || model === "latex") ? "none" : "";
+    (model === "markdown" || model === "html" || model === "wikitable" || model === "asciidoc" || model === "orgmode" || model === "latex" || model === "json" || model === "yaml") ? "none" : "";
 }
 /* --- Sauvegarde/Restauration --- */
 function saveState() {
