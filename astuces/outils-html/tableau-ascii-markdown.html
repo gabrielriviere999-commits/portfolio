@@ -454,18 +454,14 @@ function convertir() {
     table = asciiTable_generic(rows, maxwidth, style_markdown);
   else if (model === "html")
     table = tableToHTML(rows);
-  else if (model === "wikitable") {
+  else if (model === "wikitable")
     table = generateWikiTable(rows);
-  }
-  else if (model === "asciidoc") {
+  else if (model === "asciidoc")
     table = generateAsciiDoc(rows); // rows = CSV déjà découpé
-  }
-  else if (model === "orgmode") {
+  else if (model === "orgmode")
     table = generateOrgMode(rows);
-  }
-  else if (model === "latex") {
+  else if (model === "latex")
     table = generateLatexTabular(rows);
-  }
 
   setText(document.getElementById("output"), table);
 }
@@ -590,18 +586,12 @@ function parseAnyTable(text) {
   text = String(text);
 
   // HTML ?
-  if (text.indexOf("<table") !== -1) {
+  if (text.indexOf("<table") !== -1)
     return parseHTMLTable(text);
-  }
 
   // AsciiDoc ?
   if (text.indexOf("|===") !== -1)
     return parseAsciiDoc(text);
-
-  // Markdown ?
-  if (text.indexOf("|") !== -1 && text.indexOf("+") === -1) {
-    return parsePipeTable(text);
-  }
 
   // Org-mode ?
   if (text.trim().startsWith("|") && text.indexOf("|---") !== -1)
@@ -610,6 +600,10 @@ function parseAnyTable(text) {
   // LaTeX tabular ?
   if (text.indexOf("\\begin{tabular}") !== -1)
     return parseLatexTabular(text);
+
+  // Markdown ?
+  if (text.indexOf("|") !== -1 && text.indexOf("+") === -1)
+    return parsePipeTable(text);
 
   // ASCII classique / pointillé / custom
   return parseAsciiTable(text);
