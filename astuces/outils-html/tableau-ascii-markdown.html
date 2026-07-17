@@ -22,6 +22,9 @@
   <option value="markdown">Markdown -|</option>
   <option value="html">HTML</option>
   <option value="wikitable">Wikitable</option>
+  <option value="asciidoc">AsciiDoc</option>
+  <option value="orgmode">Org‑mode</option>
+  <option value="latex">LaTeX tabular</option>
 </select>
 <input id="tableau_ascii_custom_char" style="display:none;" maxlength="1">
 Séparateur : <input id="tableau_ascii_sep" value=";">
@@ -454,6 +457,15 @@ function convertir() {
   else if (model === "wikitable") {
     table = generateWikiTable(rows);
   }
+  else if (model === "asciidoc") {
+    table = generateAsciiDoc(rows); // rows = CSV déjà découpé
+  }
+  else if (model === "orgmode") {
+    table = generateOrgMode(rows);
+  }
+  else if (model === "latex") {
+    table = generateLatexTabular(rows);
+  }
 
   setText(document.getElementById("output"), table);
 }
@@ -505,6 +517,51 @@ function generateWikiTable(rows) {
   return out;
 }
 
+/* --- Conversion CSV → AsciiDoc --- */
+function generateAsciiDoc(rows) {
+  var out = "|===\n";
+
+  for (var r = 0; r < rows.length; r++) {
+    out += "| " + rows[r].join(" | ") + "\n";
+  }
+
+  out += "|===";
+  return out;
+}
+
+/* --- Conversion CSV → Org‑mode --- */
+function generateOrgMode(rows) {
+  var out = "";
+
+  // ligne de header
+  out += "| " + rows[0].join(" | ") + " |\n";
+
+  // ligne de séparation
+  out += "|" + rows[0].map(function () { return "---"; }).join("+") + "|\n";
+
+  // lignes de données
+  for (var r = 1; r < rows.length; r++) {
+    out += "| " + rows[r].join(" | ") + " |\n";
+  }
+
+  return out;
+}
+
+/* --- Conversion CSV → LaTeX tabular --- */
+function generateLatexTabular(rows) {
+  var cols = rows[0].length;
+  var spec = new Array(cols + 1).join("c"); // "ccc" etc.
+
+  var out = "\\begin{tabular}{" + spec + "}\n";
+
+  for (var r = 0; r < rows.length; r++) {
+    out += rows[r].join(" & ") + " \\\\\n";
+  }
+
+  out += "\\end{tabular}";
+  return out;
+}
+
 /* --- Output → input --- */
 function importFromOutput() {
   var out = document.getElementById("output").value;
@@ -532,17 +589,29 @@ function importFromOutput() {
 function parseAnyTable(text) {
   text = String(text);
 
-  // 1) HTML ?
+  // HTML ?
   if (text.indexOf("<table") !== -1) {
     return parseHTMLTable(text);
   }
 
-  // 2) Markdown ?
+  // AsciiDoc ?
+  if (text.indexOf("|===") !== -1)
+    return parseAsciiDoc(text);
+
+  // Markdown ?
   if (text.indexOf("|") !== -1 && text.indexOf("+") === -1) {
     return parsePipeTable(text);
   }
 
-  // 3) ASCII classique / pointillé / custom
+  // Org-mode ?
+  if (text.trim().startsWith("|") && text.indexOf("|---") !== -1)
+    return parseOrgMode(text);
+
+  // LaTeX tabular ?
+  if (text.indexOf("\\begin{tabular}") !== -1)
+    return parseLatexTabular(text);
+
+  // ASCII classique / pointillé / custom
   return parseAsciiTable(text);
 }
 
@@ -709,6 +778,88 @@ function parseWikiTable(text) {
   return rows;
 }
 
+function parseAsciiDoc(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+  var inside = false;
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    if (line === "|===") {
+      inside = !inside;
+      continue;
+    }
+
+    if (!inside) continue;
+    if (!line.startsWith("|")) continue;
+
+    var parts = line.substring(1).split("|");
+    var cells = [];
+
+    for (var p = 0; p < parts.length; p++)
+      cells.push(trim(parts[p]));
+
+    rows.push(cells);
+  }
+
+  return rows;
+}
+
+function parseOrgMode(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    if (!line.startsWith("|")) continue;
+    if (line.indexOf("---") !== -1) continue; // ligne de séparation
+
+    var parts = line.split("|");
+    var cells = [];
+
+    for (var p = 1; p < parts.length - 1; p++)
+      cells.push(trim(parts[p]));
+
+    rows.push(cells);
+  }
+
+  return rows;
+}
+
+function parseLatexTabular(text) {
+  var lines = text.split(/\r?\n/);
+  var rows = [];
+  var inside = false;
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    if (line.startsWith("\\begin{tabular")) {
+      inside = true;
+      continue;
+    }
+    if (line.startsWith("\\end{tabular")) {
+      inside = false;
+      continue;
+    }
+    if (!inside) continue;
+
+    if (line.indexOf("&") !== -1) {
+      var parts = line.split("&");
+      var cells = [];
+
+      for (var p = 0; p < parts.length; p++)
+        cells.push(trim(parts[p].replace(/\\\\$/, "")));
+
+      rows.push(cells);
+    }
+  }
+
+  return rows;
+}
+
 /* --- Bouton copier --- */
 function copyFrom(id, btn) {
     var code = document.getElementById(id);
@@ -817,7 +968,7 @@ function updateOptionsVisibility() {
 
   // Largeur max
   document.getElementById("maxWidthContainer").style.display =
-    (model === "markdown" || model === "html" || model === "wikitable") ? "none" : "";
+    (model === "markdown" || model === "html" || model === "wikitable" || model === "asciidoc" || model === "orgmode" || model === "latex") ? "none" : "";
 }
 /* --- Sauvegarde/Restauration --- */
 function saveState() {
