@@ -552,7 +552,14 @@ function generateLatexTabular(rows) {
 
 /* --- Conversion CSV → JSON et YAML --- */
 function generateJSONTable(rows) {
-  return JSON.stringify(rows, null, 2);
+  var out = "[\n";
+  for (var r = 0; r < rows.length; r++) {
+    out += "  [" + rows[r].map(x => JSON.stringify(x)).join(", ") + "]";
+    if (r < rows.length - 1) out += ",";
+    out += "\n";
+  }
+  out += "]";
+  return out;
 }
 function generateYAMLTable(rows) {
   var out = "";
