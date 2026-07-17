@@ -804,6 +804,8 @@ function resetParams() {
   localStorage.setItem("tableau_ascii_maxwidth", "120");
   localStorage.setItem("tableau_ascii_model", "classic");
   localStorage.removeItem("tableau_ascii_custom_char");
+
+  updateOptionsVisibility();
 }
 
 function updateOptionsVisibility() {
