@@ -11,6 +11,7 @@
 
 <h2>Tableau ASCII & Markdown</h2>
 
+<h3>CSV</h3>
 <div class="toolbar-nfix">
 <select id="ascii_model">
   <option value="classic">Classique +-|</option>
@@ -33,7 +34,7 @@
 Séparateur : <input id="tableau_ascii_sep" value=";">
 <span id="maxWidthContainer">Largeur max : <input type="number" id="tableau_ascii_maxwidth" value="120" min="4"></span>
 <button onclick="resetParams()" class="btn-color" style="background:#ff4444;">Valeurs par défaut</button>
-<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\nNote : Les textes coupés sur plusieurs lignes sont fusionnés avec des espaces alors la conversion n‘est pas totalement réversible.\n\n⚠ Ne pas utiliser le même caractère ni | pour données et bordure verticale lors du passage output à input.\nUnicode et Box : risque de décalage élevé notamment sur Android.')">?</button>
+<button onclick="alert('• Séparateur : sépare les données du tableau en entrée.\n• Largeur max : les mots passent à la ligne dans la cellule, laisser vide pour supprimer la limite de largeur.\nNote : Les textes coupés sur plusieurs lignes sont fusionnés avec des espaces alors la conversion n‘est pas totalement réversible.\n\n⚠ Ne pas utiliser le même caractère ni | pour données et bordure verticale lors du passage tableau à CSV.\nUnicode et Box : risque de décalage élevé notamment sur Android.')">?</button>
 </div>
 <textarea wrap="off" id="input"></textarea><br>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir en tableau</button>
@@ -42,7 +43,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <button id="importFileInput">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 
-<p></p><h3>Résultat</h3>
+<p></p><h3>Tableau</h3>
 <textarea wrap="off" id="output"></textarea><br>
 <button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Convertir en CSV</button>
 <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
