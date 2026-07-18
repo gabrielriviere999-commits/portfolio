@@ -863,7 +863,7 @@ function parseAsciiDoc(text) {
   for (var i = 0; i < lines.length; i++) {
     var line = trim(lines[i]);
 
-    if (line === "|===") {
+    if (/^\|=+$/.test(line)) {
       inside = !inside;
       continue;
     }
