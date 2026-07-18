@@ -491,9 +491,9 @@ function generateWikiTable(rows) {
 
     // Header row si première ligne
     if (r === 0) {
-      out += "! " + row.join(" !! ") + "\n";
+      out += "!" + row.join("!!") + "\n";
     } else {
-      out += "| " + row.join(" || ") + "\n";
+      out += "|" + row.join("||") + "\n";
     }
   }
 
@@ -506,7 +506,7 @@ function generateAsciiDoc(rows) {
   var out = "|===\n";
 
   for (var r = 0; r < rows.length; r++) {
-    out += "| " + rows[r].join(" | ") + "\n";
+    out += "|" + rows[r].join("|") + "\n";
   }
 
   out += "|===";
