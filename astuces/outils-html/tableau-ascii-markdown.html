@@ -517,14 +517,14 @@ function generateOrgMode(rows) {
   var out = "";
 
   // ligne de header
-  out += "| " + rows[0].join(" | ") + " |\n";
+  out += "|" + rows[0].join("|") + "|\n";
 
   // ligne de séparation
   out += "|" + rows[0].map(function () { return "---"; }).join("+") + "|\n";
 
   // lignes de données
   for (var r = 1; r < rows.length; r++) {
-    out += "| " + rows[r].join(" | ") + " |\n";
+    out += "|" + rows[r].join("|") + "|\n";
   }
 
   return out;
