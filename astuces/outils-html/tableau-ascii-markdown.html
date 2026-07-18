@@ -773,7 +773,6 @@ function parseBBCodeTable(text) {
   var rows = [];
   var inside = false;
   var current = null;
-
   var lines = text.split(/\r?\n/);
 
   for (var i = 0; i < lines.length; i++) {
@@ -789,20 +788,32 @@ function parseBBCodeTable(text) {
     }
     if (!inside) continue;
 
-    // Début ligne
+    // Cas 1 : [tr] seul sur la ligne
     if (line === "[tr]") {
       current = [];
       continue;
     }
 
-    // Fin ligne
+    // Cas 2 : ligne compacte [tr]...[/tr]
+    if (line.indexOf("[tr]") !== -1 && line.indexOf("[/tr]") !== -1) {
+      current = [];
+      var content = line.replace("[tr]", "").replace("[/tr]", "");
+      var parts = content.split(/\[td\]|\[th\]/);
+      for (var p = 1; p < parts.length; p++) {
+        var cell = parts[p].replace(/\[\/td\]|\[\/th\]/, "");
+        current.push(trim(cell));
+      }
+      rows.push(current);
+      current = null;
+      continue;
+    }
+
     if (line === "[/tr]") {
       if (current) rows.push(current);
       current = null;
       continue;
     }
 
-    // Cellules
     if (line.startsWith("[td]") || line.startsWith("[th]")) {
       var cell = line.replace(/\[td\]|\[th\]/, "")
                      .replace(/\[\/td\]|\[\/th\]/, "");
