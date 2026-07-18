@@ -21,6 +21,7 @@
   <option value="box">Box ├─</option>
   <option value="markdown">Markdown -|</option>
   <option value="html">HTML</option>
+  <option value="bbcode">BBCode</option>
   <option value="wikitable">Wikitable</option>
   <option value="asciidoc">AsciiDoc</option>
   <option value="orgmode">Org‑mode</option>
@@ -448,6 +449,7 @@ function convertir() {
   else if (model === "box") table = asciiTable_multi(rows, maxwidth, chars_box);
   else if (model === "markdown") table = asciiTable_generic(rows, maxwidth, style_markdown);
   else if (model === "html") table = tableToHTML(rows);
+  else if (model === "bbcode") table = generateBBCodeTable(rows);
   else if (model === "wikitable") table = generateWikiTable(rows);
   else if (model === "asciidoc") table = generateAsciiDoc(rows); // rows = CSV déjà découpé
   else if (model === "orgmode") table = generateOrgMode(rows);
@@ -473,12 +475,26 @@ function tableToHTML(rows) {
   out += "</table>";
   return out;
 }
-
 function escapeHTML(str) {
   return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+/* --- Conversion CSV → BBCode --- */
+function generateBBCodeTable(rows) {
+  var out = "[table]\n";
+  for (var r = 0; r < rows.length; r++) {
+    out += "[tr]";
+    for (var c = 0; c < rows[r].length; c++) {
+      var tag = (r === 0 ? "th" : "td");
+      out += "[" + tag + "]" + rows[r][c] + "[/" + tag + "]";
+    }
+    out += "[/tr]\n";
+  }
+  out += "[/table]";
+  return out;
 }
 
 /* --- Conversion CSV → WikiTable --- */
@@ -599,6 +615,10 @@ function parseAnyTable(text) {
   // HTML
   if (text.indexOf("<table") !== -1)
     return parseHTMLTable(text);
+
+  // BBCode
+  if (text.indexOf("[table]") !== -1)
+    return parseBBCodeTable(text);
 
   // AsciiDoc
   if (text.indexOf("|===") !== -1)
@@ -743,6 +763,50 @@ function parseHTMLTable(text) {
       }
 
       if (cells.length > 0) rows.push(cells);
+    }
+  }
+
+  return rows;
+}
+
+function parseBBCodeTable(text) {
+  var rows = [];
+  var inside = false;
+  var current = null;
+
+  var lines = text.split(/\r?\n/);
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+
+    if (line === "[table]") {
+      inside = true;
+      continue;
+    }
+    if (line === "[/table]") {
+      inside = false;
+      continue;
+    }
+    if (!inside) continue;
+
+    // Début ligne
+    if (line === "[tr]") {
+      current = [];
+      continue;
+    }
+
+    // Fin ligne
+    if (line === "[/tr]") {
+      if (current) rows.push(current);
+      current = null;
+      continue;
+    }
+
+    // Cellules
+    if (line.startsWith("[td]") || line.startsWith("[th]")) {
+      var cell = line.replace(/\[td\]|\[th\]/, "")
+                     .replace(/\[\/td\]|\[\/th\]/, "");
+      current.push(trim(cell));
     }
   }
 
@@ -1007,8 +1071,8 @@ function updateOptionsVisibility() {
     (model === "custom") ? "" : "none";
 
   // Largeur max
-  document.getElementById("maxWidthContainer").style.display =
-    (model === "markdown" || model === "html" || model === "wikitable" || model === "asciidoc" || model === "orgmode" || model === "latex" || model === "json" || model === "yaml") ? "none" : "";
+  var noWidth = ["markdown", "html", "bbcode", "wikitable", "asciidoc", "orgmode", "latex", "json", "yaml"];
+  document.getElementById("maxWidthContainer").style.display = (noWidth.indexOf(model) !== -1) ? "none" : "";
 }
 /* --- Sauvegarde/Restauration --- */
 function saveState() {
