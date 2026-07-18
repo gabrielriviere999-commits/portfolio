@@ -146,8 +146,8 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   for (var c = 0; c < colCount; c++)
     totalWidth += widths[c] + style.hPadding;
 
-  // 4) Réduction proportionnelle
-  if (!style.noCorners && totalWidth > MAX_TABLE_WIDTH) {
+  // 4) Réduction proportionnelle (toujours active)
+  if (totalWidth > MAX_TABLE_WIDTH) {
     var espace = MAX_TABLE_WIDTH - (style.hPadding * colCount + 1);
     var sum = 0;
     for (var i = 0; i < widths.length; i++) sum += widths[i];
@@ -160,38 +160,26 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   var out = "";
   var sepMid = "";
 
-  // 5) Lignes de séparation
-  if (style.noCorners) {
-    // MODE markdown
-    sepMid = "";
-    for (var c = 0; c < colCount; c++) {
-      sepMid += repeat(style.hBorder, widths[c]);
-      if (c < colCount - 1) sepMid += style.vBorder; // ← pas de | final
-    }
-  } else {
-    // CLASSIQUE + DOTTED
-    sepMid = style.corner;
+  // 5) Ligne de séparation (haut et milieu)
+  sepMid = style.corner;
+  for (var c = 0; c < colCount; c++)
+    sepMid += repeat(style.hBorder, widths[c] + style.hPadding) + style.corner;
+
+  // Ligne du haut
+  var sepTop;
+  if (style.firstSep) {
+    // Style pointillé : première ligne en "."
+    sepTop = repeat(".", sepMid.length);
+  } else if (style.hBorderHeader) {
+    // Style header : ligne spéciale
+    sepTop = style.corner;
     for (var c = 0; c < colCount; c++)
-      sepMid += repeat(style.hBorder, widths[c] + style.hPadding) + style.corner;
+      sepTop += repeat(style.hBorderHeader, widths[c] + style.hPadding) + style.corner;
+  } else {
+    sepTop = sepMid;
   }
 
-  // En mode markdown → pas de ligne du haut
-  if (!style.noCorners) {
-    var sepTop;
-    if (style.firstSep) {
-      sepTop = repeat(".", sepMid.length);
-    } else {
-      // si hBorderHeader existe, on refait une ligne spéciale pour le haut
-      if (style.hBorderHeader) {
-        sepTop = style.corner;
-        for (var c = 0; c < colCount; c++)
-          sepTop += repeat(style.hBorderHeader, widths[c] + style.hPadding) + style.corner;
-      } else {
-        sepTop = sepMid;
-      }
-    }
-    out = sepTop + "\n";
-  }
+  out += sepTop + "\n";
 
   // 6) Lignes avec wrap
   for (var r = 0; r < rows.length; r++) {
@@ -206,47 +194,27 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
     }
 
     for (var h = 0; h < maxHeight; h++) {
+      var line = style.vBorder + style.space;
 
-      var line = "";
-
-      if (style.noCorners) {
-        // MODE markdown : texte|texte|texte (sans | final)
-        for (var c = 0; c < colCount; c++) {
-          var txt = wrappedCells[c][h] || "";
-          line += padRight(txt, widths[c]);
-          if (c < colCount - 1) line += style.vBorder;
-        }
-      } else {
-        // CLASSIQUE + DOTTED
-        line = style.vBorder + style.space;
-        for (var c = 0; c < colCount; c++) {
-          var txt = wrappedCells[c][h] || "";
-          line += padRight(txt, widths[c]) + style.space + style.vBorder + style.space;
-        }
-        line = line.substring(0, line.length - 1);
-      }
-
-      out += line + "\n";
-
-      // Ligne de séparation uniquement sous l'entête en markdown
-      if (style.noCorners && r == 0 && h == maxHeight - 1) {
-        out += sepMid + "\n";
-      }
-    }
-
-    // En mode non-markdown → ligne de séparation après chaque ligne
-    if (!style.noCorners) {
-      var border = (r === 0 && style.hBorderHeader)
-                   ? style.hBorderHeader
-                   : style.hBorder;
-
-      var sep = style.corner;
       for (var c = 0; c < colCount; c++) {
-        sep += repeat(border, widths[c] + style.hPadding) + style.corner;
+        var txt = wrappedCells[c][h] || "";
+        line += padRight(txt, widths[c]) + style.space + style.vBorder + style.space;
       }
 
-      out += sep + "\n";
+      line = line.substring(0, line.length - 1);
+      out += line + "\n";
     }
+
+    // Ligne de séparation après chaque ligne
+    var border = (r === 0 && style.hBorderHeader)
+                 ? style.hBorderHeader
+                 : style.hBorder;
+
+    var sep = style.corner;
+    for (var c = 0; c < colCount; c++)
+      sep += repeat(border, widths[c] + style.hPadding) + style.corner;
+
+    out += sep + "\n";
   }
 
   return out;
@@ -284,15 +252,6 @@ var style_custom = {
   vBorder: "#",
   hPadding: 2,
   space: " "
-};
-
-var style_markdown = {
-  corner: "",
-  hBorder: "-",
-  vBorder: "|",
-  hPadding: 0,
-  space: "",
-  noCorners: true
 };
 
 var default_custom  = JSON.parse(JSON.stringify(style_custom));
@@ -447,7 +406,7 @@ function convertir() {
   else if (model === "custom") table = asciiTable_generic(rows, maxwidth, style_custom);
   else if (model === "unicode") table = asciiTable_multi(rows, maxwidth, chars_unicode);
   else if (model === "box") table = asciiTable_multi(rows, maxwidth, chars_box);
-  else if (model === "markdown") table = asciiTable_generic(rows, maxwidth, style_markdown);
+  else if (model === "markdown") table = generateMarkdownTable(rows);
   else if (model === "html") table = tableToHTML(rows);
   else if (model === "bbcode") table = generateBBCodeTable(rows);
   else if (model === "wikitable") table = generateWikiTable(rows);
@@ -458,6 +417,26 @@ function convertir() {
   else if (model === "yaml") table = generateYAMLTable(rows);
 
   setText(document.getElementById("output"), table);
+}
+
+/* --- Conversion CSV → Markdown --- */
+function generateMarkdownTable(rows) {
+  var out = "";
+
+  // Header
+  out += "|" + rows[0].join("|") + "|\n";
+
+  // Separator
+  var sep = [];
+  for (var i = 0; i < rows[0].length; i++)
+    sep.push("----");
+  out += "|" + sep.join("|") + "|\n";
+
+  // Body
+  for (var r = 1; r < rows.length; r++)
+    out += "|" + rows[r].join("|") + "|\n";
+
+  return out;
 }
 
 /* --- Conversion CSV → HTML --- */
@@ -716,8 +695,14 @@ function parsePipeTable(text) {
 
     if (line.indexOf("|") !== -1) {
       var parts = line.split("|");
-      var cells = [];
 
+      // enlever les bordures Markdown vides
+      if (parts.length && trim(parts[0]) === "")
+        parts.shift();
+      if (parts.length && trim(parts[parts.length - 1]) === "")
+        parts.pop();
+
+      var cells = [];
       for (var p = 0; p < parts.length; p++) {
         var t = trim(parts[p]);
         cells.push(t);
