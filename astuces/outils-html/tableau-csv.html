@@ -431,12 +431,9 @@ function trimEmptyTopBottom(lignes) {
     return out;
 }
 
-function convertir() {
-    var texte = document.getElementById("input").value;
-    if (!texte) return;
+function csvToRows(lignes, sep) {
+    lignes = trimEmptyTopBottom(lignes);
 
-    var sep = document.getElementById("tableau_ascii_sep").value || ";";
-    var lignes = trimEmptyTopBottom(texte.split("\n"));
     var rows = [];
 
     for (var i = 0; i < lignes.length; i++) {
@@ -452,6 +449,16 @@ function convertir() {
 
         rows.push(cells);
     }
+
+    return rows;
+}
+
+function convertir() {
+    var texte = document.getElementById("input").value;
+    if (!texte) return;
+
+    var sep = document.getElementById("tableau_ascii_sep").value || ";";
+    var rows = csvToRows(texte.split("\n"), sep);
 
     var table = convertCore(rows);
     setText(document.getElementById("output"), table);
@@ -472,22 +479,7 @@ document.getElementById("csvFileInput").onchange = function () {
         var texte = e.target.result;
 
         var sep = document.getElementById("tableau_ascii_sep").value || ";";
-        var lignes = trimEmptyTopBottom(texte.split("\n"));
-        var rows = [];
-
-        for (var i = 0; i < lignes.length; i++) {
-            var cells = lignes[i].split(sep);
-
-            // nettoyer les espaces autour des cellules
-            for (var c = 0; c < cells.length; c++)
-                cells[c] = trim(cells[c]);
-
-            // supprimer les colonnes vides à droite
-            while (cells.length > 0 && cells[cells.length - 1].trim() === "")
-                cells.pop();
-
-            rows.push(cells);
-        }
+        var rows = csvToRows(texte.split("\n"), sep);
 
         lastGeneratedTable = convertirSansTextarea(rows);
         downloadText(lastGeneratedTable, "table.txt");
@@ -495,6 +487,7 @@ document.getElementById("csvFileInput").onchange = function () {
 
     reader.readAsText(file);
 };
+
 function downloadText(text, filename) {
     var blob = new Blob([text], { type: "text/plain" });
     var url = URL.createObjectURL(blob);
