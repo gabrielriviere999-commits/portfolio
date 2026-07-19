@@ -411,28 +411,10 @@ function convertCore(rows) {
     return "";
 }
 
-function trimEmptyTopBottom(lignes) {
-    var start = 0;
-    var end = lignes.length - 1;
-
-    // supprimer lignes vides en haut
-    while (start <= end && lignes[start].trim().length === 0)
-        start++;
-
-    // supprimer lignes vides en bas
-    while (end >= start && lignes[end].trim().length === 0)
-        end--;
-
-    // retourner uniquement la zone utile
-    var out = [];
-    for (var i = start; i <= end; i++)
-        out.push(lignes[i]);
-
-    return out;
-}
-
 function csvToRows(lignes, sep) {
-    lignes = trimEmptyTopBottom(lignes);
+
+    // supprimer TOUTES les lignes vides
+    lignes = lignes.filter(function (x) { return x.trim() !== ""; });
 
     var rows = [];
 
