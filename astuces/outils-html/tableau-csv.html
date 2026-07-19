@@ -442,8 +442,12 @@ function convertir() {
     for (var i = 0; i < lignes.length; i++) {
         var cells = lignes[i].split(sep);
 
+        // nettoyer les espaces autour des cellules
+        for (var c = 0; c < cells.length; c++)
+            cells[c] = trim(cells[c]);
+
         // supprimer les colonnes vides à droite
-        while (cells.length > 0 && cells[cells.length - 1] === "")
+        while (cells.length > 0 && cells[cells.length - 1].trim() === "")
             cells.pop();
 
         rows.push(cells);
@@ -474,8 +478,12 @@ document.getElementById("csvFileInput").onchange = function () {
         for (var i = 0; i < lignes.length; i++) {
             var cells = lignes[i].split(sep);
 
+            // nettoyer les espaces autour des cellules
+            for (var c = 0; c < cells.length; c++)
+                cells[c] = trim(cells[c]);
+
             // supprimer les colonnes vides à droite
-            while (cells.length > 0 && cells[cells.length - 1] === "")
+            while (cells.length > 0 && cells[cells.length - 1].trim() === "")
                 cells.pop();
 
             rows.push(cells);
