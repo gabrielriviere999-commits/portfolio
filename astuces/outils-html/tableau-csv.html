@@ -41,6 +41,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
 <button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
 <input type="file" id="csvFileInput" class="file-input">
+<div id="downloadLinkContainer"></div>
 
 <p></p><h3>Tableau</h3>
 <textarea wrap="off" id="output"></textarea><br>
@@ -387,7 +388,7 @@ var chars_box = {
 function convertCore(rows) {
     var sep = document.getElementById("tableau_ascii_sep").value || ";";
     var maxwidth = parseInt(document.getElementById("tableau_ascii_maxwidth").value, 10);
-    if (isNaN(maxwidth)) maxwidth = 0;
+    if (isNaN(maxwidth)) maxwidth = Infinity;
 
     var model = document.getElementById("ascii_model").value;
 
@@ -430,6 +431,7 @@ function convertirSansTextarea(rows) {
 }
 
 // Importer CSV et téléchargement automatique (sans textarea)
+var lastGeneratedTable = "";
 document.getElementById("csvFileInput").onchange = function () {
     var file = this.files[0];
     if (!file) return;
@@ -445,24 +447,29 @@ document.getElementById("csvFileInput").onchange = function () {
         for (var i = 0; i < lignes.length; i++)
             rows.push(lignes[i].split(sep));
 
-        var table = convertirSansTextarea(rows);
-        downloadText(table, "table.txt");
+        lastGeneratedTable = convertirSansTextarea(rows);
+
+        // Téléchargement automatique (bloqué sur Samsung Internet)
+        downloadText(lastGeneratedTable, "table.txt");
     };
 
     reader.readAsText(file);
 };
-
-// Fonction de téléchargement
 function downloadText(text, filename) {
     var blob = new Blob([text], { type: "text/plain" });
     var url = URL.createObjectURL(blob);
 
+    // Créer un lien visible
     var a = document.createElement("a");
     a.href = url;
     a.download = filename;
-    a.click();
+    a.textContent = "Télécharger " + filename;
 
-    URL.revokeObjectURL(url);
+    // Nettoyer le conteneur avant d'ajouter le lien
+    var container = document.getElementById("downloadLinkContainer");
+    container.innerHTML = "";
+    container.appendChild(a);
+    a.click(); // télécchargement automatique
 }
 
 /* --- Conversion CSV → Markdown --- */
@@ -644,6 +651,7 @@ function importFromOutput() {
     var csv = tableToCSV(rows);
     document.getElementById("input").value = csv;
 }
+var lastGeneratedCSV = "";
 document.getElementById("tableFileInput").onchange = function () {
     var file = this.files[0];
     if (!file) return;
@@ -660,8 +668,10 @@ document.getElementById("tableFileInput").onchange = function () {
             rows = parseAnyTable(texte);
         }
 
-        var csv = tableToCSV(rows);
-        downloadText(csv, "table.csv");
+        lastGeneratedCSV = tableToCSV(rows);
+
+        // Téléchargement automatique (bloqué sur Samsung Internet)
+        downloadText(lastGeneratedCSV, "table.csv");
     };
 
     reader.readAsText(file);
