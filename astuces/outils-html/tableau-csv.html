@@ -566,6 +566,13 @@ function generateYAMLTable(rows) {
 }
 
 /* --- Output → input --- */
+function trimRightEmptyCells(rows) {
+  for (var r = 0; r < rows.length; r++) {
+    while (rows[r].length > 0 && rows[r][rows[r].length - 1] === "") {
+      rows[r].pop();
+    }
+  }
+}
 function importFromOutput() {
   var out = document.getElementById("output").value;
   var rows;
@@ -578,6 +585,7 @@ function importFromOutput() {
     rows = parseAnyTable(out);
   }
 
+  trimRightEmptyCells(rows); // supprimer séparateur pour cellules de droite
   var sep = document.getElementById("tableau_ascii_sep").value || ";";
 
   var txt = "";
