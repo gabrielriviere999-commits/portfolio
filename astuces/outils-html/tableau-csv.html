@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tableau CSV</title>
 <link rel="stylesheet" href="styles.css">
-<style>input{width:50px;}</style>
+<style>input:not([type=file]){width:50px;}</style>
 </head>
 <body>
 
@@ -40,15 +40,13 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir en tableau</button>
 <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
 <button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
-<button id="importFileInput">Importer fichier…</button>
-<input type="file" id="fileInput" style="display:none;">
+<input type="file" id="csvFileInput" class="file-input">
 
 <p></p><h3>Tableau</h3>
 <textarea wrap="off" id="output"></textarea><br>
 <button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Convertir en CSV</button>
 <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
-<button id="importFileOutput">Importer fichier…</button>
-<input type="file" id="fileOutput" style="display:none;">
+<input type="file" id="tableFileInput" class="file-input">
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
@@ -386,38 +384,85 @@ var chars_box = {
 };
 
 /* --- Conversion CSV → ASCII --- */
+function convertCore(rows) {
+    var sep = document.getElementById("tableau_ascii_sep").value || ";";
+    var maxwidth = parseInt(document.getElementById("tableau_ascii_maxwidth").value, 10);
+    if (isNaN(maxwidth)) maxwidth = 0;
+
+    var model = document.getElementById("ascii_model").value;
+
+    if (model === "classic") return asciiTable_generic(rows, maxwidth, style_classic);
+    if (model === "header") return asciiTable_generic(rows, maxwidth, style_header);
+    if (model === "dotted") return asciiTable_generic(rows, maxwidth, style_dotted);
+    if (model === "custom") return asciiTable_generic(rows, maxwidth, style_custom);
+    if (model === "unicode") return asciiTable_multi(rows, maxwidth, chars_unicode);
+    if (model === "box") return asciiTable_multi(rows, maxwidth, chars_box);
+    if (model === "markdown") return generateMarkdownTable(rows);
+    if (model === "html") return tableToHTML(rows);
+    if (model === "bbcode") return generateBBCodeTable(rows);
+    if (model === "wikitable") return generateWikiTable(rows);
+    if (model === "asciidoc") return generateAsciiDoc(rows);
+    if (model === "orgmode") return generateOrgMode(rows);
+    if (model === "latex") return generateLatexTabular(rows);
+    if (model === "json") return generateJSONTable(rows);
+    if (model === "yaml") return generateYAMLTable(rows);
+
+    return "";
+}
+
 function convertir() {
-  var texte = document.getElementById("input").value;
-  var sep = document.getElementById("tableau_ascii_sep").value || ";";
-  var maxwidth = parseInt(document.getElementById("tableau_ascii_maxwidth").value, 10);
-  var model = document.getElementById("ascii_model").value;
+    var texte = document.getElementById("input").value;
+    if (!texte) return;
 
-  if (!texte) return;
+    var sep = document.getElementById("tableau_ascii_sep").value || ";";
+    var lignes = texte.split("\n");
+    var rows = [];
 
-  var lignes = texte.split("\n");
-  var rows = [];
-  for (var i = 0; i < lignes.length; i++)
-    rows.push(lignes[i].split(sep));
+    for (var i = 0; i < lignes.length; i++)
+        rows.push(lignes[i].split(sep));
 
-  var table = "";
+    var table = convertCore(rows);
+    setText(document.getElementById("output"), table);
+}
 
-  if (model === "classic") table = asciiTable_generic(rows, maxwidth, style_classic);
-  else if (model === "header") table = asciiTable_generic(rows, maxwidth, style_header);
-  else if (model === "dotted") table = asciiTable_generic(rows, maxwidth, style_dotted);
-  else if (model === "custom") table = asciiTable_generic(rows, maxwidth, style_custom);
-  else if (model === "unicode") table = asciiTable_multi(rows, maxwidth, chars_unicode);
-  else if (model === "box") table = asciiTable_multi(rows, maxwidth, chars_box);
-  else if (model === "markdown") table = generateMarkdownTable(rows);
-  else if (model === "html") table = tableToHTML(rows);
-  else if (model === "bbcode") table = generateBBCodeTable(rows);
-  else if (model === "wikitable") table = generateWikiTable(rows);
-  else if (model === "asciidoc") table = generateAsciiDoc(rows); // rows = CSV déjà découpé
-  else if (model === "orgmode") table = generateOrgMode(rows);
-  else if (model === "latex") table = generateLatexTabular(rows);
-  else if (model === "json") table = generateJSONTable(rows);
-  else if (model === "yaml") table = generateYAMLTable(rows);
+function convertirSansTextarea(rows) {
+    return convertCore(rows);
+}
 
-  setText(document.getElementById("output"), table);
+// Importer CSV et téléchargement automatique (sans textarea)
+document.getElementById("csvFileInput").onchange = function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var texte = e.target.result;
+
+        var sep = document.getElementById("tableau_ascii_sep").value || ";";
+        var lignes = texte.split("\n");
+        var rows = [];
+
+        for (var i = 0; i < lignes.length; i++)
+            rows.push(lignes[i].split(sep));
+
+        var table = convertirSansTextarea(rows);
+        downloadText(table, "table.txt");
+    };
+
+    reader.readAsText(file);
+};
+
+// Fonction de téléchargement
+function downloadText(text, filename) {
+    var blob = new Blob([text], { type: "text/plain" });
+    var url = URL.createObjectURL(blob);
+
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
 }
 
 /* --- Conversion CSV → Markdown --- */
@@ -573,29 +618,54 @@ function trimRightEmptyCells(rows) {
     }
   }
 }
-function importFromOutput() {
-  var out = document.getElementById("output").value;
-  var rows;
+function tableToCSV(rows) {
+    trimRightEmptyCells(rows);
 
-  // 1) Détection wikitable
-  if (out.indexOf("{|") !== -1 && out.indexOf("|}") !== -1) {
-    rows = parseWikiTable(out);
-  } else {
-    // 2) Tous les autres formats (HTML, Markdown, ASCII)
-    rows = parseAnyTable(out);
-  }
+    var sep = document.getElementById("tableau_ascii_sep").value || ";";
+    var csv = "";
 
-  trimRightEmptyCells(rows); // supprimer séparateurs pour cellules de droite
-  var sep = document.getElementById("tableau_ascii_sep").value || ";";
+    for (var r = 0; r < rows.length; r++) {
+        if (r > 0) csv += "\n";
+        csv += rows[r].join(sep);
+    }
 
-  var txt = "";
-  for (var r = 0; r < rows.length; r++) {
-    if (r > 0) txt += "\n";
-    txt += rows[r].join(sep);
-  }
-
-  document.getElementById("input").value = txt;
+    return csv;
 }
+function importFromOutput() {
+    var out = document.getElementById("output").value;
+    var rows;
+
+    if (out.indexOf("{|") !== -1 && out.indexOf("|}") !== -1) {
+        rows = parseWikiTable(out);
+    } else {
+        rows = parseAnyTable(out);
+    }
+
+    var csv = tableToCSV(rows);
+    document.getElementById("input").value = csv;
+}
+document.getElementById("tableFileInput").onchange = function () {
+    var file = this.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var texte = e.target.result;
+
+        var rows;
+
+        if (texte.indexOf("{|") !== -1 && texte.indexOf("|}") !== -1) {
+            rows = parseWikiTable(texte);
+        } else {
+            rows = parseAnyTable(texte);
+        }
+
+        var csv = tableToCSV(rows);
+        downloadText(csv, "table.csv");
+    };
+
+    reader.readAsText(file);
+};
 
 function parseAnyTable(text) {
   text = String(text);
@@ -990,12 +1060,10 @@ document.getElementById('copyoutput').onclick = function(e) {
     copyFrom('output', e.target);
 };
 
-/* --- 2 Glisser-déposer et boutons importer fichier ---*/
-function setupFileImport(textareaId, buttonId, fileInputId) {
+/* --- Glisser-déposer ---*/
+function setupDragDrop(textareaId) {
 
     var area = document.getElementById(textareaId);
-    var btn  = document.getElementById(buttonId);
-    var file = document.getElementById(fileInputId);
 
     // --- Drag & Drop ---
     area.addEventListener("dragover", function(e) {
@@ -1023,26 +1091,9 @@ function setupFileImport(textareaId, buttonId, fileInputId) {
         }
         // Sinon → laisser le navigateur coller du texte
     });
-
-    // --- Bouton Importer ---
-    btn.onclick = function () {
-        file.click();
-    };
-
-    // --- Input fichier ---
-    file.addEventListener("change", function () {
-        var f = this.files[0];
-        if (!f) return;
-
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            area.value = e.target.result;
-        };
-        reader.readAsText(f);
-    });
 }
-setupFileImport("input", "importFileInput", "fileInput");
-setupFileImport("output", "importFileOutput", "fileOutput");
+setupDragDrop("input");
+setupDragDrop("output");
 
 // Bouton Effacer tout
 function effacerTout() {

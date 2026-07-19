@@ -51,7 +51,7 @@ input,textarea {
     border-right:2px solid #111;
   }
 }
-button,#file-input {
+button,#file-input,.file-input {
   background:#202020;
   color:#ccc;
   border:2px solid;
@@ -61,8 +61,8 @@ button,#file-input {
   font-size:12px;
   cursor:pointer;
 }
-button:hover,#file-input:hover{background:#404040;}
-button:active,button.active,#file-input:active {
+button:hover,#file-input:hover,.file-input:hover{background:#404040;}
+button:active,button.active,#file-input:active,.file-input:active {
   border-color:#111 #888 #888 #111;
   background:#101010;
 }
