@@ -749,10 +749,6 @@ function parseAnyTable(text) {
   if (text.trim().startsWith("- "))
     return parseYAMLTable(text);
 
-  // Markdown
-  if (text.indexOf("|") !== -1 && text.indexOf("+") === -1)
-    return parsePipeTable(text);
-
   // ASCII
   return parseAsciiTable(text);
 }
@@ -805,38 +801,6 @@ function parseAsciiTable(text) {
 
   // Dernière ligne si pas suivie de bordure
   if (currentRow) rows.push(currentRow);
-
-  return rows;
-}
-
-function parsePipeTable(text) {
-  var lines = text.split(/\r?\n/);
-  var rows = [];
-
-  for (var i = 0; i < lines.length; i++) {
-    var line = trim(lines[i]);
-
-    // ignorer les lignes de séparation markdown
-    if (/^[:\-|\s]+$/.test(line)) continue;
-
-    if (line.indexOf("|") !== -1) {
-      var parts = line.split("|");
-
-      // enlever les bordures Markdown vides
-      if (parts.length && trim(parts[0]) === "")
-        parts.shift();
-      if (parts.length && trim(parts[parts.length - 1]) === "")
-        parts.pop();
-
-      var cells = [];
-      for (var p = 0; p < parts.length; p++) {
-        var t = trim(parts[p]);
-        cells.push(t);
-      }
-
-      rows.push(cells);
-    }
-  }
 
   return rows;
 }
