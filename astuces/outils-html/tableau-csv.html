@@ -522,6 +522,7 @@ function tableToHTML(rows) {
   out += "</table>";
   return out;
 }
+
 function escapeHTML(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -640,8 +641,30 @@ function trimRightEmptyCells(rows) {
     }
   }
 }
+
+function removeEmptyRows(rows) {
+    var out = [];
+
+    for (var r = 0; r < rows.length; r++) {
+        var row = rows[r];
+        var keep = false;
+
+        for (var c = 0; c < row.length; c++) {
+            if (trim(row[c]) !== "") {
+                keep = true;
+                break;
+            }
+        }
+
+        if (keep) out.push(row);
+    }
+
+    return out;
+}
+
 function tableToCSV(rows) {
     trimRightEmptyCells(rows);
+    rows = removeEmptyRows(rows);
 
     var sep = document.getElementById("tableau_ascii_sep").value || ";";
     var csv = "";
@@ -653,6 +676,7 @@ function tableToCSV(rows) {
 
     return csv;
 }
+
 function importFromOutput() {
     var out = document.getElementById("output").value;
     var rows;
@@ -666,6 +690,7 @@ function importFromOutput() {
     var csv = tableToCSV(rows);
     document.getElementById("input").value = csv;
 }
+
 var lastGeneratedCSV = "";
 document.getElementById("tableFileInput").onchange = function () {
     var file = this.files[0];
