@@ -283,6 +283,7 @@ function asciiTable_multi(rows, MAX_TABLE_WIDTH, C) {
   var BL=C.BL, BM=C.BM, BR=C.BR;
   var V =C.V;
   var H =C.H;
+  var H2 = C.hBorderHeader || null;
 
   // 1) Nombre de colonnes
   var colCount = 0;
@@ -321,10 +322,11 @@ function asciiTable_multi(rows, MAX_TABLE_WIDTH, C) {
     return s;
   }
 
-  // 5) Bordure du haut
+  // 5) Bordure du haut (ligne 1, header si H2 existe)
   var out = TL;
   for (var c = 0; c < colCount; c++) {
-    out += repeat(H, widths[c] + 2);
+    var borderChar = H2 || H;
+    out += repeat(borderChar, widths[c] + 2);
     out += (c < colCount - 1 ? TM : TR);
   }
   out += "\n";
@@ -351,17 +353,19 @@ function asciiTable_multi(rows, MAX_TABLE_WIDTH, C) {
       out += line + "\n";
     }
 
+    // bordure intermédiaire (ligne 3 en header, les autres normales)
     if (r < rows.length - 1) {
       var mid = ML;
       for (var c = 0; c < colCount; c++) {
-        mid += repeat(H, widths[c] + 2);
+        var borderChar = (r === 0 && H2) ? H2 : H; // ← header après la 1ere ligne
+        mid += repeat(borderChar, widths[c] + 2);
         mid += (c < colCount - 1 ? MM : MR);
       }
       out += mid + "\n";
     }
   }
 
-  // 7) Bordure du bas
+  // 7) Bordure du bas (toujours normale)
   var bot = BL;
   for (var c = 0; c < colCount; c++) {
     bot += repeat(H, widths[c] + 2);
