@@ -21,7 +21,8 @@
   <option value="unicode">Unicode ╠═</option>
   <option value="box">Box ├─</option>
   <option value="rounded">Arrondi .:+'|-</option>
-  <option value="fancy">fancy</option>
+  <option value="fancy">Fancy</option>
+  <option value="fancy_header">Fancy header</option>
   <option value="markdown">Markdown |-</option>
   <option value="html">HTML</option>
   <option value="bbcode">BBCode</option>
@@ -504,6 +505,16 @@ var style_fancy = {
     BR: "//",
     H: "=",
     V: "||",
+    SEP: "[]"
+};
+
+var style_fancy_header = {
+    TL: "//",
+    TR: "\\\\",
+    BL: "\\\\",
+    BR: "//",
+    H: "-",
+    V: "||",
     SEP: "[]",
     hBorderHeader: "="
 };
@@ -524,6 +535,7 @@ function convertCore(rows) {
     if (model === "box") return asciiTable_multi(rows, maxwidth, chars_box);
     if (model === "rounded") return asciiTable_multi(rows, maxwidth, chars_rounded);
     if (model === "fancy") return asciiTable_fancy(rows, maxwidth, style_fancy);
+    if (model === "fancy_header") return asciiTable_fancy(rows, maxwidth, style_fancy_header);
     if (model === "markdown") return generateMarkdownTable(rows);
     if (model === "html") return tableToHTML(rows);
     if (model === "bbcode") return generateBBCodeTable(rows);
@@ -856,7 +868,7 @@ function parseAnyTable(text) {
   var model = document.getElementById("ascii_model").value;
 
   // Mode fancy strict
-  if (model === "fancy") {
+  if (model === "fancy" || model === "fancy_header") {
       return parseFancyTable(text);
   }
 
@@ -1391,8 +1403,8 @@ function updateOptionsVisibility() {
   document.getElementById("tableau_ascii_custom_char").style.display =
     (model === "custom") ? "" : "none";
 
-  document.getElementById("limitedcsvconversion").style.display =
-    (model === "fancy") ? "" : "none";
+  var showLimited = (model === "fancy" || model === "fancy_header");
+  document.getElementById("limitedcsvconversion").style.display = showLimited ? "" : "none";
 
   // Largeur max
   var noWidth = ["markdown", "html", "bbcode", "wikitable", "asciidoc", "orgmode", "latex", "json", "yaml"];
