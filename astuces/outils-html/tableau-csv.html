@@ -951,23 +951,18 @@ function parseAsciiTable(text) {
 
 function parseFancyTable(text) {
 
-    var S = style_fancy;
-
     var lines = text.split(/\r?\n/);
     var rows = [];
     var currentRow = null;
+    var vBorder = null;
 
     for (var i = 0; i < lines.length; i++) {
 
         var line = trim(lines[i]);
         if (!line) continue;
 
-        // Bordures haut / bas
-        if (line.indexOf(S.TL) === 0) continue;
-        if (line.indexOf(S.BL) === 0) continue;
-
-        // Séparateur entre deux lignes du tableau
-        if (line.indexOf("|]") === 0) {
+        // Bordure intermédiaire
+        if (/^\|\].*\[\|$/.test(line)) {
             if (currentRow) {
                 rows.push(currentRow);
                 currentRow = null;
@@ -975,36 +970,48 @@ function parseFancyTable(text) {
             continue;
         }
 
-        // Ligne de données
-        if (line.indexOf(S.V) === 0) {
+        // Détection automatique du séparateur vertical
+        if (!vBorder) {
 
-            var esc = S.V.replace(/([.*+?^${}()|[\]\\])/g, "\\$1");
+            var m = line.match(/^(\D+?)\s/);
 
-            var inner = line
-                .replace(new RegExp("^(" + esc + ")+"), "")
-                .replace(new RegExp("(" + esc + ")+$"), "");
-
-            var parts = inner.split(S.V);
-
-            var cells = [];
-            for (var p = 0; p < parts.length; p++) {
-                cells.push(trim(parts[p]));
-            }
-
-            if (!currentRow) {
-
-                currentRow = cells;
-
+            if (m) {
+                vBorder = m[1];
             } else {
+                continue;
+            }
+        }
 
-                for (var c = 0; c < currentRow.length; c++) {
-                    if (cells[c] && cells[c].length > 0) {
+        // Pas une ligne de données
+        if (line.indexOf(vBorder) !== 0)
+            continue;
 
-                        if (currentRow[c].length)
-                            currentRow[c] += " ";
+        var esc = vBorder.replace(/([.*+?^${}()|[\]\\])/g, "\\$1");
 
-                        currentRow[c] += cells[c];
-                    }
+        var inner = line
+            .replace(new RegExp("^" + esc), "")
+            .replace(new RegExp(esc + "$"), "");
+
+        var parts = inner.split(vBorder);
+
+        var cells = [];
+        for (var p = 0; p < parts.length; p++)
+            cells.push(trim(parts[p]));
+
+        if (!currentRow) {
+
+            currentRow = cells;
+
+        } else {
+
+            for (var c = 0; c < currentRow.length; c++) {
+
+                if (cells[c] && cells[c].length) {
+
+                    if (currentRow[c].length)
+                        currentRow[c] += " ";
+
+                    currentRow[c] += cells[c];
                 }
             }
         }
