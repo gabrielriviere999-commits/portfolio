@@ -20,6 +20,7 @@
   <option value="custom">Custom</option>
   <option value="unicode">Unicode ╠═</option>
   <option value="box">Box ├─</option>
+  <option value="rounded">Arrondi</option>
   <option value="markdown">Markdown -|</option>
   <option value="html">HTML</option>
   <option value="bbcode">BBCode</option>
@@ -377,11 +378,19 @@ var chars_unicode = {
   BL:"╚", BM:"╩", BR:"╝",
   V:"║", H:"═"
 };
+
 var chars_box = {
   TL:"┌", TM:"┬", TR:"┐",
   ML:"├", MM:"┼", MR:"┤",
   BL:"└", BM:"┴", BR:"┘",
   V:"│", H:"─"
+};
+
+var chars_rounded = {
+  TL:".", TM:".", TR:".",
+  ML:":", MM:"+", MR:":",
+  BL:"'", BM:"'", BR:"'",
+  V:"|", H:"-"
 };
 
 /* --- Conversion CSV → ASCII --- */
@@ -398,6 +407,7 @@ function convertCore(rows) {
     if (model === "custom") return asciiTable_generic(rows, maxwidth, style_custom);
     if (model === "unicode") return asciiTable_multi(rows, maxwidth, chars_unicode);
     if (model === "box") return asciiTable_multi(rows, maxwidth, chars_box);
+    if (model === "rounded") return asciiTable_multi(rows, maxwidth, chars_rounded);
     if (model === "markdown") return generateMarkdownTable(rows);
     if (model === "html") return tableToHTML(rows);
     if (model === "bbcode") return generateBBCodeTable(rows);
