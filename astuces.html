@@ -163,52 +163,59 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.</
 <fieldset><legend>Télécharger</legend>
 <select id="download-android" onchange="downloadFile(this)" aria-label="Android">
   <option value="">Android...</option>
-  <option disabled>Applications</option>
-  <option value="astuces/android/applications/tableauascii.apk">tableauascii.apk</option>
-  <option value="astuces/android/applications/editeurdetexte.apk">editeurdetexte.apk</option>
-  <option value="astuces/android/applications/extractioncodecouleur.apk">extractioncodecouleur.apk</option>
-  <option value="astuces/android/applications/selecteurcouleur.apk">selecteurcouleur.apk</option>
-  <option value="astuces/android/applications/ocrecran.apk">ocrecran.apk</option>
-  <option value="astuces/android/applications/serveurhttp.apk">serveurhttp.apk</option>
-  <option value="astuces/android/applications/serveurhttpandroid4.apk">serveurhttpandroid4.apk</option>
-  <option value="astuces/android/applications/indexeur.apk">indexeur.apk</option>
-  <option value="astuces/android/applications/arbo.apk">arbo.apk</option>
-  <option disabled>Scripts Termux</option>
-  <option value="astuces/android/termux/preparer-termux.txt">preparer-termux.txt</option>
-  <option value="astuces/android/termux/tableau-clipboard-android.py">tableau-clipboard-android.py</option>
-  <option value="astuces/android/termux/minuscule-android.py">minuscule-android.py</option>
-  <option value="astuces/android/termux/majuscule-android.py">majuscule-android.py</option>
-  <option value="astuces/android/termux/inverser-casse-android.py">inverser-casse-android.py</option>
+  <optgroup label="Applications">
+    <option value="astuces/android/applications/tableauascii.apk">tableauascii.apk</option>
+    <option value="astuces/android/applications/editeurdetexte.apk">editeurdetexte.apk</option>
+    <option value="astuces/android/applications/extractioncodecouleur.apk">extractioncodecouleur.apk</option>
+    <option value="astuces/android/applications/selecteurcouleur.apk">selecteurcouleur.apk</option>
+    <option value="astuces/android/applications/ocrecran.apk">ocrecran.apk</option>
+    <option value="astuces/android/applications/serveurhttp.apk">serveurhttp.apk</option>
+    <option value="astuces/android/applications/serveurhttpandroid4.apk">serveurhttpandroid4.apk</option>
+    <option value="astuces/android/applications/indexeur.apk">indexeur.apk</option>
+    <option value="astuces/android/applications/arbo.apk">arbo.apk</option>
+  </optgroup>
+  <optgroup label="Scripts Termux">
+    <option value="astuces/android/termux/preparer-termux.txt">preparer-termux.txt</option>
+    <option value="astuces/android/termux/tableau-clipboard-android.py">tableau-clipboard-android.py</option>
+    <option value="astuces/android/termux/minuscule-android.py">minuscule-android.py</option>
+    <option value="astuces/android/termux/majuscule-android.py">majuscule-android.py</option>
+    <option value="astuces/android/termux/inverser-casse-android.py">inverser-casse-android.py</option>
+  </optgroup>
 </select>
 <p></p><a href="https://www.dropbox.com/scl/fi/khfuhw0w4dactu1yfzcku/projets-android.zip?rlkey=iz0ip79mup794sms9pzm3qpjj&st=qvoxf4my&dl=1">Télécharger projets depuis Dropbox</a>
 </fieldset>
 <br><br><hr><br>
 <select id="download-autre-os" onchange="downloadFile(this)" aria-label="Autre OS">
   <option value="">Autre os...</option>
-  <option disabled>Windows</option>
-  <option value="astuces/autres-os/windows/tableau-clipboard-windows.py">tableau-clipboard-windows.py</option>
-  <option value="astuces/autres-os/windows/minuscule-windows.py">minuscule-windows.py</option>
-  <option value="astuces/autres-os/windows/majuscule-windows.py">majuscule-windows.py</option>
-  <option value="astuces/autres-os/windows/inverser-casse-windows.py">inverser-casse-windows.py</option>
-  <option disabled>macOS</option>
-  <option value="astuces/autres-os/macos/tableau-clipboard-macos.py">tableau-clipboard-macos.py</option>
-  <option value="astuces/autres-os/macos/minuscule-macos.py">minuscule-macos.py</option>
-  <option value="astuces/autres-os/macos/majuscule-macos.py">majuscule-macos.py</option>
-  <option value="astuces/autres-os/macos/inverser-casse-macos.py">inverser-casse-macos.py</option>
-  <option disabled>FreeBSD</option>
-  <option value="astuces/autres-os/freebsd/tableau-clipboard-freebsd.py">tableau-clipboard-freebsd.py</option>
-  <option value="astuces/autres-os/freebsd/minuscule-freebsd.py">minuscule-freebsd.py</option>
-  <option value="astuces/autres-os/freebsd/majuscule-freebsd.py">majuscule-freebsd.py</option>
-  <option value="astuces/autres-os/freebsd/inverser-casse-freebsd.py">inverser-casse-freebsd.py</option>
-  <option disabled>Solaris</option>
-  <option value="astuces/autres-os/solaris/tableau-clipboard-solaris.py">tableau-clipboard-solaris.py</option>
-  <option value="astuces/autres-os/solaris/minuscule-solaris.py">minuscule-solaris.py</option>
-  <option value="astuces/autres-os/solaris/majuscule-solaris.py">majuscule-solaris.py</option>
-  <option value="astuces/autres-os/solaris/inverser-casse-solaris.py">inverser-casse-solaris.py</option>
-  <option disabled>Java</option>
-  <option value="astuces/autres-os/java/prerequis.txt">prerequis.txt</option>
-  <option value="astuces/autres-os/java/ascii-table-java.jar">ascii-table-java.jar</option>
-  <option value="astuces/autres-os/java/ascii-table-java.zip">ascii-table-java.zip</option>
+  <optgroup label="Windows">
+    <option value="astuces/autres-os/windows/tableau-clipboard-windows.py">tableau-clipboard-windows.py</option>
+    <option value="astuces/autres-os/windows/minuscule-windows.py">minuscule-windows.py</option>
+    <option value="astuces/autres-os/windows/majuscule-windows.py">majuscule-windows.py</option>
+    <option value="astuces/autres-os/windows/inverser-casse-windows.py">inverser-casse-windows.py</option>
+  </optgroup>
+  <optgroup label="macOS">
+    <option value="astuces/autres-os/macos/tableau-clipboard-macos.py">tableau-clipboard-macos.py</option>
+    <option value="astuces/autres-os/macos/minuscule-macos.py">minuscule-macos.py</option>
+    <option value="astuces/autres-os/macos/majuscule-macos.py">majuscule-macos.py</option>
+    <option value="astuces/autres-os/macos/inverser-casse-macos.py">inverser-casse-macos.py</option>
+  </optgroup>
+  <optgroup label="FreeBSD">
+    <option value="astuces/autres-os/freebsd/tableau-clipboard-freebsd.py">tableau-clipboard-freebsd.py</option>
+    <option value="astuces/autres-os/freebsd/minuscule-freebsd.py">minuscule-freebsd.py</option>
+    <option value="astuces/autres-os/freebsd/majuscule-freebsd.py">majuscule-freebsd.py</option>
+    <option value="astuces/autres-os/freebsd/inverser-casse-freebsd.py">inverser-casse-freebsd.py</option>
+  </optgroup>
+  <optgroup label="Solaris">
+    <option value="astuces/autres-os/solaris/tableau-clipboard-solaris.py">tableau-clipboard-solaris.py</option>
+    <option value="astuces/autres-os/solaris/minuscule-solaris.py">minuscule-solaris.py</option>
+    <option value="astuces/autres-os/solaris/majuscule-solaris.py">majuscule-solaris.py</option>
+    <option value="astuces/autres-os/solaris/inverser-casse-solaris.py">inverser-casse-solaris.py</option>
+  </optgroup>
+  <optgroup label="Java">
+    <option value="astuces/autres-os/java/prerequis.txt">prerequis.txt</option>
+    <option value="astuces/autres-os/java/ascii-table-java.jar">ascii-table-java.jar</option>
+    <option value="astuces/autres-os/java/ascii-table-java.zip">ascii-table-java.zip</option>
+  </optgroup>
 </select>
 <p></p>
 <a href="astuces/outils-html/outils.html" class="a" style="background:#3a6ea5;">Outils HTML</a>
