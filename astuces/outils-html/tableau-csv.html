@@ -14,24 +14,28 @@
 <h3>CSV</h3>
 <div class="toolbar-nfix">
 <select id="ascii_model">
-  <option value="classic">Classique +-|</option>
-  <option value="header">Classique (header)</option>
-  <option value="dotted">Pointillé :.:</option>
-  <option value="custom">Custom</option>
-  <option value="unicode">Unicode ╠═</option>
-  <option value="box">Box ├─</option>
-  <option value="rounded">Arrondi .:+'|-</option>
-  <option value="fancy">Fancy //==||</option>
-  <option value="fancy_header">Fancy (header)</option>
-  <option value="markdown">Markdown |-</option>
-  <option value="html">HTML</option>
-  <option value="bbcode">BBCode</option>
-  <option value="wikitable">Wikitable</option>
-  <option value="asciidoc">AsciiDoc</option>
-  <option value="orgmode">Org‑mode</option>
-  <option value="latex">LaTeX tabular</option>
-  <option value="json">JSON array</option>
-  <option value="yaml">YAML list</option>
+  <optgroup label="Texte brut lisible">
+    <option value="classic">Classique +-|</option>
+    <option value="header">Classique (header)</option>
+    <option value="dotted">Pointillé :.:</option>
+    <option value="custom">Custom</option>
+    <option value="unicode">Unicode ╠═</option>
+    <option value="box">Box ├─</option>
+    <option value="rounded">Arrondi .:+'|-</option>
+    <option value="fancy">Fancy //==||</option>
+    <option value="fancy_header">Fancy (header)</option>
+  </optgroup>
+  <optgroup label="Formats spéciaux">
+    <option value="markdown">Markdown |-</option>
+    <option value="html">HTML</option>
+    <option value="bbcode">BBCode</option>
+    <option value="wikitable">Wikitable</option>
+    <option value="asciidoc">AsciiDoc</option>
+    <option value="orgmode">Org‑mode</option>
+    <option value="latex">LaTeX tabular</option>
+    <option value="json">JSON array</option>
+    <option value="yaml">YAML list</option>
+  </optgroup>
 </select>
 <input id="tableau_ascii_custom_char" style="display:none;" maxlength="1">
 Séparateur : <input id="tableau_ascii_sep" value=";">
@@ -51,7 +55,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Convertir en CSV</button>
 <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
 <input type="file" id="tableFileInput" class="file-input">
-<br><span id="limitedcsvconversion" style="display:none;background:#00a;" maxlength="1">ⓘ Conversion en CSV limitée au modèle sélectionné</span>
+<br><span id="limitedcsvconversion" style="display:none;background:#00a;" maxlength="1">ⓘ Conversion en CSV limitée au modèle sélectionné.</span>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
