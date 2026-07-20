@@ -622,13 +622,20 @@ function generateLatexTabular(rows) {
 function generateJSONTable(rows) {
   var out = "[\n";
   for (var r = 0; r < rows.length; r++) {
-    out += "  [" + rows[r].map(x => JSON.stringify(x)).join(", ") + "]";
+
+    var arr = [];
+    for (var c = 0; c < rows[r].length; c++) {
+      arr.push(JSON.stringify(rows[r][c]));
+    }
+
+    out += "  [" + arr.join(", ") + "]";
     if (r < rows.length - 1) out += ",";
     out += "\n";
   }
   out += "]";
   return out;
 }
+
 function generateYAMLTable(rows) {
   var out = "";
   for (var r = 0; r < rows.length; r++) {
@@ -734,7 +741,7 @@ function parseAnyTable(text) {
     return parseAsciiDoc(text);
 
   // Org-mode
-  if (text.trim().startsWith("|") && text.indexOf("|---") !== -1)
+  if (trim(text).indexOf("|") === 0 && text.indexOf("|---") !== -1)
     return parseOrgMode(text);
 
   // LaTeX tabular
@@ -742,11 +749,12 @@ function parseAnyTable(text) {
     return parseLatexTabular(text);
 
   // JSON array
-  if (text.trim().startsWith("[") && text.trim().endsWith("]"))
+  var t = trim(text);
+  if (t.charAt(0) === "[" && t.charAt(t.length - 1) === "]")
     return parseJSONTable(text);
 
   // YAML list
-  if (text.trim().startsWith("- "))
+  if (trim(text).indexOf("- ") === 0)
     return parseYAMLTable(text);
 
   // Markdown
@@ -925,10 +933,10 @@ function parseBBCodeTable(text) {
       continue;
     }
 
-    if (line.startsWith("[td]") || line.startsWith("[th]")) {
-      var cell = line.replace(/\[td\]|\[th\]/, "")
-                     .replace(/\[\/td\]|\[\/th\]/, "");
-      current.push(trim(cell));
+    if (line.indexOf("[td]") === 0 || line.indexOf("[th]") === 0) {
+        var cell = line.replace(/\[td\]|\[th\]/, "")
+                       .replace(/\[\/td\]|\[\/th\]/, "");
+        current.push(trim(cell));
     }
   }
 
@@ -943,32 +951,30 @@ function parseWikiTable(text) {
   for (var i = 0; i < lines.length; i++) {
     var line = trim(lines[i]);
 
-    if (line.startsWith("{|")) continue;
-    if (line.startsWith("|}")) continue;
-    if (line.startsWith("|+")) continue; // caption ignorée
+    if (line.indexOf("{|") === 0) continue;
+    if (line.indexOf("|}") === 0) continue;
+    if (line.indexOf("|+") === 0) continue;
 
     if (line === "|-") {
-      if (current.length > 0) {
-        rows.push(current);
-        current = [];
-      }
-      continue;
+        if (current.length > 0) {
+            rows.push(current);
+            current = [];
+        }
+        continue;
     }
 
-    // Header cells
-    if (line.startsWith("!")) {
-      var parts = line.substring(1).split("!!");
-      for (var p = 0; p < parts.length; p++)
-        current.push(trim(parts[p]));
-      continue;
+    if (line.indexOf("!") === 0) {
+        var parts = line.substring(1).split("!!");
+        for (var p = 0; p < parts.length; p++)
+            current.push(trim(parts[p]));
+        continue;
     }
 
-    // Normal cells
-    if (line.startsWith("|")) {
-      var parts = line.substring(1).split("||");
-      for (var p = 0; p < parts.length; p++)
-        current.push(trim(parts[p]));
-      continue;
+    if (line.indexOf("|") === 0) {
+        var parts = line.substring(1).split("||");
+        for (var p = 0; p < parts.length; p++)
+            current.push(trim(parts[p]));
+        continue;
     }
   }
 
@@ -991,7 +997,7 @@ function parseAsciiDoc(text) {
     }
 
     if (!inside) continue;
-    if (!line.startsWith("|")) continue;
+    if (line.indexOf("|") !== 0) continue;
 
     var parts = line.substring(1).split("|");
     var cells = [];
@@ -1012,8 +1018,8 @@ function parseOrgMode(text) {
   for (var i = 0; i < lines.length; i++) {
     var line = trim(lines[i]);
 
-    if (!line.startsWith("|")) continue;
-    if (line.indexOf("---") !== -1) continue; // ligne de séparation
+    if (line.indexOf("|") !== 0) continue;
+    if (line.indexOf("---") !== -1) continue;
 
     var parts = line.split("|");
     var cells = [];
@@ -1035,13 +1041,13 @@ function parseLatexTabular(text) {
   for (var i = 0; i < lines.length; i++) {
     var line = trim(lines[i]);
 
-    if (line.startsWith("\\begin{tabular")) {
-      inside = true;
-      continue;
+    if (line.indexOf("\\begin{tabular}") === 0) {
+        inside = true;
+        continue;
     }
-    if (line.startsWith("\\end{tabular")) {
-      inside = false;
-      continue;
+    if (line.indexOf("\\end{tabular}") === 0) {
+        inside = false;
+        continue;
     }
     if (!inside) continue;
 
@@ -1067,19 +1073,25 @@ function parseJSONTable(text) {
     return [];
   }
 }
+
 function parseYAMLTable(text) {
   var lines = text.split(/\r?\n/);
   var rows = [];
 
-  for (var line of lines) {
-    line = line.trim();
-    if (!line.startsWith("-")) continue;
+  for (var i = 0; i < lines.length; i++) {
+    var line = trim(lines[i]);
+    if (line.indexOf("-") !== 0) continue;
 
     var inside = line.replace(/^- */, "").trim();
     inside = inside.replace(/^\[/, "").replace(/\]$/, "");
 
     var parts = inside.split(",");
-    var cells = parts.map(x => x.trim());
+    var cells = [];
+
+    for (var p = 0; p < parts.length; p++) {
+      cells.push(trim(parts[p]));
+    }
+
     rows.push(cells);
   }
 
