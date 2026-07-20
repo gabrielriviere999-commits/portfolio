@@ -454,7 +454,7 @@ function convertirSansTextarea(rows) {
     return convertCore(rows);
 }
 
-// Importer CSV et téléchargement automatique (sans textarea)
+// Importer CSV et téléchargement (sans textarea)
 var lastGeneratedTable = "";
 document.getElementById("csvFileInput").onchange = function () {
     var file = this.files[0];
@@ -488,7 +488,7 @@ function downloadText(text, filename) {
     var container = document.getElementById("downloadLinkContainer");
     container.innerHTML = "";
     container.appendChild(a);
-    a.click(); // télécchargement automatique
+    a.click(); // téléchargement automatique
 }
 
 /* --- Conversion CSV → Markdown --- */
