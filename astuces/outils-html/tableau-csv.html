@@ -634,21 +634,19 @@ function generateYAMLTable(rows) {
 }
 
 /* --- Output → input --- */
-function trimRightEmptyCells(rows) {
-  for (var r = 0; r < rows.length; r++) {
-    while (rows[r].length > 0 && rows[r][rows[r].length - 1] === "") {
-      rows[r].pop();
-    }
-  }
-}
-
-function removeEmptyRows(rows) {
+function cleanRows(rows) {
     var out = [];
 
     for (var r = 0; r < rows.length; r++) {
         var row = rows[r];
-        var keep = false;
 
+        // supprimer les colonnes vides à droite
+        while (row.length > 0 && trim(row[row.length - 1]) === "") {
+            row.pop();
+        }
+
+        // supprimer les lignes vides
+        var keep = false;
         for (var c = 0; c < row.length; c++) {
             if (trim(row[c]) !== "") {
                 keep = true;
@@ -663,8 +661,7 @@ function removeEmptyRows(rows) {
 }
 
 function tableToCSV(rows) {
-    trimRightEmptyCells(rows);
-    rows = removeEmptyRows(rows);
+    rows = cleanRows(rows);
 
     var sep = document.getElementById("tableau_ascii_sep").value || ";";
     var csv = "";
