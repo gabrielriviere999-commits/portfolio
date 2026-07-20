@@ -411,6 +411,10 @@ function convertCore(rows) {
     return "";
 }
 
+function trim(str) {
+  return String(str).replace(/^\s+/, "").replace(/\s+$/, "");
+}
+
 function csvToRows(lignes, sep) {
 
     // supprimer TOUTES les lignes vides
@@ -803,10 +807,6 @@ function parseAsciiTable(text) {
   if (currentRow) rows.push(currentRow);
 
   return rows;
-}
-
-function trim(str) {
-  return String(str).replace(/^\s+/, "").replace(/\s+$/, "");
 }
 
 function parsePipeTable(text) {
