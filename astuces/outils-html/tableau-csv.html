@@ -950,35 +950,23 @@ function parseAsciiTable(text) {
 }
 
 function parseFancyTable(text) {
+
+    var S = style_fancy;
+
     var lines = text.split(/\r?\n/);
     var rows = [];
     var currentRow = null;
-    var vBorder = null;
 
     for (var i = 0; i < lines.length; i++) {
 
         var line = trim(lines[i]);
         if (!line) continue;
 
-        // Détection automatique du séparateur vertical (vBorder)
-        if (!vBorder &&
-            line.indexOf("|]") !== 0 &&
-            line.indexOf("//") !== 0 &&
-            line.indexOf("\\\\") !== 0) {
+        // Bordures haut / bas
+        if (line.indexOf(S.TL) === 0) continue;
+        if (line.indexOf(S.BL) === 0) continue;
 
-            var m = line.match(/^(\S+)/);
-            if (m) vBorder = m[1];
-        }
-
-        // Re-trim pour la suite
-        line = trim(lines[i]);
-        if (!line) continue;
-
-        // Bordure haute / basse
-        if (line.indexOf("//") === 0) continue;
-        if (line.indexOf("\\\\") === 0) continue;
-
-        // Séparateur de ligne : on valide la ligne courante
+        // Séparateur entre deux lignes du tableau
         if (line.indexOf("|]") === 0) {
             if (currentRow) {
                 rows.push(currentRow);
@@ -988,17 +976,15 @@ function parseFancyTable(text) {
         }
 
         // Ligne de données
-        if (vBorder && line.indexOf(vBorder) === 0) {
+        if (line.indexOf(S.V) === 0) {
 
-            // Échapper vBorder pour regex
-            var esc = vBorder.replace(/([.*+?^${}()|[\]\\])/g, "\\$1");
+            var esc = S.V.replace(/([.*+?^${}()|[\]\\])/g, "\\$1");
 
-            // Retirer les bordures de début/fin
-            var inner = line.replace(new RegExp("^(" + esc + ")+"), "")
-                            .replace(new RegExp("(" + esc + ")+$"), "");
+            var inner = line
+                .replace(new RegExp("^(" + esc + ")+"), "")
+                .replace(new RegExp("(" + esc + ")+$"), "");
 
-            // Découper sur vBorder
-            var parts = inner.split(vBorder);
+            var parts = inner.split(S.V);
 
             var cells = [];
             for (var p = 0; p < parts.length; p++) {
@@ -1006,21 +992,26 @@ function parseFancyTable(text) {
             }
 
             if (!currentRow) {
-                // Première ligne du bloc
+
                 currentRow = cells;
+
             } else {
-                // Ligne wrapée : concaténation cellule par cellule
+
                 for (var c = 0; c < currentRow.length; c++) {
                     if (cells[c] && cells[c].length > 0) {
-                        currentRow[c] += " " + cells[c];
+
+                        if (currentRow[c].length)
+                            currentRow[c] += " ";
+
+                        currentRow[c] += cells[c];
                     }
                 }
             }
         }
     }
 
-    // Dernière ligne si le tableau se termine sans séparateur
-    if (currentRow) rows.push(currentRow);
+    if (currentRow)
+        rows.push(currentRow);
 
     return rows;
 }
