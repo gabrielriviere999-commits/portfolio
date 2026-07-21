@@ -411,6 +411,9 @@ function asciiTable_fancy(rows, MAX_TABLE_WIDTH, S) {
     var H=S.H, V=S.V, SEP=S.SEP;
     var H2 = S.hBorderHeader || null;
 
+    var SEP_LEFT = S.SEP_LEFT || "|]";
+    var SEP_RIGHT = S.SEP_RIGHT || "[|";
+
     // 1) Nombre de colonnes
     var colCount = 0;
     for (var i = 0; i < rows.length; i++)
@@ -448,7 +451,7 @@ function asciiTable_fancy(rows, MAX_TABLE_WIDTH, S) {
         return s;
     }
 
-    // 5) Bordure du haut (header)
+    // 5) Bordure du haut
     var out = TL;
     for (var c = 0; c < colCount; c++) {
         var borderChar = H2 || H;
@@ -479,13 +482,13 @@ function asciiTable_fancy(rows, MAX_TABLE_WIDTH, S) {
             out += line + "\n";
         }
 
-        // 7) Bordure intermédiaire (header après la première ligne)
+        // 7) Bordure intermédiaire (PATCH)
         if (r < rows.length - 1) {
-            var mid = "|]";
+            var mid = SEP_LEFT;
             for (var c = 0; c < colCount; c++) {
                 var borderChar = (r === 0 && H2) ? H2 : H;
                 mid += repeat(borderChar, widths[c] + 2);
-                mid += (c < colCount - 1 ? SEP : "[|");
+                mid += (c < colCount - 1 ? SEP : SEP_RIGHT);
             }
             out += mid + "\n";
         }
@@ -520,6 +523,8 @@ var style_fancy_header = {
     H: "-",
     V: "||",
     SEP: "[]",
+    SEP_LEFT: "``",
+    SEP_RIGHT: "''",
     hBorderHeader: "="
 };
 
@@ -971,18 +976,33 @@ function parseFancyTable(text) {
     var rows = [];
     var currentRow = null;
     var vBorder = null;
+    var sepLeft = null;
+    var sepRight = null;
 
     for (var i = 0; i < lines.length; i++) {
 
         var line = trim(lines[i]);
         if (!line) continue;
 
-        // Bordure intermédiaire
-        if (/^\|\].*\[\|$/.test(line)) {
+        // Détection automatique de SEP_LEFT et SEP_RIGHT
+        if (!sepLeft || !sepRight) {
+            var m = line.match(/^(\S+).*?(\S+)$/);
+
+            if (m && line.indexOf(" ") === -1) {
+                // Ligne sans espaces = probablement une bordure, on ignore
+            } else if (m) {
+                // On ne fait rien ici
+            }
+        }
+
+        // Ligne séparatrice
+        if (line.indexOf(" ") === -1) {
+
             if (currentRow) {
                 rows.push(currentRow);
                 currentRow = null;
             }
+
             continue;
         }
 
