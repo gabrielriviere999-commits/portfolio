@@ -976,24 +976,11 @@ function parseFancyTable(text) {
     var rows = [];
     var currentRow = null;
     var vBorder = null;
-    var sepLeft = null;
-    var sepRight = null;
 
     for (var i = 0; i < lines.length; i++) {
 
         var line = trim(lines[i]);
         if (!line) continue;
-
-        // Détection automatique de SEP_LEFT et SEP_RIGHT
-        if (!sepLeft || !sepRight) {
-            var m = line.match(/^(\S+).*?(\S+)$/);
-
-            if (m && line.indexOf(" ") === -1) {
-                // Ligne sans espaces = probablement une bordure, on ignore
-            } else if (m) {
-                // On ne fait rien ici
-            }
-        }
 
         // Ligne séparatrice
         if (line.indexOf(" ") === -1) {
