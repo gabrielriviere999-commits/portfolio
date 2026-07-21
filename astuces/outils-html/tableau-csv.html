@@ -47,6 +47,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <textarea wrap="off" id="input"></textarea><br>
 <button onclick="convertir()" class="btn-color" style="background:#ff8800;">Convertir en tableau</button>
 <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
+<button id="transposeBtn">Inverser lignes et colonnes</button>
 <button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
 <input type="file" id="csvFileInput" class="file-input">
 <p></p><div id="downloadLinkContainer"></div>
@@ -645,6 +646,53 @@ function downloadText(text, filename) {
     container.appendChild(a);
     a.click(); // téléchargement automatique
 }
+
+/* --- Inverser lignes et colonnes du CSV --- */
+function transpose(rows) {
+    if (!rows || !rows.length) return [];
+
+    var R = rows.length;
+    var C = 0;
+
+    // Trouver le nombre max de colonnes
+    for (var i = 0; i < R; i++)
+        if (rows[i].length > C) C = rows[i].length;
+
+    var out = [];
+
+    // Construire la transposition
+    for (var c = 0; c < C; c++) {
+        var newRow = [];
+        for (var r = 0; r < R; r++) {
+            newRow.push(rows[r][c] || "");
+        }
+        out.push(newRow);
+    }
+
+    return out;
+}
+
+document.getElementById("transposeBtn").onclick = function () {
+    // Lire le CSV du champ input
+    var txt = document.getElementById("input").value;
+
+    // Convertir CSV → tableau
+    var sep = document.getElementById("tableau_ascii_sep").value || ";";
+    var rows = csvToRows(txt.split("\n"), sep);
+
+    // Transposer
+    var newRows = transpose(rows);
+
+    // Reconvertir tableau → CSV
+    var out = "";
+    for (var r = 0; r < newRows.length; r++) {
+        if (r > 0) out += "\n";
+        out += newRows[r].join(sep);
+    }
+
+    // Réécrire dans input
+    document.getElementById("input").value = out;
+};
 
 /* --- Conversion CSV → Markdown --- */
 function generateMarkdownTable(rows) {
