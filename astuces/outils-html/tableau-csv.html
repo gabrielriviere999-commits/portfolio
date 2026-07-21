@@ -24,6 +24,7 @@
     <option value="rounded">Arrondi .:+'|-</option>
     <option value="fancy">Fancy //==||</option>
     <option value="fancy_header">Fancy (header)</option>
+    <option value="bubble">Bulles</option>
   </optgroup>
   <optgroup label="Formats spéciaux">
     <option value="markdown">Markdown |-</option>
@@ -55,7 +56,7 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Convertir en CSV</button>
 <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
 <input type="file" id="tableFileInput" class="file-input">
-<br><span id="limitedcsvconversion" style="display:none;background:#00a;" maxlength="1">ⓘ Conversion en CSV limitée au modèle sélectionné.</span>
+<br><span id="fancycsvconversion" style="display:none;background:#00a;" maxlength="1">ⓘ Conversion en CSV limitée à : Fancy, Fancy (header), Bulles</span>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
@@ -520,6 +521,18 @@ var style_fancy_header = {
     hBorderHeader: "="
 };
 
+var style_bubble = {
+    TL: " o8",
+    TR: "8o ",
+    BL: " o8",
+    BR: "8o ",
+    H: "8",
+    V: "(_)",
+    SEP: "(_)",
+    SEP_LEFT: "(88",
+    SEP_RIGHT: "88)"
+};
+
 /* --- Conversion CSV → ASCII --- */
 function convertCore(rows) {
     var sep = document.getElementById("tableau_ascii_sep").value || ";";
@@ -537,6 +550,7 @@ function convertCore(rows) {
     if (model === "rounded") return asciiTable_multi(rows, maxwidth, chars_rounded);
     if (model === "fancy") return asciiTable_fancy(rows, maxwidth, style_fancy);
     if (model === "fancy_header") return asciiTable_fancy(rows, maxwidth, style_fancy_header);
+    if (model === "bubble") return asciiTable_fancy(rows, maxwidth, style_bubble);
     if (model === "markdown") return generateMarkdownTable(rows);
     if (model === "html") return tableToHTML(rows);
     if (model === "bbcode") return generateBBCodeTable(rows);
@@ -869,7 +883,7 @@ function parseAnyTable(text) {
   var model = document.getElementById("ascii_model").value;
 
   // Mode fancy strict
-  if (model === "fancy" || model === "fancy_header") {
+  if (model === "fancy" || model === "fancy_header" || model === "bubble") {
       return parseFancyTable(text);
   }
 
@@ -1412,8 +1426,8 @@ function updateOptionsVisibility() {
   document.getElementById("tableau_ascii_custom_char").style.display =
     (model === "custom") ? "" : "none";
 
-  var showLimited = (model === "fancy" || model === "fancy_header");
-  document.getElementById("limitedcsvconversion").style.display = showLimited ? "" : "none";
+  var showFancy = (model === "fancy" || model === "fancy_header" || model === "bubble");
+  document.getElementById("fancycsvconversion").style.display = showFancy ? "" : "none";
 
   // Largeur max
   var noWidth = ["markdown", "html", "bbcode", "wikitable", "asciidoc", "orgmode", "latex", "json", "yaml"];
