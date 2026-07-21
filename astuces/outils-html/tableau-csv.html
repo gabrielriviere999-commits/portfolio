@@ -179,7 +179,7 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   // Ligne du haut
   var sepTop;
   if (style.firstSep) {
-    sepTop = repeat(".", sepMid.length);
+    sepTop = repeat(style.firstSepChar, sepMid.length);
   } else if (style.hBorderHeader) {
     sepTop = style.corner;
     for (var c = 0; c < colCount; c++)
@@ -246,7 +246,8 @@ var style_dotted = {
   corner: ":",
   hBorder: ".",
   vBorder: ":",
-  firstSep: true
+  firstSep: true,
+  firstSepChar: ".",
 };
 
 var style_custom = {
