@@ -523,8 +523,6 @@ var style_fancy_header = {
     H: "-",
     V: "||",
     SEP: "[]",
-    SEP_LEFT: "``",
-    SEP_RIGHT: "''",
     hBorderHeader: "="
 };
 
@@ -995,9 +993,7 @@ function parseFancyTable(text) {
 
         // Détection automatique du séparateur vertical
         if (!vBorder) {
-
             var m = line.match(/^(\D+?)\s/);
-
             if (m) {
                 vBorder = m[1];
             } else {
@@ -1005,9 +1001,17 @@ function parseFancyTable(text) {
             }
         }
 
-        // Pas une ligne de données
-        if (line.indexOf(vBorder) !== 0)
+        // Si la ligne ne commence pas par le séparateur vertical,
+        // c'est une bordure ou un séparateur.
+        if (line.indexOf(vBorder) !== 0) {
+
+            if (currentRow) {
+                rows.push(currentRow);
+                currentRow = null;
+            }
+
             continue;
+        }
 
         var esc = vBorder.replace(/([.*+?^${}()|[\]\\])/g, "\\$1");
 
