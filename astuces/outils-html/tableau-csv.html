@@ -134,6 +134,9 @@ function wrapText(str, max) {
 function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   if (!rows || !rows.length) return "";
 
+  // Padding fixe
+  var PAD = 2;
+
   // 1) Nombre de colonnes
   var colCount = 0;
   for (var i = 0; i < rows.length; i++)
@@ -152,11 +155,11 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   // 3) Largeur totale
   var totalWidth = 1;
   for (var c = 0; c < colCount; c++)
-    totalWidth += widths[c] + style.hPadding;
+    totalWidth += widths[c] + PAD;
 
-  // 4) Réduction proportionnelle (toujours active)
+  // 4) Réduction proportionnelle
   if (totalWidth > MAX_TABLE_WIDTH) {
-    var espace = MAX_TABLE_WIDTH - (style.hPadding * colCount + 1);
+    var espace = MAX_TABLE_WIDTH - (PAD * colCount + 1);
     var sum = 0;
     for (var i = 0; i < widths.length; i++) sum += widths[i];
     for (var i = 0; i < widths.length; i++) {
@@ -168,21 +171,19 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
   var out = "";
   var sepMid = "";
 
-  // 5) Ligne de séparation (haut et milieu)
+  // 5) Ligne de séparation
   sepMid = style.corner;
   for (var c = 0; c < colCount; c++)
-    sepMid += repeat(style.hBorder, widths[c] + style.hPadding) + style.corner;
+    sepMid += repeat(style.hBorder, widths[c] + PAD) + style.corner;
 
   // Ligne du haut
   var sepTop;
   if (style.firstSep) {
-    // Style pointillé : première ligne en "."
     sepTop = repeat(".", sepMid.length);
   } else if (style.hBorderHeader) {
-    // Style header : ligne spéciale
     sepTop = style.corner;
     for (var c = 0; c < colCount; c++)
-      sepTop += repeat(style.hBorderHeader, widths[c] + style.hPadding) + style.corner;
+      sepTop += repeat(style.hBorderHeader, widths[c] + PAD) + style.corner;
   } else {
     sepTop = sepMid;
   }
@@ -202,11 +203,11 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
     }
 
     for (var h = 0; h < maxHeight; h++) {
-      var line = style.vBorder + style.space;
+      var line = style.vBorder + " ";
 
       for (var c = 0; c < colCount; c++) {
         var txt = wrappedCells[c][h] || "";
-        line += padRight(txt, widths[c]) + style.space + style.vBorder + style.space;
+        line += padRight(txt, widths[c]) + " " + style.vBorder + " ";
       }
 
       line = line.substring(0, line.length - 1);
@@ -220,7 +221,7 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
 
     var sep = style.corner;
     for (var c = 0; c < colCount; c++)
-      sep += repeat(border, widths[c] + style.hPadding) + style.corner;
+      sep += repeat(border, widths[c] + PAD) + style.corner;
 
     out += sep + "\n";
   }
@@ -231,35 +232,27 @@ function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
 var style_classic = {
   corner: "+",
   hBorder: "-",
-  vBorder: "|",
-  hPadding: 2,
-  space: " "
+  vBorder: "|"
 };
 
 var style_header = {
   corner: "+",
   hBorder: "-",
   hBorderHeader: "=",
-  vBorder: "|",
-  hPadding: 2,
-  space: " "
+  vBorder: "|"
 };
 
 var style_dotted = {
   corner: ":",
   hBorder: ".",
   vBorder: ":",
-  hPadding: 2,
-  space: " ",
   firstSep: true
 };
 
 var style_custom = {
   corner: "#",
   hBorder: "#",
-  vBorder: "#",
-  hPadding: 2,
-  space: " "
+  vBorder: "#"
 };
 
 var default_custom  = JSON.parse(JSON.stringify(style_custom));
