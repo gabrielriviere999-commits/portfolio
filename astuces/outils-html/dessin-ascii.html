@@ -1007,6 +1007,8 @@ function applyZoomRange() {
     var size = document.getElementById("zoomRange").value;
     var t = document.getElementById("view");
     t.style.fontSize = size + "px";
+    autoWidth();
+    view.getBoundingClientRect();
 }
 function resetZoom() {
     fontSize = 12;
