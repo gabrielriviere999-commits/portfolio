@@ -822,6 +822,7 @@ function autoWidthDynamic() {
 }
 
 view.onmousemove = function(e) {
+    if (!isDown) return; // ne scroller que si on dessine
 
     var rect = view.getBoundingClientRect();
     var margin = 50;
