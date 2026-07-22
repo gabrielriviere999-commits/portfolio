@@ -25,7 +25,7 @@ input:not([type=range]){width:15px;}
 <input type="file" id="fileInput" style="display:none;">
 
 <div class="toolbar-nfix">
-  <input id="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
+  <input id="zoomRange" class="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
   <button onclick="resetZoom()">12px</button>
   |
   <button id="btnFree" onclick="setTool('free')">Tracé libre</button>

@@ -24,7 +24,7 @@ input,textarea {
   color:#ccc;
   border:2px groove #808080;
 }
-#zoomRange{position:relative;top:8px;}
+.zoomRange{position:relative;top:8px;}
 @media (hover:none) and (pointer:coarse) {
   ::-webkit-scrollbar {
     width:24px;

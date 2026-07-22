@@ -49,6 +49,8 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
 <button id="transposeBtn">Inverser lignes et colonnes</button>
 <button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
+<input id="zoomRangeInput" class="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoom('zoomRangeInput', 'input')">
+<button onclick="resetZoom('zoomRangeInput', 'input')">12px</button>
 <input type="file" id="csvFileInput" class="file-input">
 <p></p><div id="downloadLinkContainer"></div>
 
@@ -56,8 +58,8 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <textarea wrap="off" id="output"></textarea><br>
 <button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Convertir en CSV</button>
 <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
-<input id="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
-<button onclick="resetZoom()">12px</button>
+<input id="zoomRangeOutput" class="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoom('zoomRangeOutput', 'output')">
+<button onclick="resetZoom('zoomRangeOutput', 'output')">12px</button>
 <input type="file" id="tableFileInput" class="file-input">
 <br>
 <span id="unicodeboxdecalages" style="display:none;background:#00a;" maxlength="1">ⓘ Unicode et Box : risque de décalages élevés pour l'affichage du tableau notamment sur Android.</span>
@@ -1450,16 +1452,15 @@ setupDragDrop("output");
 
 /* --- Changer taille du texte --- */
 var fontSize = 12;
-function applyZoomRange() {
-    var size = document.getElementById("zoomRange").value;
-    var t = document.getElementById("output");
-    t.style.fontSize = size + "px";
+function applyZoom(idSlider, idTextarea) {
+    var size = document.getElementById(idSlider).value;
+    document.getElementById(idTextarea).style.fontSize = size + "px";
 }
-function resetZoom() {
-    fontSize = 12;
-    var slider = document.getElementById("zoomRange");
-    slider.value = fontSize;
-    applyZoomRange();
+function resetZoom(idSlider, idTextarea) {
+    var defaultSize = 12;
+    var slider = document.getElementById(idSlider);
+    slider.value = defaultSize;
+    document.getElementById(idTextarea).style.fontSize = defaultSize + "px";
 }
 
 // Bouton Effacer tout
