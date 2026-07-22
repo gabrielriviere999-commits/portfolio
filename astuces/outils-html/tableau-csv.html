@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tableau CSV</title>
 <link rel="stylesheet" href="outils.css">
-<style>input:not([type=file]){width:50px;}</style>
+<style>input:not([type=file],[type=range]){width:50px;}</style>
 </head>
 <body>
 
@@ -59,6 +59,8 @@ Séparateur : <input id="tableau_ascii_sep" value=";">
 <input type="file" id="tableFileInput" class="file-input">
 <br><span id="unicodeboxdecalages" style="display:none;background:#00a;" maxlength="1">ⓘ Unicode et Box : risque de décalages élevés pour l'affichage du tableau notamment sur Android.</span>
 <span id="fancycsvconversion" style="display:none;background:#00a;" maxlength="1">ⓘ Conversion en CSV limitée à : Fancy, Fancy (header), Bulles</span>
+<input id="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
+<button onclick="resetZoom()">12px</button>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
@@ -1444,6 +1446,20 @@ function setupDragDrop(textareaId) {
 }
 setupDragDrop("input");
 setupDragDrop("output");
+
+/* --- Changer taille du texte --- */
+var fontSize = 12;
+function applyZoomRange() {
+    var size = document.getElementById("zoomRange").value;
+    var t = document.getElementById("output");
+    t.style.fontSize = size + "px";
+}
+function resetZoom() {
+    fontSize = 12;
+    var slider = document.getElementById("zoomRange");
+    slider.value = fontSize;
+    applyZoomRange();
+}
 
 // Bouton Effacer tout
 function effacerTout() {
