@@ -1451,16 +1451,15 @@ setupDragDrop("input");
 setupDragDrop("output");
 
 /* --- Changer taille du texte --- */
-var fontSize = 12;
 function applyZoom(idSlider, idTextarea) {
-    var size = document.getElementById(idSlider).value;
-    document.getElementById(idTextarea).style.fontSize = size + "px";
+  var size = document.getElementById(idSlider).value;
+  document.getElementById(idTextarea).style.fontSize = size + "px";
 }
 function resetZoom(idSlider, idTextarea) {
-    var defaultSize = 12;
-    var slider = document.getElementById(idSlider);
-    slider.value = defaultSize;
-    document.getElementById(idTextarea).style.fontSize = defaultSize + "px";
+  var defaultSize = 12;
+  var slider = document.getElementById(idSlider);
+  slider.value = defaultSize;
+  document.getElementById(idTextarea).style.fontSize = defaultSize + "px";
 }
 
 // Bouton Effacer tout
