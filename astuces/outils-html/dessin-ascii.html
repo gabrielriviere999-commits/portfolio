@@ -8,7 +8,7 @@
 <style>
 ::-moz-selection{background:#404040;color:#ccc;}
 ::selection {background:#404040;color:#ccc;}
-input{width:15px;}
+input:not([type=range]){width:15px;}
 #view {
   height:500px;
   height:70vh;
@@ -56,6 +56,9 @@ input{width:15px;}
   <button id="btnErase" onclick="setTool('erase')">Gomme</button>
   <button onclick="undo()">Annuler</button>
   <button onclick="redo()">Rétablir</button>
+  |
+  <input id="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
+  <button onclick="resetZoom()">12px</button>
   |
   <button onclick="alert('• Caractère personnalisé pour tracé libre, ligne, rectangle, ellipse, remplir : champ vide = caractère par défaut, espace = gomme.\n• Rectangle : 2 modèles différents +-| et :.:\n• Déplacer/Copier : changer de place un rectangle d‘éléments en sélectionnant puis en glissant.\n• Copier presse-papiers : sélectionner un rectangle d‘éléments le copie.\n• Texte libre : ajouter du texte n‘importe où sur la zone de dessin sans décaler les autres éléments.\n• Édition texte : mode édition normale.\n• Remplir : remplir d‘un caractère l‘intérieur d‘une forme ou caractères identiques.\n• Gomme : comme tracé libre avec espace.\n• Annuler/Rétablir : n‘importe quelle opération, cliquer 1 fois sur annuler après avoir annulé texte libre, et 2 fois après avoir OK texte libre pour l‘annuler.')">?</button>
 </div>
@@ -996,6 +999,20 @@ function updateShapeInfo(w, h) {
 
 function clearShapeInfo() {
     document.getElementById("shapeInfo").textContent = "";
+}
+
+/* --- CHANGER TAILLE DU TEXTE ZONE DE DESSIN --- */
+var fontSize = 12;
+function applyZoomRange() {
+    var size = document.getElementById("zoomRange").value;
+    var t = document.getElementById("view");
+    t.style.fontSize = size + "px";
+}
+function resetZoom() {
+    fontSize = 12;
+    var slider = document.getElementById("zoomRange");
+    slider.value = fontSize;
+    applyZoomRange();
 }
 
 /* --- STARTUP --- */
