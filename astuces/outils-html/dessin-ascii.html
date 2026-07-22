@@ -1011,9 +1011,8 @@ function applyZoomRange() {
     view.getBoundingClientRect();
 }
 function resetZoom() {
-    fontSize = 12;
     var slider = document.getElementById("zoomRange");
-    slider.value = fontSize;
+    slider.value = 12;
     applyZoomRange();
 }
 
