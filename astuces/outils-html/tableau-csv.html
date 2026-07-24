@@ -460,11 +460,11 @@ function convertCore(rows) {
     if (model === "classic") return asciiTable(rows, maxwidth, style_classic);
     if (model === "classic_header") return asciiTable(rows, maxwidth, style_classic_header);
     if (model === "dotted") return asciiTable(rows, maxwidth, style_dotted);
+    if (model === "rounded") return asciiTable(rows, maxwidth, style_rounded);
     if (model === "wavy") return asciiTable(rows, maxwidth, style_wavy);
-    if (model === "custom") return asciiTable(rows, maxwidth, style_custom);
     if (model === "unicode") return asciiTable(rows, maxwidth, style_unicode);
     if (model === "box") return asciiTable(rows, maxwidth, style_box);
-    if (model === "rounded") return asciiTable(rows, maxwidth, style_rounded);
+    if (model === "custom") return asciiTable(rows, maxwidth, style_custom);
     if (model === "fancy") return asciiTable_fancy(rows, maxwidth, style_fancy);
     if (model === "fancy_header") return asciiTable_fancy(rows, maxwidth, style_fancy_header);
     if (model === "bubble") return asciiTable_fancy(rows, maxwidth, style_bubble);
