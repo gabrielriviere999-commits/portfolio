@@ -18,6 +18,7 @@
     <option value="classic">Classique +-|</option>
     <option value="header">Classique (header)</option>
     <option value="dotted">Pointillé :.:</option>
+    <option value="wave">Ondulé +~¤</option>
     <option value="custom">Custom</option>
     <option value="unicode">Unicode ╠═</option>
     <option value="box">Box ├─</option>
@@ -71,11 +72,6 @@ function setText(el, txt) {
     if (el.value !== undefined) el.value = txt;
     else if (el.textContent !== undefined) el.textContent = txt;
     else el.innerText = txt;
-}
-
-function getText(el) {
-    if (el.value !== undefined) return el.value;
-    return (el.textContent !== undefined) ? el.textContent : el.innerText;
 }
 
 function repeat(str, n) {
@@ -256,6 +252,12 @@ var style_dotted = {
   vBorder: ":",
   firstSep: true,
   firstSepChar: "."
+};
+
+var style_wave = {
+  corner: "¤",
+  hBorder: "~",
+  vBorder: "|"
 };
 
 var style_custom = {
@@ -552,6 +554,7 @@ function convertCore(rows) {
     if (model === "classic") return asciiTable_generic(rows, maxwidth, style_classic);
     if (model === "header") return asciiTable_generic(rows, maxwidth, style_header);
     if (model === "dotted") return asciiTable_generic(rows, maxwidth, style_dotted);
+    if (model === "wave") return asciiTable_generic(rows, maxwidth, style_wave);
     if (model === "custom") return asciiTable_generic(rows, maxwidth, style_custom);
     if (model === "unicode") return asciiTable_multi(rows, maxwidth, chars_unicode);
     if (model === "box") return asciiTable_multi(rows, maxwidth, chars_box);
