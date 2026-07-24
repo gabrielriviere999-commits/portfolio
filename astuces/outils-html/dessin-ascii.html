@@ -40,6 +40,8 @@ input[type=text]{width:15px;}
   <select id="rectMode">
     <option value="classic">+-|</option>
     <option value="dotted">:.:</option>
+    <option value="rounded">.+'|-</option>
+    <option value="fancy">/=|</option>
   </select>
   <input type="text" id="rectChar" value="" maxlength="1">
   |
@@ -60,7 +62,7 @@ input[type=text]{width:15px;}
   <button onclick="undo()">Annuler</button>
   <button onclick="redo()">Rétablir</button>
   |
-  <button onclick="alert('• Caractère personnalisé pour tracé libre, ligne, rectangle, ellipse, remplir : champ vide = caractère par défaut, espace = gomme.\n• Rectangle : 2 modèles différents +-| et :.:\n• Déplacer/Copier : changer de place un rectangle d‘éléments en sélectionnant puis en glissant.\n• Copier presse-papiers : sélectionner un rectangle d‘éléments le copie.\n• Texte libre : ajouter du texte n‘importe où sur la zone de dessin sans décaler les autres éléments.\n• Édition texte : mode édition normale.\n• Remplir : remplir d‘un caractère l‘intérieur d‘une forme ou caractères identiques.\n• Gomme : comme tracé libre avec espace.\n• Annuler/Rétablir : n‘importe quelle opération, cliquer 1 fois sur annuler après avoir annulé texte libre, et 2 fois après avoir OK texte libre pour l‘annuler.')">?</button>
+  <button onclick="alert('• Caractère personnalisé pour tracé libre, ligne, rectangle, ellipse, remplir : champ vide = caractère par défaut, espace = gomme.\n• Rectangle : modèles au choix\n• Déplacer/Copier : changer de place un rectangle d‘éléments en sélectionnant puis en glissant.\n• Copier presse-papiers : sélectionner un rectangle d‘éléments le copie.\n• Texte libre : ajouter du texte n‘importe où sur la zone de dessin sans décaler les autres éléments.\n• Édition texte : mode édition normale.\n• Remplir : remplir d‘un caractère l‘intérieur d‘une forme ou caractères identiques.\n• Gomme : comme tracé libre avec espace.\n• Annuler/Rétablir : n‘importe quelle opération, cliquer 1 fois sur annuler après avoir annulé texte libre, et 2 fois après avoir OK texte libre pour l‘annuler.')">?</button>
 </div>
 
 <div id="textBox" style="display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#202020;border:1px solid #000;padding:10px;z-index:9999;opacity:0.8;">
@@ -333,6 +335,53 @@ function drawArrow(x1, y1, x2, y2) {
 }
 
 /* --- RECTANGLE --- */
+var RECT_STYLES = {
+  classic: {
+    tl: "+",
+    tr: "+",
+    bl: "+",
+    br: "+",
+    top: "-",
+    bottom: "-",
+    left: "|",
+    right: "|"
+  },
+
+  dotted: {
+    tl: ".", 
+    tr: ".", 
+    bl: ":", 
+    br: ":", 
+    top: ".", 
+    bottom: ".", 
+    left: ":", 
+    right: ":",
+    dotted: true
+  },
+
+  rounded: {
+    tl: ".",
+    tr: ".",
+    bl: "'",
+    br: "'",
+    top: "-",
+    bottom: "-",
+    left: "|",
+    right: "|"
+  },
+
+fancy: {
+    tl: "/",
+    tr: "\\",
+    bl: "\\",
+    br: "/",
+    top: "=",
+    bottom: "=",
+    left: "|",
+    right: "|"
+}
+};
+
 function drawRectangle(x1, y1, x2, y2) {
     var xMin = Math.min(x1, x2);
     var xMax = Math.max(x1, x2);
@@ -344,74 +393,70 @@ function drawRectangle(x1, y1, x2, y2) {
 
     // lire le mode
     var mode = document.getElementById("rectMode").value;
+    var style = RECT_STYLES[mode];
 
     // lire le caractère personnalisé
     var c = document.getElementById("rectChar").value;
     var useCustom = (c && c.length > 0);
 
-    // caractères classiques
-    var corner = useCustom ? c : "+";
-    var horiz  = useCustom ? c : "-";
-    var vert   = useCustom ? c : "|";
+    // si caractère custom → override tout
+    var tl = useCustom ? c : style.tl;
+    var tr = useCustom ? c : style.tr;
+    var bl = useCustom ? c : style.bl;
+    var br = useCustom ? c : style.br;
+
+    var top    = useCustom ? c : style.top;
+    var bottom = useCustom ? c : style.bottom;
+    var left   = useCustom ? c : style.left;
+    var right  = useCustom ? c : style.right;
 
     var x, y;
 
-    // --- MODE POINTILLÉ (seulement si pas de caractère custom) ---
-    if (mode === "dotted" && !useCustom) {
+    // MODE POINTILLÉ SPÉCIAL
+    if (style.dotted && !useCustom) {
 
-        var cornerTop = ".";
-        var cornerBottom = ":";
-        var dottedHoriz = ".";
-        var dottedVert  = ":";
+        grid[yMin][xMin] = tl;
+        grid[yMin][xMax] = tr;
+        grid[yMax][xMin] = bl;
+        grid[yMax][xMax] = br;
 
-        // coins
-        grid[yMin][xMin] = cornerTop;
-        grid[yMin][xMax] = cornerTop;
-        grid[yMax][xMin] = cornerBottom;
-        grid[yMax][xMax] = cornerBottom;
-
-        // horizontales
         for (x = xMin + 1; x < xMax; x++) {
             ensureCell(x, yMin);
             ensureCell(x, yMax);
-            grid[yMin][x] = dottedHoriz;
-            grid[yMax][x] = dottedHoriz;
+            grid[yMin][x] = top;
+            grid[yMax][x] = bottom;
         }
 
-        // verticales
         for (y = yMin + 1; y < yMax; y++) {
             ensureCell(xMin, y);
             ensureCell(xMax, y);
-            grid[y][xMin] = dottedVert;
-            grid[y][xMax] = dottedVert;
+            grid[y][xMin] = left;
+            grid[y][xMax] = right;
         }
 
         render();
         return;
     }
 
-    // --- MODE CLASSIQUE (ou pointillé avec caractère custom) ---
+    // MODE NORMAL
 
-    // coins
-    grid[yMin][xMin] = corner;
-    grid[yMin][xMax] = corner;
-    grid[yMax][xMin] = corner;
-    grid[yMax][xMax] = corner;
+    grid[yMin][xMin] = tl;
+    grid[yMin][xMax] = tr;
+    grid[yMax][xMin] = bl;
+    grid[yMax][xMax] = br;
 
-    // horizontales
     for (x = xMin + 1; x < xMax; x++) {
         ensureCell(x, yMin);
         ensureCell(x, yMax);
-        grid[yMin][x] = horiz;
-        grid[yMax][x] = horiz;
+        grid[yMin][x] = top;
+        grid[yMax][x] = bottom;
     }
 
-    // verticales
     for (y = yMin + 1; y < yMax; y++) {
         ensureCell(xMin, y);
         ensureCell(xMax, y);
-        grid[y][xMin] = vert;
-        grid[y][xMax] = vert;
+        grid[y][xMin] = left;
+        grid[y][xMax] = right;
     }
 
     render();
