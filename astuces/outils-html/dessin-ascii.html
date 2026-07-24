@@ -9,6 +9,7 @@
 ::-moz-selection{background:#404040;color:#ccc;}
 ::selection {background:#404040;color:#ccc;}
 input[type=text]{width:15px;}
+select{width:55px;}
 #view {
   height:500px;
   height:70vh;
@@ -38,13 +39,13 @@ input[type=text]{width:15px;}
   |
   <button id="btnRect" onclick="setTool('rect')">Rectangle</button>
   <select id="rectMode">
-    <option value="classic">+-|</option>
-    <option value="dotted">.:</option>
-    <option value="rounded">.-|:+</option>
-    <option value="wavy">¤~¦</option>
-    <option value="fancy">/=\|</option>
+    <option value="classic">+-| Classique</option>
+    <option value="dotted">.: Pointillé</option>
+    <option value="rounded">.-|:+ Arrondi</option>
+    <option value="wavy">¤~¦ Ondulé</option>
+    <option value="fancy">/=\| Fancy</option>
   </select>
-  <input type="text" id="rectChar" value="" maxlength="1">
+  <input type="text" id="rectChar" maxlength="1">
   |
   <button id="btnEllipse" onclick="setTool('ellipse')">Ellipse</button>
   <input type="text" id="ellipseChar" value="o" maxlength="1">
