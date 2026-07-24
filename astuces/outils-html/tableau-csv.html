@@ -8,21 +8,19 @@
 <style>input[type=text],input[type=number]{width:50px;}</style>
 </head>
 <body>
-
 <h2>Tableau CSV</h2>
-
 <h3>CSV</h3>
 <div class="toolbar-nfix">
 <select id="ascii_model">
   <optgroup label="Texte brut lisible">
     <option value="classic">Classique +-|</option>
-    <option value="header">Classique (header)</option>
+    <option value="classic_header">Classique (header)</option>
     <option value="dotted">Pointillé :.:</option>
+    <option value="rounded">Arrondi .:+'|-</option>
     <option value="wavy">Ondulé ¤~¦</option>
-    <option value="custom">Custom</option>
     <option value="unicode">Unicode ╠═</option>
     <option value="box">Box ├─</option>
-    <option value="rounded">Arrondi .:+'|-</option>
+    <option value="custom">Custom</option>
     <option value="fancy">Fancy //=||</option>
     <option value="fancy_header">Fancy (header)</option>
     <option value="bubble">Bulles o8(_)</option>
@@ -135,158 +133,7 @@ function wrapText(str, max) {
   return lines;
 }
 
-function asciiTable_generic(rows, MAX_TABLE_WIDTH, style) {
-  if (!rows || !rows.length) return "";
-
-  // Padding fixe
-  var PAD = 2;
-
-  // 1) Nombre de colonnes
-  var colCount = 0;
-  for (var i = 0; i < rows.length; i++)
-    if (rows[i].length > colCount) colCount = rows[i].length;
-
-  // 2) Largeurs naturelles
-  var widths = [];
-  for (var c = 0; c < colCount; c++) widths[c] = 0;
-
-  for (var r = 0; r < rows.length; r++)
-    for (var c = 0; c < colCount; c++) {
-      var cell = rows[r][c] || "";
-      if (cell.length > widths[c]) widths[c] = cell.length;
-    }
-
-  // 3) Largeur totale
-  var totalWidth = 1;
-  for (var c = 0; c < colCount; c++)
-    totalWidth += widths[c] + PAD;
-
-  // 4) Réduction proportionnelle
-  if (totalWidth > MAX_TABLE_WIDTH) {
-    var espace = MAX_TABLE_WIDTH - (PAD * colCount + 1);
-    var sum = 0;
-    for (var i = 0; i < widths.length; i++) sum += widths[i];
-    for (var i = 0; i < widths.length; i++) {
-      widths[i] = Math.floor(widths[i] * espace / sum);
-      if (widths[i] < 1) widths[i] = 1;
-    }
-  }
-
-  var out = "";
-  var sepMid = "";
-
-  // 5) Ligne de séparation
-  sepMid = style.corner;
-  for (var c = 0; c < colCount; c++)
-    sepMid += repeat(style.hBorder, widths[c] + PAD) + style.corner;
-
-  // Ligne du haut
-  var sepTop;
-  if (style.firstSep) {
-    sepTop = repeat(style.firstSepChar, sepMid.length);
-  } else if (style.hBorderHeader) {
-    sepTop = style.corner;
-    for (var c = 0; c < colCount; c++)
-      sepTop += repeat(style.hBorderHeader, widths[c] + PAD) + style.corner;
-  } else {
-    sepTop = sepMid;
-  }
-
-  out += sepTop + "\n";
-
-  // 6) Lignes avec wrap
-  for (var r = 0; r < rows.length; r++) {
-    var wrappedCells = [];
-    var maxHeight = 1;
-
-    for (var c = 0; c < colCount; c++) {
-      var cell = rows[r][c] || "";
-      var wrapped = wrapText(cell, widths[c]);
-      wrappedCells[c] = wrapped;
-      if (wrapped.length > maxHeight) maxHeight = wrapped.length;
-    }
-
-    for (var h = 0; h < maxHeight; h++) {
-      var line = style.vBorder + " ";
-
-      for (var c = 0; c < colCount; c++) {
-        var txt = wrappedCells[c][h] || "";
-        line += padRight(txt, widths[c]) + " " + style.vBorder + " ";
-      }
-
-      line = line.substring(0, line.length - 1);
-      out += line + "\n";
-    }
-
-    // Ligne de séparation après chaque ligne
-    var border = (r === 0 && style.hBorderHeader)
-                 ? style.hBorderHeader
-                 : style.hBorder;
-
-    var sep = style.corner;
-    for (var c = 0; c < colCount; c++)
-      sep += repeat(border, widths[c] + PAD) + style.corner;
-
-    out += sep + "\n";
-  }
-
-  return out;
-}
-
-var style_classic = {
-  corner: "+",
-  hBorder: "-",
-  vBorder: "|"
-};
-
-var style_header = {
-  corner: "+",
-  hBorder: "-",
-  hBorderHeader: "=",
-  vBorder: "|"
-};
-
-var style_dotted = {
-  corner: ":",
-  hBorder: ".",
-  vBorder: ":",
-  firstSep: true,
-  firstSepChar: "."
-};
-
-var style_wavy = {
-  corner: "¤",
-  hBorder: "~",
-  vBorder: "¦"
-};
-
-var style_custom = {
-  corner: "#",
-  hBorder: "#",
-  vBorder: "#"
-};
-
-var default_custom  = JSON.parse(JSON.stringify(style_custom));
-
-document.getElementById("tableau_ascii_custom_char").oninput = function () {
-  var c = this.value;
-
-  // Sauvegarde
-  localStorage.setItem("tableau_ascii_custom_char", c);
-
-  if (!c || c.length === 0) {
-    // Restaurer les styles d'origine
-    style_custom  = JSON.parse(JSON.stringify(default_custom));
-    return;
-  }
-
-  // Sinon → appliquer le caractère personnalisé
-  style_custom.corner = c;
-  style_custom.hBorder = c;
-  style_custom.vBorder = c;
-};
-
-function asciiTable_multi(rows, MAX_TABLE_WIDTH, C) {
+function asciiTable(rows, MAX_TABLE_WIDTH, C) {
   if (!rows || !rows.length) return "";
 
   var TL=C.TL, TM=C.TM, TR=C.TR;
@@ -387,25 +234,84 @@ function asciiTable_multi(rows, MAX_TABLE_WIDTH, C) {
   return out;
 }
 
-var chars_unicode = {
+var style_classic = {
+  TL:"+", TM:"+", TR:"+",
+  ML:"+", MM:"+", MR:"+",
+  BL:"+", BM:"+", BR:"+",
+  V:"|", H:"-"
+};
+
+var style_classic_header = {
+  TL:"+", TM:"+", TR:"+",
+  ML:"+", MM:"+", MR:"+",
+  BL:"+", BM:"+", BR:"+",
+  V:"|", H:"-", hBorderHeader:"="
+};
+
+var style_dotted = {
+  TL:".", TM:".", TR:".",
+  ML:":", MM:":", MR:":",
+  BL:":", BM:":", BR:":",
+  V:":", H:"."
+};
+
+var style_rounded = {
+  TL:".", TM:".", TR:".",
+  ML:":", MM:"+", MR:":",
+  BL:"'", BM:"'", BR:"'",
+  V:"|", H:"-"
+};
+
+var style_wavy = {
+  TL:"¤", TM:"¤", TR:"¤",
+  ML:"¤", MM:"¤", MR:"¤",
+  BL:"¤", BM:"¤", BR:"¤",
+  V:"¦", H:"~"
+};
+
+var style_unicode = {
   TL:"╔", TM:"╦", TR:"╗",
   ML:"╠", MM:"╬", MR:"╣",
   BL:"╚", BM:"╩", BR:"╝",
   V:"║", H:"═"
 };
 
-var chars_box = {
+var style_box = {
   TL:"┌", TM:"┬", TR:"┐",
   ML:"├", MM:"┼", MR:"┤",
   BL:"└", BM:"┴", BR:"┘",
   V:"│", H:"─"
 };
 
-var chars_rounded = {
-  TL:".", TM:".", TR:".",
-  ML:":", MM:"+", MR:":",
-  BL:"'", BM:"'", BR:"'",
-  V:"|", H:"-"
+var style_custom = {
+  TL:"#", TM:"#", TR:"#",
+  ML:"#", MM:"#", MR:"#",
+  BL:"#", BM:"#", BR:"#",
+  V:"#", H:"#"
+};
+
+var default_custom  = JSON.parse(JSON.stringify(style_custom));
+document.getElementById("tableau_ascii_custom_char").oninput = function () {
+  var c = this.value;
+
+  localStorage.setItem("tableau_ascii_custom_char", c);
+
+  if (!c || c.length === 0) {
+    style_custom = JSON.parse(JSON.stringify(default_custom));
+    return;
+  }
+
+  style_custom.TL = c;
+  style_custom.TM = c;
+  style_custom.TR = c;
+  style_custom.ML = c;
+  style_custom.MM = c;
+  style_custom.MR = c;
+  style_custom.BL = c;
+  style_custom.BM = c;
+  style_custom.BR = c;
+  style_custom.V  = c;
+  style_custom.H  = c;
 };
 
 function asciiTable_fancy(rows, MAX_TABLE_WIDTH, S) {
@@ -551,14 +457,14 @@ function convertCore(rows) {
 
     var model = document.getElementById("ascii_model").value;
 
-    if (model === "classic") return asciiTable_generic(rows, maxwidth, style_classic);
-    if (model === "header") return asciiTable_generic(rows, maxwidth, style_header);
-    if (model === "dotted") return asciiTable_generic(rows, maxwidth, style_dotted);
-    if (model === "wavy") return asciiTable_generic(rows, maxwidth, style_wavy);
-    if (model === "custom") return asciiTable_generic(rows, maxwidth, style_custom);
-    if (model === "unicode") return asciiTable_multi(rows, maxwidth, chars_unicode);
-    if (model === "box") return asciiTable_multi(rows, maxwidth, chars_box);
-    if (model === "rounded") return asciiTable_multi(rows, maxwidth, chars_rounded);
+    if (model === "classic") return asciiTable(rows, maxwidth, style_classic);
+    if (model === "classic_header") return asciiTable(rows, maxwidth, style_classic_header);
+    if (model === "dotted") return asciiTable(rows, maxwidth, style_dotted);
+    if (model === "wavy") return asciiTable(rows, maxwidth, style_wavy);
+    if (model === "custom") return asciiTable(rows, maxwidth, style_custom);
+    if (model === "unicode") return asciiTable(rows, maxwidth, style_unicode);
+    if (model === "box") return asciiTable(rows, maxwidth, style_box);
+    if (model === "rounded") return asciiTable(rows, maxwidth, style_rounded);
     if (model === "fancy") return asciiTable_fancy(rows, maxwidth, style_fancy);
     if (model === "fancy_header") return asciiTable_fancy(rows, maxwidth, style_fancy_header);
     if (model === "bubble") return asciiTable_fancy(rows, maxwidth, style_bubble);
