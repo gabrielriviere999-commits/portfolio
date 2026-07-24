@@ -5,11 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tableau CSV</title>
 <link rel="stylesheet" href="outils.css">
-<style>input[type=text],input[type=number]{width:50px;}</style>
+<style>input[type=text],input[type=number],#customPlusPanel input{width:50px;}</style>
 </head>
 <body>
 <h2>Tableau CSV</h2>
 <h3>CSV</h3>
+<div id="custompluscontainer" style="display:none;">
+<fieldset style="display:inline flow-root;">
+<legend>Custom Plus</legend>
+<div id="customPlusPanel" style="line-height:1.8;">
+  <!-- Ligne du haut -->
+  <div>
+    TL: <input id="cp_TL" maxlength="1" size="1">
+    TM: <input id="cp_TM" maxlength="1" size="1">
+    TR: <input id="cp_TR" maxlength="1" size="1">
+  </div>
+  <!-- Ligne du milieu -->
+  <div>
+    ML: <input id="cp_ML" maxlength="1" size="1">
+    MM: <input id="cp_MM" maxlength="1" size="1">
+    MR: <input id="cp_MR" maxlength="1" size="1">
+  </div>
+  <!-- Ligne du bas -->
+  <div>
+    BL: <input id="cp_BL" maxlength="1" size="1">
+    BM: <input id="cp_BM" maxlength="1" size="1">
+    BR: <input id="cp_BR" maxlength="1" size="1">
+  </div>
+  <!-- Bordures horizontales / verticales -->
+  <div style="margin-top:10px;">
+    V : <input id="cp_V" maxlength="1" size="1">
+    H : <input id="cp_H" maxlength="1" size="1">
+    hBorderHeader: <input id="cp_H2" maxlength="1" size="1">
+  </div>
+</div>
+<button type="button" onclick="exportCustomPlus()">Exporter style</button>
+<button type="button" onclick="showImportCustomPlus()">Importer style</button>
+<div id="importCustomPlusBox" style="display:none;">
+  <textarea wrap="off" id="importCustomPlusText" style="height:100px;"></textarea><br>
+  <button type="button" onclick="applyImportCustomPlus()">Valider l'import</button>
+  <button id="copyCustomPlus" class="btn-color" style="background:#4caf50;">Copier</button>
+</div>
+</fieldset>
+</div>
 <div class="toolbar-nfix">
 <select id="ascii_model">
   <optgroup label="Texte brut lisible">
@@ -21,6 +59,7 @@
     <option value="unicode">Unicode ╠═</option>
     <option value="box">Box ├─</option>
     <option value="custom">Custom</option>
+    <option value="custom_plus">Custom Plus</option>
     <option value="fancy">Fancy //=\\||</option>
     <option value="fancy_header">Fancy (en-tête)</option>
     <option value="bubble">Bulles o8(_)8O</option>
@@ -291,7 +330,16 @@ var style_custom = {
   V:"#", H:"#"
 };
 
+var style_custom_plus = {
+  TL:"+", TM:"+", TR:"+",
+  ML:"+", MM:"+", MR:"+",
+  BL:"+", BM:"+", BR:"+",
+  V:"|", H:"-",
+  hBorderHeader:""
+};
+
 var default_custom  = JSON.parse(JSON.stringify(style_custom));
+var default_custom_plus = JSON.parse(JSON.stringify(style_custom_plus));
 document.getElementById("tableau_ascii_custom_char").oninput = function () {
   var c = this.value;
 
@@ -314,6 +362,100 @@ document.getElementById("tableau_ascii_custom_char").oninput = function () {
   style_custom.V  = c;
   style_custom.H  = c;
 };
+
+function bindCustomPlusInput(id, key) {
+  var el = document.getElementById(id);
+
+  el.oninput = function () {
+    var v = el.value;
+
+    if (!v || v.length === 0) {
+      // remettre la valeur par défaut
+      style_custom_plus[key] = default_custom_plus[key];
+      localStorage.removeItem("custom_plus_" + key);
+    } else {
+      style_custom_plus[key] = v;
+      localStorage.setItem("custom_plus_" + key, v);
+    }
+  };
+
+  // Restaurer depuis localStorage
+  var saved = localStorage.getItem("custom_plus_" + key);
+  if (saved !== null) {
+    el.value = saved;
+    style_custom_plus[key] = saved;
+  } else {
+    // restaurer la valeur par défaut si rien en localStorage
+    style_custom_plus[key] = default_custom_plus[key];
+  }
+}
+
+bindCustomPlusInput("cp_TL", "TL");
+bindCustomPlusInput("cp_TM", "TM");
+bindCustomPlusInput("cp_TR", "TR");
+
+bindCustomPlusInput("cp_ML", "ML");
+bindCustomPlusInput("cp_MM", "MM");
+bindCustomPlusInput("cp_MR", "MR");
+
+bindCustomPlusInput("cp_BL", "BL");
+bindCustomPlusInput("cp_BM", "BM");
+bindCustomPlusInput("cp_BR", "BR");
+
+bindCustomPlusInput("cp_V",  "V");
+bindCustomPlusInput("cp_H",  "H");
+bindCustomPlusInput("cp_H2", "hBorderHeader");
+
+function exportCustomPlus() {
+    var opts = JSON.parse(JSON.stringify(style_custom_plus));
+    var json = JSON.stringify(opts, null, 2);
+
+    var ta = document.getElementById("importCustomPlusText");
+    ta.value = json;
+
+    document.getElementById("importCustomPlusBox").style.display = "block";
+}
+
+function showImportCustomPlus() {
+    document.getElementById("importCustomPlusBox").style.display = "block";
+}
+function applyImportCustomPlus() {
+    var txt = document.getElementById("importCustomPlusText").value;
+    if (!txt) return;
+
+    try {
+        var opts = JSON.parse(txt);
+
+        function apply(key, id) {
+            if (opts[key] !== undefined) {
+                style_custom_plus[key] = opts[key];
+                document.getElementById(id).value = opts[key];
+                localStorage.setItem("custom_plus_" + key, opts[key]);
+            }
+        }
+
+        apply("TL", "cp_TL");
+        apply("TM", "cp_TM");
+        apply("TR", "cp_TR");
+
+        apply("ML", "cp_ML");
+        apply("MM", "cp_MM");
+        apply("MR", "cp_MR");
+
+        apply("BL", "cp_BL");
+        apply("BM", "cp_BM");
+        apply("BR", "cp_BR");
+
+        apply("V",  "cp_V");
+        apply("H",  "cp_H");
+        apply("hBorderHeader", "cp_H2");
+
+        document.getElementById("importCustomPlusBox").style.display = "none";
+
+    } catch(e) {
+        alert("JSON invalide.");
+    }
+}
 
 function asciiTable_fancy(rows, MAX_TABLE_WIDTH, S) {
     if (!rows || !rows.length) return "";
@@ -467,6 +609,7 @@ function convertCore(rows) {
     if (model === "unicode") return asciiTable(rows, maxwidth, style_unicode);
     if (model === "box") return asciiTable(rows, maxwidth, style_box);
     if (model === "custom") return asciiTable(rows, maxwidth, style_custom);
+    if (model === "custom_plus") return asciiTable(rows, maxwidth, style_custom_plus);
     if (model === "fancy") return asciiTable_fancy(rows, maxwidth, style_fancy);
     if (model === "fancy_header") return asciiTable_fancy(rows, maxwidth, style_fancy_header);
     if (model === "bubble") return asciiTable_fancy(rows, maxwidth, style_bubble);
@@ -1328,6 +1471,9 @@ document.getElementById('copyinput').onclick = function(e) {
 document.getElementById('copyoutput').onclick = function(e) {
     copyFrom('output', e.target);
 };
+document.getElementById('copyCustomPlus').onclick = function(e) {
+    copyFrom('importCustomPlusText', e.target);
+};
 
 /* --- Glisser-déposer ---*/
 function setupDragDrop(textareaId) {
@@ -1382,10 +1528,25 @@ function effacerTout() {
   setText(document.getElementById("output"), "");
 }
 
+// Bouton Valeurs par défaut
 function resetParams() {
   document.getElementById("tableau_ascii_sep").value = ";";
   document.getElementById("tableau_ascii_maxwidth").value = "120";
   document.getElementById("ascii_model").value = "classic";
+  
+  var cpIds = [
+    "cp_TL","cp_TM","cp_TR",
+    "cp_ML","cp_MM","cp_MR",
+    "cp_BL","cp_BM","cp_BR",
+    "cp_V","cp_H","cp_H2"
+  ];
+  for (var i = 0; i < cpIds.length; i++) {
+    var el = document.getElementById(cpIds[i]);
+    if (el) {
+        el.value = "";
+        el.oninput();
+    }
+  }
 
   var custom = document.getElementById("tableau_ascii_custom_char");
   custom.value = "";
@@ -1406,6 +1567,9 @@ function updateOptionsVisibility() {
   // Caractère personnalisé
   document.getElementById("tableau_ascii_custom_char").style.display =
     (model === "custom") ? "" : "none";
+
+  document.getElementById("custompluscontainer").style.display =
+    (model === "custom_plus") ? "" : "none";
 
   var showFancy = (model === "unicode" || model === "box");
   document.getElementById("unicodeboxdecalages").style.display = showFancy ? "" : "none";
