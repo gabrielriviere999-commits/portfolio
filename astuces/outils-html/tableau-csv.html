@@ -18,7 +18,7 @@
     <option value="classic">Classique +-|</option>
     <option value="header">Classique (header)</option>
     <option value="dotted">Pointillé :.:</option>
-    <option value="wave">Ondulé +~¤</option>
+    <option value="wavy">Ondulé +~¤</option>
     <option value="custom">Custom</option>
     <option value="unicode">Unicode ╠═</option>
     <option value="box">Box ├─</option>
@@ -254,7 +254,7 @@ var style_dotted = {
   firstSepChar: "."
 };
 
-var style_wave = {
+var style_wavy = {
   corner: "¤",
   hBorder: "~",
   vBorder: "|"
@@ -554,7 +554,7 @@ function convertCore(rows) {
     if (model === "classic") return asciiTable_generic(rows, maxwidth, style_classic);
     if (model === "header") return asciiTable_generic(rows, maxwidth, style_header);
     if (model === "dotted") return asciiTable_generic(rows, maxwidth, style_dotted);
-    if (model === "wave") return asciiTable_generic(rows, maxwidth, style_wave);
+    if (model === "wavy") return asciiTable_generic(rows, maxwidth, style_wavy);
     if (model === "custom") return asciiTable_generic(rows, maxwidth, style_custom);
     if (model === "unicode") return asciiTable_multi(rows, maxwidth, chars_unicode);
     if (model === "box") return asciiTable_multi(rows, maxwidth, chars_box);
