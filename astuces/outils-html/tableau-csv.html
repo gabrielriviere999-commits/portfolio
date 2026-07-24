@@ -226,7 +226,8 @@ function asciiTable(rows, MAX_TABLE_WIDTH, C) {
   // 7) Bordure du bas (toujours normale)
   var bot = BL;
   for (var c = 0; c < colCount; c++) {
-    bot += repeat(H, widths[c] + 2);
+    var borderCharBottom = (rows.length === 1 && H2) ? H2 : H;
+    bot += repeat(borderCharBottom, widths[c] + 2);
     bot += (c < colCount - 1 ? BM : BR);
   }
   out += bot + "\n";
@@ -407,7 +408,8 @@ function asciiTable_fancy(rows, MAX_TABLE_WIDTH, S) {
     // 8) Bordure du bas
     var bot = BL;
     for (var c = 0; c < colCount; c++) {
-        bot += repeat(H, widths[c] + 2);
+        var borderCharBottom = (rows.length === 1 && H2) ? H2 : H;
+        bot += repeat(borderCharBottom, widths[c] + 2);
         bot += (c < colCount - 1 ? SEP : BR);
     }
     out += bot + "\n";
