@@ -41,6 +41,7 @@ input[type=text]{width:15px;}
     <option value="classic">+-|</option>
     <option value="dotted">:.:</option>
     <option value="rounded">.+'|-</option>
+    <option value="wavy">¤~|</option>
     <option value="fancy">/=|</option>
   </select>
   <input type="text" id="rectChar" value="" maxlength="1">
@@ -346,7 +347,6 @@ var RECT_STYLES = {
     left: "|",
     right: "|"
   },
-
   dotted: {
     tl: ".", 
     tr: ".", 
@@ -358,7 +358,6 @@ var RECT_STYLES = {
     right: ":",
     dotted: true
   },
-
   rounded: {
     tl: ".",
     tr: ".",
@@ -369,8 +368,17 @@ var RECT_STYLES = {
     left: "|",
     right: "|"
   },
-
-fancy: {
+  wavy: {
+    tl: "¤",
+    tr: "¤",
+    bl: "¤",
+    br: "¤",
+    top: "~",
+    bottom: "~",
+    left: "|",
+    right: "|"
+  },
+  fancy: {
     tl: "/",
     tr: "\\",
     bl: "\\",
@@ -379,7 +387,7 @@ fancy: {
     bottom: "=",
     left: "|",
     right: "|"
-}
+  }
 };
 
 function drawRectangle(x1, y1, x2, y2) {
