@@ -341,8 +341,26 @@ var style_custom_plus = {
   hBorderHeader:""
 };
 
+var customPlusConfig = [
+  { key:"TL", id:"cp_TL" },
+  { key:"TM", id:"cp_TM" },
+  { key:"TR", id:"cp_TR" },
+
+  { key:"ML", id:"cp_ML" },
+  { key:"MM", id:"cp_MM" },
+  { key:"MR", id:"cp_MR" },
+
+  { key:"BL", id:"cp_BL" },
+  { key:"BM", id:"cp_BM" },
+  { key:"BR", id:"cp_BR" },
+
+  { key:"V",  id:"cp_V"  },
+  { key:"H",  id:"cp_H"  },
+
+  { key:"hBorderHeader", id:"cp_H2" }
+];
+
 var default_custom  = JSON.parse(JSON.stringify(style_custom));
-var default_custom_plus = JSON.parse(JSON.stringify(style_custom_plus));
 document.getElementById("tableau_ascii_custom_char").oninput = function () {
   var c = this.value;
 
@@ -353,19 +371,17 @@ document.getElementById("tableau_ascii_custom_char").oninput = function () {
     return;
   }
 
-  style_custom.TL = c;
-  style_custom.TM = c;
-  style_custom.TR = c;
-  style_custom.ML = c;
-  style_custom.MM = c;
-  style_custom.MR = c;
-  style_custom.BL = c;
-  style_custom.BM = c;
-  style_custom.BR = c;
-  style_custom.V  = c;
-  style_custom.H  = c;
+  for (var i = 0; i < customPlusConfig.length; i++) {
+    var key = customPlusConfig[i].key;
+
+    // hBorderHeader n'existe pas dans style_custom → on ignore
+    if (key !== "hBorderHeader") {
+      style_custom[key] = c;
+    }
+  }
 };
 
+var default_custom_plus = JSON.parse(JSON.stringify(style_custom_plus));
 function bindCustomPlusInput(id, key) {
   var el = document.getElementById(id);
 
@@ -373,7 +389,6 @@ function bindCustomPlusInput(id, key) {
     var v = el.value;
 
     if (!v || v.length === 0) {
-      // remettre la valeur par défaut
       style_custom_plus[key] = default_custom_plus[key];
       localStorage.removeItem("custom_plus_" + key);
     } else {
@@ -382,40 +397,30 @@ function bindCustomPlusInput(id, key) {
     }
   };
 
-  // Restaurer depuis localStorage
   var saved = localStorage.getItem("custom_plus_" + key);
   if (saved !== null) {
     el.value = saved;
     style_custom_plus[key] = saved;
   } else {
-    // restaurer la valeur par défaut si rien en localStorage
     style_custom_plus[key] = default_custom_plus[key];
   }
 }
 
-bindCustomPlusInput("cp_TL", "TL");
-bindCustomPlusInput("cp_TM", "TM");
-bindCustomPlusInput("cp_TR", "TR");
-
-bindCustomPlusInput("cp_ML", "ML");
-bindCustomPlusInput("cp_MM", "MM");
-bindCustomPlusInput("cp_MR", "MR");
-
-bindCustomPlusInput("cp_BL", "BL");
-bindCustomPlusInput("cp_BM", "BM");
-bindCustomPlusInput("cp_BR", "BR");
-
-bindCustomPlusInput("cp_V",  "V");
-bindCustomPlusInput("cp_H",  "H");
-bindCustomPlusInput("cp_H2", "hBorderHeader");
+for (var i = 0; i < customPlusConfig.length; i++) {
+  var cfg = customPlusConfig[i];
+  bindCustomPlusInput(cfg.id, cfg.key);
+}
 
 function exportCustomPlus() {
-    var opts = JSON.parse(JSON.stringify(style_custom_plus));
-    var json = JSON.stringify(opts, null, 2);
+    var ordered = {};
 
-    var ta = document.getElementById("importCustomPlusText");
-    ta.value = json;
+    for (var i = 0; i < customPlusConfig.length; i++) {
+        var cfg = customPlusConfig[i];
+        ordered[cfg.key] = style_custom_plus[cfg.key];
+    }
 
+    var json = JSON.stringify(ordered, null, 2);
+    document.getElementById("importCustomPlusText").value = json;
     document.getElementById("importCustomPlusBox").style.display = "block";
 }
 
@@ -429,29 +434,15 @@ function applyImportCustomPlus() {
     try {
         var opts = JSON.parse(txt);
 
-        function apply(key, id) {
-            if (opts[key] !== undefined) {
-                style_custom_plus[key] = opts[key];
-                document.getElementById(id).value = opts[key];
-                localStorage.setItem("custom_plus_" + key, opts[key]);
+        for (var i = 0; i < customPlusConfig.length; i++) {
+            var cfg = customPlusConfig[i];
+
+            if (opts[cfg.key] !== undefined) {
+                style_custom_plus[cfg.key] = opts[cfg.key];
+                document.getElementById(cfg.id).value = opts[cfg.key];
+                localStorage.setItem("custom_plus_" + cfg.key, opts[cfg.key]);
             }
         }
-
-        apply("TL", "cp_TL");
-        apply("TM", "cp_TM");
-        apply("TR", "cp_TR");
-
-        apply("ML", "cp_ML");
-        apply("MM", "cp_MM");
-        apply("MR", "cp_MR");
-
-        apply("BL", "cp_BL");
-        apply("BM", "cp_BM");
-        apply("BR", "cp_BR");
-
-        apply("V",  "cp_V");
-        apply("H",  "cp_H");
-        apply("hBorderHeader", "cp_H2");
 
         document.getElementById("importCustomPlusBox").style.display = "none";
 
@@ -1537,18 +1528,13 @@ function resetParams() {
   document.getElementById("tableau_ascii_maxwidth").value = "120";
   document.getElementById("ascii_model").value = "classic";
   
-  var cpIds = [
-    "cp_TL","cp_TM","cp_TR",
-    "cp_ML","cp_MM","cp_MR",
-    "cp_BL","cp_BM","cp_BR",
-    "cp_V","cp_H","cp_H2"
-  ];
-  for (var i = 0; i < cpIds.length; i++) {
-    var el = document.getElementById(cpIds[i]);
-    if (el) {
-        el.value = "";
-        el.oninput();
-    }
+  for (var i = 0; i < customPlusConfig.length; i++) {
+      var cfg = customPlusConfig[i];
+      var el = document.getElementById(cfg.id);
+      if (el) {
+          el.value = "";
+          el.oninput();
+      }
   }
 
   var custom = document.getElementById("tableau_ascii_custom_char");
