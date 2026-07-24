@@ -580,6 +580,9 @@ function transpose(rows) {
         for (var r = 0; r < R; r++) {
             newRow.push(rows[r][c] || "");
         }
+        // Nettoyage des ; cellules vides à droite
+        while (newRow.length && newRow[newRow.length - 1] === "")
+            newRow.pop();
         out.push(newRow);
     }
 
