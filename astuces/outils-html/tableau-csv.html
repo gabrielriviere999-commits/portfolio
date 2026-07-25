@@ -1563,8 +1563,8 @@ function updateOptionsVisibility() {
   var showFancy = (model === "unicode" || model === "box");
   document.getElementById("unicodeboxdecalages").style.display = showFancy ? "" : "none";
 
-  var showFancy = (model === "fancy" || model === "fancy_header" || model === "bubble");
-  document.getElementById("fancycsvconversion").style.display = showFancy ? "" : "none";
+  var showUnicodeBox = (model === "fancy" || model === "fancy_header" || model === "bubble");
+  document.getElementById("fancycsvconversion").style.display = showUnicodeBox ? "" : "none";
 
   // Largeur max
   var noWidth = ["markdown", "html", "bbcode", "wikitable", "asciidoc", "orgmode", "latex", "json", "yaml"];
