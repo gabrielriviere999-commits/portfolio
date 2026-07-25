@@ -1703,8 +1703,8 @@ function updateOptionsVisibility() {
   document.getElementById("fancycustompluscontainer").style.display =
     (model === "fancy_custom_plus") ? "" : "none";
 
-  var showUnicodeBox = (model === "unicode" || model === "box");
-  document.getElementById("unicodeboxdecalages").style.display = showUnicodeBox ? "" : "none";
+  var showUnicodeBox = ["unicode", "box"];
+  document.getElementById("unicodeboxdecalages").style.display = (showUnicodeBox.indexOf(model) !== -1) ? "" : "none";
 
   var showFancy = ["fancy", "fancy_header", "fancy_bubble", "fancy_custom_plus"];
   document.getElementById("fancycsvconversion").style.display = (showFancy.indexOf(model) !== -1) ? "" : "none";
