@@ -76,7 +76,7 @@ hr{border:1px inset #808080;}
   overflow-x:auto;
   font-size:2px;
   padding:2px;
-  z-index:9999;
+  z-index:9997;
 }
 .navbar.hide {
   transform:translatey(-100%);
