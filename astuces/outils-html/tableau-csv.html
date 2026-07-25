@@ -1653,15 +1653,19 @@ function resetParams() {
     resetStyle(styleSystems[i]);
   }
 
+  // Reset du caractère custom
   var custom = document.getElementById("tableau_ascii_custom_char");
-  custom.value = "#";
+  var defaultChar = default_custom.TL;
+
+  custom.value = defaultChar;
+  style_custom = JSON.parse(JSON.stringify(default_custom));
+  localStorage.setItem("tableau_ascii_custom_char", defaultChar);
   custom.oninput();
 
   // Met à jour la sauvegarde
   localStorage.setItem("tableau_ascii_sep", ";");
   localStorage.setItem("tableau_ascii_maxwidth", "120");
   localStorage.setItem("tableau_ascii_model", "classic");
-  localStorage.setItem("tableau_ascii_custom_char", "#");
 
   updateOptionsVisibility();
 }
