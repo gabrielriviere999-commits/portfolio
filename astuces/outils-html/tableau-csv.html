@@ -415,73 +415,17 @@ document.getElementById("tableau_ascii_custom_char").oninput = function () {
 };
 
 var default_custom_plus = JSON.parse(JSON.stringify(style_custom_plus));
-function bindCustomPlusInput(id, key) {
-  var el = document.getElementById(id);
-
-  el.oninput = function () {
-    var v = el.value;
-
-    if (!v || v.length === 0) {
-      style_custom_plus[key] = default_custom_plus[key];
-      localStorage.removeItem("custom_plus_" + key);
-    } else {
-      style_custom_plus[key] = v;
-      localStorage.setItem("custom_plus_" + key, v);
-    }
-  };
-
-  var saved = localStorage.getItem("custom_plus_" + key);
-  if (saved !== null) {
-    el.value = saved;
-    style_custom_plus[key] = saved;
-  } else {
-    style_custom_plus[key] = default_custom_plus[key];
-  }
-}
-
-for (var i = 0; i < customPlusConfig.length; i++) {
-  var cfg = customPlusConfig[i];
-  bindCustomPlusInput(cfg.id, cfg.key);
-}
 
 function exportCustomPlus() {
-    var ordered = {};
+    exportStyle(styleSystems[0]);
+}
 
-    for (var i = 0; i < customPlusConfig.length; i++) {
-        var cfg = customPlusConfig[i];
-        ordered[cfg.key] = style_custom_plus[cfg.key];
-    }
-
-    var json = JSON.stringify(ordered, null, 2);
-    document.getElementById("importCustomPlusText").value = json;
-    document.getElementById("importCustomPlusBox").style.display = "block";
+function applyImportCustomPlus() {
+    importStyle(styleSystems[0]);
 }
 
 function showImportCustomPlus() {
     document.getElementById("importCustomPlusBox").style.display = "block";
-}
-function applyImportCustomPlus() {
-    var txt = document.getElementById("importCustomPlusText").value;
-    if (!txt) return;
-
-    try {
-        var opts = JSON.parse(txt);
-
-        for (var i = 0; i < customPlusConfig.length; i++) {
-            var cfg = customPlusConfig[i];
-
-            if (opts[cfg.key] !== undefined) {
-                style_custom_plus[cfg.key] = opts[cfg.key];
-                document.getElementById(cfg.id).value = opts[cfg.key];
-                localStorage.setItem("custom_plus_" + cfg.key, opts[cfg.key]);
-            }
-        }
-
-        document.getElementById("importCustomPlusBox").style.display = "none";
-
-    } catch(e) {
-        alert("JSON invalide.");
-    }
 }
 
 function asciiTable_fancy(rows, MAX_TABLE_WIDTH, S) {
@@ -648,73 +592,106 @@ var fancycustomPlusConfig = [
 ];
 
 var default_fancy_custom_plus = JSON.parse(JSON.stringify(style_fancy_custom_plus));
-function bindFancyCustomPlusInput(id, key) {
-  var el = document.getElementById(id);
-
-  el.oninput = function () {
-    var v = el.value;
-
-    if (!v || v.length === 0) {
-      style_fancy_custom_plus[key] = default_fancy_custom_plus[key];
-      localStorage.removeItem("fancy_custom_plus_" + key);
-    } else {
-      style_fancy_custom_plus[key] = v;
-      localStorage.setItem("fancy_custom_plus_" + key, v);
-    }
-  };
-
-  var saved = localStorage.getItem("fancy_custom_plus_" + key);
-  if (saved !== null) {
-    el.value = saved;
-    style_fancy_custom_plus[key] = saved;
-  } else {
-    style_fancy_custom_plus[key] = default_fancy_custom_plus[key];
-  }
-}
-
-for (var i = 0; i < fancycustomPlusConfig.length; i++) {
-  var cfg = fancycustomPlusConfig[i];
-  bindFancyCustomPlusInput(cfg.id, cfg.key);
-}
 
 function exportFancyCustomPlus() {
-    var ordered = {};
+    exportStyle(styleSystems[1]);
+}
 
-    for (var i = 0; i < fancycustomPlusConfig.length; i++) {
-        var cfg = fancycustomPlusConfig[i];
-        ordered[cfg.key] = style_fancy_custom_plus[cfg.key];
-    }
-
-    var json = JSON.stringify(ordered, null, 2);
-    document.getElementById("importFancyCustomPlusText").value = json;
-    document.getElementById("importFancyCustomPlusBox").style.display = "block";
+function applyImportFancyCustomPlus() {
+    importStyle(styleSystems[1]);
 }
 
 function showImportFancyCustomPlus() {
     document.getElementById("importFancyCustomPlusBox").style.display = "block";
 }
-function applyImportFancyCustomPlus() {
-    var txt = document.getElementById("importFancyCustomPlusText").value;
-    if (!txt) return;
 
-    try {
-        var opts = JSON.parse(txt);
+var styleSystems = [
+  {
+    name: "custom_plus",
+    style: style_custom_plus,
+    default: JSON.parse(JSON.stringify(style_custom_plus)),
+    config: customPlusConfig,
+    lsPrefix: "custom_plus_",
+    importBoxId: "importCustomPlusBox",
+    importTextId: "importCustomPlusText"
+  },
+  {
+    name: "fancy_custom_plus",
+    style: style_fancy_custom_plus,
+    default: JSON.parse(JSON.stringify(style_fancy_custom_plus)),
+    config: fancycustomPlusConfig,
+    lsPrefix: "fancy_custom_plus_",
+    importBoxId: "importFancyCustomPlusBox",
+    importTextId: "importFancyCustomPlusText"
+  }
+];
 
-        for (var i = 0; i < fancycustomPlusConfig.length; i++) {
-            var cfg = fancycustomPlusConfig[i];
+function bindStyleInput(system) {
+  for (var i = 0; i < system.config.length; i++) {
+    var cfg = system.config[i];
+    var el = document.getElementById(cfg.id);
+    if (!el) continue;
 
-            if (opts[cfg.key] !== undefined) {
-                style_fancy_custom_plus[cfg.key] = opts[cfg.key];
-                document.getElementById(cfg.id).value = opts[cfg.key];
-                localStorage.setItem("fancy_custom_plus_" + cfg.key, opts[cfg.key]);
-            }
+    el.oninput = (function(el, key, system) {
+      return function () {
+        var v = el.value;
+
+        if (!v || v.length === 0) {
+          system.style[key] = system.default[key];
+          localStorage.removeItem(system.lsPrefix + key);
+        } else {
+          system.style[key] = v;
+          localStorage.setItem(system.lsPrefix + key, v);
         }
+      };
+    })(el, cfg.key, system);
 
-        document.getElementById("importFancyCustomPlusBox").style.display = "none";
+    var saved = localStorage.getItem(system.lsPrefix + cfg.key);
+    system.style[cfg.key] = saved !== null ? saved : system.default[cfg.key];
+    el.value = system.style[cfg.key];
+  }
+}
 
-    } catch(e) {
-        alert("JSON invalide.");
+for (var i = 0; i < styleSystems.length; i++) {
+  bindStyleInput(styleSystems[i]);
+}
+
+function exportStyle(system) {
+  var ordered = {};
+
+  for (var i = 0; i < system.config.length; i++) {
+    var cfg = system.config[i];
+    ordered[cfg.key] = system.style[cfg.key];
+  }
+
+  document.getElementById(system.importTextId).value =
+    JSON.stringify(ordered, null, 2);
+
+  document.getElementById(system.importBoxId).style.display = "block";
+}
+
+function importStyle(system) {
+  var txt = document.getElementById(system.importTextId).value;
+  if (!txt) return;
+
+  try {
+    var opts = JSON.parse(txt);
+
+    for (var i = 0; i < system.config.length; i++) {
+      var cfg = system.config[i];
+
+      if (opts[cfg.key] !== undefined) {
+        system.style[cfg.key] = opts[cfg.key];
+        document.getElementById(cfg.id).value = opts[cfg.key];
+        localStorage.setItem(system.lsPrefix + cfg.key, opts[cfg.key]);
+      }
     }
+
+    document.getElementById(system.importBoxId).style.display = "none";
+
+  } catch(e) {
+    alert("JSON invalide.");
+  }
 }
 
 /* --- Conversion CSV → ASCII --- */
@@ -1599,6 +1576,9 @@ document.getElementById('copyoutput').onclick = function(e) {
 document.getElementById('copyCustomPlus').onclick = function(e) {
     copyFrom('importCustomPlusText', e.target);
 };
+document.getElementById('copyFancyCustomPlus').onclick = function(e) {
+    copyFrom('importFancyCustomPlusText', e.target);
+};
 
 /* --- Glisser-déposer ---*/
 function setupDragDrop(textareaId) {
@@ -1654,27 +1634,24 @@ function effacerTout() {
 }
 
 // Bouton Valeurs par défaut
+function resetStyle(system) {
+  for (var i = 0; i < system.config.length; i++) {
+    var cfg = system.config[i];
+    var el = document.getElementById(cfg.id);
+    if (el) {
+      el.value = "";
+      el.oninput();
+    }
+  }
+}
+
 function resetParams() {
   document.getElementById("tableau_ascii_sep").value = ";";
   document.getElementById("tableau_ascii_maxwidth").value = "120";
   document.getElementById("ascii_model").value = "classic";
   
-  for (var i = 0; i < customPlusConfig.length; i++) {
-      var cfg = customPlusConfig[i];
-      var el = document.getElementById(cfg.id);
-      if (el) {
-          el.value = "";
-          el.oninput();
-      }
-  }
-
-  for (var i = 0; i < fancycustomPlusConfig.length; i++) {
-      var fcfg = fancycustomPlusConfig[i];
-      var el = document.getElementById(fcfg.id);
-      if (el) {
-          el.value = "";
-          el.oninput();
-      }
+  for (var i = 0; i < styleSystems.length; i++) {
+    resetStyle(styleSystems[i]);
   }
 
   var custom = document.getElementById("tableau_ascii_custom_char");
