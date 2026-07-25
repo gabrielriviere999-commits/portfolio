@@ -1324,28 +1324,43 @@ function parseHTMLTable(text) {
     // Extraire le contenu du <tr>...</tr>
     var trContent = text.substring(trOpenEnd + 1, trEnd);
 
-    // Extraire les <td ...>...</td>
     var cells = [];
     var tdPos = 0;
 
     while (true) {
-      // Trouver <td
+      // Trouver <td ou <th
       var tdStart = trContent.indexOf("<td", tdPos);
-      if (tdStart === -1) break;
+      var thStart = trContent.indexOf("<th", tdPos);
+
+      // Choisir le premier trouvé
+      var start = -1;
+      var tag = "";
+
+      if (tdStart !== -1 && (thStart === -1 || tdStart < thStart)) {
+        start = tdStart;
+        tag = "td";
+      } else if (thStart !== -1) {
+        start = thStart;
+        tag = "th";
+      } else {
+        break;
+      }
 
       // Trouver >
-      var tdOpenEnd = trContent.indexOf(">", tdStart);
-      if (tdOpenEnd === -1) break;
+      var openEnd = trContent.indexOf(">", start);
+      if (openEnd === -1) break;
 
-      // Trouver </td>
-      var tdEnd = trContent.indexOf("</td>", tdOpenEnd);
-      if (tdEnd === -1) break;
+      // Trouver </td> ou </th>
+      var closeTag = "</" + tag + ">";
+      var end = trContent.indexOf(closeTag, openEnd);
+
+      if (end === -1) break;
 
       // Extraire contenu
-      var cell = trContent.substring(tdOpenEnd + 1, tdEnd);
+      var cell = trContent.substring(openEnd + 1, end);
       cells.push(cell);
 
-      tdPos = tdEnd + 5;
+      tdPos = end + closeTag.length;
     }
 
     if (cells.length > 0) rows.push(cells);
