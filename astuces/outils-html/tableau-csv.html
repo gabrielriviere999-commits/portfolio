@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="outils.css">
 <style>
 input[type=text],input[type=number]{width:50px;}
-#customPlusPanel input{width:15px;}
+#customPlusPanel input,#fancycustomPlusPanel input{width:30px;}
 </style>
 </head>
 <body>
@@ -51,6 +51,38 @@ input[type=text],input[type=number]{width:50px;}
 </div>
 </fieldset>
 </div>
+<div id="fancycustompluscontainer" style="display:none;">
+<fieldset style="display:inline flow-root;">
+<legend>Fancy Custom Plus</legend>
+<div id="fancycustomPlusPanel" style="line-height:1.8;">
+  <div>
+    TL: <input id="fcp_TL">
+    TR: <input id="fcp_TR">
+  </div>
+  <div>
+    BL: <input id="fcp_BL">
+    BR: <input id="fcp_BR">
+  </div>
+  <div style="margin-top:10px;">
+    V : <input id="fcp_V">
+    H : <input id="fcp_H">
+    hBorderHeader: <input id="fcp_H2">
+  </div>
+  <div style="margin-top:10px;">
+    SEP : <input id="fcp_SEP">
+    SEP_LEFT : <input id="fcp_SEP_LEFT">
+    SEP_RIGHT : <input id="fcp_SEP_RIGHT">
+  </div>
+</div>
+<button type="button" onclick="exportFancyCustomPlus()">Exporter style</button>
+<button type="button" onclick="showImportFancyCustomPlus()">Importer style</button>
+<div id="importFancyCustomPlusBox" style="display:none;">
+  <textarea wrap="off" id="importFancyCustomPlusText" style="height:100px;"></textarea><br>
+  <button type="button" onclick="applyImportFancyCustomPlus()">Valider l'import</button>
+  <button id="copyFancyCustomPlus" class="btn-color" style="background:#4caf50;">Copier</button>
+</div>
+</fieldset>
+</div>
 <div class="toolbar-nfix">
 <select id="ascii_model">
   <optgroup label="Texte brut lisible">
@@ -65,7 +97,8 @@ input[type=text],input[type=number]{width:50px;}
     <option value="custom_plus">Custom Plus</option>
     <option value="fancy">Fancy //=\\||</option>
     <option value="fancy_header">Fancy (en-tête)</option>
-    <option value="bubble">Bulles o8(_)8O</option>
+    <option value="fancy_bubble">Fancy bubble o8(_)8O</option>
+    <option value="fancy_custom_plus">Fancy Custom Plus</option>
   </optgroup>
   <optgroup label="Formats spéciaux">
     <option value="markdown">Markdown |-</option>
@@ -104,7 +137,7 @@ Séparateur : <input type="text" id="tableau_ascii_sep" value=";">
 <input type="file" id="tableFileInput" class="file-input">
 <br>
 <span id="unicodeboxdecalages" style="display:none;background:#00a;" maxlength="1">ⓘ Unicode et Box : risque de décalages élevés pour l'affichage du tableau notamment sur Android.</span>
-<span id="fancycsvconversion" style="display:none;background:#00a;" maxlength="1">ⓘ Conversion en CSV limitée à : Fancy, Fancy (en-tête), Bulles</span>
+<span id="fancycsvconversion" style="display:none;background:#00a;" maxlength="1">ⓘ Conversion en CSV limitée à : Fancy, Fancy (en-tête), Fancy bubble, Fancy Custom Plus</span>
 
 <script>
 /* --- Compatibilité maximale (ES3) --- */
@@ -558,8 +591,8 @@ var style_fancy = {
   TR: "\\\\",
   BL: "\\\\",
   BR: "//",
-  H: "=",
   V: "||",
+  H: "=",
   SEP: "[]"
 };
 
@@ -568,24 +601,121 @@ var style_fancy_header = {
   TR: "\\\\",
   BL: "\\\\",
   BR: "//",
+  V: "||",
   H: "-",
   hBorderHeader: "=",
-  V: "||",
   SEP: "[]"
 };
 
-var style_bubble = {
+var style_fancy_bubble = {
   TL: " o8",
   TR: "8o",
   BL: " O8",
   BR: "8O",
+  V: "(_)",
   H: "o",
   hBorderHeader: "8",
-  V: "(_)",
   SEP: "(_)",
   SEP_LEFT: "(88",
   SEP_RIGHT: "88)"
 };
+
+
+var style_fancy_custom_plus = {
+  TL: "//",
+  TR: "\\\\",
+  BL: "\\\\",
+  BR: "//",
+  V: "||",
+  H: "=",
+  hBorderHeader: "",
+  SEP: "[]",
+  SEP_LEFT: "|]",
+  SEP_RIGHT: "[|"
+};
+
+var fancycustomPlusConfig = [
+  { key:"TL", id:"fcp_TL" },
+  { key:"TR", id:"fcp_TR" },
+  { key:"BL", id:"fcp_BL" },
+  { key:"BR", id:"fcp_BR" },
+  { key:"V",  id:"fcp_V"  },
+  { key:"H",  id:"fcp_H"  },
+  { key:"hBorderHeader", id:"fcp_H2" },
+  { key:"SEP", id:"fcp_SEP" },
+  { key:"SEP_LEFT", id:"fcp_SEP_LEFT" },
+  { key:"SEP_RIGHT", id:"fcp_SEP_RIGHT" }
+];
+
+var default_fancy_custom_plus = JSON.parse(JSON.stringify(style_fancy_custom_plus));
+function bindFancyCustomPlusInput(id, key) {
+  var el = document.getElementById(id);
+
+  el.oninput = function () {
+    var v = el.value;
+
+    if (!v || v.length === 0) {
+      style_fancy_custom_plus[key] = default_fancy_custom_plus[key];
+      localStorage.removeItem("fancy_custom_plus_" + key);
+    } else {
+      style_fancy_custom_plus[key] = v;
+      localStorage.setItem("fancy_custom_plus_" + key, v);
+    }
+  };
+
+  var saved = localStorage.getItem("fancy_custom_plus_" + key);
+  if (saved !== null) {
+    el.value = saved;
+    style_fancy_custom_plus[key] = saved;
+  } else {
+    style_fancy_custom_plus[key] = default_fancy_custom_plus[key];
+  }
+}
+
+for (var i = 0; i < fancycustomPlusConfig.length; i++) {
+  var cfg = fancycustomPlusConfig[i];
+  bindFancyCustomPlusInput(cfg.id, cfg.key);
+}
+
+function exportFancyCustomPlus() {
+    var ordered = {};
+
+    for (var i = 0; i < fancycustomPlusConfig.length; i++) {
+        var cfg = fancycustomPlusConfig[i];
+        ordered[cfg.key] = style_fancy_custom_plus[cfg.key];
+    }
+
+    var json = JSON.stringify(ordered, null, 2);
+    document.getElementById("importFancyCustomPlusText").value = json;
+    document.getElementById("importFancyCustomPlusBox").style.display = "block";
+}
+
+function showImportFancyCustomPlus() {
+    document.getElementById("importFancyCustomPlusBox").style.display = "block";
+}
+function applyImportFancyCustomPlus() {
+    var txt = document.getElementById("importFancyCustomPlusText").value;
+    if (!txt) return;
+
+    try {
+        var opts = JSON.parse(txt);
+
+        for (var i = 0; i < fancycustomPlusConfig.length; i++) {
+            var cfg = fancycustomPlusConfig[i];
+
+            if (opts[cfg.key] !== undefined) {
+                style_fancy_custom_plus[cfg.key] = opts[cfg.key];
+                document.getElementById(cfg.id).value = opts[cfg.key];
+                localStorage.setItem("fancy_custom_plus_" + cfg.key, opts[cfg.key]);
+            }
+        }
+
+        document.getElementById("importFancyCustomPlusBox").style.display = "none";
+
+    } catch(e) {
+        alert("JSON invalide.");
+    }
+}
 
 /* --- Conversion CSV → ASCII --- */
 function convertCore(rows) {
@@ -606,7 +736,8 @@ function convertCore(rows) {
     if (model === "custom_plus") return asciiTable(rows, maxwidth, style_custom_plus);
     if (model === "fancy") return asciiTable_fancy(rows, maxwidth, style_fancy);
     if (model === "fancy_header") return asciiTable_fancy(rows, maxwidth, style_fancy_header);
-    if (model === "bubble") return asciiTable_fancy(rows, maxwidth, style_bubble);
+    if (model === "fancy_bubble") return asciiTable_fancy(rows, maxwidth, style_fancy_bubble);
+    if (model === "fancy_custom_plus") return asciiTable_fancy(rows, maxwidth, style_fancy_custom_plus);
     if (model === "markdown") return generateMarkdownTable(rows);
     if (model === "html") return tableToHTML(rows);
     if (model === "bbcode") return generateBBCodeTable(rows);
@@ -989,7 +1120,7 @@ function parseAnyTable(text) {
   var model = document.getElementById("ascii_model").value;
 
   // Mode fancy strict
-  if (model === "fancy" || model === "fancy_header" || model === "bubble") {
+  if (model === "fancy" || model === "fancy_header" || model === "fancy_bubble" || model === "fancy_custom_plus") {
       return parseFancyTable(text);
   }
 
@@ -1537,6 +1668,15 @@ function resetParams() {
       }
   }
 
+  for (var i = 0; i < fancycustomPlusConfig.length; i++) {
+      var fcfg = fancycustomPlusConfig[i];
+      var el = document.getElementById(fcfg.id);
+      if (el) {
+          el.value = "";
+          el.oninput();
+      }
+  }
+
   var custom = document.getElementById("tableau_ascii_custom_char");
   custom.value = "";
   custom.oninput();
@@ -1560,11 +1700,14 @@ function updateOptionsVisibility() {
   document.getElementById("custompluscontainer").style.display =
     (model === "custom_plus") ? "" : "none";
 
-  var showFancy = (model === "unicode" || model === "box");
-  document.getElementById("unicodeboxdecalages").style.display = showFancy ? "" : "none";
+  document.getElementById("fancycustompluscontainer").style.display =
+    (model === "fancy_custom_plus") ? "" : "none";
 
-  var showUnicodeBox = (model === "fancy" || model === "fancy_header" || model === "bubble");
-  document.getElementById("fancycsvconversion").style.display = showUnicodeBox ? "" : "none";
+  var showUnicodeBox = (model === "unicode" || model === "box");
+  document.getElementById("unicodeboxdecalages").style.display = showUnicodeBox ? "" : "none";
+
+  var showFancy = ["fancy", "fancy_header", "fancy_bubble", "fancy_custom_plus"];
+  document.getElementById("fancycsvconversion").style.display = (showFancy.indexOf(model) !== -1) ? "" : "none";
 
   // Largeur max
   var noWidth = ["markdown", "html", "bbcode", "wikitable", "asciidoc", "orgmode", "latex", "json", "yaml"];
