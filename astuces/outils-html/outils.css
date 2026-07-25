@@ -134,7 +134,7 @@ select:hover{background:#404040;}
   overflow-y:auto;
   max-height:225px;
   padding:4px;
-  z-index:9999;
+  z-index:9997;
 }
 .toolbar.hidden {
   visibility:hidden;
