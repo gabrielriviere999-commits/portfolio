@@ -14,74 +14,74 @@ input[type=text],input[type=number]{width:50px;}
 <h2>Tableau CSV</h2>
 <h3>CSV</h3>
 <div id="custompluscontainer" style="display:none;">
-<fieldset style="display:inline flow-root;">
-<legend>Custom Plus</legend>
-<div id="customPlusPanel" style="line-height:1.8;">
-  <!-- Ligne du haut -->
-  <div>
-    TL: <input id="cp_TL" maxlength="1">
-    TM: <input id="cp_TM" maxlength="1">
-    TR: <input id="cp_TR" maxlength="1">
+  <fieldset style="display:inline flow-root;">
+  <legend>Custom Plus</legend>
+  <div id="customPlusPanel" style="line-height:1.8;">
+    <!-- Ligne du haut -->
+    <div>
+      TL: <input id="cp_TL" maxlength="1">
+      TM: <input id="cp_TM" maxlength="1">
+      TR: <input id="cp_TR" maxlength="1">
+    </div>
+    <!-- Ligne du milieu -->
+    <div>
+      ML: <input id="cp_ML" maxlength="1">
+      MM: <input id="cp_MM" maxlength="1">
+      MR: <input id="cp_MR" maxlength="1">
+    </div>
+    <!-- Ligne du bas -->
+    <div>
+      BL: <input id="cp_BL" maxlength="1">
+      BM: <input id="cp_BM" maxlength="1">
+      BR: <input id="cp_BR" maxlength="1">
+    </div>
+    <!-- Bordures horizontales / verticales -->
+    <div style="margin-top:10px;">
+      V : <input id="cp_V" maxlength="1">
+      H : <input id="cp_H" maxlength="1">
+      hBorderHeader : <input id="cp_H2" maxlength="1">
+    </div>
   </div>
-  <!-- Ligne du milieu -->
-  <div>
-    ML: <input id="cp_ML" maxlength="1">
-    MM: <input id="cp_MM" maxlength="1">
-    MR: <input id="cp_MR" maxlength="1">
+  <button type="button" onclick="exportCustomPlus()">Exporter style</button>
+  <button type="button" onclick="showImportCustomPlus()">Importer style</button>
+  <div id="importCustomPlusBox" style="display:none;">
+    <textarea wrap="off" id="importCustomPlusText" style="height:100px;"></textarea><br>
+    <button type="button" onclick="applyImportCustomPlus()">Valider l'import</button>
+    <button id="copyCustomPlus" class="btn-color" style="background:#4caf50;">Copier</button>
   </div>
-  <!-- Ligne du bas -->
-  <div>
-    BL: <input id="cp_BL" maxlength="1">
-    BM: <input id="cp_BM" maxlength="1">
-    BR: <input id="cp_BR" maxlength="1">
-  </div>
-  <!-- Bordures horizontales / verticales -->
-  <div style="margin-top:10px;">
-    V : <input id="cp_V" maxlength="1">
-    H : <input id="cp_H" maxlength="1">
-    hBorderHeader: <input id="cp_H2" maxlength="1">
-  </div>
-</div>
-<button type="button" onclick="exportCustomPlus()">Exporter style</button>
-<button type="button" onclick="showImportCustomPlus()">Importer style</button>
-<div id="importCustomPlusBox" style="display:none;">
-  <textarea wrap="off" id="importCustomPlusText" style="height:100px;"></textarea><br>
-  <button type="button" onclick="applyImportCustomPlus()">Valider l'import</button>
-  <button id="copyCustomPlus" class="btn-color" style="background:#4caf50;">Copier</button>
-</div>
-</fieldset>
+  </fieldset>
 </div>
 <div id="fancycustompluscontainer" style="display:none;">
-<fieldset style="display:inline flow-root;">
-<legend>Fancy Custom Plus</legend>
-<div id="fancycustomPlusPanel" style="line-height:1.8;">
-  <div>
-    TL: <input id="fcp_TL">
-    TR: <input id="fcp_TR">
+  <fieldset style="display:inline flow-root;">
+  <legend>Fancy Custom Plus</legend>
+  <div id="fancycustomPlusPanel" style="line-height:1.8;">
+    <div>
+      TL: <input id="fcp_TL">
+      TR: <input id="fcp_TR">
+    </div>
+    <div>
+      BL: <input id="fcp_BL">
+      BR: <input id="fcp_BR">
+    </div>
+    <div style="margin-top:10px;">
+      V : <input id="fcp_V">
+      H : <input id="fcp_H">
+      hBorderHeader : <input id="fcp_H2">
+    </div>
+    <div style="margin-top:10px;">
+      SEP : <input id="fcp_SEP">
+      SEP_LEFT : <input id="fcp_SEP_LEFT">
+      SEP_RIGHT : <input id="fcp_SEP_RIGHT">
+    </div>
   </div>
-  <div>
-    BL: <input id="fcp_BL">
-    BR: <input id="fcp_BR">
+  <button type="button" onclick="exportFancyCustomPlus()">Exporter style</button>
+  <button type="button" onclick="showImportFancyCustomPlus()">Importer style</button>
+  <div id="importFancyCustomPlusBox" style="display:none;">
+    <textarea wrap="off" id="importFancyCustomPlusText" style="height:100px;"></textarea><br>
+    <button type="button" onclick="applyImportFancyCustomPlus()">Valider l'import</button>
+    <button id="copyFancyCustomPlus" class="btn-color" style="background:#4caf50;">Copier</button>
   </div>
-  <div style="margin-top:10px;">
-    V : <input id="fcp_V">
-    H : <input id="fcp_H">
-    hBorderHeader: <input id="fcp_H2">
-  </div>
-  <div style="margin-top:10px;">
-    SEP : <input id="fcp_SEP">
-    SEP_LEFT : <input id="fcp_SEP_LEFT">
-    SEP_RIGHT : <input id="fcp_SEP_RIGHT">
-  </div>
-</div>
-<button type="button" onclick="exportFancyCustomPlus()">Exporter style</button>
-<button type="button" onclick="showImportFancyCustomPlus()">Importer style</button>
-<div id="importFancyCustomPlusBox" style="display:none;">
-  <textarea wrap="off" id="importFancyCustomPlusText" style="height:100px;"></textarea><br>
-  <button type="button" onclick="applyImportFancyCustomPlus()">Valider l'import</button>
-  <button id="copyFancyCustomPlus" class="btn-color" style="background:#4caf50;">Copier</button>
-</div>
-</fieldset>
+  </fieldset>
 </div>
 <div class="toolbar-nfix">
 <select id="ascii_model">
