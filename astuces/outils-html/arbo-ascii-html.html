@@ -29,16 +29,14 @@
 </style>
 </head>
 <body>
-
 <h2>Arborescence ASCII & HTML</h2>
-
 <div class="container">
-
 <div class="card">
   <button onclick="renameRoot()">Renommer racine</button>
   <button onclick="addFolder()">+ Dossier</button>
   <button onclick="addFile()">+ Fichier</button>
   <button onclick="goUp()">← Remonter</button>
+  <button onclick="(function(){var d=document.createElement('div');d.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:9999;';var close=function(){if(d&&d.parentNode)d.parentNode.removeChild(d);};d.onclick=function(e){if(e.target===d)close();};var p=document.createElement('div');p.style.cssText='position:absolute;top:4%;left:4%;right:4%;bottom:4%;background:rgba(0,0,0,0.6);color:#ccc;padding:10px;border:1px solid #808080;box-sizing:border-box;';var t=document.createElement('div');t.style.cssText='position:absolute;top:10px;left:10px;right:10px;bottom:50px;overflow:auto;';t.innerHTML='<h3>Arborescence</h3>Renommer racine : Changer le nom du dossier qui est tout en haut.<br>+ Dossier : Ajouter un dossier.<br>+ Fichier : Ajouter un fichier.<br>← Remonter : Se déplacer en arrière dans l‘arborescence.<br>Dossier courant : Affiche le chemin courant.<br><br>Cliquer sur un <font color=#4af>dossier/</font> pour y aller.<br><br><font color=#fa4>[C]</font> : Ajouter un commentaire à droite du <font color=#4af>dossier/</font> ou <font color=#0f0>fichier</font>, laisser vide pour n‘en mettre aucun.<br><font color=#fa4>[R]</font> : Renommer le <font color=#4af>dossier/</font> ou <font color=#0f0>fichier</font>.<br><font color=#fa4>[X]</font> : Effacer le <font color=#4af>dossier/</font> ou <font color=#0f0>fichier</font>.<br><br>Copier texte : Copier le texte brut sans couleurs de l‘arborescence dans le presse-papiers.<br>Copier HTML couleur : Copier le code HTML avec couleurs de l‘arborescence dans le presse-papiers.<br>Afficher texte : Afficher le texte brut sans couleurs de l‘arborescence en dessous du bouton.<br>Afficher HTML couleur : Afficher le code HTML avec couleurs de l‘arborescence en dessous du bouton.<p><hr></p><h3>Champ</h3>Mettre à jour à partir du texte : Afficher l‘arborescence à partir du texte obtenu avec cet outil ou <a href=../../make-arbo.py download>le script Python make-arbo.py</a>, <a href=../android/applications/arbo.apk download>l‘application Android Arbo</a>, <a href=arbo-zip.html>la page Arborescence ZIP</a>.<br>Importer (commande tree) : Afficher l‘arborescence à partir du texte obtenu avec la commande tree.<br>Importer fichier... : Choisir un fichier depuis l‘appareil à mettre dans le champ de texte.<br><br>Note : En important l‘arborescence de tree, les fichiers sans extensions (sans . à la fin) sont reconnus comme des dossiers.';var b=document.createElement('button');b.appendChild(document.createTextNode('Fermer'));b.style.cssText='position:absolute;left:10px;right:10px;bottom:10px;width:calc(100% - 20px);';b.onclick=close;p.appendChild(t);p.appendChild(b);d.appendChild(p);document.body.appendChild(d);p.setAttribute('tabindex','0');p.focus();}())">?</button>
   <p>Dossier courant : <span id="currentPath"></span></p>
   <pre id="ascii" class="border-interne"></pre>
   <button onclick="copyTree(this)" class="btn-color" style="background:#4caf50;">Copier texte</button>
@@ -47,7 +45,6 @@
   <button onclick="showTreeHtml()" class="btn-color" style="background:#4caf50;">Afficher HTML couleur</button>
   <br><textarea wrap="off" id="previewBox" style="display:none;"></textarea>
 </div>
-
 <div class="card">
   <textarea wrap="off" id="importBox"></textarea><br>
   <button onclick="restoreTree()" class="btn-color" style="background:#ff8800;">Mettre à jour à partir du texte</button>
@@ -55,11 +52,7 @@
   <button id="importFileBtn">Importer fichier…</button>
   <input type="file" id="fileInput" style="display:none;">
 </div>
-
 </div>
-
-<p><a href="notices/notice-arbo-ascii-html.html">Notice</a></p>
-
 <script>
 // --- Données ---
 var root = { name: "racine/", folders: [], files: [] };
