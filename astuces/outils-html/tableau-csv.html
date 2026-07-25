@@ -1306,38 +1306,51 @@ function parseMarkdownTable(text) {
 
 function parseHTMLTable(text) {
   var rows = [];
-  var lines = text.split(/\r?\n/);
+  var pos = 0;
 
-  for (var i = 0; i < lines.length; i++) {
-    var line = trim(lines[i]);
+  while (true) {
+    // Trouver <tr
+    var trStart = text.indexOf("<tr", pos);
+    if (trStart === -1) break;
 
-    // détecter une ligne <tr>
-    if (line.indexOf("<tr") !== -1) {
-      var cells = [];
-      var pos = 0;
+    // Trouver >
+    var trOpenEnd = text.indexOf(">", trStart);
+    if (trOpenEnd === -1) break;
 
-      while (true) {
-        // trouver <td
-        var tdStart = line.indexOf("<td", pos);
-        if (tdStart === -1) break;
+    // Trouver </tr>
+    var trEnd = text.indexOf("</tr>", trOpenEnd);
+    if (trEnd === -1) break;
 
-        // trouver >
-        var contentStart = line.indexOf(">", tdStart);
-        if (contentStart === -1) break;
+    // Extraire le contenu du <tr>...</tr>
+    var trContent = text.substring(trOpenEnd + 1, trEnd);
 
-        // trouver </td>
-        var tdEnd = line.indexOf("</td>", contentStart);
-        if (tdEnd === -1) break;
+    // Extraire les <td ...>...</td>
+    var cells = [];
+    var tdPos = 0;
 
-        // extraire contenu
-        var cell = line.substring(contentStart + 1, tdEnd);
-        cells.push(cell);
+    while (true) {
+      // Trouver <td
+      var tdStart = trContent.indexOf("<td", tdPos);
+      if (tdStart === -1) break;
 
-        pos = tdEnd + 5; // avancer après </td>
-      }
+      // Trouver >
+      var tdOpenEnd = trContent.indexOf(">", tdStart);
+      if (tdOpenEnd === -1) break;
 
-      if (cells.length > 0) rows.push(cells);
+      // Trouver </td>
+      var tdEnd = trContent.indexOf("</td>", tdOpenEnd);
+      if (tdEnd === -1) break;
+
+      // Extraire contenu
+      var cell = trContent.substring(tdOpenEnd + 1, tdEnd);
+      cells.push(cell);
+
+      tdPos = tdEnd + 5;
     }
+
+    if (cells.length > 0) rows.push(cells);
+
+    pos = trEnd + 5;
   }
 
   return rows;
