@@ -1638,10 +1638,9 @@ function resetStyle(system) {
   for (var i = 0; i < system.config.length; i++) {
     var cfg = system.config[i];
     var el = document.getElementById(cfg.id);
-    if (el) {
-      el.value = "";
-      el.oninput();
-    }
+    if (!el) continue;
+    el.value = system.default[cfg.key];
+    el.oninput();
   }
 }
 
