@@ -25,7 +25,6 @@ input,textarea {
   border:2px groove #808080;
 }
 input[type=range]{touch-action:none;}
-.range{position:relative;top:8px;}
 @media (hover:none) and (pointer:coarse) {
   ::-webkit-scrollbar {
     width:24px;

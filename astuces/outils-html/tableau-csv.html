@@ -130,7 +130,7 @@ input[type=text],input[type=number]{width:50px;}
 <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
 <button id="transposeBtn">Inverser lignes et colonnes</button>
 <button onclick="effacerTout()" class="btn-color" style="background:#ff4444;">Effacer tout</button>
-<input id="zoomRangeInput" class="range" type="range" min="6" max="40" value="12" oninput="applyZoom('zoomRangeInput', 'input')">
+<input id="zoomRangeInput" type="range" min="6" max="40" value="12" oninput="applyZoom('zoomRangeInput', 'input')">
 <button onclick="resetZoom('zoomRangeInput', 'input')">12px</button>
 <input type="file" id="csvFileInput" class="file-input">
 <p></p><div id="downloadLinkContainer"></div>
@@ -139,7 +139,7 @@ input[type=text],input[type=number]{width:50px;}
 <textarea wrap="off" id="output"></textarea><br>
 <button type="button" onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Convertir en CSV</button>
 <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
-<input id="zoomRangeOutput" class="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoom('zoomRangeOutput', 'output')">
+<input id="zoomRangeOutput" type="range" min="6" max="40" value="12" oninput="applyZoom('zoomRangeOutput', 'output')">
 <button onclick="resetZoom('zoomRangeOutput', 'output')">12px</button>
 <input type="file" id="tableFileInput" class="file-input">
 <br>
