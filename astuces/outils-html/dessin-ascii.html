@@ -1088,6 +1088,7 @@ function toggleTextColor() {
 }
 
 /* --- AJOUTER IMAGE EN CALQUE --- */
+var lastScaleValue = 100;
 function openCalquePopup() {
     openPopup(
     '<h3>Calque de la zone de dessin</h3>' +
@@ -1102,7 +1103,7 @@ function openCalquePopup() {
     '<button onclick="resetImgPosition()">Reset position</button>' +
     '<br><br>' +
 
-    '<input id="imgScale" class="range" type="range" min="10" max="300" value="100">\n' +
+    '<input id="imgScale" class="range" type="range" min="10" max="300" value="' + lastScaleValue + '">\n' +
     '<button onclick="resetImgScale()">Reset zoom</button>'
     );
 
@@ -1140,9 +1141,9 @@ function attachImageToolsListeners() {
     // Slider de zoom
     var scaleSlider = document.getElementById("imgScale");
     scaleSlider.addEventListener("input", function () {
-        var s = scaleSlider.value / 100;
-        img.style.transform = "scale(" + s + ")";
-        img.style.transformOrigin = "top left";
+      lastScaleValue = scaleSlider.value;
+      var s = scaleSlider.value / 100;
+      img.style.transform = "scale(" + s + ")";
     });
     // Reset zoom (doit utiliser CE slider)
     window.resetImgScale = function() {
