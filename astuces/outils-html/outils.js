@@ -103,12 +103,12 @@ function setupDragDrop(textareaId) {
 
 setupDragDrop("input");
 setupDragDrop("output");
+setupDragDrop("text");
 setupDragDrop("textA");
 setupDragDrop("textB");
 setupDragDrop("view");
 setupDragDrop("textInput");
 setupDragDrop("importBox");
-setupDragDrop("text");
 
 /* --- Bouton importer fichier vers textarea ---*/
 function importTextareaFile(buttonId, fileInputId, textareaId) {
@@ -140,6 +140,6 @@ importTextareaFile("importTextareaFileinput", "textareaFileinput", "input");
 importTextareaFile("importTextareaFileoutput", "textareaFileoutput", "output");
 importTextareaFile("importTextareaFileimportBox", "textareaFileimportBox", "importBox");
 importTextareaFile("importTextareaFileview", "textareaFileview", "view");
+importTextareaFile("importTextareaFiletext", "textareaFiletext", "text");
 importTextareaFile("importTextareaFiletextA", "textareaFiletextA", "textA");
 importTextareaFile("importTextareaFiletextB", "textareaFiletextB", "textB");
-importTextareaFile("importTextareaFiletext", "textareaFiletext", "text");
