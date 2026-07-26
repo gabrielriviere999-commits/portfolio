@@ -35,6 +35,7 @@ select{width:55px;}
 <div class="toolbar-nfix">
   <input id="zoomRange" class="range" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
   <button onclick="resetZoom()">12px</button>
+  <button onclick="toggleTextColor()">Couleur</button>
   |
   <button id="btnFree" onclick="setTool('free')">Tracé libre</button>
   <input type="text" id="freeChar" value="#" maxlength="1">
@@ -1076,6 +1077,14 @@ function resetZoom() {
     var slider = document.getElementById("zoomRange");
     slider.value = 12;
     applyZoomRange();
+}
+
+var colors = ["#cccccc", "#222222", "#ff0000", "#00ff00", "#00aaff", ];
+var colorIndex = 0;
+function toggleTextColor() {
+    var t = document.getElementById("view");
+    colorIndex = (colorIndex + 1) % colors.length;
+    t.style.color = colors[colorIndex];
 }
 
 /* --- AJOUTER IMAGE EN CALQUE --- */
