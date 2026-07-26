@@ -35,3 +35,45 @@ function openPopup(htmlContent) {
     // focus automatique sur la fenêtre
     p.focus();
 }
+
+function copyFrom(id, btn) {
+    var code = document.getElementById(id);
+
+    var temp = document.createElement("textarea");
+    temp.value = code.value;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try { document.execCommand("copy"); } catch (err) {}
+
+    document.body.removeChild(temp);
+    btn.focus();
+}
+function copyOnClick(id, fn) {
+    var el = document.getElementById(id);
+    if (el) el.onclick = fn;
+}
+copyOnClick('copyinput', function(e) {
+    copyFrom('input', e.target);
+});
+copyOnClick('copyoutput', function(e) {
+    copyFrom('output', e.target);
+});
+copyOnClick('copyCustomPlus', function(e) {
+    copyFrom('importCustomPlusText', e.target);
+});
+copyOnClick('copyFancyCustomPlus', function(e) {
+    copyFrom('importFancyCustomPlusText', e.target);
+});
+copyOnClick('copyjson', function(e) {
+    copyFrom('json', e.target);
+});
+copyOnClick('copyview', function(e) {
+    copyFrom('view', e.target);
+});
+copyOnClick('copyasciiTextArea', function(e) {
+    copyFrom('asciiTextArea', e.target);
+});
+copyOnClick('copyhtmlCode', function(e) {
+    copyFrom('htmlCode', e.target);
+});

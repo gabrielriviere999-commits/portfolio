@@ -54,15 +54,16 @@ iframe{background:#fff!important;}
 
   <div class="card">
     <h3>Code HTML</h3>
-    <textarea wrap="off" id="editor"></textarea><br>
+    <textarea wrap="off" id="output"></textarea><br>
     <button type="button" onclick="updatePreview()" class="btn-color" style="background:#ff8800;">Mettre à jour</button>
-    <button id="copyCode" class="btn-color" style="background:#4caf50;">Copier le code</button>
+    <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier le code</button>
     <button id="importHtmlFile">Importer fichier...</button>
     <input type="file" id="htmlFileInput" style="display:none;">
     <div id="status">Prêt.</div>
   </div>
 </div>
 
+<script src="outils.js"></script>
 <script>
   // Modèle de page
   var baseTemplate =
@@ -100,12 +101,12 @@ iframe{background:#fff!important;}
 '</body>\n' +
 '</html>\n';
 
-  var editor = document.getElementById('editor');
+  var output = document.getElementById('output');
   var preview = document.getElementById('preview');
   var statusEl = document.getElementById('status');
 
   // Initialisation
-  editor.value = baseTemplate;
+  output.value = baseTemplate;
   updatePreview();
 
   function setStatus(msg) {
@@ -114,13 +115,13 @@ iframe{background:#fff!important;}
 
   function insertAtCursor(text) {
     var start, end, before, after;
-    editor.focus();
-    start = editor.selectionStart;
-    end = editor.selectionEnd;
-    before = editor.value.substring(0, start);
-    after = editor.value.substring(end, editor.value.length);
-    editor.value = before + text + after;
-    editor.selectionStart = editor.selectionEnd = start + text.length;
+    output.focus();
+    start = output.selectionStart;
+    end = output.selectionEnd;
+    before = output.value.substring(0, start);
+    after = output.value.substring(end, output.value.length);
+    output.value = before + text + after;
+    output.selectionStart = output.selectionEnd = start + text.length;
   }
 
 function insertTemplate(type) {
@@ -170,7 +171,7 @@ function insertTemplate(type) {
 function updatePreview() {
   var doc = preview.contentDocument || preview.contentWindow.document;
   doc.open();
-  doc.write(editor.value);
+  doc.write(output.value);
   doc.close();
   enableWysiwyg();
   setStatus('Prévisualisation mise à jour.');
@@ -199,7 +200,7 @@ document.getElementById("htmlFileInput").addEventListener("change", function () 
         }
 
         // Mettre le code dans TON textarea
-        editor.value = content;
+        output.value = content;
 
         // Mettre à jour l'aperçu
         updatePreview();
@@ -208,7 +209,7 @@ document.getElementById("htmlFileInput").addEventListener("change", function () 
     reader.readAsText(file);
 });
 
-var codeBox = editor;
+var codeBox = output;
 
 // DRAGOVER
 codeBox.addEventListener("dragover", function(e) {
@@ -243,7 +244,7 @@ codeBox.addEventListener("drop", function(e) {
                 content = cleanLibreOfficeHTML(content);
             }
 
-            editor.value = content;
+            output.value = content;
             updatePreview();
         };
 
@@ -263,7 +264,7 @@ function enableWysiwyg() {
 
   // Quand on tape dans l'aperçu → mise à jour du textarea
   doc.body.onkeyup = function () {
-    editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+    output.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
 
     setStatus("Modifié depuis l'aperçu.");
   };
@@ -289,7 +290,7 @@ function insertInPreview(html) {
   sel.collapseToEnd();
 
   // Mettre à jour le textarea
-  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+  output.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
 
   setStatus("Élément inséré dans l'aperçu.");
 }
@@ -322,26 +323,26 @@ function insertListPreview(type) {
   range.insertNode(list);
   sel.collapse(li, 1);
 
-  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+  output.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
   setStatus("Liste " + " insérée dans l'aperçu.");
 }
 
 function insertListTextarea(type) {
-  var start = editor.selectionStart;
-  var end = editor.selectionEnd;
+  var start = output.selectionStart;
+  var end = output.selectionEnd;
 
   var list =
 "<" + type + ">\n" +
 "  <li>Élément</li>\n" +
 "</" + type + ">\n";
 
-  editor.value =
-    editor.value.substring(0, start) +
+  output.value =
+    output.value.substring(0, start) +
     list +
-    editor.value.substring(end);
+    output.value.substring(end);
 
-  editor.selectionStart = start;
-  editor.selectionEnd = start + list.length;
+  output.selectionStart = start;
+  output.selectionEnd = start + list.length;
 
   setStatus("Liste " + " insérée dans le code.");
   updatePreview();
@@ -379,7 +380,7 @@ function formatText(btn, cmd, value) {
   }
 
   // Mise à jour du textarea
-  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+  output.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
   setStatus("Format appliqué : " + cmd);
 }
 
@@ -419,7 +420,7 @@ function toggleAlign(btn, align) {
   }
 
   // Mise à jour du textarea
-  editor.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
+  output.value = prettyHTML(cleanExport(doc.documentElement.outerHTML));
   setStatus("Alignement : " + align);
 }
 
@@ -439,22 +440,6 @@ function removeAlignmentStyles(doc) {
     }
   }
 }
-
-/* --- COPIER --- */
-document.getElementById('copyCode').onclick = function(e) {
-  var btn = event.target;
-  var code = document.getElementById('editor');
-
-  var temp = document.createElement("textarea");
-  temp.value = code.value;
-  document.body.appendChild(temp);
-  temp.select();
-
-  try { document.execCommand("copy"); } catch (err) {}
-
-  document.body.removeChild(temp);
-  btn.focus();
-};
 </script>
 
 </body>

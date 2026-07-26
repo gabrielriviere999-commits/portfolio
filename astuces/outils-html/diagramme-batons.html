@@ -16,13 +16,13 @@ input[type="number"],input[type="text"]{width:50px;}
 
 <div class="card">
   <h3>Données : libellé;valeur</h3>
-  <textarea wrap="off" id="data">A;3
+  <textarea wrap="off" id="input">A;3
 B;7
 C;5
 D;10</textarea><br>
-  <button id="importFileBtndata">Importer fichier…</button>
-  <input type="file" id="fileInputdata" style="display:none;">
-  <button id="copydata" class="btn-color" style="background:#4caf50;">Copier</button>
+  <button id="importFileBtninput">Importer fichier…</button>
+  <input type="file" id="fileInputinput" style="display:none;">
+  <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
   <fieldset>
   <legend>Options</legend>
   <label>Largeur max des barres :
@@ -43,7 +43,7 @@ D;10</textarea><br>
   <button type="button" onclick="exportOptions()">Exporter</button>
   <button type="button" onclick="showImportBox()">Importer</button>
   <div id="importBox" style="display:none;">
-    <textarea wrap="off" id="importText"></textarea><br>
+    <textarea wrap="off" id="json"></textarea><br>
     <button type="button" onclick="applyImport()">Valider l'import</button>
     <button id="copyjson" class="btn-color" style="background:#4caf50;">Copier</button>
   </div>
@@ -66,7 +66,7 @@ function repeatChar(ch,n){ var o='',i; for(i=0;i<n;i++) o+=ch; return o; }
 function parseIntSafe(v,d){ var n=parseInt(v,10); return isNaN(n)?d:n; }
 
 function updateChart(){
-    var dataEl=document.getElementById('data');
+    var inputEl=document.getElementById('input');
     var outEl=document.getElementById('output');
 
     var bars_maxWidth=parseIntSafe(document.getElementById('bars_maxWidth').value,25);
@@ -79,7 +79,7 @@ function updateChart(){
     var showValues = true;
     var bars_normalize=document.getElementById('bars_normalize').checked;
 
-    var lines=dataEl.value.split(/\r?\n/);
+    var lines=inputEl.value.split(/\r?\n/);
     var items=[],maxVal=0,i;
 
     for(i=0;i<lines.length;i++){
@@ -138,7 +138,7 @@ function importFromOutput() {
     var outText = document.getElementById('output').value;
     var bars_sep = document.getElementById('bars_sep').value;
     var lines = outText.split(/\r?\n/);
-    var dataLines = [];
+    var inputLines = [];
     var i;
 
     for (i = 0; i < lines.length; i++) {
@@ -184,10 +184,10 @@ function importFromOutput() {
         var valStr = trimStr(line.substring(start, end));
         if (valStr !== "") value = valStr;
 
-        dataLines.push(label + ";" + value);
+        inputLines.push(label + ";" + value);
     }
 
-    document.getElementById('data').value = dataLines.join("\n");
+    document.getElementById('input').value = inputLines.join("\n");
     updateChart();
 }
 
@@ -195,15 +195,15 @@ if(window.attachEvent) window.attachEvent('onload',init);
 else if(window.addEventListener) window.addEventListener('load',init,false);
 else window.onload=init;
 
-// Glisser-déposer data
-var data = document.getElementById("data");
+// Glisser-déposer input
+var input = document.getElementById("input");
 
-data.addEventListener("dragover", function(e) {
+input.addEventListener("dragover", function(e) {
 
     // Si un fichier est glissé → empêcher le comportement natif
-    if (e.dataTransfer.types &&
-        (e.dataTransfer.types.indexOf("Files") !== -1 ||
-         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+    if (e.inputTransfer.types &&
+        (e.inputTransfer.types.indexOf("Files") !== -1 ||
+         e.inputTransfer.types.indexOf("application/x-moz-file") !== -1)) {
 
         e.preventDefault(); // autorise le drop fichier
     }
@@ -212,18 +212,18 @@ data.addEventListener("dragover", function(e) {
     // Le navigateur affiche le curseur d’insertion
 });
 
-data.addEventListener("drop", function(e) {
+input.addEventListener("drop", function(e) {
 
     // Si fichier → on gère nous-même
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.inputTransfer.files && e.inputTransfer.files.length > 0) {
         e.preventDefault();
 
-        var file = e.dataTransfer.files[0];
+        var file = e.inputTransfer.files[0];
         var reader = new FileReader();
 
         reader.onload = function(ev) {
             // On met le fichier brut dans la zone
-            data.value = ev.target.result;
+            input.value = ev.target.result;
             updateChart();
         };
 
@@ -234,18 +234,18 @@ data.addEventListener("drop", function(e) {
     // Sinon → laisser le navigateur coller le texte
 });
 
-// Bouton Importer fichier… data
-document.getElementById("importFileBtndata").onclick = function () {
-    document.getElementById("fileInputdata").click();
+// Bouton Importer fichier… input
+document.getElementById("importFileBtninput").onclick = function () {
+    document.getElementById("fileInputinput").click();
 };
 
-document.getElementById("fileInputdata").addEventListener("change", function () {
+document.getElementById("fileInputinput").addEventListener("change", function () {
     var file = this.files[0];
     if (!file) return;
 
     var reader = new FileReader();
     reader.onload = function (e) {
-        document.getElementById("data").value = e.target.result;
+        document.getElementById("input").value = e.target.result;
         updateChart();
     };
     reader.readAsText(file);
@@ -258,9 +258,9 @@ var output = document.getElementById("output");
 output.addEventListener("dragover", function(e) {
 
     // Si un fichier est glissé → empêcher le comportement natif
-    if (e.dataTransfer.types &&
-        (e.dataTransfer.types.indexOf("Files") !== -1 ||
-         e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
+    if (e.inputTransfer.types &&
+        (e.inputTransfer.types.indexOf("Files") !== -1 ||
+         e.inputTransfer.types.indexOf("application/x-moz-file") !== -1)) {
 
         e.preventDefault(); // autorise le drop fichier
     }
@@ -272,10 +272,10 @@ output.addEventListener("dragover", function(e) {
 output.addEventListener("drop", function(e) {
 
     // Si fichier → on gère nous-même
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.inputTransfer.files && e.inputTransfer.files.length > 0) {
         e.preventDefault();
 
-        var file = e.dataTransfer.files[0];
+        var file = e.inputTransfer.files[0];
         var reader = new FileReader();
 
         reader.onload = function(ev) {
@@ -309,7 +309,7 @@ document.getElementById("fileInputoutput").addEventListener("change", function (
 });
 
 /* --- Mise à jour au blur --- */
-function setupBlurdata(id) {
+function setupBlurinput(id) {
     var el = document.getElementById(id);
 
     if (el.addEventListener) {
@@ -334,44 +334,17 @@ function setupBluroutput(id) {
 }
 
 // Champs texte
-setupBlurdata('bars_maxWidth');
-setupBlurdata('bars_barChar');
-setupBlurdata('bars_bgChar');
-setupBlurdata('bars_sep');
+setupBlurinput('bars_maxWidth');
+setupBlurinput('bars_barChar');
+setupBlurinput('bars_bgChar');
+setupBlurinput('bars_sep');
 
 // Checkbox
-setupBlurdata('bars_normalize');
+setupBlurinput('bars_normalize');
 
 // Textarea
-setupBlurdata('data');
+setupBlurinput('input');
 setupBluroutput('output');
-
-/* --- Bouton copier --- */
-function copyFrom(id, btn) {
-    var code = document.getElementById(id);
-
-    var temp = document.createElement("textarea");
-    temp.value = code.value;
-    document.body.appendChild(temp);
-    temp.select();
-
-    try { document.execCommand("copy"); } catch (err) {}
-
-    document.body.removeChild(temp);
-    btn.focus();
-}
-
-document.getElementById('copydata').onclick = function(e) {
-    copyFrom('data', e.target);
-};
-
-document.getElementById('copyoutput').onclick = function(e) {
-    copyFrom('output', e.target);
-};
-
-document.getElementById('copyjson').onclick = function(e) {
-    copyFrom('importText', e.target);
-};
 
 // Bouton Valeurs par défaut
 function resetOptions() {
@@ -436,7 +409,7 @@ function exportOptions() {
     var json = JSON.stringify(opts, null, 2);
 
     // envoyer dans le textarea d'import
-    var ta = document.getElementById("importText");
+    var ta = document.getElementById("json");
     ta.value = json;
     // afficher la boîte d'import
     document.getElementById("importBox").style.display = "block";
@@ -447,7 +420,7 @@ function showImportBox() {
 }
 
 function applyImport() {
-    var txt = document.getElementById("importText").value;
+    var txt = document.getElementById("json").value;
     if (!txt) return;
 
     try {

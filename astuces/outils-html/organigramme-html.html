@@ -63,12 +63,13 @@ body{padding-top:200px;}
 </div>
 <br><h3>Code de l'organigramme</h3>
 <button onclick="generateCode(buildHtml())" class="btn-color" style="background:#ff8800;">Générer le code</button>
-<button id="copyCode" class="btn-color" style="background:#4caf50;">Copier le code</button>
-<br><textarea wrap="off" id="io" style="width:100%;height:200px;"></textarea><br>
+<button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier le code</button>
+<br><textarea wrap="off" id="output" style="width:100%;height:200px;"></textarea><br>
 <button onclick="doImport()" class="btn-color" style="background:#ff8800;">Mettre à jour</button>
 <button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 
+<script src="outils.js"></script>
 <script>
 /* --- VARIABLES GLOBALES --- */
 var globalBoxBg = "transparent";
@@ -515,28 +516,9 @@ function escapeHtml(str) {
 }
 
 function generateCode(text) {
-  var ta = document.getElementById("io");
+  var ta = document.getElementById("output");
   ta.value = text;
 }
-
-// Bouton copier
-function copyFrom(id, btn) {
-    var code = document.getElementById(id);
-
-    var temp = document.createElement("textarea");
-    temp.value = code.value;
-    document.body.appendChild(temp);
-    temp.select();
-
-    try { document.execCommand("copy"); } catch (err) {}
-
-    document.body.removeChild(temp);
-    btn.focus();
-}
-
-document.getElementById('copyCode').onclick = function(e) {
-    copyFrom('io', e.target);
-};
 
 /* --- Styles --- */
 function changeGlobalTextColor() {
@@ -777,14 +759,14 @@ function importData(text) {
 }
 
 function doImport() {
-  var txt = document.getElementById("io").value;
+  var txt = document.getElementById("output").value;
   importData(txt);
 }
 
 // Glisser-déposer
-var io = document.getElementById("io");
+var output = document.getElementById("output");
 
-io.addEventListener("dragover", function(e) {
+output.addEventListener("dragover", function(e) {
 
     // Si un fichier est glissé → empêcher le comportement natif
     if (e.dataTransfer.types &&
@@ -798,7 +780,7 @@ io.addEventListener("dragover", function(e) {
     // Le navigateur affiche le curseur d’insertion
 });
 
-io.addEventListener("drop", function(e) {
+output.addEventListener("drop", function(e) {
 
     // Si fichier → on gère nous-même
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -809,7 +791,7 @@ io.addEventListener("drop", function(e) {
 
         reader.onload = function(ev) {
             // On met le fichier brut dans la zone
-            io.value = ev.target.result;
+            output.value = ev.target.result;
         };
 
         reader.readAsText(file);
@@ -830,7 +812,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
 
     var reader = new FileReader();
     reader.onload = function (e) {
-        document.getElementById("io").value = e.target.result;
+        document.getElementById("output").value = e.target.result;
     };
     reader.readAsText(file);
 });

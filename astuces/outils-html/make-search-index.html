@@ -8,8 +8,9 @@
 <h2>Générateur d'index de recherche</h2>
 <input type="file" id="zipFile">
 <textarea wrap="off" id="output"></textarea><br>
-<button id="copysearchindex" class="btn-color" style="background:#4caf50;">Copier</button>
+<button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
 
+<script src="outils.js"></script>
 <script src="libs/jszip.min.js"></script>
 <script>
 document.getElementById("zipFile").onchange = function () {
@@ -110,23 +111,4 @@ function stripTags(html){
     html = html.replace(/<[^>]+>/g,"");
     return html;
 }
-
-// Bouton copier
-function copyFrom(id, btn) {
-    var code = document.getElementById(id);
-
-    var temp = document.createElement("textarea");
-    temp.value = code.value;
-    document.body.appendChild(temp);
-    temp.select();
-
-    try { document.execCommand("copy"); } catch (err) {}
-
-    document.body.removeChild(temp);
-    btn.focus();
-}
-
-document.getElementById('copysearchindex').onclick = function(e) {
-    copyFrom('output', e.target);
-};
 </script>

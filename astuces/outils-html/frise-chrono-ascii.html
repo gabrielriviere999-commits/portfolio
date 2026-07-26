@@ -19,15 +19,16 @@
 
 <div class="card">
   <h3>Aperçu / texte</h3>
-  <textarea wrap="off" id="io" style="width:100%;height:200px;box-sizing:border-box;"></textarea><br>
+  <textarea wrap="off" id="output" style="width:100%;height:200px;box-sizing:border-box;"></textarea><br>
   <button onclick="importAscii()" class="btn-color" style="background:#ff8800;">Mettre à jour</button>
-  <button id="copyCode" class="btn-color" style="background:#4caf50;">Copier</button>
+  <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
   <button id="importFileBtn">Importer fichier…</button>
   <input type="file" id="fileInput" style="display:none;">
 </div>
 
 </div>
 
+<script src="outils.js"></script>
 <script>
 /* --- Données internes --- */
 var events = [];
@@ -116,7 +117,7 @@ function refreshEditor() {
 /* --- EXPORT TEXTE --- */
 function exportAscii() {
   if (events.length === 0) {
-    document.getElementById("io").value = "";
+    document.getElementById("output").value = "";
     return;
   }
 
@@ -179,7 +180,7 @@ function exportAscii() {
     dateRow + "\n\n" +
     descs.join("\n");
 
-  document.getElementById("io").value = out;
+  document.getElementById("output").value = out;
 }
 
 function repeat(s, n) {
@@ -190,7 +191,7 @@ function repeat(s, n) {
 
 /* --- IMPORT TEXTE Format : date | titre | desc --- */
 function importAscii() {
-  var raw = document.getElementById("io").value;
+  var raw = document.getElementById("output").value;
   var lines = raw.split("\n");
   var i;
 
@@ -296,26 +297,10 @@ function trim(s) {
   return s.replace(/^\s+/, "").replace(/\s+$/, "");
 }
 
-/* --- Bouton copier --- */
-document.getElementById('copyCode').onclick = function(e) {
-  var btn = event.target;
-  var code = document.getElementById('io');
-
-  var temp = document.createElement("textarea");
-  temp.value = code.value;
-  document.body.appendChild(temp);
-  temp.select();
-
-  try { document.execCommand("copy"); } catch (err) {}
-
-  document.body.removeChild(temp);
-  btn.focus();
-};
-
 // Glisser-déposer
-var io = document.getElementById("io");
+var output = document.getElementById("output");
 
-io.addEventListener("dragover", function(e) {
+output.addEventListener("dragover", function(e) {
 
     // Si un fichier est glissé → empêcher le comportement natif
     if (e.dataTransfer.types &&
@@ -329,7 +314,7 @@ io.addEventListener("dragover", function(e) {
     // Le navigateur affiche le curseur d'insertion
 });
 
-io.addEventListener("drop", function(e) {
+output.addEventListener("drop", function(e) {
 
     // Si fichier → on gère nous-même
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -340,7 +325,7 @@ io.addEventListener("drop", function(e) {
 
         reader.onload = function(ev) {
             // On met le fichier brut dans la zone
-            io.value = ev.target.result;
+            output.value = ev.target.result;
         };
 
         reader.readAsText(file);
@@ -361,7 +346,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
 
     var reader = new FileReader();
     reader.onload = function (e) {
-        document.getElementById("io").value = e.target.result;
+        document.getElementById("output").value = e.target.result;
     };
     reader.readAsText(file);
 });

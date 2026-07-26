@@ -1582,33 +1582,6 @@ function parseYAMLTable(text) {
   return rows;
 }
 
-/* --- Bouton copier --- */
-function copyFrom(id, btn) {
-    var code = document.getElementById(id);
-
-    var temp = document.createElement("textarea");
-    temp.value = code.value;
-    document.body.appendChild(temp);
-    temp.select();
-
-    try { document.execCommand("copy"); } catch (err) {}
-
-    document.body.removeChild(temp);
-    btn.focus();
-}
-document.getElementById('copyinput').onclick = function(e) {
-    copyFrom('input', e.target);
-};
-document.getElementById('copyoutput').onclick = function(e) {
-    copyFrom('output', e.target);
-};
-document.getElementById('copyCustomPlus').onclick = function(e) {
-    copyFrom('importCustomPlusText', e.target);
-};
-document.getElementById('copyFancyCustomPlus').onclick = function(e) {
-    copyFrom('importFancyCustomPlusText', e.target);
-};
-
 /* --- Glisser-déposer ---*/
 function setupDragDrop(textareaId) {
 

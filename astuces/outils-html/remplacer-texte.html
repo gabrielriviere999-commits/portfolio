@@ -89,7 +89,7 @@
 <button type="button" onclick="exportOptions()">Exporter</button>
 <button type="button" onclick="showImportBox()">Importer</button>
 <div id="importBox" style="display:none;">
-  <textarea wrap="off" id="importText"></textarea><br>
+  <textarea wrap="off" id="json"></textarea><br>
   <button type="button" onclick="applyImport()">Valider l'import</button>
   <button id="copyjson" class="btn-color" style="background:#4caf50;">Copier</button>
 </div>
@@ -123,11 +123,12 @@
 
 <div class="card4 border-externe">
 <h3>Résultat</h3>
-<button id="copyresult" class="btn-color" style="background:#4caf50;">Copier</button>
+<button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
 <br><textarea wrap="off" id="output" class="texte"></textarea>
 <div id="stats" style="font-family:monospace;">Caractères : 0, Mots : 0, Lignes : 0</div>
 </div>
 
+<script src="outils.js"></script>
 <script src="libs/jszip.min.js"></script>
 <script>
 /* --- Compatibilité maximale (ES3) --- */
@@ -319,29 +320,6 @@ function sansAccents(str) {
 
   return out;
 }
-
-// Bouton copier
-function copyFrom(id, btn) {
-    var code = document.getElementById(id);
-
-    var temp = document.createElement("textarea");
-    temp.value = code.value;
-    document.body.appendChild(temp);
-    temp.select();
-
-    try { document.execCommand("copy"); } catch (err) {}
-
-    document.body.removeChild(temp);
-    btn.focus();
-}
-
-document.getElementById('copyresult').onclick = function(e) {
-    copyFrom('output', e.target);
-};
-
-document.getElementById('copyjson').onclick = function(e) {
-    copyFrom('importText', e.target);
-};
 
 // Boutons Effacer
 function effacerTout() {
@@ -543,7 +521,7 @@ function exportOptions() {
     var json = JSON.stringify(data, null, 2);
 
     // envoyer dans le textarea d'import
-    var ta = document.getElementById("importText");
+    var ta = document.getElementById("json");
     ta.value = json;
     // afficher la boîte d'import
     document.getElementById("importBox").style.display = "block";
@@ -584,7 +562,7 @@ function showImportBox() {
 }
 
 function applyImport() {
-    var txt = document.getElementById("importText").value;
+    var txt = document.getElementById("json").value;
     if (!txt) return;
 
     try {

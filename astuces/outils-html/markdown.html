@@ -45,10 +45,11 @@
 </div>
 
 <textarea wrap="off" id="input"></textarea><br>
-<button onclick="copyMd(event)" class="btn-color" style="background:#4caf50;">Copier</button>
+<button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
 <button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
 
+<script src="outils.js"></script>
 <script>
 // Glisser-déposer
 var input = document.getElementById("input");
@@ -189,22 +190,6 @@ function initToolbar() {
 window.onload = function() {
   initToolbar();
 };
-
-/* --- Copier --- */
-function copyMd(e) {
-  var btn = event.target;
-  var code = document.getElementById('input');
-
-  var temp = document.createElement("textarea");
-  temp.value = code.value;
-  document.body.appendChild(temp);
-  temp.select();
-
-  try { document.execCommand("copy"); } catch (err) {}
-
-  document.body.removeChild(temp);
-  btn.focus();
-}
 </script>
 
 </body>

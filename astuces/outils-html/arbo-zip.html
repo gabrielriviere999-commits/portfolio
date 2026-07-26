@@ -38,6 +38,7 @@ pre.tree{padding:5px;font-family:monospace;}
 </div>
 </div>
 
+<script src="outils.js"></script>
 <script src="libs/jszip.min.js"></script>
 <script>
 /* --- VARIABLES GLOBALES ES3 --- */
@@ -264,29 +265,6 @@ function buildAsciiText(node, prefix, isRoot) {
 
     return out;
 }
-
-// Bouton copier
-function copyFrom(id, btn) {
-    var code = document.getElementById(id);
-
-    var temp = document.createElement("textarea");
-    temp.value = code.value;
-    document.body.appendChild(temp);
-    temp.select();
-
-    try { document.execCommand("copy"); } catch (err) {}
-
-    document.body.removeChild(temp);
-    btn.focus();
-}
-
-document.getElementById('copyhtmlCode').onclick = function(e) {
-    copyFrom('htmlCode', e.target);
-};
-
-document.getElementById('copyasciiTextArea').onclick = function(e) {
-    copyFrom('asciiTextArea', e.target);
-};
 </script>
 
 </body>
