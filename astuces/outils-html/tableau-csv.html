@@ -1582,41 +1582,6 @@ function parseYAMLTable(text) {
   return rows;
 }
 
-/* --- Glisser-déposer ---*/
-function setupDragDrop(textareaId) {
-
-    var area = document.getElementById(textareaId);
-
-    // --- Drag & Drop ---
-    area.addEventListener("dragover", function(e) {
-        if (e.dataTransfer.types &&
-            (e.dataTransfer.types.indexOf("Files") !== -1 ||
-             e.dataTransfer.types.indexOf("application/x-moz-file") !== -1)) {
-
-            e.preventDefault(); // autorise le drop fichier
-        }
-    });
-
-    area.addEventListener("drop", function(e) {
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            e.preventDefault();
-
-            var f = e.dataTransfer.files[0];
-            var reader = new FileReader();
-
-            reader.onload = function(ev) {
-                area.value = ev.target.result;
-            };
-
-            reader.readAsText(f);
-            return;
-        }
-        // Sinon → laisser le navigateur coller du texte
-    });
-}
-setupDragDrop("input");
-setupDragDrop("output");
-
 /* --- Popup --- */
 function openHelpPopup() {
   openPopup(
