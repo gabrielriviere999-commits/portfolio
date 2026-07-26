@@ -21,6 +21,7 @@ B;7
 C;5
 D;10</textarea><br>
   <button id="importTextareaFileinput">Importer fichier...</button>
+  <button onclick="updateChart()" class="btn-color" style="background:#ff8800;">Mettre à jour texte</button>
   <input type="file" id="textareaFileinput" style="display:none;">
   <button id="copyinput" class="btn-color" style="background:#4caf50;">Copier</button>
   <fieldset>
@@ -54,6 +55,7 @@ D;10</textarea><br>
   <h3>Aperçu / texte</h3>
   <textarea wrap="off" id="output"></textarea><br>
   <button id="importTextareaFileoutput">Importer fichier...</button>
+  <button onclick="importFromOutput()" class="btn-color" style="background:#ff8800;">Mettre à jour données</button>
   <input type="file" id="textareaFileoutput" style="display:none;">
   <button id="copyoutput" class="btn-color" style="background:#4caf50;">Copier</button>
 </div>
