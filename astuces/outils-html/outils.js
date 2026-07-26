@@ -1,13 +1,15 @@
 /* --- Popup ---*/
 var popupOrigin = null;
+
 function openPopup(container) {
     popupOrigin = container;
 
     var d = document.createElement('div');
     d.className = "popup-overlay";
-    d.setAttribute("onclick",
-        "var e=event||window.event;var t=e.target||e.srcElement;if(t==this)closePopup();"
-    );
+
+    d.addEventListener("click", function(e){
+        if (e.target === d) closePopup();
+    });
 
     var p = document.createElement('div');
     p.className = "popup-window";
@@ -23,7 +25,7 @@ function openPopup(container) {
     var b = document.createElement('button');
     b.textContent = 'Fermer';
     b.className = "popup-close";
-    b.setAttribute("onclick", "closePopup()");
+    b.onclick = closePopup;
 
     p.appendChild(t);
     p.appendChild(b);
