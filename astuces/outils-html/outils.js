@@ -108,6 +108,7 @@ setupDragDrop("textB");
 setupDragDrop("view");
 setupDragDrop("textInput");
 setupDragDrop("importBox");
+setupDragDrop("text");
 
 /* --- Bouton importer fichier vers textarea ---*/
 function importTextareaFile(buttonId, fileInputId, textareaId) {
@@ -141,3 +142,4 @@ importTextareaFile("importTextareaFileimportBox", "textareaFileimportBox", "impo
 importTextareaFile("importTextareaFileview", "textareaFileview", "view");
 importTextareaFile("importTextareaFiletextA", "textareaFiletextA", "textA");
 importTextareaFile("importTextareaFiletextB", "textareaFiletextB", "textB");
+importTextareaFile("importTextareaFiletext", "textareaFiletext", "text");
