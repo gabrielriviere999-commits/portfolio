@@ -6,8 +6,8 @@
 <title>Dessin ASCII</title>
 <link rel="stylesheet" href="outils.css">
 <style>
-::-moz-selection{background:#404040;color:#ccc;}
-::selection {background:#404040;color:#ccc;}
+::-moz-selection{background:rgba(64,64,64,0.7);color:#ccc;}
+::selection {background:rgba(64,64,64,0.7);color:#ccc;}
 input[type=text]{width:15px;}
 select{width:55px;}
 #view {
@@ -16,17 +16,24 @@ select{width:55px;}
   padding:0;
   margin:0;
 }
+.toolbar-nfix,button {
+  position:relative;
+  z-index:999;
+}
 </style>
 </head>
 <body>
-
-<textarea wrap="off" id="view"></textarea><br>
+<div id="drawContainer" style="position:relative;">
+  <img id="bgImage" style="position:absolute;top:0;left:0;z-index:0;pointer-events:none;">
+  <textarea wrap="off" id="view" style="position:relative;z-index:1;background:rgba(0,0,0,0);"></textarea>
+</div>
 <button id="copyDraw" class="btn-color" style="background:#4caf50;">Copier</button>
-<button id="importFileBtn">Importer fichier…</button><div id="shapeInfo" style="display:inline-block;margin-left:10px;"></div>
+<button id="importFileBtn">Importer fichier…</button>
 <input type="file" id="fileInput" style="display:none;">
-
+<button onclick="openCalquePopup()">Calque</button>
+<div id="shapeInfo" style="display:inline-block;"></div>
 <div class="toolbar-nfix">
-  <input id="zoomRange" class="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
+  <input id="zoomRange" class="range" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
   <button onclick="resetZoom()">12px</button>
   |
   <button id="btnFree" onclick="setTool('free')">Tracé libre</button>
@@ -64,7 +71,7 @@ select{width:55px;}
   <button onclick="undo()">Annuler</button>
   <button onclick="redo()">Rétablir</button>
   |
-  <button onclick="(function(){var d=document.createElement('div');d.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:9999;';var close=function(){if(d&&d.parentNode)d.parentNode.removeChild(d);};d.onclick=function(e){if(e.target===d)close();};var p=document.createElement('div');p.style.cssText='position:absolute;top:4%;left:4%;right:4%;bottom:4%;background:rgba(0,0,0,0.6);color:#ccc;padding:10px;border:1px solid #808080;box-sizing:border-box;';var t=document.createElement('div');t.style.cssText='position:absolute;top:10px;left:10px;right:10px;bottom:50px;overflow:auto;';t.innerHTML='• Caractère personnalisé pour tracé libre, ligne, rectangle, ellipse, remplir : champ vide = caractère par défaut, espace = gomme.<br>• Rectangle : modèles au choix.<br>• Déplacer/Copier : changer de place un rectangle d‘éléments en sélectionnant puis en glissant.<br>• Copier presse-papiers : sélectionner un rectangle d‘éléments le copie.<br>• Texte libre : ajouter du texte n‘importe où sur la zone de dessin sans décaler les autres éléments.<br>• Édition texte : mode édition normale.<br>• Remplir : remplir d‘un caractère l‘intérieur d‘une forme ou caractères identiques.<br>• Gomme : comme tracé libre avec espace.<br>• Annuler/Rétablir : n‘importe quelle opération, cliquer 1 fois sur annuler après avoir annulé texte libre, et 2 fois après avoir OK texte libre pour l‘annuler.';var b=document.createElement('button');b.appendChild(document.createTextNode('Fermer'));b.style.cssText='position:absolute;left:10px;right:10px;bottom:10px;width:calc(100% - 20px);';b.onclick=close;p.appendChild(t);p.appendChild(b);d.appendChild(p);document.body.appendChild(d);p.setAttribute('tabindex','0');p.focus();}())">?</button>
+  <button onclick="openHelpPopup()">?</button>
 </div>
 
 <div id="textBox" style="display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#202020;border:1px solid #000;padding:10px;z-index:9999;opacity:0.8;">
@@ -73,6 +80,7 @@ select{width:55px;}
   <button onclick="cancelText()">Annuler</button>
 </div>
 
+<script src="outils.js"></script>
 <script>
 /* --- CONFIG --- */
 var grid = [];
@@ -1068,6 +1076,99 @@ function resetZoom() {
     var slider = document.getElementById("zoomRange");
     slider.value = 12;
     applyZoomRange();
+}
+
+/* --- AJOUTER IMAGE EN CALQUE --- */
+function openCalquePopup() {
+    openPopup(
+    '<h3>Calque de la zone de dessin</h3>' +
+    '<input type="file" id="imgLoader"><br><br>' +
+
+    '<button onclick="clearImage()">Retirer l‘image</button><br><br>' +
+
+    '<button onclick="moveImgLeft()">←</button>\n' +
+    '<button onclick="moveImgRight()">→</button>\n' +
+    '<button onclick="moveImgUp()">↑</button>\n' +
+    '<button onclick="moveImgDown()">↓</button>\n' +
+    '<button onclick="resetImgPosition()">Reset position</button>' +
+    '<br><br>' +
+
+    '<input id="imgScale" class="range" type="range" min="10" max="300" value="100">\n' +
+    '<button onclick="resetImgScale()">Reset zoom</button>'
+    );
+
+    attachImageToolsListeners();
+}
+
+function openHelpPopup() {
+  openPopup(
+    '• Caractère personnalisé pour tracé libre, ligne, rectangle, ellipse, remplir : champ vide = caractère par défaut, espace = gomme.<br>' +
+    '• Rectangle : modèles au choix.<br>' +
+    '• Déplacer/Copier : changer de place un rectangle d‘éléments en sélectionnant puis en glissant.<br>' +
+    '• Copier presse-papiers : sélectionner un rectangle d‘éléments le copie.<br>' +
+    '• Texte libre : ajouter du texte n‘importe où sur la zone de dessin sans décaler les autres éléments.<br>' +
+    '• Édition texte : mode édition normale.<br>' +
+    '• Remplir : remplir d‘un caractère l‘intérieur d‘une forme ou caractères identiques.<br>' +
+    '• Gomme : comme tracé libre avec espace.<br>' +
+    '• Annuler/Rétablir : n‘importe quelle opération, cliquer 1 fois sur annuler après avoir annulé texte libre, et 2 fois après avoir OK texte libre pour l‘annuler.'
+  );
+}
+
+function attachImageToolsListeners() {
+    // Loader
+    var imgLoader = document.getElementById("imgLoader");
+    imgLoader.addEventListener("change", function () {
+        var file = this.files[0];
+        if (!file) return;
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+            img.style.height = "100%";
+        };
+        reader.readAsDataURL(file);
+    });
+    // Slider de zoom
+    var scaleSlider = document.getElementById("imgScale");
+    scaleSlider.addEventListener("input", function () {
+        var s = scaleSlider.value / 100;
+        img.style.transform = "scale(" + s + ")";
+        img.style.transformOrigin = "top left";
+    });
+    // Reset zoom (doit utiliser CE slider)
+    window.resetImgScale = function() {
+        scaleSlider.value = 100;
+        img.style.transform = "scale(1)";
+        img.style.transformOrigin = "top left";
+    };
+}
+
+// Image de fond
+var img = document.getElementById("bgImage");
+var step = 10;
+// Déplacement et zoom
+function moveImgUp() {
+    var y = parseInt(img.style.top || "0");
+    img.style.top = (y - step) + "px";
+}
+function moveImgDown() {
+    var y = parseInt(img.style.top || "0");
+    img.style.top = (y + step) + "px";
+}
+function moveImgLeft() {
+    var x = parseInt(img.style.left || "0");
+    img.style.left = (x - step) + "px";
+}
+function moveImgRight() {
+    var x = parseInt(img.style.left || "0");
+    img.style.left = (x + step) + "px";
+}
+function resetImgPosition() {
+    img.style.left = "0px";
+    img.style.top = "0px";
+}
+function clearImage() {
+    img.src = "";
 }
 
 /* --- STARTUP --- */
