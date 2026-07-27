@@ -34,11 +34,11 @@ select{width:55px;}
 <div id="popupOptionsContent" style="display:none">
   <h3>Options de la zone de dessin</h3>
   <input id="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
-  <button class="multitouchbtn" data-action="resetZoom">12px</button>
-  <button class="multitouchbtn" data-action="toggleTextColor">Couleur</button><br><br>
+  <button class="multitouchbtn" data-action="resetZoom">Reset position</button><br>
+  <button class="multitouchbtn" data-action="toggleTextColor">Couleur texte</button><br><br>
 
   <h3>Calque de la zone de dessin</h3>
-  <input type="file" id="imgLoader" onchange="loadImageFile(this)"><br><br>
+  <input type="file" id="imgLoader" onchange="loadImageFile(this)"><br>
   <button class="multitouchbtn" data-action="clearImage">Retirer l'image</button><br><br>
   <button class="multitouchbtn" data-action="moveImgLeft">←</button> <button class="multitouchbtn" data-action="moveImgRight">→</button>
   <button class="multitouchbtn" data-action="moveImgUp">↑</button> <button class="multitouchbtn" data-action="moveImgDown">↓</button>
