@@ -177,6 +177,31 @@ select:hover{background:#404040;}
 }
 .popup-scroll-up,.popup-scroll-down,.popup-close{width:33%;}
 .popup-content label{font-size:12px;}
+.popup-window-small {
+  position:absolute;
+  top:20%;
+  left:50%;
+  margin-left:-90px;
+  width:180px;
+  height:200px;
+  background:rgba(0,0,0,0.4);
+  color:#ccc;
+  padding:10px;
+  border:1px solid #808080;
+  box-sizing:border-box;
+}
+.popup-window-small button {
+  width:100%;
+  height:19%;
+  margin-bottom:2px;
+  opacity:0.8;
+  color:#fff;
+}
+.popup-content-small {
+  bottom:10px;
+  overflow:hidden;
+  padding:2px;
+}
 .border-interne {
   background:#000;
   border:2px solid;

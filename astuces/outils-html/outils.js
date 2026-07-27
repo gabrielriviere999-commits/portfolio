@@ -8,8 +8,12 @@ function popupScrollDown(){
     if(t) t.scrollTop += 50;
 }
 var popupOrigin = null;
+var popupJustOpened = false;
 function openPopup(container) {
     popupOrigin = container;
+
+    popupJustOpened = true;
+    setTimeout(function(){ popupJustOpened = false; }, 150);
 
     var d = document.createElement('div');
     d.className = "popup-overlay";
@@ -19,10 +23,13 @@ function openPopup(container) {
         e.cancelBubble = true;
         if (e.stopPropagation) e.stopPropagation();
     };
+
     d.onclick = function(e){
         e = e || window.event;
         e.cancelBubble = true;
         if (e.stopPropagation) e.stopPropagation();
+
+        if (popupJustOpened) return; 
 
         if (e.target === d) closePopup();
     };
@@ -34,29 +41,26 @@ function openPopup(container) {
     var t = document.createElement('div');
     t.className = "popup-content";
 
-    // Déplacer les enfants du conteneur dans le popup
     while (container.firstChild) {
         t.appendChild(container.firstChild);
     }
 
-    // Bouton scroll haut
     var up = document.createElement('button');
     up.textContent = 'Monter';
     up.className = 'popup-scroll-up';
-    up.setAttribute("data-action", "popupScrollUp"); // Multitouch
+    up.setAttribute("data-action", "popupScrollUp");
     up.onclick = popupScrollUp;
 
-    // Bouton scroll bas
     var down = document.createElement('button');
     down.textContent = 'Descendre';
     down.className = 'popup-scroll-down';
-    down.setAttribute("data-action", "popupScrollDown"); // Multitouch
+    down.setAttribute("data-action", "popupScrollDown");
     down.onclick = popupScrollDown;
 
     var b = document.createElement('button');
     b.textContent = 'Fermer';
     b.className = "popup-close";
-    b.setAttribute("data-action", "closePopup"); // Multitouch
+    b.setAttribute("data-action", "closePopup");
     b.onclick = closePopup;
     
     var btns = document.createElement('div');
@@ -65,12 +69,45 @@ function openPopup(container) {
     btns.appendChild(up);
     btns.appendChild(down);
     btns.appendChild(b);
+
     p.appendChild(t);
     p.appendChild(btns);
     d.appendChild(p);
     document.body.appendChild(d);
+
     setTimeout(function(){p.focus();},0);
-    addMultiTouch(".popup-close, .popup-scroll-up, .popup-scroll-down"); // Multitouch
+    addMultiTouch(".popup-close, .popup-scroll-up, .popup-scroll-down");
+}
+function openPopupMini(container) {
+    popupOrigin = container;
+
+    popupJustOpened = true;
+    setTimeout(function(){ popupJustOpened = false; }, 150);
+
+    var d = document.createElement('div');
+    d.className = "popup-overlay";
+
+    d.onclick = function(e){
+        if (popupJustOpened) return;
+        if (e.target === d) closePopup();
+    };
+
+    var p = document.createElement('div');
+    p.className = "popup-window popup-window-small";
+    p.setAttribute("tabindex", "-1");
+
+    var t = document.createElement('div');
+    t.className = "popup-content popup-content-small";
+
+    while (container.firstChild) {
+        t.appendChild(container.firstChild);
+    }
+
+    p.appendChild(t);
+    d.appendChild(p);
+    document.body.appendChild(d);
+
+    setTimeout(function(){ p.focus(); }, 0);
 }
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
@@ -85,7 +122,6 @@ function closePopup() {
         d.parentNode.removeChild(d);
     }
 }
-
 /* --- Copier textarea ---*/
 function copyTextarea(id, btn) {
     var code = document.getElementById(id);

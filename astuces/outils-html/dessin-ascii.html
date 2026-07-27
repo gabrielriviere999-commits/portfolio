@@ -59,13 +59,21 @@ select{width:55px;}
   <button id="btnArrow" onclick="setTool('arrow')">Flèche</button>
   |
   <button id="btnRect" onclick="setTool('rect')">Rectangle</button>
-  <select id="rectMode">
-    <option value="classic">+-| Classique</option>
-    <option value="dotted">.: Pointillé</option>
-    <option value="rounded">.-|:+ Arrondi</option>
-    <option value="wavy">¤~¦ Ondulé</option>
-    <option value="fancy">/=\| Fancy</option>
+  <button id="rectModeBtn" data-action="openRectModePopup" class="multitouchbtn"><span id="rectModeLabel">+-|</span></button>
+  <select id="rectMode" style="display:none">
+    <option value="classic">+-|</option>
+    <option value="dotted">.:</option>
+    <option value="rounded">.-|:+</option>
+    <option value="wavy">¤~¦</option>
+    <option value="fancy">/=\|</option>
   </select>
+  <div id="popupRectModeContent" style="display:none;">
+    <button data-action="setRectModeClassic">+-| Classique</button>
+    <button data-action="setRectModeDotted">.: Pointillé</button>
+    <button data-action="setRectModeRounded">.-|:+ Arrondi</button>
+    <button data-action="setRectModeWavy">¤~¦ Ondulé</button>
+    <button data-action="setRectModeFancy">/=\| Fancy</button>
+  </div>
   <input type="text" id="rectChar" maxlength="1">
   |
   <button id="btnEllipse" onclick="setTool('ellipse')">Ellipse</button>
@@ -504,6 +512,23 @@ function drawRectangle(x1, y1, x2, y2) {
 
     render();
 }
+
+function setRectMode(val){
+    var sel = document.getElementById("rectMode");
+    sel.value = val;
+    var label = document.getElementById("rectModeLabel");
+    label.textContent = sel.options[sel.selectedIndex].textContent;
+    closePopup();
+}
+function openRectModePopup() {
+    var container = document.getElementById("popupRectModeContent");
+    openPopupMini(container);
+}
+function setRectModeClassic(){setRectMode("classic");}
+function setRectModeDotted(){setRectMode("dotted");}
+function setRectModeRounded(){setRectMode("rounded");}
+function setRectModeWavy(){setRectMode("wavy");}
+function setRectModeFancy(){setRectMode("fancy");}
 
 /* --- ELLIPSE --- */
 function drawEllipse(x1, y1, x2, y2) {
@@ -1113,7 +1138,7 @@ function toggleTextColor() {
 }
 
 /* --- AJOUTER IMAGE EN CALQUE --- */
-addMultiTouch(".multitouchbtn,#popupOptionsContent button");
+addMultiTouch(".multitouchbtn,#popupOptionsContent button, #popupRectModeContent button");
 
 function openOptionsPopup() {
   var container = document.getElementById("popupOptionsContent");
