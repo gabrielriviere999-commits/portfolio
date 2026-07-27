@@ -118,9 +118,11 @@ function closePopup() {
         popupOrigin.appendChild(popupContent.firstChild);
     }
     popupOrigin = null;
-    if (d.parentNode) {
-        d.parentNode.removeChild(d);
-    }
+    setTimeout(function(){
+        if (d.parentNode) {
+            d.parentNode.removeChild(d);
+        }
+    }, 100);
 }
 /* --- Copier textarea ---*/
 function copyTextarea(id, btn) {
