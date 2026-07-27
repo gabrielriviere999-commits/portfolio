@@ -25,6 +25,7 @@ input,textarea {
   border:2px groove #808080;
 }
 input[type=range]{touch-action:none;}
+.range{position:relative;top:8px;}
 @media (hover:none) and (pointer:coarse) {
   ::-webkit-scrollbar {
     width:24px;
@@ -168,11 +169,13 @@ select:hover{background:#404040;}
   top:10px;left:10px;right:10px;bottom:50px;
   overflow:auto;
 }
-.popup-close {
+.popup-buttons {
   position:absolute;
-  left:10px;right:10px;bottom:10px;
-  width:calc(100% - 20px);
+  left:10px;
+  right:10px;
+  bottom:10px;
 }
+.popup-close,.popup-scroll-up,.popup-scroll-down{width:33%;}
 .border-interne {
   background:#000;
   border:2px solid;
