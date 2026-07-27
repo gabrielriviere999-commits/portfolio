@@ -4,36 +4,31 @@ function addMultiTouch(selector){
     for(var i=0; i<els.length; i++){
         var el = els[i];
 
-        // Récupère la fonction à appeler
         var action = el.getAttribute("data-action");
         if(action){
-            el._action = window[action]; // stocke la vraie fonction
+            el._action = window[action];
         }
 
-        // Multitouch (pointerdown)
+        // pointerdown : détecte tactile ou souris
         el.onpointerdown = function(e){
-            e = e || window.event;
-            if(e.stopPropagation) e.stopPropagation();
-            e.cancelBubble = true;
-
-            // Appelle la fonction directement
-            if(this._action){
-                this._action();
-            }
-
-            // Marque que l'action vient du tactile
-            this._touchTriggered = true;
+            this._touchTriggered = (e.pointerType === "touch");
         };
 
-        // Activation clavier (click)
+        // pointerup : tactile → action ici
+        el.onpointerup = function(e){
+            if(this._touchTriggered && this._action){
+                this._action();
+            }
+            // ⭐ NE PAS remettre à false ici
+            // sinon le click PC n'est plus bloqué
+        };
+
+        // click : souris → action ici
         el.onclick = function(e){
-            // Si le tactile vient de déclencher → on ignore le click
             if(this._touchTriggered){
-                this._touchTriggered = false;
+                // tactile → ignorer le click natif
                 return false;
             }
-
-            // Sinon → c’est un vrai click clavier
             if(this._action){
                 this._action();
             }
