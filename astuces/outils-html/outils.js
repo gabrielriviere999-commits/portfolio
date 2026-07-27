@@ -1,12 +1,4 @@
 /* --- Popup ---*/
-function popupScrollUp(){
-    var t = document.querySelector('.popup-content');
-    if(t) t.scrollTop -= 50;
-}
-function popupScrollDown(){
-    var t = document.querySelector('.popup-content');
-    if(t) t.scrollTop += 50;
-}
 var popupOrigin = null;
 function openPopup(container) {
     popupOrigin = container;
@@ -34,47 +26,37 @@ function openPopup(container) {
     var t = document.createElement('div');
     t.className = "popup-content";
 
+    // Déplacer les enfants du conteneur dans le popup
     while (container.firstChild) {
         t.appendChild(container.firstChild);
     }
 
-    // Bouton scroll haut
-    var up = document.createElement('button');
-    up.textContent = 'Monter';
-    up.className = 'popup-scroll-up';
-    up.setAttribute("data-action", "popupScrollUp"); // Multitouch
-    up.onclick = popupScrollUp;
-
-    // Bouton scroll bas
-    var down = document.createElement('button');
-    down.textContent = 'Descendre';
-    down.className = 'popup-scroll-down';
-    down.setAttribute("data-action", "popupScrollDown"); // Multitouch
-    down.onclick = popupScrollDown;
-
+    // Bouton fermer
     var b = document.createElement('button');
     b.textContent = 'Fermer';
     b.className = "popup-close";
     b.setAttribute("data-action", "closePopup"); // Multitouch
     b.onclick = closePopup;
-    
+
+    // Zone boutons
     var btns = document.createElement('div');
     btns.className = "popup-buttons";
-
-    btns.appendChild(up);
-    btns.appendChild(down);
     btns.appendChild(b);
+
     p.appendChild(t);
     p.appendChild(btns);
     d.appendChild(p);
     document.body.appendChild(d);
-    setTimeout(function(){p.focus();},0);
-    addMultiTouch(".popup-close, .popup-scroll-up, .popup-scroll-down"); // Multitouch
+
+    setTimeout(function(){ p.focus(); }, 0);
+
+    addMultiTouch(".popup-close"); // Multitouch
 }
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
     if (!d) return;
     var popupContent = d.querySelector('.popup-content');
+    // Remettre les enfants dans leur conteneur d’origine
     while (popupContent.firstChild) {
         popupOrigin.appendChild(popupContent.firstChild);
     }

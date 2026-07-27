@@ -169,13 +169,12 @@ select:hover{background:#404040;}
   top:10px;left:10px;right:10px;bottom:50px;
   overflow:auto;
 }
-.popup-buttons {
+.popup-close {
   position:absolute;
   left:10px;
   right:10px;
   bottom:10px;
 }
-.popup-scroll-up,.popup-scroll-down,.popup-close{width:33%;}
 .border-interne {
   background:#000;
   border:2px solid;
