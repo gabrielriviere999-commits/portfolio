@@ -1,6 +1,5 @@
 /* --- Popup ---*/
 var popupOrigin = null;
-
 function openPopup(container) {
     popupOrigin = container;
 
@@ -25,14 +24,15 @@ function openPopup(container) {
     var b = document.createElement('button');
     b.textContent = 'Fermer';
     b.className = "popup-close";
+    b.setAttribute("data-action", "closePopup"); // Multitouch
     b.onclick = closePopup;
 
     p.appendChild(t);
     p.appendChild(b);
     d.appendChild(p);
     document.body.appendChild(d);
-
-    p.focus();
+    setTimeout(function(){p.focus();},0);
+    addMultiTouch(".popup-close"); // Multitouch
 }
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
