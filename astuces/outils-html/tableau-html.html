@@ -97,7 +97,7 @@ td.selected {
     <div class="color" data-col="#ffff00" style="background:#ff0"></div>
     <input type="text" id="hexColorInput" placeholder="#rrggbb">
     <button id="applyHexColor">OK</button>
-    <button onclick="(function(){openHelpPopup();var d=document.querySelector('.popup-overlay:last-of-type');var p=d.querySelector('.popup-window');function stopEvent(e){e = e || window.event;e.cancelBubble=true;if(e.stopPropagation) e.stopPropagation();}p.onmousedown=stopEvent;p.onclick=stopEvent;d.onmousedown=stopEvent;d.onclick=function(e){stopEvent(e);if(e.target===d) d.remove();};}())">?</button>
+    <button onclick="openHelpPopup()">?</button>
     <div id="popupHelpContent" style="display:none">
       <h3>Barre d‘outils</h3>
       Pour masquer/afficher la barre d‘outils, cliquer sur ≡<br>

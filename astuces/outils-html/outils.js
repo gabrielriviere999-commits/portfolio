@@ -14,9 +14,18 @@ function openPopup(container) {
     var d = document.createElement('div');
     d.className = "popup-overlay";
 
-    d.addEventListener("click", function(e){
+    d.onmousedown = function(e){
+        e = e || window.event;
+        e.cancelBubble = true;
+        if (e.stopPropagation) e.stopPropagation();
+    };
+    d.onclick = function(e){
+        e = e || window.event;
+        e.cancelBubble = true;
+        if (e.stopPropagation) e.stopPropagation();
+
         if (e.target === d) closePopup();
-    });
+    };
 
     var p = document.createElement('div');
     p.className = "popup-window";
