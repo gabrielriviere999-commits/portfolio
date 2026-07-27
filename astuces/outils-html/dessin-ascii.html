@@ -35,18 +35,18 @@ select{width:55px;}
   <b>Zone de dessin</b><br>
   <label>Taille du texte</label><br>
   <input id="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
-  <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="resetZoom">Reset</button> <button class="multitouchbtn" data-action="toggleTextColor">Couleur texte</button><br>
+  <button class="btn-color" style="background:#ff4444;" data-action="resetZoom">Reset</button> <button data-action="toggleTextColor">Couleur texte</button><br>
 
   <b>Calque</b><br>
-  <input type="file" id="imgLoader" class="file-input" style="width:120px;" onchange="loadImageFile(this)"> <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="clearImage">Retirer l'image</button><br>
+  <input type="file" id="imgLoader" class="file-input" style="width:120px;" onchange="loadImageFile(this)"> <button class="btn-color" style="background:#ff4444;" data-action="clearImage">Retirer l'image</button><br>
   <label>Position</label><br>
-  <button class="multitouchbtn" data-action="moveImgLeft">←</button> <button class="multitouchbtn" data-action="moveImgRight">→</button>
-  <button class="multitouchbtn" data-action="moveImgUp">↑</button> <button class="multitouchbtn" data-action="moveImgDown">↓</button>
-  <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="resetImgPosition">Reset</button>
+  <button data-action="moveImgLeft">←</button> <button data-action="moveImgRight">→</button>
+  <button data-action="moveImgUp">↑</button> <button data-action="moveImgDown">↓</button>
+  <button class="btn-color" style="background:#ff4444;" data-action="resetImgPosition">Reset</button>
   <br>
   <label>Taille</label><br>
   <input id="imgScale" type="range" min="10" max="300" value="100" oninput="zoomImage(this.value)">
-  <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="resetImgScale">Reset</button>
+  <button class="btn-color" style="background:#ff4444;" data-action="resetImgScale">Reset</button>
 </div>
 <div id="shapeInfo" style="display:inline-block;"></div>
 <div class="toolbar-nfix">
@@ -1113,7 +1113,7 @@ function toggleTextColor() {
 }
 
 /* --- AJOUTER IMAGE EN CALQUE --- */
-addMultiTouch(".multitouchbtn,.popup-close");
+addMultiTouch(".multitouchbtn,#popupOptionsContent button");
 
 function openOptionsPopup() {
   var container = document.getElementById("popupOptionsContent");
