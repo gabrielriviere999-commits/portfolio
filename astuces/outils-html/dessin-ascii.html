@@ -32,18 +32,18 @@ select{width:55px;}
 <input type="file" id="textareaFileview" style="display:none">
 <button data-action="openOptionsPopup" class="multitouchbtn">Options</button>
 <div id="popupOptionsContent" style="display:none">
-  <h3>Zone de dessin</h3>
+  <b>Zone de dessin</b><br>
   <label>Taille du texte</label><br>
   <input id="zoomRange" type="range" min="6" max="40" value="12" oninput="applyZoomRange()">
-  <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="resetZoom">Reset</button> <button class="multitouchbtn" data-action="toggleTextColor">Couleur texte</button><br><br>
+  <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="resetZoom">Reset</button> <button class="multitouchbtn" data-action="toggleTextColor">Couleur texte</button><br>
 
-  <h3>Calque</h3>
-  <input type="file" id="imgLoader" class="file-input" style="width:120px;" onchange="loadImageFile(this)"> <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="clearImage">Retirer l'image</button><br><br>
+  <b>Calque</b><br>
+  <input type="file" id="imgLoader" class="file-input" style="width:120px;" onchange="loadImageFile(this)"> <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="clearImage">Retirer l'image</button><br>
   <label>Position</label><br>
   <button class="multitouchbtn" data-action="moveImgLeft">←</button> <button class="multitouchbtn" data-action="moveImgRight">→</button>
   <button class="multitouchbtn" data-action="moveImgUp">↑</button> <button class="multitouchbtn" data-action="moveImgDown">↓</button>
   <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="resetImgPosition">Reset</button>
-  <br><br>
+  <br>
   <label>Taille</label><br>
   <input id="imgScale" type="range" min="10" max="300" value="100" oninput="zoomImage(this.value)">
   <button class="multitouchbtn btn-color" style="background:#ff4444;" data-action="resetImgScale">Reset</button>

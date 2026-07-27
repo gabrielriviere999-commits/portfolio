@@ -176,6 +176,7 @@ select:hover{background:#404040;}
   bottom:10px;
 }
 .popup-scroll-up,.popup-scroll-down,.popup-close{width:33%;}
+.popup-content label{font-size:12px;}
 .border-interne {
   background:#000;
   border:2px solid;
