@@ -152,13 +152,13 @@ select:hover{background:#404040;}
 .popup-overlay {
   position:fixed;
   top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.2);
   z-index:9999;
 }
 .popup-window {
   position:absolute;
   top:4%;left:4%;right:4%;bottom:4%;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.4);
   color:#ccc;
   padding:10px;
   border:1px solid #808080;
