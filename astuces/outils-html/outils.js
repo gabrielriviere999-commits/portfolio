@@ -38,13 +38,8 @@ function openPopup(container) {
     b.setAttribute("data-action", "closePopup"); // Multitouch
     b.onclick = closePopup;
 
-    // Zone boutons
-    var btns = document.createElement('div');
-    btns.className = "popup-buttons";
-    btns.appendChild(b);
-
     p.appendChild(t);
-    p.appendChild(btns);
+    p.appendChild(b);
     d.appendChild(p);
     document.body.appendChild(d);
 
