@@ -1138,18 +1138,15 @@ function toggleTextColor() {
 }
 
 /* --- AJOUTER IMAGE EN CALQUE --- */
-addMultiTouch(".multitouchbtn,#popupOptionsContent button, #popupRectModeContent button");
-
+addMultiTouch(".multitouchbtn,#popupOptionsContent button,#popupRectModeContent button");
 function openOptionsPopup() {
   var container = document.getElementById("popupOptionsContent");
   openPopup(container);
 }
-
 function openHelpPopup() {
   var container = document.getElementById("popupHelpContent");
   openPopup(container);
 }
-
 function loadImageFile(input) {
   var file = input.files[0];
   if (!file) return;
