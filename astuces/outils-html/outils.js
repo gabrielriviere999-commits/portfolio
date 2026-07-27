@@ -51,7 +51,7 @@ function closePopup() {
     var d = document.querySelector('.popup-overlay');
     if (!d) return;
     var popupContent = d.querySelector('.popup-content');
-    // Remettre les enfants dans leur conteneur d’origine
+    // Remettre les enfants dans leur conteneur d'origine
     while (popupContent.firstChild) {
         popupOrigin.appendChild(popupContent.firstChild);
     }
