@@ -38,12 +38,6 @@ function openPopup(container) {
         t.appendChild(container.firstChild);
     }
 
-    var b = document.createElement('button');
-    b.textContent = 'Fermer';
-    b.className = "popup-close";
-    b.setAttribute("data-action", "closePopup"); // Multitouch
-    b.onclick = closePopup;
-
     // Bouton scroll haut
     var up = document.createElement('button');
     up.textContent = 'Monter';
@@ -57,13 +51,19 @@ function openPopup(container) {
     down.className = 'popup-scroll-down';
     down.setAttribute("data-action", "popupScrollDown"); // Multitouch
     down.onclick = popupScrollDown;
+
+    var b = document.createElement('button');
+    b.textContent = 'Fermer';
+    b.className = "popup-close";
+    b.setAttribute("data-action", "closePopup"); // Multitouch
+    b.onclick = closePopup;
     
     var btns = document.createElement('div');
     btns.className = "popup-buttons";
 
-    btns.appendChild(b);
     btns.appendChild(up);
     btns.appendChild(down);
+    btns.appendChild(b);
     p.appendChild(t);
     p.appendChild(btns);
     d.appendChild(p);
