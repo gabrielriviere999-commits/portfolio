@@ -306,3 +306,62 @@ function initAllSelects() {
 }
 
 initAllSelects();
+
+var popupOrigin = null;
+var popupJustOpened = false;
+function openPopupMini(container) {
+    popupOrigin = container;
+
+    popupJustOpened = true;
+    setTimeout(function(){ popupJustOpened = false; }, 150);
+
+    var d = document.createElement('div');
+    d.className = "popup-overlay";
+
+    d.onclick = function(e){
+        if (popupJustOpened) return;
+        if (e.target === d) closePopup();
+    };
+
+    var p = document.createElement('div');
+    p.className = "popup-window popup-window-small";
+    p.setAttribute("tabindex", "-1");
+
+    var t = document.createElement('div');
+    t.className = "popup-content popup-content-small";
+
+    while (container.firstChild) {
+        t.appendChild(container.firstChild);
+    }
+
+    p.appendChild(t);
+    d.appendChild(p);
+    document.body.appendChild(d);
+
+    setTimeout(function(){ p.focus(); }, 0);
+}
+function closePopup() {
+    var d = document.querySelector('.popup-overlay');
+    if (!d) return;
+    var popupContent = d.querySelector('.popup-content');
+    d.style.opacity = "0";
+    // Remettre les enfants dans leur conteneur d'origine
+    while (popupContent.firstChild) {
+        popupOrigin.appendChild(popupContent.firstChild);
+    }
+    popupOrigin = null;
+    setTimeout(function(){
+        if (d.parentNode) {
+            d.parentNode.removeChild(d);
+        }
+    }, 100);
+}
+function openMenuPopup() {
+  var container = document.getElementById("popupMenuContent");
+  container.innerHTML = window.popupMenuHTML;
+  openPopupMini(container);
+}
+window.popupMenuHTML =
+    '<li><a href="search.html">Rechercher</a></li>' +
+    '<li><a href="arbo.html">Arborescence</a></li>' +
+    '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub</a></li>';
