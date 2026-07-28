@@ -125,6 +125,13 @@ function closePopup() {
         }
     }, 100);
 }
+document.onkeydown = function(e){
+    e = e || window.event;
+    if (e.key === "Escape" || e.keyCode === 27) {
+        var d = document.querySelector('.popup-overlay');
+        if (d) closePopup();
+    }
+};
 /* --- Copier textarea ---*/
 function copyTextarea(id, btn) {
     var code = document.getElementById(id);
