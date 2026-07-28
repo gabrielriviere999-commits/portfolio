@@ -324,11 +324,11 @@ function openPopupMini(container) {
     };
 
     var p = document.createElement('div');
-    p.className = "popup-window popup-window-small";
+    p.className = "popup-window-small";
     p.setAttribute("tabindex", "-1");
 
     var t = document.createElement('div');
-    t.className = "popup-content popup-content-small";
+    t.className = "popup-content-small";
 
     while (container.firstChild) {
         t.appendChild(container.firstChild);
@@ -343,9 +343,12 @@ function openPopupMini(container) {
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
     if (!d) return;
-    var popupContent = d.querySelector('.popup-content');
+    var popupContent = d.querySelector('.popup-content,.popup-content-small');
     d.style.opacity = "0";
     // Remettre les enfants dans leur conteneur d'origine
+    while (popupContent.firstChild) {
+        popupOrigin.appendChild(popupContent.firstChild);
+    }
     while (popupContent.firstChild) {
         popupOrigin.appendChild(popupContent.firstChild);
     }

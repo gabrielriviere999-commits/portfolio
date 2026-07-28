@@ -33,6 +33,7 @@ a:hover{text-decoration:underline;}
 fieldset{border:2px groove #808080;display:inline flow-root;}
 hr{border:1px inset #808080;}
 li{line-height:1.5;}
+/* Popup */
 .popup-overlay {
   position:fixed;
   top:0;left:0;right:0;bottom:0;
@@ -42,27 +43,16 @@ li{line-height:1.5;}
 .popup-window-small {
   position:absolute;
   top:45px;
-  width:180px;
-  height:auto;
+  max-width:70%;
+  max-height:70%;
   background:rgba(0,0,0,0.8);
   color:#ccc;
   padding:10px;
   border:1px solid #808080;
   box-sizing:border-box;
+  overflow:auto;
+  word-break:break-all;
 }
-.popup-window-small button {
-  width:100%;
-  height:19%;
-  margin-bottom:2px;
-  opacity:0.8;
-  color:#fff;
-}
-.popup-content-small {
-  bottom:10px;
-  overflow:hidden;
-  padding:2px;
-}
-
 /* scrollbar */
 @media (hover:none) and (pointer:coarse) {
   ::-webkit-scrollbar {
