@@ -365,6 +365,8 @@ function openMenuPopup() {
   openPopupMini(container);
 }
 window.popupMenuHTML =
+    '<ul>' +
     '<li><a href="search.html">Rechercher</a></li>' +
     '<li><a href="arbo.html">Arborescence</a></li>' +
-    '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub</a></li>';
+    '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub</a></li>' +
+    '</ul>';
