@@ -309,7 +309,7 @@ initAllSelects();
 
 var popupOrigin = null;
 var popupJustOpened = false;
-function openPopupMini(container) {
+function openPopupMenu(container) {
     popupOrigin = container;
 
     popupJustOpened = true;
@@ -324,11 +324,11 @@ function openPopupMini(container) {
     };
 
     var p = document.createElement('div');
-    p.className = "popup-window-small";
+    p.className = "popup-window-menu";
     p.setAttribute("tabindex", "-1");
 
     var t = document.createElement('div');
-    t.className = "popup-content-small";
+    t.className = "popup-content-menu";
 
     while (container.firstChild) {
         t.appendChild(container.firstChild);
@@ -343,7 +343,7 @@ function openPopupMini(container) {
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
     if (!d) return;
-    var popupContent = d.querySelector('.popup-content,.popup-content-small');
+    var popupContent = d.querySelector('.popup-content-menu');
     d.style.opacity = "0";
     // Remettre les enfants dans leur conteneur d'origine
     while (popupContent.firstChild) {
@@ -369,18 +369,19 @@ document.onkeydown = function(e){
 function openMenuPopup() {
   var container = document.getElementById("popupMenuContent");
   container.innerHTML = window.popupMenuHTML;
-  openPopupMini(container);
+  openPopupMenu(container);
 }
 window.popupMenuHTML =
     '<ul>' +
     '<li><a href="search.html">Rechercher</a></li>' +
     '<li><a href="arbo.html">Arborescence</a></li>' +
-    '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub</a></li>' +
+    '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub portfolio</a></li>' +
+    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/portfolio/zip/refs/heads/main" download>Télécharger dépot portfolio</a></li>' +
     '</ul>';
 
 function openSearchPopup() {
   var container = document.getElementById("popupSearchContent");
-  openPopupMini(container);
+  openPopupMenu(container);
 }
 function doSearch() {
   var q = document.getElementById("search").value.toLowerCase();
