@@ -120,6 +120,7 @@ hr{border:1px inset #808080;}
   vertical-align:middle;
   cursor:pointer;
   box-sizing:border-box;
+  text-decoration:none;
 }
 .tab-button:hover:not(.tab-button-active) {
   background:#404040;
@@ -129,32 +130,6 @@ hr{border:1px inset #808080;}
   border-color:#111 #888 #888 #111;
   background:#101010;
   text-decoration:none!important;
-}
-.tab-button,.select{text-decoration:none;}
-
-.select {
-  font-size:14px;
-  background:#202020;
-  color:#ccc;
-  border:2px solid;
-  border-color:#888 #111 #111 #888;
-  width:36px;
-  height:36px;
-  padding:0;
-  text-align:center;
-  line-height:32px;
-  display:inline-block;
-  vertical-align:middle;
-  cursor:pointer;
-  box-sizing:border-box;
-  -webkit-appearance:none;
-  -moz-appearance:none;
-  appearance:none;
-}
-.select:hover{background:#404040;}
-.select:active {
-  border-color:#111 #888 #888 #111;
-  background:#101010;
 }
 
 /* --- Galerie slideshow --- */
