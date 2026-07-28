@@ -390,14 +390,14 @@ function openSearchPopup() {
     openPopupMenu(container);
 
     // Restauration
-    var lastQuery   = sessionStorage.getItem("lastQuery");
-    var lastResults = sessionStorage.getItem("lastResults");
-    var lastCount   = sessionStorage.getItem("lastCount");
+    var lastQueryPortfolio   = sessionStorage.getItem("lastQueryPortfolio");
+    var lastResultsPortfolio = sessionStorage.getItem("lastResultsPortfolio");
+    var lastCountPortfolio   = sessionStorage.getItem("lastCountPortfolio");
 
-    if (lastQuery !== null)   input.value = lastQuery;
-    if (lastResults !== null) results.innerHTML = lastResults;
-    if (lastCount !== null)   count.textContent =
-        lastCount > 0 ? lastCount + " résultat(s)" : "Aucun résultat";
+    if (lastQueryPortfolio !== null)   input.value = lastQueryPortfolio;
+    if (lastResultsPortfolio !== null) results.innerHTML = lastResultsPortfolio;
+    if (lastCountPortfolio !== null)   count.textContent =
+        lastCountPortfolio > 0 ? lastCountPortfolio + " résultat(s)" : "Aucun résultat";
 }
 function doSearch() {
   if (!window.docs) return;
@@ -421,7 +421,7 @@ function doSearch() {
   document.getElementById("results").innerHTML =
       found > 0 ? out : "";
   // Sauvegarde
-  sessionStorage.setItem("lastQuery", q);
-  sessionStorage.setItem("lastResults", out);
-  sessionStorage.setItem("lastCount", found);
+  sessionStorage.setItem("lastQueryPortfolio", q);
+  sessionStorage.setItem("lastResultsPortfolio", out);
+  sessionStorage.setItem("lastCountPortfolio", found);
 }
