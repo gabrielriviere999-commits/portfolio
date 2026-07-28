@@ -12,6 +12,7 @@ pre:not(.tree) {
 a {
   color:#4af;
   text-decoration:none;
+  word-break:break-all;
 }
 a:hover{text-decoration:underline;}
 .a {
@@ -52,7 +53,6 @@ li{line-height:1.5;}
   border:1px solid #808080;
   box-sizing:border-box;
   overflow:auto;
-  word-break:break-all;
 }
 /* scrollbar */
 @media (hover:none) and (pointer:coarse) {
