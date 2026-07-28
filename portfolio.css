@@ -60,6 +60,11 @@ input,textarea {
   box-sizing:border-box;
   overflow:auto;
 }
+#search {
+  position:sticky;
+  top:0;
+  background:rgba(0,0,0,0.8);
+}
 /* scrollbar */
 @media (hover:none) and (pointer:coarse) {
   ::-webkit-scrollbar {
