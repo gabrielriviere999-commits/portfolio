@@ -372,9 +372,17 @@ function openMenuPopup() {
   openPopupMenu(container);
 }
 window.popupMenuHTML =
+    'Portfolio' +
     '<ul>' +
     '<li><a href="search.html">Rechercher</a></li>' +
     '<li><a href="arbo.html">Arborescence</a></li>' +
-    '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub portfolio</a></li>' +
-    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/portfolio/zip/refs/heads/main" download>Télécharger dépôt portfolio</a></li>' +
+    '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub</a></li>' +
+    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/portfolio/zip/refs/heads/main" download>Télécharger dépôt</a></li>' +
+    '</ul>' +
+    'Outils' +
+    '<ul>' +
+    '<li><a href="/outils/search.html">Rechercher</a></li>' +
+    '<li><a href="/outils/arbo.html">Arborescence</a></li>' +
+    '<li><a href="https://github.com/gabrielriviere999-commits/outils">Dépôt GitHub</a></li>' +
+    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/outils/zip/refs/heads/main" download>Télécharger dépôt</a></li>' +
     '</ul>';
