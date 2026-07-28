@@ -33,20 +33,6 @@ a:hover{text-decoration:underline;}
 }
 fieldset{border:2px groove #808080;display:inline flow-root;}
 hr{border:1px inset #808080;}
-input,textarea {
-  background:#000;
-  color:#ccc;
-  border:2px groove #808080;
-}
-#search {
-  position:sticky;
-  top:0;
-  background:rgba(0,0,0,0.8);
-  width:100%;
-  box-sizing:border-box
-}
-.popup-window-menu ul{padding-left:15px;margin:0}
-.popup-window-menu li{line-height:1.5;}
 /* Popup */
 .popup-overlay {
   position:fixed;
@@ -168,7 +154,6 @@ input,textarea {
   border-color:#111 #888 #888 #111;
   background:#101010;
 }
-.q:hover{text-decoration:underline;}
 
 /* --- Galerie slideshow --- */
 .slideshow-container{position:relative;}
