@@ -380,8 +380,24 @@ window.popupMenuHTML =
     '</ul>';
 
 function openSearchPopup() {
-  var container = document.getElementById("popupSearchContent");
-  openPopupMenu(container);
+    var container = document.getElementById("popupSearchContent");
+
+    // Récupérer les éléments AVANT le déplacement
+    var input   = container.querySelector('#search');
+    var count   = container.querySelector('#count');
+    var results = container.querySelector('#results');
+
+    openPopupMenu(container);
+
+    // Restauration
+    var lastQuery   = sessionStorage.getItem("lastQuery");
+    var lastResults = sessionStorage.getItem("lastResults");
+    var lastCount   = sessionStorage.getItem("lastCount");
+
+    if (lastQuery !== null)   input.value = lastQuery;
+    if (lastResults !== null) results.innerHTML = lastResults;
+    if (lastCount !== null)   count.textContent =
+        lastCount > 0 ? lastCount + " résultat(s)" : "Aucun résultat";
 }
 function doSearch() {
   var q = document.getElementById("search").value.toLowerCase();
@@ -408,15 +424,3 @@ function doSearch() {
   sessionStorage.setItem("lastResults", out);
   sessionStorage.setItem("lastCount", found);
 }
-// Au chargement de la page, restaurer
-window.onload = function() {
-  if (sessionStorage.getItem("lastQuery")) {
-    document.getElementById("search").value = sessionStorage.getItem("lastQuery");
-    document.getElementById("results").innerHTML = sessionStorage.getItem("lastResults");
-  }
-  if (sessionStorage.getItem("lastCount")) {
-    var c = sessionStorage.getItem("lastCount");
-    document.getElementById("count").textContent =
-        c > 0 ? c + " résultat(s)" : "Aucun résultat";
-  }
-};
