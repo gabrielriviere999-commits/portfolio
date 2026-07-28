@@ -376,5 +376,5 @@ window.popupMenuHTML =
     '<li><a href="search.html">Rechercher</a></li>' +
     '<li><a href="arbo.html">Arborescence</a></li>' +
     '<li><a href="https://github.com/gabrielriviere999-commits/portfolio">Dépôt GitHub portfolio</a></li>' +
-    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/portfolio/zip/refs/heads/main" download>Télécharger dépot portfolio</a></li>' +
+    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/portfolio/zip/refs/heads/main" download>Télécharger dépôt portfolio</a></li>' +
     '</ul>';
