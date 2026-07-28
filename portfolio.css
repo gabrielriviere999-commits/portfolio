@@ -126,9 +126,9 @@ hr{border:1px inset #808080;}
   background:#404040;
   text-decoration:underline;
 }
-.tab-button-active {
+.tab-button-active,.menu:active {
   border-color:#111 #888 #888 #111;
-  background:#101010;
+  background:#101010!important;
   text-decoration:none!important;
 }
 
