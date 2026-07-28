@@ -359,6 +359,13 @@ function closePopup() {
         }
     }, 100);
 }
+document.onkeydown = function(e){
+    e = e || window.event;
+    if (e.key === "Escape" || e.keyCode === 27) {
+        var d = document.querySelector('.popup-overlay');
+        if (d) closePopup();
+    }
+};
 function openMenuPopup() {
   var container = document.getElementById("popupMenuContent");
   container.innerHTML = window.popupMenuHTML;
