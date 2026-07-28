@@ -182,8 +182,6 @@ select:hover{background:#404040;}
   top:20%;
   left:50%;
   margin-left:-90px;
-  width:180px;
-  height:200px;
   background:rgba(0,0,0,0.4);
   color:#ccc;
   padding:10px;
@@ -191,16 +189,11 @@ select:hover{background:#404040;}
   box-sizing:border-box;
 }
 .popup-window-small button {
-  width:100%;
-  height:19%;
+  width:120px;
+  height:35px;
   margin-bottom:2px;
   opacity:0.8;
   color:#fff;
-}
-.popup-content-small {
-  bottom:10px;
-  overflow:hidden;
-  padding:2px;
 }
 .border-interne {
   background:#000;
