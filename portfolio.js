@@ -400,6 +400,7 @@ function openSearchPopup() {
         lastCount > 0 ? lastCount + " résultat(s)" : "Aucun résultat";
 }
 function doSearch() {
+  if (!window.docs) return;
   var q = document.getElementById("search").value.toLowerCase();
   var out = "<ul>";
   var found = 0;
