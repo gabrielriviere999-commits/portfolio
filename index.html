@@ -15,7 +15,12 @@
 <div class="navbar" style="opacity:0.8;">
   <button onclick="openMenuPopup()" class="select">≡</button>
   <div id="popupMenuContent" style="display:none"></div>
-  <a href="search.html" class="select q">Q</a>
+  <button onclick="openSearchPopup()" class="select">Q</button>
+  <div id="popupSearchContent" style="display:none">
+    <input id="search" onkeyup="doSearch()" placeholder="Rechercher..." aria-label="Champ de recherche">
+    <div id="count" style="margin:0.5em 0;"></div>
+    <div id="results"></div>
+  </div>
   <a><select class="select" aria-label="Basculer vers onglet du site" onchange="location.href=this.value; this.selectedIndex=0;">
       <option value="">tab?</option>
       <option disabled="index.html">Accueil</option>
@@ -65,6 +70,8 @@ pre.tree .comment{color:#888;}
 <a href="arbo.html">Arborescence des dossiers et fichiers</a>
 <!-- Scripts -->
 <script src="portfolio.js"></script>
+<script src="search.js"></script>
+<script src="docs.js"></script>
 </main>
 </body>
 </html>

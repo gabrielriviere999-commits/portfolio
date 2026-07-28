@@ -26,7 +26,7 @@ a:hover{text-decoration:underline;}
   text-decoration:none;
   display:inline-block;
 }
-.a:hover{filter:brightness(1.2); text-decoration:underline;}
+.a:hover{filter:brightness(1.2);text-decoration:underline;}
 .a:active {
   border-color:#404040 #ccc #ccc #404040;
   filter:brightness(0.8);
@@ -35,6 +35,12 @@ fieldset{border:2px groove #808080;display:inline flow-root;}
 hr{border:1px inset #808080;}
 ul{padding-left:15px;margin:0}
 li{line-height:1.5;}
+#search{width:100%;box-sizing:border-box;}
+input,textarea {
+  background:#000;
+  color:#ccc;
+  border:2px groove #808080;
+}
 /* Popup */
 .popup-overlay {
   position:fixed;
