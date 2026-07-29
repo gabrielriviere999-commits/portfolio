@@ -34,7 +34,8 @@ li{line-height:1.5;}
 </head>
 <body>
 <main>
-<p style="font-size:14px;">Vous pouvez rechercher les noms ou les contenus des fichiers texte et .html mais uniquement les noms pour les .pdf et autres fichiers.</p>
+<b>Recherche : dépôt portfolio</b>
+<p style="font-size:14px;">Vous pouvez rechercher les noms ou les contenus des fichiers texte et .html mais uniquement les noms pour les autres fichiers.</p>
 <input id="search" onkeyup="doSearch()" placeholder="Rechercher..." aria-label="Champ de recherche">
 <div id="count" style="margin:4px 0;"></div>
 <div id="results"></div>
@@ -61,18 +62,18 @@ function doSearch() {
   document.getElementById("results").innerHTML =
       found > 0 ? out : "";
   // Sauvegarde
-  sessionStorage.setItem("lastQuery", q);
-  sessionStorage.setItem("lastResults", out);
-  sessionStorage.setItem("lastCount", found);
+  sessionStorage.setItem("lastQueryPortfolio", q);
+  sessionStorage.setItem("lastResultsPortfolio", out);
+  sessionStorage.setItem("lastCountPortfolio", found);
 }
 // Au chargement de la page, restaurer
 window.onload = function() {
-  if (sessionStorage.getItem("lastQuery")) {
-    document.getElementById("search").value = sessionStorage.getItem("lastQuery");
-    document.getElementById("results").innerHTML = sessionStorage.getItem("lastResults");
+  if (sessionStorage.getItem("lastQueryPortfolio")) {
+    document.getElementById("search").value = sessionStorage.getItem("lastQueryPortfolio");
+    document.getElementById("results").innerHTML = sessionStorage.getItem("lastResultsPortfolio");
   }
-  if (sessionStorage.getItem("lastCount")) {
-    var c = sessionStorage.getItem("lastCount");
+  if (sessionStorage.getItem("lastCountPortfolio")) {
+    var c = sessionStorage.getItem("lastCountPortfolio");
     document.getElementById("count").textContent =
         c > 0 ? c + " résultat(s)" : "Aucun résultat";
   }
