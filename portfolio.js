@@ -308,18 +308,14 @@ function initAllSelects() {
 initAllSelects();
 
 var popupOrigin = null;
-var popupJustOpened = false;
 function openPopupMenu(container) {
+    setTimeout(function(){
     popupOrigin = container;
-
-    popupJustOpened = true;
-    setTimeout(function(){ popupJustOpened = false; }, 150);
 
     var d = document.createElement('div');
     d.className = "popup-overlay";
 
     d.onclick = function(e){
-        if (popupJustOpened) return;
         if (e.target === d) closePopup();
     };
 
@@ -339,6 +335,7 @@ function openPopupMenu(container) {
     document.body.appendChild(d);
 
     setTimeout(function(){ p.focus(); }, 0);
+    }, 100);
 }
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
