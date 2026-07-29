@@ -110,6 +110,7 @@ hr{border:1px inset #808080;}
   background:#101010!important;
   text-decoration:none!important;
 }
+.menu{width:36px;text-decoration:none!important}
 
 .popup-overlay {
   position:fixed;
