@@ -337,7 +337,7 @@ function openPopupMenu(container) {
     d.appendChild(p);
     document.body.appendChild(d);
 
-    setTimeout(function(){ p.focus(); }, 0);
+    p.focus();
     }, 50);
 }
 function closePopup() {
