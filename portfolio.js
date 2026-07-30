@@ -316,6 +316,9 @@ function openPopupMenu(container) {
     d.className = "popup-overlay";
 
     d.onclick = function(e){
+        e = e || window.event;
+        e.cancelBubble = true;
+        if (e.stopPropagation) e.stopPropagation();
         if (e.target === d) closePopup();
     };
 
