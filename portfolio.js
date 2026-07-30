@@ -340,24 +340,19 @@ function openPopupMenu(container) {
     p.focus();
     }, 50);
 }
+}
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
     if (!d) return;
     var popupContent = d.querySelector('.popup-content-menu');
-    d.style.opacity = "0";
     // Remettre les enfants dans leur conteneur d'origine
     while (popupContent.firstChild) {
         popupOrigin.appendChild(popupContent.firstChild);
     }
-    while (popupContent.firstChild) {
-        popupOrigin.appendChild(popupContent.firstChild);
-    }
     popupOrigin = null;
-    setTimeout(function(){
-        if (d.parentNode) {
-            d.parentNode.removeChild(d);
-        }
-    }, 50);
+    if (d.parentNode) {
+        d.parentNode.removeChild(d);
+    }
 }
 document.onkeydown = function(e){
     e = e || window.event;
