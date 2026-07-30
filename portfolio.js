@@ -340,7 +340,6 @@ function openPopupMenu(container) {
     p.focus();
     }, 50);
 }
-}
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
     if (!d) return;
