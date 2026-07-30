@@ -338,7 +338,7 @@ function openPopupMenu(container) {
     document.body.appendChild(d);
 
     p.focus();
-    }, 50);
+    }, 5);
 }
 function closePopup() {
     var d = document.querySelector('.popup-overlay');
@@ -354,7 +354,7 @@ function closePopup() {
         if (d.parentNode) {
             d.parentNode.removeChild(d);
         }
-    }, 50);
+    }, 5);
 }
 document.onkeydown = function(e){
     e = e || window.event;
