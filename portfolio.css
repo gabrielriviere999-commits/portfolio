@@ -74,10 +74,11 @@ hr{border:1px inset #808080;}
   right:0;
   white-space:nowrap;
   overflow-x:auto;
-  font-size:11px;
+  font-size:0px;
   padding:2px;
   z-index:9997;
 }
+.navbar button,.navbar a{margin-right:3px;}
 .navbar.hide {
   transform:translatey(-100%);
 }
