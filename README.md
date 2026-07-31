@@ -22,8 +22,7 @@ Portfolio/
 │   └── Documentations du stage de BTS2
 └── Astuces/
     ├── Lien pour soutenir le site via PayPal
-    ├── Documentations pour s'initier à Linux
-    ├── Scripts pour Linux
+    ├── Documentations et scripts pour s'initier à Linux
     ├── Applications pour Android
-    └── Outils HTML ← Outils utilisables dans le navigateur sans installation
+    └── Outils ← (HTML, CSS, JS)
 ```
