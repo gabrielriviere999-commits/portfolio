@@ -1,0 +1,10 @@
+Démarrer un serveur python local
+
+Sur la machine hôte :
+cd L'emplacement souhaité ou clic droit ouvrir dans un terminal
+sudo ufw allow 8000/tcp
+ip a
+python3 -m http.server 8000 --bind 0.0.0.0
+
+Sur la machine cliente :
+http://ADRESSE_IP:8000

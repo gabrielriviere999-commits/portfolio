@@ -1,0 +1,22 @@
+Quelques applications :                                   
+
+Pdf Arranger          Changer l'ordre des pages d'un pdf
+Okular                Visionneuse PDF
+Recoll                Rechercher des documents par leur contenu
+Local Translate       Traducteur hors ligne
+GoldenDict            Lecteur de dictionnaire hors ligne
+QtQr                  Générateur de QR Codes
+Qalculate!            Calculatrice scientifique
+ConvertAll            Convertisseur d'unités
+Geany                 Éditeur de texte et exécuteur de script
+Krita                 Édition photo
+Gimp                  Édition photo
+Gpick                 Extraire le code couleur à l'écran
+XnView MP             Convertisseur de photos et autres
+Gthumb                Visionneuse de photos
+sView                 Visionneuse de photos 360°
+Kdenlive              Montage vidéo
+HandBrake             Compresseur vidéos et audios
+MeshViewer            Visionneuse 3D de fichiers FBX, OBJ, GLTF et GLB
+Onboard               Clavier virtuel
+SimpleScreenRecorder  Enregistreur d'écran

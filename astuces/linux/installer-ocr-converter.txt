@@ -1,0 +1,66 @@
+Convertisseur PDF en PDF à texte (OCR) en utilisant le moteur Tesseract via OCRmyPDF, sans interface graphique.
+Prérequis :
+sudo apt update
+sudo apt install ocrmypdf tesseract-ocr tesseract-ocr-fra
+- ocrmypdf : outil principal pour appliquer l'OCR
+- tesseract-ocr : moteur de reconnaissance optique
+- tesseract-ocr-fra : langue française pour Tesseract
+Télécharger le script dans Script → ocr-batch.sh
+
+---
+
+Fonctionnement
+1. Le script vérifie et crée les dossiers nécessaires.
+2. Il parcourt tous les fichiers .pdf dans pdf_input.
+3. Pour chaque fichier, il applique l'OCR avec les options suivantes :
+--force-ocr : force l'OCR même si le PDF contient déjà du texte
+--rotate-pages : corrige l'orientation des pages
+--deskew : redresse les pages inclinées
+-l fra : utilise la langue française
+4. Les fichiers convertis sont enregistrés dans pdf_output
+
+Utilisation
+1. Place tes fichiers PDF dans pdf_input
+2. Rends-le script exécutable :
+chmod +x ocr-batch.sh
+3. Lance-le :
+./ocr-batch.sh
+
+Résultat
+Tu obtiendras dans pdf_output des fichiers PDF avec une couche texte OCR, consultables et
+sélectionnables.
+
+---
+
+Tu peux ajouter ton script ocr-batch.sh au menu des applications de MX Linux en créant un fichier .desktop
+
+Ajouter un script Bash au menu des applications MX Linux
+1. Crée un fichier .desktop
+Ouvre un terminal et tape :
+nano ~/.local/share/applications/ocr-batch.desktop
+Colle ce contenu :
+
+[Desktop Entry]
+Type=Application
+Name=OCR Batch PDF
+Comment=Convertit tous les PDF du dossier en PDF texte OCR
+Exec=/home/nom_utilisateur/ocr-batch.sh
+Icon=accessories-text-editor
+Terminal=true
+Categories=Utility;
+
+Remplace /home/nom_utilisateur/ocr-batch.sh par ton chemin
+
+2. Rends le script exécutable
+chmod +x /home/nom_utilisateur/ocr-batch.sh
+
+3. Vérifie dans le menu
+- Ouvre le menu MX Linux
+- Cherche OCR Batch PDF
+- Clique dessus → ton script devrait s'exécuter dans un terminal
+
+Astuce : changer l'icône
+Tu peux remplacer Icon=accessories-text-editor par une autre icône disponible dans ton système, comme :
+Icon=utilities-terminal
+Icon=document-send
+Ou le chemin vers une icône personnalisée : Icon=/home/nom_utilisateur/ocr/icon.png
