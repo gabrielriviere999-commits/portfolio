@@ -3,7 +3,7 @@
 - Dépôt : https://github.com/gabrielriviere999-commits/portfolio
 - Page : https://gabrielriviere999-commits.github.io/portfolio
 
-Galeries de fichiers :
+### Galeries de fichiers :
 - Pour voir le fichier, cliquez sur le bouton < ou >, miniature ou - Choisir une slide -
 - Pour voir le fichier dans un nouvel onglet, cliquez sur le bouton □
 - Pour télécharger le fichier, cliquez sur le bouton ↓
