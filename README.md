@@ -7,9 +7,6 @@ Galeries de fichiers :
 - Pour voir le fichier, cliquez sur le bouton < ou >, miniature ou - Choisir une slide -
 - Pour voir le fichier dans un nouvel onglet, cliquez sur le bouton □
 - Pour télécharger le fichier, cliquez sur le bouton ↓
-### Outils
-- Dépôt : https://github.com/gabrielriviere999-commits/outils
-- Page : https://gabrielriviere999-commits.github.io/outils
 
 ## Carte du site
 ```
@@ -29,3 +26,9 @@ Portfolio/
     ├── Applications pour Android
     └── Outils ← (HTML, CSS, JS)
 ```
+### Outils
+- Dépôt : https://github.com/gabrielriviere999-commits/outils
+- Page : https://gabrielriviere999-commits.github.io/outils
+
+### Interfaces WEB
+- Dépôt : https://github.com/gabrielriviere999-commits/interfaces-web
