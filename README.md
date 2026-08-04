@@ -26,6 +26,7 @@ Portfolio/
     ├── Applications pour Android
     └── Outils ← (HTML, CSS, JS)
 ```
+
 ## Outils
 - Dépôt : https://github.com/gabrielriviere999-commits/outils
 - Page : https://gabrielriviere999-commits.github.io/outils
