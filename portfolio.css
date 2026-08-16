@@ -108,8 +108,6 @@ button:active {
   padding:0 10px;
   display:inline-block;
   line-height:32px;
-  vertical-align:middle;
-  cursor:pointer;
   box-sizing:border-box;
   text-decoration:none;
 }
