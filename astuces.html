@@ -75,19 +75,22 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.<p
 
 <br>
 <fieldset><legend>Télécharger</legend>
-<select id="download-script-linux" onchange="downloadFile(this)" aria-label="Script">
-  <option value="">Script...</option>
-  <option value="astuces/linux/scripts/ocr-batch.sh">ocr-batch.sh</option>
-  <option value="astuces/linux/scripts/ocr-capture.sh">ocr-capture.sh</option>
-  <option value="astuces/linux/scripts/coller-tapper-clipboard.sh">coller-tapper-clipboard.sh</option>
-  <option value="astuces/linux/scripts/tableau-clipboard-linux.py">tableau-clipboard-linux.py</option>
-  <option value="astuces/linux/scripts/minuscule-linux.py">minuscule-linux.py</option>
-  <option value="astuces/linux/scripts/majuscule-linux.py">majuscule-linux.py</option>
-  <option value="astuces/linux/scripts/inverser-casse-linux.py">inverser-casse-linux.py</option>
-  <option value="astuces/linux/scripts/transparence20.sh">transparence20.sh</option>
-  <option value="astuces/linux/scripts/opaque.sh">opaque.sh</option>
-  <option value="astuces/linux/scripts/change-rotation.zip">change-rotation.zip</option>
-</select>
+<button onclick="openScriptPopup()" style="width:100%">Script Linux...</button>
+<div id="popupScriptContent" style="display:none">
+Script Linux
+<ul>
+  <li><a href="astuces/linux/scripts/ocr-batch.sh" download>ocr-batch.sh</a></li>
+  <li><a href="astuces/linux/scripts/ocr-capture.sh" download>ocr-capture.sh</a></li>
+  <li><a href="astuces/linux/scripts/coller-tapper-clipboard.sh" download>coller-tapper-clipboard.sh</a></li>
+  <li><a href="astuces/linux/scripts/tableau-clipboard-linux.py" download>tableau-clipboard-linux.py</a></li>
+  <li><a href="astuces/linux/scripts/minuscule-linux.py" download>minuscule-linux.py</a></li>
+  <li><a href="astuces/linux/scripts/majuscule-linux.py" download>majuscule-linux.py</a></li>
+  <li><a href="astuces/linux/scripts/inverser-casse-linux.py" download>inverser-casse-linux.py</a></li>
+  <li><a href="astuces/linux/scripts/transparence20.sh" download>transparence20.sh</a></li>
+  <li><a href="astuces/linux/scripts/opaque.sh" download>opaque.sh</a></li>
+  <li><a href="astuces/linux/scripts/change-rotation.zip" download>change-rotation.zip</a></li>
+</ul>
+</div>
 </fieldset>
 <br><br><hr>
 
@@ -127,52 +130,72 @@ Cela m'aide à continuer à tester, améliorer et ajouter d'autres ressources.<p
 
 <br>
 <fieldset><legend>Télécharger</legend>
-<select id="download-android" onchange="downloadFile(this)" aria-label="Android">
-  <option value="">Android...</option>
-  <optgroup label="Applications">
-    <option value="astuces/android/applications/tableauascii.apk">tableauascii.apk</option>
-    <option value="astuces/android/applications/editeurdetexte.apk">editeurdetexte.apk</option>
-    <option value="astuces/android/applications/extractioncodecouleur.apk">extractioncodecouleur.apk</option>
-    <option value="astuces/android/applications/selecteurcouleur.apk">selecteurcouleur.apk</option>
-    <option value="astuces/android/applications/ocrecran.apk">ocrecran.apk</option>
-    <option value="astuces/android/applications/serveurhttp.apk">serveurhttp.apk</option>
-    <option value="astuces/android/applications/serveurhttpandroid4.apk">serveurhttpandroid4.apk</option>
-    <option value="astuces/android/applications/indexeur.apk">indexeur.apk</option>
-    <option value="astuces/android/applications/arbo.apk">arbo.apk</option>
-  </optgroup>
-  <optgroup label="Scripts Termux">
-    <option value="astuces/android/termux/preparer-termux.txt">preparer-termux.txt</option>
-    <option value="astuces/android/termux/tableau-clipboard-android.py">tableau-clipboard-android.py</option>
-    <option value="astuces/android/termux/minuscule-android.py">minuscule-android.py</option>
-    <option value="astuces/android/termux/majuscule-android.py">majuscule-android.py</option>
-    <option value="astuces/android/termux/inverser-casse-android.py">inverser-casse-android.py</option>
-  </optgroup>
-  <optgroup label="Userscripts">
-    <option value="astuces/android/userscripts/importer-dossier-extraire-zip.js">importer-dossier-extraire-zip.js</option>
-  </optgroup>
-</select>
-<p></p><a href="https://www.dropbox.com/scl/fi/khfuhw0w4dactu1yfzcku/projets-android.zip?rlkey=iz0ip79mup794sms9pzm3qpjj&st=qvoxf4my&dl=1">Télécharger projets depuis Dropbox</a>
+
+<button onclick="openAndroidPopup()" style="width:100%">Android...</button>
+<div id="popupAndroidContent" style="display:none">
+Applications Android
+<ul>
+  <li><a href="astuces/android/applications/tableauascii.apk" download>tableauascii.apk</a></li>
+  <li><a href="astuces/android/applications/editeurdetexte.apk" download>editeurdetexte.apk</a></li>
+  <li><a href="astuces/android/applications/extractioncodecouleur.apk" download>extractioncodecouleur.apk</a></li>
+  <li><a href="astuces/android/applications/selecteurcouleur.apk" download>selecteurcouleur.apk</a></li>
+  <li><a href="astuces/android/applications/ocrecran.apk" download>ocrecran.apk</a></li>
+  <li><a href="astuces/android/applications/serveurhttp.apk" download>serveurhttp.apk</a></li>
+  <li><a href="astuces/android/applications/serveurhttpandroid4.apk" download>serveurhttpandroid4.apk</a></li>
+  <li><a href="astuces/android/applications/indexeur.apk" download>indexeur.apk</a></li>
+  <li><a href="astuces/android/applications/arbo.apk" download>arbo.apk</a></li>
+</ul>
+Scripts Termux
+<ul>
+  <li><a href="astuces/android/termux/preparer-termux.txt" download>preparer-termux.txt</a></li>
+  <li><a href="astuces/android/termux/tableau-clipboard-android.py" download>tableau-clipboard-android.py</a></li>
+  <li><a href="astuces/android/termux/minuscule-android.py" download>minuscule-android.py</a></li>
+  <li><a href="astuces/android/termux/majuscule-android.py" download>majuscule-android.py</a></li>
+  <li><a href="astuces/android/termux/inverser-casse-android.py" download>inverser-casse-android.py</a></li>
+</ul>
+Userscripts
+<ul>
+  <li><a href="astuces/android/userscripts/importer-dossier-extraire-zip.js" download>importer-dossier-extraire-zip.js</a></li></ul>
+</ul>
+</div>
+<br><a href="https://www.dropbox.com/scl/fi/khfuhw0w4dactu1yfzcku/projets-android.zip?rlkey=iz0ip79mup794sms9pzm3qpjj&st=qvoxf4my&dl=1">Télécharger projets depuis Dropbox</a>
 </fieldset>
 <br><br><hr><br>
-<select id="download-autre-os" onchange="downloadFile(this)" aria-label="Autre OS">
-  <option value="">Autre os...</option>
-  <optgroup label="Windows">
-    <option value="astuces/autres-os/windows/tableau-clipboard-windows.py">tableau-clipboard-windows.py</option>
-    <option value="astuces/autres-os/windows/minuscule-windows.py">minuscule-windows.py</option>
-    <option value="astuces/autres-os/windows/majuscule-windows.py">majuscule-windows.py</option>
-    <option value="astuces/autres-os/windows/inverser-casse-windows.py">inverser-casse-windows.py</option>
-  </optgroup>
-  <optgroup label="macOS">
-    <option value="astuces/autres-os/macos/tableau-clipboard-macos.py">tableau-clipboard-macos.py</option>
-    <option value="astuces/autres-os/macos/minuscule-macos.py">minuscule-macos.py</option>
-    <option value="astuces/autres-os/macos/majuscule-macos.py">majuscule-macos.py</option>
-    <option value="astuces/autres-os/macos/inverser-casse-macos.py">inverser-casse-macos.py</option>
-  </optgroup>
-</select>
+<button onclick="openAutreOSPopup()">Autre OS...</button>
+<div id="popupAutreOSContent" style="display:none">
+Windows
+<ul>
+  <li><a href="astuces/autres-os/windows/tableau-clipboard-windows.py" download>tableau-clipboard-windows.py</a></li>
+  <li><a href="astuces/autres-os/windows/minuscule-windows.py" download>minuscule-windows.py</a></li>
+  <li><a href="astuces/autres-os/windows/majuscule-windows.py" download>majuscule-windows.py</a></li>
+  <li><a href="astuces/autres-os/windows/inverser-casse-windows.py" download>inverser-casse-windows.py</a></li>
+</ul>
+macOS
+<ul>
+  <li><a href="astuces/autres-os/macos/tableau-clipboard-macos.py" download>tableau-clipboard-macos.py</a></li>
+  <li><a href="astuces/autres-os/macos/minuscule-macos.py" download>minuscule-macos.py</a></li>
+  <li><a href="astuces/autres-os/macos/majuscule-macos.py" download>majuscule-macos.py</a></li>
+  <li><a href="astuces/autres-os/macos/inverser-casse-macos.py" download>inverser-casse-macos.py</a></li>
+</ul>
+</div>
 <p></p>
-<a href="../outils/index.html" class="a" style="background:#3a6ea5;">Outils HTML</a>
+<a href="../outils/index.html">Outils HTML</a>
 <!-- Scripts -->
 <script src="portfolio.js"></script>
+<script>
+function openScriptPopup() {
+  var container = document.getElementById("popupScriptContent");
+  openPopupMenu(container);
+}
+function openAndroidPopup() {
+  var container = document.getElementById("popupAndroidContent");
+  openPopupMenu(container);
+}
+function openAutreOSPopup() {
+  var container = document.getElementById("popupAutreOSContent");
+  openPopupMenu(container);
+}
+</script>
 </main>
 </body>
 </html>

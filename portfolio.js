@@ -18,30 +18,6 @@ if (!supportsTransform) {
     document.documentElement.classList.add('no-transform');
 }
 
-function downloadFile(select) {
-    var file = select.value;
-    if (!file) return;
-
-    // Teste si le navigateur supporte l'attribut download
-    var a = document.createElement("a");
-    var supportsDownload = ("download" in a);
-
-    if (supportsDownload) {
-        // mode normal : téléchargement
-        a.href = file;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-    } else {
-        // mode fallback (3DS, vieux navigateurs) : ouvrir dans un nouvel onglet
-        window.open(file, "_blank");
-    }
-
-    // Réinitialise le menu
-    select.value = "";
-}
-
 var slideIndex = {
   "infrastructure": 0,
   "haproxy": 0,
