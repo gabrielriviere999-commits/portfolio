@@ -197,6 +197,7 @@ button:active {
   opacity:1;
 }
 .slide-btn {
+  vertical-align:middle;
   font-family:monospace;
   font-size:22px;
   width:36px;
