@@ -7,7 +7,7 @@ import html
 # Dossiers et fichiers à exclure pour GitHub Pages
 EXCLUDE_DIRS = { ".git", ".github"}
 
-EXCLUDE_FILES = {".gitignore", ".gitattributes", "arbo.html", "make-arbo.py"}
+EXCLUDE_FILES = {".gitignore", ".gitattributes", "arbo.html"}
 
 def build_tree(path):
     """Construit une structure arborescente."""
