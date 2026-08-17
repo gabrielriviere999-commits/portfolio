@@ -286,6 +286,7 @@ initAllSelects();
 var popupOrigin = null;
 function openPopupMenu(container) {
     setTimeout(function(){
+	if (document.querySelector('.popup-overlay')) return;
     popupOrigin = container;
 
     var d = document.createElement('div');
