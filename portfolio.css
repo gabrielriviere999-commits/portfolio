@@ -97,7 +97,6 @@ button:active {
   position:relative!important;
   top:0!important;
 }
-
 .tab-button {
   font-size:14px;
   background:#202020;
@@ -121,7 +120,6 @@ button:active {
   text-decoration:none!important;
 }
 .menu{width:36px;text-decoration:none!important}
-
 .popup-overlay {
   position:fixed;
   top:0;left:0;right:0;bottom:0;
@@ -142,10 +140,8 @@ button:active {
   box-sizing:border-box;
   overflow:auto;
 }
-
 /* --- Galerie slideshow --- */
 .slideshow-container{position:relative;}
-
 .slide {
   display:none;
   width:100%;
@@ -165,7 +161,6 @@ button:active {
   display:block;
 }
 .slide img{display:block;}
-
 .thumbnail-row {
   display:block;
   white-space:nowrap;
@@ -215,7 +210,6 @@ button:active {
   left:220px;
   font-size:22px;
 }
-
 select {
   height:40px;
   line-height:40px;
@@ -225,7 +219,6 @@ select {
   border-color:#111 #888 #888 #111;
 }
 select:hover{background:#404040;}
-
 summary {
   cursor:pointer;
   border:2px solid;
