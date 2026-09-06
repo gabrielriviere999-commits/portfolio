@@ -227,6 +227,7 @@ function initAllSelects() {
 }
 initAllSelects();
 var popupOrigin = null;
+var popupMouseDownInside = false;
 function openPopupMenu(container) {
     setTimeout(function(){
         if (document.querySelector('.popup-overlay')) return;
