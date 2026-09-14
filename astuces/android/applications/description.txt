@@ -101,6 +101,12 @@ Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
 
 Compatibilité : Android 5.0+
 
+Share Base 64
+-------------
+Copier une image en base 64 en utilisant le menu de partage Android.
+La taille maximale peut être contrôlée dans l'application.
+
+Compatibilité : Android 4.0.1+
 
 Serveur HTTP
 ------------
