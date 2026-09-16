@@ -101,9 +101,15 @@ Ou configurer et installer Shizuku et App Ops puis accorder cette autorisation
 
 Compatibilité : Android 5.0+
 
+Share Clipboard Image
+---------------------
+Copier une image le presse-papier en utilisant le menu de partage ou ouvrir avec.
+
+Compatibilité : Android 4.0.1+
+
 Share Base 64
 -------------
-Copier une image en base 64 dans le presse-papier en utilisant le menu de partage Android.
+Copier une image en base 64 dans le presse-papier en utilisant le menu de partage ou ouvrir avec.
 La taille maximale peut être contrôlée dans l'application.
 
 Compatibilité : Android 4.0.1+
