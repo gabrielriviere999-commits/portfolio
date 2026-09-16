@@ -320,4 +320,8 @@ window.popupMenuHTML =
     '<li><a href="../interfaces-web/arbo.html" style="color:#9c0;">Arborescence</a></li>' +
     '<li><a href="https://github.com/gabrielriviere999-commits/interfaces-web" style="color:#9c0;">Dépôt GitHub</a></li>' +
     '<li><a href="https://codeload.github.com/gabrielriviere999-commits/interfaces-web/zip/refs/heads/main" style="color:#9c0;" download>Télécharger dépôt</a></li>' +
+    '</ul>' +
+    'Neocities' +
+    '<ul>' +
+    '<li><a href="https://gabsrivs.neocities.org">Neocities</a></li>' +
     '</ul>';
