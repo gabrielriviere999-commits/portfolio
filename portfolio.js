@@ -314,6 +314,9 @@ window.popupMenuHTML =
     '<li><a href="../outils/arbo.html" style="color:#f44;">Arborescence</a></li>' +
     '<li><a href="https://github.com/gabrielriviere999-commits/outils" style="color:#f44;">Dépôt GitHub</a></li>' +
     '<li><a href="https://codeload.github.com/gabrielriviere999-commits/outils/zip/refs/heads/main" style="color:#f44;" download>Télécharger dépôt</a></li>' +
+    '<ul>' +
+    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/ocr/zip/refs/heads/main" style="color:#f44;" download>Télécharger dépôt ocr</a></li>' +
+    '</ul>' +
     '</ul>' +
     'Interfaces WEB' +
     '<ul>' +
