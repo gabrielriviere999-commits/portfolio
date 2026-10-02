@@ -113,12 +113,12 @@ button:active {
   text-decoration:none;
 }
 .tab-button:hover:not(.tab-button-active) {
-  background:#444;
+  background:rgba(97,97,97,0.7);
   text-decoration:underline;
 }
 .tab-button-active,.menu:active {
-  border-color:#111 #888 #888 #111;
-  background:#111!important;
+  border-color:rgba(10,10,10,0.7) rgba(180,180,180,0.7) rgba(180,180,180,0.7) rgba(10,10,10,0.7);
+  background:rgba(10,10,10,0.7)!important;
   text-decoration:none!important;
 }
 .menu{width:36px;text-decoration:none!important}
