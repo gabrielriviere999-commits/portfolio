@@ -15,7 +15,8 @@ pre:not(.tree) {
 a {
   color:#33b5e5;
   text-decoration:none;
-  word-break:break-all;
+  word-break:overflow-wrap:anywhere;
+  word-break:break-word;
 }
 a:hover{text-decoration:underline;}
 .a {
