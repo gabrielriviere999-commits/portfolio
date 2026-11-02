@@ -2,12 +2,22 @@
 #  Serveur clavier / souris WiFi pour l'application Android
 #  "Clavier Bluetooth" (com.gabriel.clavierbluetooth).
 #
-#  A lancer sur le PC Windows :
+#  A lancer sur le PC :
 #      python server_wifi.py
 #
+#  Fonctionne sur Windows (SendInput) ET sur Linux (X11/XTest).
+#  Aucune dependance : uniquement la bibliotheque standard de
+#  Python 3 (socket + ctypes).
+#
+#  Sur Linux :
+#    - necessite une session X11 (ou XWayland, variable
+#      DISPLAY definie). Wayland pur n'a pas d'API globale
+#      pour simuler des touches.
+#    - libX11 et libXtst doivent etre presentes (elles le
+#      sont sur quasiment toutes les distributions).
+#
 #  Il affiche l'adresse IP a entrer dans l'application, puis
-#  ecoute sur le port 9798. Aucune dependance : uniquement la
-#  bibliotheque standard de Python 3 (socket + ctypes).
+#  ecoute sur le port 9798.
 #
 #  Protocole (une commande par ligne, terminee par \n) :
 #      HELLO                      -> le serveur repond "OK"
@@ -17,44 +27,33 @@
 #      SpecialKey Down <nom>      enfonce une touche
 #      SpecialKey Up <nom>        relache une touche
 #      SpecialKey Tap <nom>       appui puis relachement
-#      TypeString <texte>         tape un texte (unicode)
+#      TypeString <texte>        tape un texte
 #      PING                       ignoré (maintien de connexion)
 #      Quit                       ferme la connexion
 #
 #  CORRECTION "APPUIS LONGS" :
-#  SendInput n'engendre PAS d'auto-repeat sous Windows : un
-#  seul "SpecialKey Down" = un seul caractere dans un champ de
-#  texte. Les jeux fonctionnent car ils interrogent l'etat des
-#  touches en boucle. Ce serveur rejoue donc lui-meme les
-#  touches maintenues (delai initial puis repetition), comme
-#  le ferait un vrai clavier.
+#  Ni SendInput (Windows) ni XTest (Linux) n'engendrent
+#  l'auto-repeat du systeme : un seul "SpecialKey Down" = un
+#  seul caractere dans un champ de texte. Les jeux fonctionnent
+#  car ils interrogent l'etat des touches en boucle. Ce serveur
+#  rejoue donc lui-meme les touches maintenues (delai initial
+#  puis repetition), comme le ferait un vrai clavier.
 # ============================================================
 
 import socket
 import sys
 import platform
 import ctypes
-import ctypes.wintypes as wintypes
 import threading
 import time
 
 PORT = 9798
 
+SYSTEME = platform.system()
+
 # ------------------------------------------------------------
-# API Windows (SendInput)
+# Drapeaux "souris" internes (communs aux deux plateformes)
 # ------------------------------------------------------------
-
-if platform.system() != "Windows":
-    print("Attention : ce serveur est concu pour Windows.")
-
-user32 = ctypes.windll.user32
-
-INPUT_MOUSE = 0
-INPUT_KEYBOARD = 1
-
-KEYEVENTF_KEYUP = 0x0002
-KEYEVENTF_UNICODE = 0x0004
-KEYEVENTF_SCANCODE = 0x0008
 
 MOUSEEVENTF_MOVE = 0x0001
 MOUSEEVENTF_LEFTDOWN = 0x0002
@@ -64,131 +63,353 @@ MOUSEEVENTF_RIGHTUP = 0x0010
 MOUSEEVENTF_MIDDLEDOWN = 0x0020
 MOUSEEVENTF_MIDDLEUP = 0x0040
 MOUSEEVENTF_WHEEL = 0x0800
-MOUSEEVENTF_ABSOLUTE = 0x8000
 
+BOUTONS = {
+    # b -> (drapeau enfonce, drapeau relache)
+    1: (MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP),
+    2: (MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP),
+    3: (MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP),
+}
 
-class MOUSEINPUT(ctypes.Structure):
-    _fields_ = [
-        ("dx", wintypes.LONG),
-        ("dy", wintypes.LONG),
-        ("mouseData", wintypes.DWORD),
-        ("dwFlags", wintypes.DWORD),
-        ("time", wintypes.DWORD),
-        ("dwExtraInfo", ctypes.POINTER(wintypes.ULONG)),
-    ]
+# ------------------------------------------------------------
+# Couche plateforme : toutes les fonctions envoyer_* sont
+# definies ici, le reste du serveur est commun.
+# ------------------------------------------------------------
 
+if SYSTEME == "Windows":
 
-class KEYBDINPUT(ctypes.Structure):
-    _fields_ = [
-        ("wVk", wintypes.WORD),
-        ("wScan", wintypes.WORD),
-        ("dwFlags", wintypes.DWORD),
-        ("time", wintypes.DWORD),
-        ("dwExtraInfo", ctypes.POINTER(wintypes.ULONG)),
-    ]
+    import ctypes.wintypes as wintypes
 
+    user32 = ctypes.windll.user32
 
-class _INPUTUNION(ctypes.Union):
-    _fields_ = [
-        ("mi", MOUSEINPUT),
-        ("ki", KEYBDINPUT),
-    ]
+    INPUT_MOUSE = 0
+    INPUT_KEYBOARD = 1
 
+    KEYEVENTF_KEYUP = 0x0002
+    KEYEVENTF_UNICODE = 0x0004
+    KEYEVENTF_SCANCODE = 0x0008
 
-class INPUT(ctypes.Structure):
-    _anonymous_ = ("u",)
-    _fields_ = [
-        ("type", wintypes.DWORD),
-        ("u", _INPUTUNION),
-    ]
+    class MOUSEINPUT(ctypes.Structure):
+        _fields_ = [
+            ("dx", wintypes.LONG),
+            ("dy", wintypes.LONG),
+            ("mouseData", wintypes.DWORD),
+            ("dwFlags", wintypes.DWORD),
+            ("time", wintypes.DWORD),
+            ("dwExtraInfo", ctypes.POINTER(wintypes.ULONG)),
+        ]
 
+    class KEYBDINPUT(ctypes.Structure):
+        _fields_ = [
+            ("wVk", wintypes.WORD),
+            ("wScan", wintypes.WORD),
+            ("dwFlags", wintypes.DWORD),
+            ("time", wintypes.DWORD),
+            ("dwExtraInfo", ctypes.POINTER(wintypes.ULONG)),
+        ]
 
-def _pointer_nul():
-    return ctypes.cast(
-        ctypes.pointer(wintypes.ULONG(0)),
-        ctypes.POINTER(wintypes.ULONG),
-    )
+    class _INPUTUNION(ctypes.Union):
+        _fields_ = [
+            ("mi", MOUSEINPUT),
+            ("ki", KEYBDINPUT),
+        ]
 
+    class INPUT(ctypes.Structure):
+        _anonymous_ = ("u",)
+        _fields_ = [
+            ("type", wintypes.DWORD),
+            ("u", _INPUTUNION),
+        ]
 
-def envoyer_touche(vk, relache):
-    """Enfonce (relache=False) ou relache (relache=True) une touche
-    a partir de son code de touche virtuel (VK)."""
-    scan = user32.MapVirtualKeyW(vk, 0)  # MAPVK_VK_TO_VSC
-    drapeaux = KEYEVENTF_KEYUP if relache else 0
+    def _pointer_nul():
+        return ctypes.cast(
+            ctypes.pointer(wintypes.ULONG(0)),
+            ctypes.POINTER(wintypes.ULONG),
+        )
 
-    entree = INPUT()
-    entree.type = INPUT_KEYBOARD
-    entree.ki = KEYBDINPUT(
-        vk & 0xFFFF, scan & 0xFFFF, drapeaux, 0, _pointer_nul()
-    )
-    user32.SendInput(1, ctypes.byref(entree), ctypes.sizeof(INPUT))
+    # Table des touches : nom -> code de touche virtuel
+    # (meme noms que le client Android WifiClient.java)
+    TOUCHES = {
+        "Return": 0x0D, "BackSpace": 0x08, "Tab": 0x09, "Space": 0x20,
+        "Esc": 0x1B, "Caps": 0x14,
+        "Shift": 0x10, "Ctrl": 0x11, "Alt": 0x12,
+        "Win": 0x5B, "Menu": 0xA5,   # Menu = AltGr (VK_RMENU)
+        "Left": 0x25, "Up": 0x26, "Right": 0x27, "Down": 0x28,
+        "Insert": 0x2D, "Delete": 0x2E, "Home": 0x24, "End": 0x23,
+        "PgU": 0x21, "PgD": 0x22,
+        "NumLock": 0x90,
+        "F1": 0x70, "F2": 0x71, "F3": 0x72, "F4": 0x73, "F5": 0x74,
+        "F6": 0x75, "F7": 0x76, "F8": 0x77, "F9": 0x78, "F10": 0x79,
+        "F11": 0x7A, "F12": 0x7B,
+    }
 
+    # Chiffres et lettres
+    for _i in range(10):
+        TOUCHES[str(_i)] = 0x30 + _i
+    for _c in "abcdefghijklmnopqrstuvwxyz":
+        TOUCHES[_c] = ord(_c.upper())
 
-def envoyer_touche_scan(scan, relache):
-    """Enfonce/relache une touche par son CODE DE SCAN physique
-    (position reelle de la touche sur le clavier, comme le
-    ferait un vrai clavier USB/HID). Windows applique ensuite
-    la disposition AZERTY du PC, comme avec le mode Bluetooth."""
-    drapeaux = KEYEVENTF_SCANCODE | (KEYEVENTF_KEYUP if relache else 0)
+    # Ponctuation : codes VK reels pour les jeux
+    TOUCHES.update({
+        "-": 0xBD, "=": 0xBB, "[": 0xDB, "]": 0xDD, "\\": 0xDC,
+        ";": 0xBA, "'": 0xDE, ",": 0xBC, ".": 0xBE, "/": 0xBF,
+        "`": 0xC0, "#": 0xBF,
+    })
 
-    entree = INPUT()
-    entree.type = INPUT_KEYBOARD
-    entree.ki = KEYBDINPUT(0, scan & 0xFFFF, drapeaux, 0, _pointer_nul())
-    user32.SendInput(1, ctypes.byref(entree), ctypes.sizeof(INPUT))
+    # Codes de scan des 26 lettres (noms = touches HID en position
+    # QWERTY US, comme dans WifiClient.java) :
+    #   qwertyuiop -> 0x10-0x19, asdfghjkl -> 0x1E-0x26, zxcvbnm -> 0x2C-0x32
+    SCAN_LETTRES = {}
+    for _i, _c in enumerate("qwertyuiop"):
+        SCAN_LETTRES[_c] = 0x10 + _i
+    for _i, _c in enumerate("asdfghjkl"):
+        SCAN_LETTRES[_c] = 0x1E + _i
+    for _i, _c in enumerate("zxcvbnm"):
+        SCAN_LETTRES[_c] = 0x2C + _i
 
+    def envoyer_touche(vk, relache):
+        """Enfonce (relache=False) ou relache (relache=True) une
+        touche a partir de son code de touche virtuel (VK)."""
+        scan = user32.MapVirtualKeyW(vk, 0)  # MAPVK_VK_TO_VSC
+        drapeaux = KEYEVENTF_KEYUP if relache else 0
 
-# Codes de scan des 26 lettres (noms = touches HID en position
-# QWERTY US, comme dans WifiClient.java) :
-#   qwertyuiop -> 0x10-0x19, asdfghjkl -> 0x1E-0x26, zxcvbnm -> 0x2C-0x32
-SCAN_LETTRES = {}
-for _i, _c in enumerate("qwertyuiop"):
-    SCAN_LETTRES[_c] = 0x10 + _i
-for _i, _c in enumerate("asdfghjkl"):
-    SCAN_LETTRES[_c] = 0x1E + _i
-for _i, _c in enumerate("zxcvbnm"):
-    SCAN_LETTRES[_c] = 0x2C + _i
-
-
-def envoyer_unicode(caractere):
-    """Tape un caractere unicode (touches sans VK, accents, etc.)."""
-    code = ord(caractere) & 0xFFFF
-
-    for drapeaux in (KEYEVENTF_UNICODE, KEYEVENTF_UNICODE | KEYEVENTF_KEYUP):
         entree = INPUT()
         entree.type = INPUT_KEYBOARD
-        entree.ki = KEYBDINPUT(0, code, drapeaux, 0, _pointer_nul())
+        entree.ki = KEYBDINPUT(
+            vk & 0xFFFF, scan & 0xFFFF, drapeaux, 0, _pointer_nul()
+        )
         user32.SendInput(1, ctypes.byref(entree), ctypes.sizeof(INPUT))
 
+    def envoyer_touche_scan(scan, relache):
+        """Enfonce/relache une touche par son CODE DE SCAN physique
+        (position reelle de la touche sur le clavier, comme le
+        ferait un vrai clavier USB/HID). Windows applique ensuite
+        la disposition AZERTY du PC, comme avec le mode Bluetooth."""
+        drapeaux = KEYEVENTF_SCANCODE | (KEYEVENTF_KEYUP if relache else 0)
 
-def envoyer_par_nom(nom, relache):
-    """Envoie une touche a partir de son nom du protocole.
-    Les lettres passent par le code de scan (position physique),
-    tout le reste par le code de touche virtuel."""
-    if nom in SCAN_LETTRES:
-        envoyer_touche_scan(SCAN_LETTRES[nom], relache)
-    elif nom in TOUCHES:
-        envoyer_touche(TOUCHES[nom], relache)
-    elif len(nom) == 1:
-        envoyer_unicode(nom)
-    else:
-        print("Touche inconnue :", nom)
+        entree = INPUT()
+        entree.type = INPUT_KEYBOARD
+        entree.ki = KEYBDINPUT(0, scan & 0xFFFF, drapeaux, 0, _pointer_nul())
+        user32.SendInput(1, ctypes.byref(entree), ctypes.sizeof(INPUT))
+
+    def envoyer_unicode(caractere):
+        """Tape un caractere unicode (touches sans VK, accents...)."""
+        code = ord(caractere) & 0xFFFF
+
+        for drapeaux in (KEYEVENTF_UNICODE,
+                         KEYEVENTF_UNICODE | KEYEVENTF_KEYUP):
+            entree = INPUT()
+            entree.type = INPUT_KEYBOARD
+            entree.ki = KEYBDINPUT(0, code, drapeaux, 0, _pointer_nul())
+            user32.SendInput(1, ctypes.byref(entree), ctypes.sizeof(INPUT))
+
+    def envoyer_par_nom(nom, relache):
+        """Envoie une touche a partir de son nom du protocole.
+        Les lettres passent par le code de scan (position physique),
+        tout le reste par le code de touche virtuel."""
+        if nom in SCAN_LETTRES:
+            envoyer_touche_scan(SCAN_LETTRES[nom], relache)
+        elif nom in TOUCHES:
+            envoyer_touche(TOUCHES[nom], relache)
+        elif len(nom) == 1:
+            envoyer_unicode(nom)
+        else:
+            print("Touche inconnue :", nom)
+
+    def envoyer_souris(drapeaux, dx=0, dy=0, donnees=0):
+        entree = INPUT()
+        entree.type = INPUT_MOUSE
+        entree.mi = MOUSEINPUT(dx, dy, donnees & 0xFFFFFFFF,
+                               drapeaux, 0, _pointer_nul())
+        user32.SendInput(1, ctypes.byref(entree), ctypes.sizeof(INPUT))
+
+elif SYSTEME == "Linux":
+
+    print("Mode Linux : simulation clavier/souris via X11/XTest.")
+
+    # libX11 et libXtst, chargees dynamiquement (paquets presents
+    # par defaut sur les distributions avec un serveur X).
+    try:
+        libX11 = ctypes.CDLL("libX11.so.6")
+        libXtst = ctypes.CDLL("libXtst.so.6")
+    except OSError as e:
+        sys.exit("Impossible de charger libX11/libXtst : " + str(e)
+                 + "\nInstalle libx11-6 et libxtst6.")
+
+    libX11.XOpenDisplay.restype = ctypes.c_void_p
+    libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+    libX11.XFlush.argtypes = [ctypes.c_void_p]
+    libX11.XFlush.restype = None
+    libX11.XSync.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    libX11.XSync.restype = None
+    libX11.XStringToKeysym.restype = ctypes.c_ulong
+    libX11.XStringToKeysym.argtypes = [ctypes.c_char_p]
+    libX11.XKeysymToKeycode.restype = ctypes.c_ubyte
+    libX11.XKeysymToKeycode.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+    libX11.XWarpPointer.restype = None
+    libX11.XWarpPointer.argtypes = [ctypes.c_void_p] + \
+        [ctypes.c_ulong] * 8
+
+    libXtst.XTestFakeKeyEvent.restype = ctypes.c_int
+    libXtst.XTestFakeKeyEvent.argtypes = [
+        ctypes.c_void_p, ctypes.c_ubyte, ctypes.c_int, ctypes.c_ulong]
+    libXtst.XTestFakeButtonEvent.restype = ctypes.c_int
+    libXtst.XTestFakeButtonEvent.argtypes = [
+        ctypes.c_void_p, ctypes.c_uint, ctypes.c_int, ctypes.c_ulong]
+
+    affichage = libX11.XOpenDisplay(None)
+    if not affichage:
+        sys.exit(
+            "Impossible d'ouvrir l'affichage X11 (variable DISPLAY).\n"
+            "Wayland pur n'est pas supporte : il faut une session X11\n"
+            "ou passer par XWayland."
+        )
+
+    def vider_tampon():
+        libX11.XFlush(affichage)
+
+    # Codes keysym X11 (cf. /usr/include/X11/keysymdef.h)
+    XK_ISO_Level3_Shift = 0xFE03   # AltGr
+    XK_VoidSymbol = 0xFFFFFF
+
+    # Table des touches : nom -> keysym X11
+    # (meme noms que le client Android WifiClient.java)
+    TOUCHES = {
+        "Return": 0xFF0D, "BackSpace": 0xFF08, "Tab": 0xFF09,
+        "Space": 0x20, "Esc": 0xFF1B, "Caps": 0xFFE5,
+        "Shift": 0xFFE1, "Ctrl": 0xFFE3, "Alt": 0xFFE9,
+        "Win": 0xFFE7,                     # Super_L
+        "Menu": XK_ISO_Level3_Shift,       # Menu = AltGr sous X11
+        "Left": 0xFF51, "Up": 0xFF52, "Right": 0xFF53, "Down": 0xFF54,
+        "Insert": 0xFF63, "Delete": 0xFFFF, "Home": 0xFF50, "End": 0xFF57,
+        "PgU": 0xFF55, "PgD": 0xFF56,
+        "NumLock": 0xFF7F,
+        "F1": 0xFFBE, "F2": 0xFFBF, "F3": 0xFFC0, "F4": 0xFFC1,
+        "F5": 0xFFC2, "F6": 0xFFC3, "F7": 0xFFC4, "F8": 0xFFC5,
+        "F9": 0xFFC6, "F10": 0xFFC7, "F11": 0xFFC8, "F12": 0xFFC9,
+    }
+
+    # Chiffres et lettres : sous X11 le keysym correspond au
+    # CARACTERE produit ; XKeysymToKeycode trouve ensuite la
+    # touche physique selon la disposition REELLE du PC. Le
+    # resultat suit donc la configuration du clavier Linux
+    # (AZERTY, QWERTY, etc.), sans aucune table de scan.
+    for _i in range(10):
+        TOUCHES[str(_i)] = 0x30 + _i
+    for _c in "abcdefghijklmnopqrstuvwxyz":
+        TOUCHES[_c] = ord(_c)
+
+    # Ponctuation : keysyms = codes des caracteres directement
+    for _c in "-=[]\\;',./`#":
+        TOUCHES[_c] = ord(_c)
+
+    # Pas de codes de scan sous X11 : les keysyms suffisent.
+    SCAN_LETTRES = {}
+
+    _cache_keycodes = {}
+
+    def keycode_de(keysym):
+        """Retourne le keycode correspondant au keysym selon la
+        disposition courante du serveur X, avec un petit cache."""
+        if keysym not in _cache_keycodes:
+            _cache_keycodes[keysym] = libX11.XKeysymToKeycode(
+                affichage, keysym)
+        return _cache_keycodes[keysym]
+
+    def envoyer_par_nom(nom, relache):
+        """Enfonce/relache une touche via XTest, a partir de son
+        nom du protocole. La disposition du clavier Linux est
+        appliquee automatiquement par le serveur X."""
+        if nom in TOUCHES:
+            keysym = TOUCHES[nom]
+        elif len(nom) == 1:
+            keysym = libX11.XStringToKeysym(nom.encode("utf-8"))
+        else:
+            print("Touche inconnue :", nom)
+            return
+
+        if keysym in (0, XK_VoidSymbol):
+            print("Pas de keysym pour :", nom)
+            return
+
+        keycode = keycode_de(keysym)
+        if keycode == 0:
+            print("Pas de touche physique pour :", nom,
+                  "(absente de la disposition du clavier ?)")
+            return
+
+        libXtst.XTestFakeKeyEvent(
+            affichage, keycode, 0 if relache else 1, 0)
+        vider_tampon()
+
+    def envoyer_unicode(caractere):
+        """Tape un caractere par son keysym unicode (0x0100xxxx).
+        Limitation X11 : il faut que ce caractere soit produit par
+        une touche de la disposition courante, sinon rien."""
+        code = ord(caractere)
+        for keysym in (0x01000000 | code, code):
+            keycode = keycode_de(keysym)
+            if keycode != 0:
+                libXtst.XTestFakeKeyEvent(affichage, keycode, 1, 0)
+                libXtst.XTestFakeKeyEvent(affichage, keycode, 0, 0)
+                vider_tampon()
+                return
+        print("Caractere non disponible sur cette disposition :",
+              repr(caractere))
+
+    def envoyer_souris(drapeaux, dx=0, dy=0, donnees=0):
+        """Souris via XWarpPointer (deplacement relatif),
+        XTestFakeButtonEvent (boutons et molette)."""
+        if drapeaux & MOUSEEVENTF_MOVE:
+            # dest_fenetre = None -> deplacement RELATIF de (dx, dy).
+            libX11.XWarpPointer(affichage, 0, 0, 0, 0, 0, 0, dx, dy)
+
+        if drapeaux & MOUSEEVENTF_WHEEL:
+            # Boutons molette X11 : 4 = vers le haut, 5 = vers le bas.
+            bouton = 4 if donnees > 0 else 5
+            crans = max(1, abs(donnees) // 120)
+            for _ in range(crans):
+                libXtst.XTestFakeButtonEvent(affichage, bouton, 1, 0)
+                libXtst.XTestFakeButtonEvent(affichage, bouton, 0, 0)
+
+        # Boutons X11 : 1 = gauche, 2 = milieu, 3 = droit.
+        if drapeaux & MOUSEEVENTF_LEFTDOWN:
+            libXtst.XTestFakeButtonEvent(affichage, 1, 1, 0)
+        if drapeaux & MOUSEEVENTF_LEFTUP:
+            libXtst.XTestFakeButtonEvent(affichage, 1, 0, 0)
+        if drapeaux & MOUSEEVENTF_RIGHTDOWN:
+            libXtst.XTestFakeButtonEvent(affichage, 3, 1, 0)
+        if drapeaux & MOUSEEVENTF_RIGHTUP:
+            libXtst.XTestFakeButtonEvent(affichage, 3, 0, 0)
+        if drapeaux & MOUSEEVENTF_MIDDLEDOWN:
+            libXtst.XTestFakeButtonEvent(affichage, 2, 1, 0)
+        if drapeaux & MOUSEEVENTF_MIDDLEUP:
+            libXtst.XTestFakeButtonEvent(affichage, 2, 0, 0)
+
+        vider_tampon()
+
+    def envoyer_touche(vk, relache):
+        """Non utilise sous Linux (les VK sont specifiques a
+        Windows) ; presente pour la compatibilite."""
+        pass
+
+else:
+    sys.exit("Systeme non supporte : " + str(SYSTEME)
+             + " (seuls Windows et Linux le sont).")
 
 
-def envoyer_souris(drapeaux, dx=0, dy=0, donnees=0):
-    entree = INPUT()
-    entree.type = INPUT_MOUSE
-    entree.mi = MOUSEINPUT(dx, dy, donnees & 0xFFFFFFFF,
-                           drapeaux, 0, _pointer_nul())
-    user32.SendInput(1, ctypes.byref(entree), ctypes.sizeof(INPUT))
+def taper_touche(nom):
+    envoyer_par_nom(nom, False)
+    envoyer_par_nom(nom, True)
 
 
 # ------------------------------------------------------------
 # Auto-repeat des touches maintenues
 #
-# SendInput ne declenche PAS l'auto-repeat de Windows (celui-ci
-# vient du materiel/driver d'un vrai clavier). Les champs de
-# texte et le deplacement du curseur n'ont donc qu'UN appui.
-# On rejoue donc nous-memes les touches encore enfoncees.
+# Ni SendInput ni XTest ne declenchent l'auto-repeat du systeme
+# (celui-ci vient du materiel/driver d'un vrai clavier). Les
+# champs de texte n'ont donc qu'UN appui. On rejoue donc
+# nous-memes les touches encore enfoncees.
 # ------------------------------------------------------------
 
 DELAI_REPETITION = 0.50      # delai initial avant les repetitions (s)
@@ -246,7 +467,7 @@ def fil_auto_repeat():
                     etat["derniere"] = maintenant
                     a_rejouer.append(nom)
 
-        # Injection hors du verrou (SendInput peut etre lent).
+        # Injection hors du verrou (peut etre lent).
         for nom in a_rejouer:
             try:
                 envoyer_par_nom(nom, False)  # re-"Down" = repetition
@@ -258,53 +479,8 @@ threading.Thread(target=fil_auto_repeat, daemon=True).start()
 
 
 # ------------------------------------------------------------
-# Table des touches : nom -> code de touche virtuel
-# (meme noms que le client Android WifiClient.java)
+# Traitement d'une commande (commun Windows / Linux)
 # ------------------------------------------------------------
-
-TOUCHES = {
-    "Return": 0x0D, "BackSpace": 0x08, "Tab": 0x09, "Space": 0x20,
-    "Esc": 0x1B, "Caps": 0x14,
-    "Shift": 0x10, "Ctrl": 0x11, "Alt": 0x12,
-    "Win": 0x5B, "Menu": 0xA5,   # Menu = AltGr (VK_RMENU)
-    "Left": 0x25, "Up": 0x26, "Right": 0x27, "Down": 0x28,
-    "Insert": 0x2D, "Delete": 0x2E, "Home": 0x24, "End": 0x23,
-    "PgU": 0x21, "PgD": 0x22,
-    "NumLock": 0x90,
-    "F1": 0x70, "F2": 0x71, "F3": 0x72, "F4": 0x73, "F5": 0x74,
-    "F6": 0x75, "F7": 0x76, "F8": 0x77, "F9": 0x78, "F10": 0x79,
-    "F11": 0x7A, "F12": 0x7B,
-}
-
-# Chiffres et lettres
-for _i in range(10):
-    TOUCHES[str(_i)] = 0x30 + _i
-for _c in "abcdefghijklmnopqrstuvwxyz":
-    TOUCHES[_c] = ord(_c.upper())
-
-# Ponctuation : codes VK reels pour les jeux
-TOUCHES.update({
-    "-": 0xBD, "=": 0xBB, "[": 0xDB, "]": 0xDD, "\\": 0xDC,
-    ";": 0xBA, "'": 0xDE, ",": 0xBC, ".": 0xBE, "/": 0xBF,
-    "`": 0xC0, "#": 0xBF,
-})
-
-BOUTONS = {
-    # b -> (drapeau enfonce, drapeau relache)
-    1: (MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP),
-    2: (MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP),
-    3: (MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP),
-}
-
-
-# ------------------------------------------------------------
-# Traitement d'une commande
-# ------------------------------------------------------------
-
-def taper_touche(nom):
-    envoyer_par_nom(nom, False)
-    envoyer_par_nom(nom, True)
-
 
 def traiter(ligne):
     if ligne == "PING" or ligne == "":
@@ -352,9 +528,9 @@ def traiter(ligne):
                 if c in TOUCHES:
                     taper_touche(c)
                 elif c.isupper() and c.lower() in TOUCHES:
-                    envoyer_touche(TOUCHES["Shift"], False)
+                    envoyer_par_nom("Shift", False)
                     taper_touche(c.lower())
-                    envoyer_touche(TOUCHES["Shift"], True)
+                    envoyer_par_nom("Shift", True)
                 else:
                     envoyer_unicode(c)
 
@@ -366,7 +542,7 @@ def traiter(ligne):
 
 
 # ------------------------------------------------------------
-# Serveur
+# Serveur (commun Windows / Linux)
 # ------------------------------------------------------------
 
 def adresse_ip_locale():
@@ -466,6 +642,7 @@ def main():
 
     print("=" * 52)
     print("  Serveur clavier/souris - Clavier Bluetooth")
+    print("  Systeme :", SYSTEME)
     print("  Entre cette adresse IP dans l'application :")
     print()
     print("      " + ip)
