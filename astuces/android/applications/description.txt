@@ -132,6 +132,12 @@ Depuis votre serveur : http://ipserveur:8080 ou http://localhost:8080 ou http://
 ou http://0.0.0.0:8080
 
 
+Clavier Buetooth
+----------------
+Utiliser un appareil Android comme un clavier Bluetooth ou Wi-Fi.
+Compatibilité Bluetooth : Android 9+
+Compatibilité Wi-Fi : Android 4.0.1
+
 Indexeur
 --------
 Créer un fichier docs.js comme index de recherche pour la page search.html
