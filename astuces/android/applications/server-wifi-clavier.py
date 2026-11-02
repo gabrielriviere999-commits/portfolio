@@ -9,6 +9,12 @@
 #  Aucune dependance : uniquement la bibliotheque standard de
 #  Python 3 (socket + ctypes).
 #
+#  MULTI-CLIENTS : plusieurs telephones/tablettes peuvent se
+#  connecter en meme temps. Chaque client a son propre fil
+#  d'execution ; les touches maintenues sont tracees par
+#  client, et la deconnexion de l'un ne relache que SES
+#  touches (pas celles des autres).
+#
 #  Sur Linux :
 #    - necessite une session X11 (ou XWayland, variable
 #      DISPLAY definie). Wayland pur n'a pas d'API globale
@@ -27,7 +33,7 @@
 #      SpecialKey Down <nom>      enfonce une touche
 #      SpecialKey Up <nom>        relache une touche
 #      SpecialKey Tap <nom>       appui puis relachement
-#      TypeString <texte>        tape un texte
+#      TypeString <texte>         tape un texte
 #      PING                       ignoré (maintien de connexion)
 #      Quit                       ferme la connexion
 #
@@ -410,23 +416,28 @@ def taper_touche(nom):
 # (celui-ci vient du materiel/driver d'un vrai clavier). Les
 # champs de texte n'ont donc qu'UN appui. On rejoue donc
 # nous-memes les touches encore enfoncees.
+#
+# Les touches sont tracees PAR CLIENT : chaque client connecte
+# possede ses propres touches maintenues, et la deconnexion de
+# l'un ne relache que les siennes.
 # ------------------------------------------------------------
 
 DELAI_REPETITION = 0.50      # delai initial avant les repetitions (s)
 INTERVALLE_REPETITION = 0.04 # intervalle entre repetitions (~25/s)
 
 verrou_touches = threading.Lock()
-# nom -> {"debut": heure d'appui, "derniere": heure du dernier rejou}
+# nom -> {"client": identite, "debut": heure, "derniere": heure}
 touches_maintenues = {}
 
 
-def maintenir_touche(nom):
-    """Enregistre une touche comme etant maintenue (deja envoyee
-    une fois en 'Down' par l'app)."""
+def maintenir_touche(nom, client):
+    """Enregistre une touche comme etant maintenue par CLIENT
+    (deja envoyee une fois en 'Down' par l'app)."""
     if nom in SCAN_LETTRES or nom in TOUCHES:
         with verrou_touches:
             maintenant = time.monotonic()
             touches_maintenues[nom] = {
+                "client": client,
                 "debut": maintenant,
                 "derniere": maintenant,
             }
@@ -438,12 +449,15 @@ def relacher_touche(nom):
         touches_maintenues.pop(nom, None)
 
 
-def relacher_toutes_touches():
-    """Relache physiquement toutes les touches encore maintenues
-    (utilise quand la connexion se coupe)."""
+def relacher_touche_client(client):
+    """Relache physiquement toutes les touches maintenues par
+    ce client uniquement (utilise quand SA connexion se coupe :
+    les touches des autres clients restent en place)."""
     with verrou_touches:
-        noms = list(touches_maintenues.keys())
-        touches_maintenues.clear()
+        noms = [n for n, e in touches_maintenues.items()
+                if e["client"] == client]
+        for n in noms:
+            del touches_maintenues[n]
     for nom in noms:
         try:
             envoyer_par_nom(nom, True)
@@ -452,9 +466,10 @@ def relacher_toutes_touches():
 
 
 def fil_auto_repeat():
-    """Fils en arriere-plan : rejoue les touches maintenues,
-    d'abord apres DELAI_REPETITION, puis toutes les
-    INTERVALLE_REPETITION secondes, comme un vrai clavier."""
+    """Fils en arriere-plan : rejoue TOUTES les touches maintenues
+    (quel que soit le client qui les tient), d'abord apres
+    DELAI_REPETITION puis toutes les INTERVALLE_REPETITION
+    secondes, comme un vrai clavier."""
     while True:
         time.sleep(0.01)
         maintenant = time.monotonic()
@@ -479,10 +494,11 @@ threading.Thread(target=fil_auto_repeat, daemon=True).start()
 
 
 # ------------------------------------------------------------
-# Traitement d'une commande (commun Windows / Linux)
+# Traitement d'une commande (commun Windows / Linux,
+# execute dans le fil du client qui a envoye la commande)
 # ------------------------------------------------------------
 
-def traiter(ligne):
+def traiter(ligne, client):
     if ligne == "PING" or ligne == "":
         return
 
@@ -512,8 +528,9 @@ def traiter(ligne):
         elif ligne.startswith("SpecialKey Down "):
             nom = ligne[len("SpecialKey Down "):]
             envoyer_par_nom(nom, False)
-            # Enregistre la touche pour l'auto-repeat.
-            maintenir_touche(nom)
+            # Enregistre la touche pour l'auto-repeat, au nom
+            # de CE client.
+            maintenir_touche(nom, client)
 
         elif ligne.startswith("SpecialKey Up "):
             nom = ligne[len("SpecialKey Up "):]
@@ -542,7 +559,7 @@ def traiter(ligne):
 
 
 # ------------------------------------------------------------
-# Serveur (commun Windows / Linux)
+# Serveur (commun Windows / Linux, multi-clients)
 # ------------------------------------------------------------
 
 def adresse_ip_locale():
@@ -556,20 +573,28 @@ def adresse_ip_locale():
         return "127.0.0.1"
 
 
+# Nombre de clients actuellement connectes (affichage console).
+verrou_compteur = threading.Lock()
+compteur_clients = 0
+
+
 def gerer_client(conn, addr):
-    print("Connecte a", addr[0])
+    global compteur_clients
+
+    client = addr[0] + ":" + str(addr[1])
+
+    with verrou_compteur:
+        compteur_clients += 1
+        total = compteur_clients
+
+    print("Connecte a", client, "(", total, "client(s) actif(s) )")
 
     # Delai maximum entre deux messages du client. L'application
     # envoie un "PING" toutes les 600 ms quand on n'utilise pas
     # le clavier : au-dela de 5 secondes sans rien recevoir, on
-    # considere que la connexion est perdue (plus besoin de
-    # relancer le script : le serveur se remet en attente).
+    # considere que la connexion est perdue.
     DELAI_PING = 5.0
     conn.settimeout(DELAI_PING)
-
-    # Aucune touche ne doit rester "maintenue" d'une connexion
-    # precedente.
-    relacher_toutes_touches()
 
     f = conn.makefile("r", encoding="utf-8", newline="\n")
 
@@ -577,10 +602,16 @@ def gerer_client(conn, addr):
     if premiere != "HELLO":
         print("Poignee de main invalide, deconnexion.")
         conn.close()
+        with verrou_compteur:
+            compteur_clients -= 1
         return
 
-    conn.sendall(b"OK\n")
-    print("Application connectee ! (toucher = souris, boutons = clavier)")
+    try:
+        conn.sendall(b"OK\n")
+    except Exception:
+        pass
+    print("Application connectee :", client,
+          "( toucher = souris, boutons = clavier )")
 
     perdu = False
 
@@ -595,35 +626,41 @@ def gerer_client(conn, addr):
             ligne = ligne.rstrip("\r\n")
             if ligne == "Quit":
                 break
-            traiter(ligne)
+            traiter(ligne, client)
 
     except socket.timeout:
         perdu = True
         print("Client injoignable (aucun message depuis",
-              int(DELAI_PING), "s), connexion consideree perdue.")
+              int(DELAI_PING), "s), connexion consideree perdue :",
+              client)
 
     except ConnectionResetError:
         perdu = True
-        print("Connexion interrompue par le client.")
+        print("Connexion interrompue par le client :", client)
 
     except Exception as e:
         perdu = True
-        print("Erreur de connexion :", e)
+        print("Erreur de connexion", client, ":", e)
 
     try:
         conn.close()
     except Exception:
         pass
 
-    # Si la connexion s'est coupee avec des touches encore
-    # maintenues (app fermee brutalement, WiFi perdu...), on les
-    # relache pour ne pas laisser une touche bloquee sur le PC.
-    relacher_toutes_touches()
+    # Relache UNIQUEMENT les touches maintenues par CE client :
+    # les autres clients connectes ne sont pas perturbes.
+    relacher_touche_client(client)
+
+    with verrou_compteur:
+        compteur_clients -= 1
+        total = compteur_clients
 
     if perdu:
-        print("Connexion perdue. En attente d'une nouvelle application...")
+        print("Connexion perdue :", client, "-",
+              total, "client(s) restant(s)")
     else:
-        print("Deconnecte. En attente d'une nouvelle application...")
+        print("Deconnecte :", client, "-",
+              total, "client(s) restant(s)")
 
 
 def main():
@@ -638,16 +675,18 @@ def main():
         print("Impossible d'ouvrir le port", PORT, ":", e)
         sys.exit(1)
 
-    serveur.listen(1)
+    serveur.listen(8)
 
     print("=" * 52)
     print("  Serveur clavier/souris - Clavier Bluetooth")
-    print("  Systeme :", SYSTEME)
+    print("  Systeme :", SYSTEME, "(multi-clients)")
     print("  Entre cette adresse IP dans l'application :")
     print()
     print("      " + ip)
     print()
     print("  Port :", PORT)
+    print("  Plusieurs appareils peuvent se connecter")
+    print("  en meme temps.")
     print("  Ctrl+C pour arreter.")
     print("=" * 52)
 
@@ -657,7 +696,12 @@ def main():
         except KeyboardInterrupt:
             print("\nArret du serveur.")
             return
-        gerer_client(conn, addr)
+
+        # Un fil par client : les autres restent connectes meme
+        # si celui-ci bloque ou se deconnecte.
+        fil = threading.Thread(
+            target=gerer_client, args=(conn, addr), daemon=True)
+        fil.start()
 
 
 if __name__ == "__main__":
