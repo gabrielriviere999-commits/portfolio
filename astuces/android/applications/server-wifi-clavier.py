@@ -140,6 +140,7 @@ if SYSTEME == "Windows":
         "Esc": 0x1B, "Caps": 0x14,
         "Shift": 0x10, "Ctrl": 0x11, "Alt": 0x12,
         "Win": 0x5B, "Menu": 0xA5,   # Menu = AltGr (VK_RMENU)
+        "ContextMenu": 0x5D,         # touche Menu du clavier (VK_APPS)
         "Left": 0x25, "Up": 0x26, "Right": 0x27, "Down": 0x28,
         "Insert": 0x2D, "Delete": 0x2E, "Home": 0x24, "End": 0x23,
         "PgU": 0x21, "PgD": 0x22,
@@ -172,6 +173,25 @@ if SYSTEME == "Windows":
         SCAN_LETTRES[_c] = 0x1E + _i
     for _i, _c in enumerate("zxcvbnm"):
         SCAN_LETTRES[_c] = 0x2C + _i
+
+    # Touches POSITIONNELLES (codes de scan US) pour les
+    # chiffres et la ponctuation : le client Android envoie
+    # des usages HID positionnels ("1" = la touche physique
+    # du chiffre 1, pas le caractere). En passant par le code
+    # de scan, Windows applique la disposition REELLE du PC :
+    # en AZERTY, la touche "1" produit "&" sans Maj et "1"
+    # avec Maj, exactement comme un clavier filaire.
+    SCAN_POSITIONNEL = {
+        "1": 0x02, "2": 0x03, "3": 0x04, "4": 0x05, "5": 0x06,
+        "6": 0x07, "7": 0x08, "8": 0x09, "9": 0x0A, "0": 0x0B,
+        "-": 0x0C, "=": 0x0D,
+        "[": 0x1A, "]": 0x1B, "\\": 0x2B,
+        ";": 0x27, "'": 0x28,
+        "`": 0x29,
+        ",": 0x33, ".": 0x34, "/": 0x35,
+        "#": 0x29,   # usage HID 0x35 = position de `² (AZERTY)
+        "IntlBackslash": 0x56,  # touche >/< (a gauche de Maj droit)
+    }
 
     def envoyer_touche(vk, relache):
         """Enfonce (relache=False) ou relache (relache=True) une
@@ -211,10 +231,15 @@ if SYSTEME == "Windows":
 
     def envoyer_par_nom(nom, relache):
         """Envoie une touche a partir de son nom du protocole.
-        Les lettres passent par le code de scan (position physique),
-        tout le reste par le code de touche virtuel."""
+        Les lettres, chiffres et la ponctuation passent par le
+        CODE DE SCAN (position physique de la touche) : Windows
+        applique ensuite la disposition REELLE du PC (AZERTY,
+        QWERTY...), comme avec le mode Bluetooth. Seules les
+        touches nommees (F1, Shift...) passent par le VK."""
         if nom in SCAN_LETTRES:
             envoyer_touche_scan(SCAN_LETTRES[nom], relache)
+        elif nom in SCAN_POSITIONNEL:
+            envoyer_touche_scan(SCAN_POSITIONNEL[nom], relache)
         elif nom in TOUCHES:
             envoyer_touche(TOUCHES[nom], relache)
         elif len(nom) == 1:
@@ -286,6 +311,8 @@ elif SYSTEME == "Linux":
         "Shift": 0xFFE1, "Ctrl": 0xFFE3, "Alt": 0xFFE9,
         "Win": 0xFFE7,                     # Super_L
         "Menu": XK_ISO_Level3_Shift,       # Menu = AltGr sous X11
+        "ContextMenu": 0xFF67,             # touche Menu (XK_Menu)
+        "IntlBackslash": 0x3C,             # touche >/< (keysym '<')
         "Left": 0xFF51, "Up": 0xFF52, "Right": 0xFF53, "Down": 0xFF54,
         "Insert": 0xFF63, "Delete": 0xFFFF, "Home": 0xFF50, "End": 0xFF57,
         "PgU": 0xFF55, "PgD": 0xFF56,
@@ -311,6 +338,7 @@ elif SYSTEME == "Linux":
 
     # Pas de codes de scan sous X11 : les keysyms suffisent.
     SCAN_LETTRES = {}
+    SCAN_POSITIONNEL = {}
 
     _cache_keycodes = {}
 
@@ -433,7 +461,8 @@ touches_maintenues = {}
 def maintenir_touche(nom, client):
     """Enregistre une touche comme etant maintenue par CLIENT
     (deja envoyee une fois en 'Down' par l'app)."""
-    if nom in SCAN_LETTRES or nom in TOUCHES:
+    if (nom in SCAN_LETTRES or nom in SCAN_POSITIONNEL
+            or nom in TOUCHES):
         with verrou_touches:
             maintenant = time.monotonic()
             touches_maintenues[nom] = {
@@ -541,12 +570,14 @@ def traiter(ligne, client):
             taper_touche(ligne[len("SpecialKey Tap "):])
 
         elif ligne.startswith("TypeString "):
+            # TypeString tape des CARACTERES (pas des touches) :
+            # on passe par le chemin semantique (unicode), jamais
+            # par les positions physiques, pour que le texte soit
+            # correct quelle que soit la disposition du PC.
             for c in ligne[len("TypeString "):]:
-                if c in TOUCHES:
-                    taper_touche(c)
-                elif c.isupper() and c.lower() in TOUCHES:
+                if c.isupper():
                     envoyer_par_nom("Shift", False)
-                    taper_touche(c.lower())
+                    envoyer_unicode(c)
                     envoyer_par_nom("Shift", True)
                 else:
                     envoyer_unicode(c)
