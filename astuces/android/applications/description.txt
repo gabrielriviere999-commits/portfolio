@@ -135,7 +135,10 @@ ou http://0.0.0.0:8080
 Clavier Buetooth
 ----------------
 Utiliser un appareil Android comme un clavier Bluetooth ou Wi-Fi.
-Compatibilité Bluetooth : Android 9+
+Pour la section GAMING ACTIONS personnalisée, consulter le tableau pour définir l'usage HID de chaque touche :
+https://gabrielriviere999-commits.github.io/portfolio/astuces/android/applications/usage-action-clavier-bluetooth.html
+
+Compatibilité Bluetooth HID : Android 9+
 Compatibilité Wi-Fi : Android 4.0.1
 
 Indexeur
