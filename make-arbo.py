@@ -145,7 +145,7 @@ def generate_html(tree, nb_folders, nb_files):
 <style>
 body{{background:black;color:#33b5e5;font-family:monospace;}}
 pre.tree{{padding:5px;}}
-.folder{{color:#069;}}
+.folder{{color:#6df;}}
 .file{{color:#33b5e5;text-decoration:none;}}
 .file:hover{{text-decoration:underline;}}
 .ascii{{color:#33b5e5;}}
