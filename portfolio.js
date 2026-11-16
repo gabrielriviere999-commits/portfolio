@@ -320,11 +320,11 @@ window.popupMenuHTML =
     '<ul><li><a href="https://codeload.github.com/gabrielriviere999-commits/ocr/zip/refs/heads/main" style="color:#f44;" download>Télécharger dépôt ocr</a></li></ul>' +
     '<ul><li><a href="https://codeload.github.com/gabrielriviere999-commits/photos360/zip/refs/heads/main" style="color:#f44;" download>Télécharger dépôt photos360</a></li></ul>' +
     '</ul>' +
-    'Interfaces WEB' +
+    'Android' +
     '<ul>' +
-    '<li><a href="../interfaces-web/arbo.html" style="color:#9c0;">Arborescence</a></li>' +
-    '<li><a href="https://github.com/gabrielriviere999-commits/interfaces-web" style="color:#9c0;">Dépôt GitHub</a></li>' +
-    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/interfaces-web/zip/refs/heads/main" style="color:#9c0;" download>Télécharger dépôt</a></li>' +
+    '<li><a href="../android/arbo.html" style="color:#9c0;">Arborescence</a></li>' +
+    '<li><a href="https://github.com/gabrielriviere999-commits/android" style="color:#9c0;">Dépôt GitHub</a></li>' +
+    '<li><a href="https://codeload.github.com/gabrielriviere999-commits/android/zip/refs/heads/main" style="color:#9c0;" download>Télécharger dépôt</a></li>' +
     '</ul>' +
     'Neocities' +
     '<ul>' +
