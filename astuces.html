@@ -127,41 +127,7 @@ Scripts Linux
 </div>
 
 <fieldset><legend>Télécharger</legend>
-
-<button onclick="openAndroidPopup()">Android...</button>
-<div id="popupAndroidContent" style="display:none">
-Applications Android
-<ul>
-  <li><a href="../android/applications/tableau-ascii.apk" download>tableau-ascii.apk</a></li>
-  <li><a href="../android/applications/editeur-de-texte.apk" download>editeur-de-texte.apk</a></li>
-  <li><a href="../android/applications/extraction-code-couleur.apk" download>extraction-code-couleur.apk</a></li>
-  <li><a href="../android/applications/selecteur-couleur.apk" download>selecteur-couleur.apk</a></li>
-  <li><a href="../android/applications/ocrecran.apk" download>ocrecran.apk</a></li>
-  <li><a href="../android/applications/enregistrer.apk" download>enregistrer.apk</a></li>
-  <li><a href="../android/applications/clipboard-image.apk" download>clipboard-image.apk</a></li>
-  <li><a href="../android/applications/clipboard-base64.apk" download>clipboard-base64.apk</a></li>
-  <li><a href="../android/applications/serveur-http.apk" download>serveur-http.apk</a></li>
-  <li><a href="../android/applications/serveur-http-android4.apk" download>serveur-http-android4.apk</a></li>
-  <li><a href="../android/applications/clavier-bluetooth.apk" download>clavier-bluetooth.apk</a></li>
-  <li><a href="../android/applications/server-wifi-clavier.py" download>server-wifi-clavier.py</a></li>
-  <li><a href="../android/applications/usage-action-clavier-bluetooth.html" download>usage-action-clavier-bluetooth.html</a></li>
-  <li><a href="../android/applications/indexeur.apk" download>indexeur.apk</a></li>
-  <li><a href="../android/applications/arbo.apk" download>arbo.apk</a></li>
-  <li><a href="https://www.dropbox.com/scl/fi/jdllddjhw2gq1j9bji2tv/projets-android.zip?rlkey=gsmjde1idxn21hhehnxdfrvda&st=np04pnxx&dl=1">Télécharger projets depuis Dropbox</a></li>
-</ul>
-Scripts Termux
-<ul>
-  <li><a href="../android/termux/preparer-termux.txt">preparer-termux.txt</a></li>
-  <li><a href="../android/termux/tableau-clipboard-android.py" download>tableau-clipboard-android.py</a></li>
-  <li><a href="../android/termux/minuscule-android.py" download>minuscule-android.py</a></li>
-  <li><a href="../android/termux/majuscule-android.py" download>majuscule-android.py</a></li>
-  <li><a href="../android/termux/inverser-casse-android.py" download>inverser-casse-android.py</a></li>
-</ul>
-Userscripts
-<ul>
-  <li><a href="../android/userscripts/importer-dossier-extraire-zip.js" download>importer-dossier-extraire-zip.js</a></li></ul>
-</ul>
-</div>
+  <a href="../android/arbo.html">Android</a>
 </fieldset>
 <br><hr><br>
 <button onclick="openAutreOSPopup()">Autre OS...</button>
@@ -188,10 +154,6 @@ macOS
 <script>
 function openScriptPopup() {
   var container = document.getElementById("popupScriptsContent");
-  openPopupMenu(container);
-}
-function openAndroidPopup() {
-  var container = document.getElementById("popupAndroidContent");
   openPopupMenu(container);
 }
 function openAutreOSPopup() {
