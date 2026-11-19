@@ -13,4 +13,4 @@ pre { margin:0; }
 .note { margin-top:0.4em; margin-bottom:0.4em; padding:8px 10px; background:#fff8e5; color:black; border-left:4px solid #f0ad4e; }
 table { border-collapse:collapse; width:100%; }
 td { border:1px solid #888; }
-@media (hover:none) and (pointer:coarse) {::-webkit-scrollbar { width:24px; height:24px; background:#000; } ::-webkit-scrollbar-track { background:#000; border-top:2px solid #888; border-left:2px solid #888; border-bottom:2px solid #111; border-right:2px solid #111; } ::-webkit-scrollbar-thumb { background:#202020; border-top:2px solid #888; border-left:2px solid #888; border-bottom:2px solid #111; border-right:2px solid #111; } ::-webkit-scrollbar-corner { background:#000; border-top:2px solid #888; border-left:2px solid #888; border-bottom:2px solid #111; border-right:2px solid #111; }}
+@media (hover:none) and (pointer:coarse) { ::-webkit-scrollbar { width:24px; height:24px; background:#000; } ::-webkit-scrollbar-track,::-webkit-scrollbar-corner { background:#000; border:2px solid; border-color:#888 #111 #111 #888; } ::-webkit-scrollbar-thumb { background:#222; border:2px solid; border-color:#888 #111 #111 #888; }}
