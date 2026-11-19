@@ -28,6 +28,7 @@ a:hover{text-decoration:underline;}
   cursor:pointer;
   text-decoration:none;
   display:inline-block;
+  -webkit-tap-highlight-color:transparent;
 }
 .a:hover{filter:brightness(1.2);text-decoration:underline;}
 .a:active {
@@ -103,6 +104,7 @@ button:active {
   line-height:32px;
   box-sizing:border-box;
   text-decoration:none;
+   -webkit-tap-highlight-color:transparent;
 }
 .tab-button:hover:not(.tab-button-active) {
   background:rgba(97,97,97,0.7);
