@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="stylesheet" href="outils.css">
+<link rel="stylesheet" href="color-palette.css">
+<title>Visionneuse 3D - GLTF, GLB, OBJ, STL</title>
+</head>
+<body>
+<div class="overlayColorPicker">
+  <div class="overlayColorPicker-cell">
+    <div class="mini-picker" id="miniPicker">
+      <div class="sv-box" id="svBox">
+        <div class="sv-cursor" id="svCursor"></div>
+      </div>
+      <div class="hue-slider" id="hueSlider">
+        <div class="hue-cursor" id="hueCursor"></div>
+      </div>
+      <div class="alpha-slider" id="alphaSlider">
+        <div class="alpha-cursor" id="alphaCursor"></div>
+      </div>
+      <div class="quick-colors">
+        <button class="qc" data-col="#000000" style="background:#000000"></button>
+        <button class="qc" data-col="#ffffff" style="background:#ffffff"></button>
+        <button class="qc" data-col="#ff0000" style="background:#ff0000"></button>
+        <button class="qc" data-col="#ff9900" style="background:#ff9900"></button>
+        <button class="qc" data-col="#ffff00" style="background:#ffff00"></button>
+        <button class="qc" data-col="#00ff00" style="background:#00ff00"></button>
+        <button class="qc" data-col="#00ffff" style="background:#00ffff"></button>
+        <button class="qc" data-col="#0000ff" style="background:#0000ff"></button>
+        <button class="qc" data-col="#ff00ff" style="background:#ff00ff"></button>
+      </div>
+      <button id="closePickerBtn" onclick="closePicker()">Fermer</button>
+    </div>
+  </div>
+</div>
+<button onclick="openMenuPopup()" class="menu">≡</button>
+<div id="popupMenuContent" style="display:none">
+  <b class="titleb">Menu</b><hr class="titlehr">
+  <input type="file" id="fileinput" multiple>
+  <button id="reset" style="width:auto;">Recentrer</button>
+  <label><input type="checkbox" id="chkRotation">Rotation auto</label><br>
+  <select id="mode">
+    <option value="solid">Solide</option>
+    <option value="wire">Filaire</option>
+    <option value="both">Solide + contours</option>
+  </select><br>
+  <label>Modèle : <input type="text" id="modelColor" value="#cccccc" size="8"><button class="previewColorPicker"></button></label>
+  <label>Arrière plan : <input type="text" id="bgColor" value="#222222" size="8"><button class="previewColorPicker"></button></label>
+  <br><label class="control"><input type="checkbox" id="grid" checked>Grille</label>
+  <label class="control"><input type="checkbox" id="axes" checked>Axes</label>
+  <details><summary>Aide</summary>
+    • Glisser avec clic gauche / 1 doigt / flèches : pivoter<br>
+    • Glisser avec clic droit / 2 doigts / ZQSD ou WASD : se déplacer<br>
+    • Pincer avec 2 doigts / tourner ou glisser molette / Ctrl + ou - : zoomer / dézoomer
+  </details>
+  <details><summary>Bibliothèques 3D</summary>
+    <ul>
+      <li><a href="https://unpkg.com/three@0.128.0/build/three.min.js">https://unpkg.com/three@0.128.0/build/three.min.js</a></li>
+      <li><a href="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js">https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js</a></li>
+      <li><a href="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js">https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js</a></li>
+      <li><a href="https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js">https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js</a></li>
+      <li><a href="https://unpkg.com/three@0.128.0/examples/js/loaders/STLLoader.js">https://unpkg.com/three@0.128.0/examples/js/loaders/STLLoader.js</a></li>
+    </ul>
+  </details>
+  <hr><button onclick="closePopup()">Fermer</button>
+</div>
+<div id="scene">
+  <div id="drop"></div>
+</div>
+<div id="commandesDirection">
+  <button class="btnDir" id="btnHaut">↑</button>
+  <div id="ligneBas">
+    <button class="btnDir" id="btnGauche">←</button>
+    <button class="btnDir" id="btnBas">↓</button>
+    <button class="btnDir" id="btnDroite">→</button>
+  </div>
+</div>
+<div id="fovSliderContainer">
+  <span id="fov">50°</span> <input type="range" id="fovSlider" min="10" max="100" step="1" value="50">
+</div>
+<div id="dropPage"><span>Relâchez pour charger la photo 360°</span></div>
+<script src="libs/visionneuse3d/three.min.js"></script>
+<script src="libs/visionneuse3d/OrbitControls.js"></script>
+<script src="libs/visionneuse3d/GLTFLoader.js"></script>
+<script src="libs/visionneuse3d/OBJLoader.js"></script>
+<script src="libs/visionneuse3d/STLLoader.js"></script>
+<script src="popup.js"></script>
+<script src="color-palette.js"></script>
+<script>
+function openMenuPopup() {
+  var container = document.getElementById("popupMenuContent");
+  openPopupMenu(container);
+}
+var modelColor = byId("modelColor");
+var bgColor = byId("bgColor");
+attachColorPickerTo(modelColor);
+attachColorPickerTo(bgColor);
+updatePickerFromInput(modelColor, modelColor.nextElementSibling);
+updatePickerFromInput(bgColor, bgColor.nextElementSibling);
+function validateColorInput(input) {
+    var preview = input.nextElementSibling;
+    updatePickerFromInput(input, preview);
+    if (input.id === "bgColor") {
+        applyColors();
+    } else if (input.id === "modelColor") {
+        applyModelColor();
+    }
+}
+modelColor.onchange = function() {
+    validateColorInput(this);
+};
+bgColor.onchange = function() {
+    validateColorInput(this);
+};
+modelColor.oninput = function() {
+    applyModelColor();
+};
+bgColor.oninput = function() {
+    applyColors();
+};
+var mode=document.getElementById("mode");
+var modelColor=document.getElementById("modelColor"),bgColor=document.getElementById("bgColor");
+var gridBox=document.getElementById("grid"),axesBox=document.getElementById("axes");
+var fovSlider=byId("fovSlider"),fovAff=byId("fov");
+var dropPage = document.getElementById("dropPage");
+var renderer,scene,camera,controls,grid,axes,root=null,wireOverlay=null,autoRotate=false;
+/* Etat des directions maintenues (fleches clavier + boutons), comme la visionneuse 360 */
+var touches={gauche:false,droite:false,haut:false,bas:false};
+var deplacements = {
+  gauche: false,
+  droite: false,
+  avant: false,
+  arriere: false,
+  haut: false,
+  bas: false
+};
+var panVitesse = 2;
+var panTmp = new THREE.Vector3();
+var panDroite = new THREE.Vector3();
+var panAvant = new THREE.Vector3();
+var panHaut = new THREE.Vector3();
+var dernierTemps=0;
+var sphTmp=null,vecTmp=null;
+function byId(i){return document.getElementById(i);}
+/* Scene */
+function init(){
+ var vp=byId("scene");
+ renderer=new THREE.WebGLRenderer({antialias:true});
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+ renderer.outputEncoding=THREE.sRGBEncoding;
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ vp.appendChild(renderer.domElement);
+ renderer.domElement.id="scene";
+ scene=new THREE.Scene();
+ // Eclairage simple (pas de RoomEnvironment en r128 UMD)
+ scene.add(new THREE.HemisphereLight(0xffffff,0x445566,0.9));
+ var sun=new THREE.DirectionalLight(0xffffff,0.9);
+ sun.position.set(3,5,4);scene.add(sun);
+ camera=new THREE.PerspectiveCamera(50,1,0.01,1000);
+ camera.position.set(2.2,1.4,3);
+ // Molette = FOV Enregistre AVANT OrbitControls pour capter l'evenement en premier : stopImmediatePropagation empeche OrbitControls de dollyer.
+ renderer.domElement.addEventListener("wheel",function(e){
+  if(e.preventDefault)e.preventDefault();
+  if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+  var f=camera.fov+((e.deltaY||e.wheelDelta||0)>0?5:-5);
+  f=Math.max(10,Math.min(100,f));
+  camera.fov=f;
+  camera.updateProjectionMatrix();
+  fovSlider.value=f;
+  fovAff.textContent=Math.round(f)+"°";
+ },{passive:false});
+ /* 2 doigts : pincement = FOV, glissement = deplacement (pan d'OrbitControls) */
+ var pincementDist=null,pincementTol=8; /* tolerance en px avant de considerer un pincement */
+ function dist2Doigts(t){
+  var dx=t[0].clientX-t[1].clientX,dy=t[0].clientY-t[1].clientY;
+  return Math.sqrt(dx*dx+dy*dy);
+ }
+ renderer.domElement.addEventListener("touchstart",function(e){
+  if(e.touches.length===2)pincementDist=dist2Doigts(e.touches);
+ },{passive:false});
+ renderer.domElement.addEventListener("touchmove",function(e){
+  if(e.touches.length===2&&pincementDist){
+   var d=dist2Doigts(e.touches);
+   if(Math.abs(d-pincementDist)>pincementTol){
+    /* vrai pincement : on prend la main et on bloque OrbitControls */
+    if(e.preventDefault)e.preventDefault();
+    if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    if(d>0){
+     var f=camera.fov*(pincementDist/d);
+     f=Math.max(10,Math.min(100,f));
+     camera.fov=f;
+     camera.updateProjectionMatrix();
+     fovSlider.value=f;
+     fovAff.textContent=Math.round(f)+"°";
+     pincementDist=d;
+    }
+   }
+   /* sinon : ecartement stable = glissement 2 doigts, on laisse OrbitControls panser */
+  }
+ },{passive:false});
+ function finPincement(e){if(e.touches.length<2)pincementDist=null;}
+ renderer.domElement.addEventListener("touchend",finPincement,false);
+ renderer.domElement.addEventListener("touchcancel",finPincement,false);
+ controls=new THREE.OrbitControls(camera,renderer.domElement);
+ controls.enableZoom=false; 
+ controls.enableDamping=false;
+ controls.autoRotateSpeed=2.5;
+ grid=new THREE.GridHelper(10,20,0x999999,0x666666);
+ grid.material.transparent=true;grid.material.opacity=0.25;
+ scene.add(grid);
+ axes = new THREE.AxesHelper(1.5);
+ scene.add(axes);
+ // Etiquettes des axes
+ creerEtiquetteAxe("X", "#ff3333", [1.7, 0, 0]);
+ creerEtiquetteAxe("Y", "#33ff33", [0, 1.7, 0]);
+ creerEtiquetteAxe("Z", "#3388ff", [0, 0, 1.7]);
+ applyColors();
+ resize();
+ if(window.addEventListener)window.addEventListener("resize",resize);
+ animate(0);
+}
+/* Etiquettes des axes X, Y, Z */
+function creerEtiquetteAxe(texte, couleur, position) {
+    var canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 128, 128);
+    ctx.font = "bold 90px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = couleur;
+    ctx.fillText(texte, 64, 64);
+    var texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    var material = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        depthTest: false
+    });
+    var sprite = new THREE.Sprite(material);
+    sprite.position.set(position[0], position[1], position[2]);
+    sprite.scale.set(0.35, 0.35, 1);
+    sprite.renderOrder = 10;
+    axes.add(sprite);
+}
+function resize(){
+ var w=window.innerWidth,h=window.innerHeight;
+ renderer.setSize(w,h);
+ camera.aspect=w/h;
+ camera.updateProjectionMatrix();
+}
+/* Boucle : rotation auto + fleches maintenues (pivot continu de la camera autour du modele) */
+function animate(ts){
+ if(window.requestAnimationFrame)window.requestAnimationFrame(animate);
+ var dt=dernierTemps?(ts-dernierTemps)/1000:0;
+ if(dt>0.1)dt=0.1;
+ dernierTemps=ts;
+ // Fleches : diagonales normalisees, meme vitesse en biais
+ var mx=(touches.droite?1:0)-(touches.gauche?1:0);
+ var my=(touches.haut?1:0)-(touches.bas?1:0);
+ if((mx!==0||my!==0)&&camera&&controls){
+  var pas=1.3; /* radians par seconde */
+  var n=Math.sqrt(mx*mx+my*my);
+  if(!vecTmp)vecTmp=new THREE.Vector3();
+  if(!sphTmp)sphTmp=new THREE.Spherical();
+  vecTmp.copy(camera.position).sub(controls.target);
+  sphTmp.setFromVector3(vecTmp);
+  sphTmp.theta+=(mx/n)*pas*dt;   /* gauche/droite : lacet */
+  sphTmp.phi-=(my/n)*pas*dt;     /* haut/bas : tangage */
+  sphTmp.makeSafe();             /* evite le blocage au pole */
+  sphTmp.phi=Math.max(0.05,Math.min(Math.PI-0.05,sphTmp.phi));
+  camera.position.setFromSpherical(sphTmp).add(controls.target);
+ }
+ // ZQSD / WASD + ESPACE / SHIFT : déplacement 3D
+ if(camera && controls) {
+   var px = (deplacements.droite ? 1 : 0)
+          - (deplacements.gauche ? 1 : 0);
+   var pz = (deplacements.arriere ? 1 : 0)
+          - (deplacements.avant ? 1 : 0);
+   var py = (deplacements.haut ? 1 : 0)
+          - (deplacements.bas ? 1 : 0);
+   if(px !== 0 || py !== 0 || pz !== 0) {
+     // Droite / gauche selon l'orientation de la caméra
+     panDroite.setFromMatrixColumn(camera.matrix, 0);
+     panDroite.y = 0;
+     panDroite.normalize();
+     // Avant / arrière selon l'orientation de la caméra
+     panAvant.set(0, 0, 1);
+     panAvant.applyQuaternion(camera.quaternion);
+     panAvant.y = 0;
+     panAvant.normalize();
+     // Haut / bas selon l'axe vertical du monde
+     panHaut.set(0, 1, 0);
+     // Combinaison des déplacements
+     panTmp.set(0, 0, 0);
+     panTmp.addScaledVector(panDroite, px);
+     panTmp.addScaledVector(panAvant, pz);
+     panTmp.addScaledVector(panHaut, py);
+     // Normalisation pour garder la même vitesse en diagonale
+     if(panTmp.lengthSq() > 0) {
+       panTmp.normalize();
+       panTmp.multiplyScalar(panVitesse * dt);
+       camera.position.add(panTmp);
+       controls.target.add(panTmp);
+     }
+   }
+ }
+ controls.autoRotate=autoRotate;
+ controls.update();
+ renderer.render(scene,camera);
+}
+function applyColors(){
+ scene.background=new THREE.Color(bgColor.value);
+}
+/* Affichage */
+function showModel(obj,name){
+ if(root){scene.remove(root);root=null;}
+ if(wireOverlay){scene.remove(wireOverlay);wireOverlay=null;}
+ root=obj;
+ scene.add(root);
+ // Cadrage automatique
+ var box=new THREE.Box3().setFromObject(root);
+ var size=box.getSize(new THREE.Vector3()).length()||1;
+ var center=box.getCenter(new THREE.Vector3());
+ root.position.sub(center);
+ controls.target.set(0,0,0);
+ camera.position.set(1,0.7,1.4).multiplyScalar(size*0.9);
+ camera.near=size/100;camera.far=size*100;
+ camera.updateProjectionMatrix();
+ controls.update();
+ grid.scale.setScalar(size/4);
+ axes.scale.setScalar(size/3);
+ updateDisplayMode();
+ var tris=0;
+ root.traverse(function(o){
+  if(o.isMesh&&o.geometry){
+   var g=o.geometry;
+   tris+=(g.index?g.index.count:g.attributes.position.count)/3;
+  }
+ });
+ fovSlider.value=camera.fov;
+ fovAff.textContent=Math.round(camera.fov)+"°";
+}
+function updateDisplayMode(){
+ if(!root)return;
+ var m=mode.value;
+ root.traverse(function(o){if(o.isMesh)o.visible=(m!=="wire");});
+ if(wireOverlay){scene.remove(wireOverlay);wireOverlay=null;}
+ if(m!=="solid"){
+  var wires=new THREE.Group();
+  root.updateMatrixWorld(true);
+  root.traverse(function(o){
+   if(!o.isMesh)return;
+   var w=new THREE.LineSegments(
+    new THREE.WireframeGeometry(o.geometry),
+    new THREE.LineBasicMaterial({color:0x101010,transparent:true,opacity:0.4})
+   );
+   o.getWorldPosition(w.position);
+   o.getWorldQuaternion(w.quaternion);
+   o.getWorldScale(w.scale);
+   wires.add(w);
+  });
+  wireOverlay=wires;
+  scene.add(wires);
+ }
+}
+/* Couleur "Objet" : uniquement pour OBJ/STL (pas de materiaux embarques) */
+function applyModelColor(){
+ if(!root||!root.userData.noMaterial)return;
+ var c=new THREE.Color(modelColor.value);
+ root.traverse(function(o){if(o.isMesh&&o.material)o.material.color.copy(c);});
+}
+function afterLoad(obj,name,noMaterial){
+ obj.userData.noMaterial=!!noMaterial;
+ showModel(obj,name);
+ if(noMaterial)applyModelColor();
+}
+/* Fichiers locaux (input + glisser-deposer) */
+function loadFiles(fileList){
+ if(!fileList||!fileList.length)return;
+ var files=[],i,main=null,f,nm,ext,manager,blobMap={},base,reader,data,obj,geo,wrap;
+ for(i=0;i<fileList.length;i++)files.push(fileList[i]);
+ for(i=0;i<files.length;i++){
+  if(/\.(gltf|glb|obj|stl)$/i.test(files[i].name))main=files[i];
+ }
+ if(!main){return;}
+ ext=main.name.toLowerCase().split(".").pop();
+ manager=new THREE.LoadingManager();
+ if(ext==="gltf"||ext==="glb"){
+  // Fichiers annexes (.bin, textures) mis a disposition via des blob URLs
+  for(i=0;i<files.length;i++){
+   f=files[i];
+   if(f===main&&ext==="glb")continue;
+   blobMap[f.name.toLowerCase()]=URL.createObjectURL(f);
+  }
+  base=main.name.toLowerCase();
+  manager.setURLModifier(function(url){
+   var shortName=decodeURIComponent(url.split("/").pop().split("?")[0]).toLowerCase();
+   if(blobMap[shortName])return blobMap[shortName];
+   if(blobMap[base+"/"+shortName])return blobMap[base+"/"+shortName];
+   return url;
+  });
+ }
+ reader=new FileReader();
+ reader.onload=function(e){
+  try{
+   data=e.target.result;
+   nm=main.name;
+   if(/\.obj$/i.test(nm)){
+    obj=new THREE.OBJLoader().parse(data);
+    obj.traverse(function(o){
+     if(o.isMesh&&o.material)o.material=new THREE.MeshStandardMaterial({color:0xb7c9df,roughness:0.6});
+    });
+    afterLoad(obj,nm,true);
+   }else if(/\.stl$/i.test(nm)){
+    geo=new THREE.STLLoader().parse(data);
+    wrap=new THREE.Group();
+    wrap.add(new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xb7c9df,roughness:0.6})));
+    afterLoad(wrap,nm,true);
+   }else{
+    new THREE.GLTFLoader(manager).parse(data,"",function(g){afterLoad(g.scene,nm,false);},
+     function(err){});
+   }
+  }catch(ex){}
+ };
+ if(/\.obj$/i.test(main.name)||/\.gltf$/i.test(main.name))reader.readAsText(main);
+ else reader.readAsArrayBuffer(main);
+}
+/* Chargement via l'URL : ?file=https://... Les loaders resolvant eux-memes les URI relatives, pas de fetch ni d'URLModifier (intercepter les blob:/data: casserait les textures integrees du GLB). */
+function loadFromURL(url){
+ var name=decodeURIComponent(url.substring(url.lastIndexOf("/")+1).split("?")[0].split("#")[0])||"fichier";
+ var ext=(name.match(/\.([a-z0-9]+)$/i)||["",""])[1].toLowerCase();
+ var fail=function(err){};
+ if(ext==="obj"){
+  new THREE.OBJLoader().load(url,function(o){
+   o.traverse(function(m){if(m.isMesh&&m.material)m.material=new THREE.MeshStandardMaterial({color:0xb7c9df,roughness:0.6});});
+   afterLoad(o,name,true);
+  },undefined,fail);
+ }else if(ext==="stl"){
+  new THREE.STLLoader().load(url,function(geo){
+   var wrap=new THREE.Group();
+   wrap.add(new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xb7c9df,roughness:0.6})));
+   afterLoad(wrap,name,true);
+  },undefined,fail);
+ }else{
+  new THREE.GLTFLoader().load(url,function(g){afterLoad(g.scene,name,false);},undefined,fail);
+ }
+}
+/* Controles */
+byId("fileinput").onchange=function(){if(this.files&&this.files.length)loadFiles(this.files);};
+byId("reset").onclick=function(){if(root)showModel(root,root.name||"mod&egrave;le");};
+function majAutoRotation() {
+  autoRotate=!autoRotate;
+  autoRotate=chkRotation.checked;
+}
+if(chkRotation.checked) { majAutoRotation(); }
+chkRotation.addEventListener("change", majAutoRotation, false);
+mode.onchange=updateDisplayMode;
+modelColor.onchange=applyModelColor;
+bgColor.onchange=applyColors;
+gridBox.onclick=function(){grid.visible=gridBox.checked;};
+axesBox.onclick=function(){axes.visible=axesBox.checked;};
+/* FICHIER */
+fileinput.addEventListener("change",
+  function() {
+    if (fileinput.files && fileinput.files[0]) {
+      chargerFichier(fileinput.files[0]);
+    }
+    fileinput.value = "";
+  },
+  false
+);
+/* STYLE DRAG & DROP */
+window.addEventListener("dragover",
+  function(e) {
+    e.preventDefault();
+    dropPage.className = "actif";
+  },
+  false
+);
+window.addEventListener("dragleave",
+  function() {
+    dropPage.className = "";
+  }, false);
+window.addEventListener("drop",
+  function(e) {
+    e.preventDefault();
+    dropPage.className = "";
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+      chargerFichier(e.dataTransfer.files[0]);
+    }
+  },
+  false
+);
+/* Curseur FOV : ajuste l'angle de vue de la camera */
+fovSlider.addEventListener("input",function(){
+  if(!camera)return;
+  var f=parseInt(fovSlider.value,10)||50;
+  f=Math.max(10,Math.min(100,f));
+  camera.fov=f;
+  camera.updateProjectionMatrix();
+  fovAff.textContent=f+"°";
+},false);
+/* Fleches du clavier */
+function menuOuvert() {
+  return !!document.querySelector('.popup-overlay');
+}
+
+/* CLAVIER : FLECHES = ROTATION / ZQSD-WASD = PAN */
+
+
+/* CLAVIER : FLECHES = ROTATION / ZQSD-WASD = DEPLACEMENT */
+
+window.addEventListener("keydown", function(e) {
+  if(menuOuvert()) return;
+
+  var k = e.key.toLowerCase();
+
+  // Flèches : rotation
+  if(e.key === "ArrowLeft") touches.gauche = true;
+  else if(e.key === "ArrowRight") touches.droite = true;
+  else if(e.key === "ArrowUp") touches.haut = true;
+  else if(e.key === "ArrowDown") touches.bas = true;
+
+  // Gauche / droite
+  else if(k === "q" || k === "a") deplacements.gauche = true;
+  else if(k === "d") deplacements.droite = true;
+
+  // Avant / arrière
+  else if(k === "z" || k === "w") deplacements.avant = true;
+  else if(k === "s") deplacements.arriere = true;
+
+  // Monter / descendre
+  else if(e.code === "Space") deplacements.haut = true;
+  else if(e.key === "Shift") deplacements.bas = true;
+
+  else return;
+
+  e.preventDefault();
+}, false);
+
+
+window.addEventListener("keyup", function(e) {
+  var k = e.key.toLowerCase();
+
+  if(e.key === "ArrowLeft") touches.gauche = false;
+  else if(e.key === "ArrowRight") touches.droite = false;
+  else if(e.key === "ArrowUp") touches.haut = false;
+  else if(e.key === "ArrowDown") touches.bas = false;
+
+  else if(k === "q" || k === "a") deplacements.gauche = false;
+  else if(k === "d") deplacements.droite = false;
+
+  else if(k === "z" || k === "w") deplacements.avant = false;
+  else if(k === "s") deplacements.arriere = false;
+
+  else if(e.code === "Space") deplacements.haut = false;
+  else if(e.key === "Shift") deplacements.bas = false;
+}, false);
+
+
+/* BOUTONS DIRECTIONNELS */
+function boutonMaintenir(btn, cle) {
+  // Chaque bouton garde son propre état "enfoncé" : un mouseup/touchend ailleurs (par exemple en relâchant un AUTRE bouton) ne le relâche pas.
+  var enfonce = false;
+  function activer() {
+    enfonce = true;
+    touches[cle] = true;
+    btn.classList.add("pressed");
+  }
+  function relacher() {
+    enfonce = false;
+    touches[cle] = false;
+    btn.classList.remove("pressed");
+  }
+  btn.addEventListener("mousedown", activer, false);
+  btn.addEventListener("touchstart",
+    function(e) {
+      e.preventDefault();
+      activer();
+    },
+    {
+      passive:false
+    }
+  );
+  btn.addEventListener("mouseleave", function() { if (enfonce) relacher(); }, false);
+  window.addEventListener("mouseup", function() { if (enfonce) relacher(); }, false);
+  // touchend part de l'élément où le doigt a commencé : attaché au bouton lui-même, pas à window, pour ne pas relâcher les autres boutons.
+  btn.addEventListener("touchend", relacher, false);
+  btn.addEventListener("touchcancel", relacher, false);
+}
+boutonMaintenir(btnGauche, "gauche");
+boutonMaintenir(btnDroite, "droite");
+boutonMaintenir(btnHaut, "haut");
+boutonMaintenir(btnBas, "bas");
+/* Glisser-deposer */
+var vp=byId("scene"),drop=byId("drop");
+vp.addEventListener("dragover",function(e){e.preventDefault();drop.style.display="flex";},false);
+vp.addEventListener("dragleave",function(e){drop.style.display="none";},false);
+vp.addEventListener("drop",function(e){
+ e.preventDefault();drop.style.display="none";
+ if(e.dataTransfer.files.length)loadFiles(e.dataTransfer.files);
+},false);
+/* Auto-chargement depuis l'URL */
+try{
+ var q=window.location.search||"";
+ var mm=/[?&]file=([^&]+)/.exec(q);
+ if(mm)loadFromURL(decodeURIComponent(mm[1]));
+}catch(e){}
+init();
+</script>
+</body>
+</html>
