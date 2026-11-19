@@ -43,26 +43,15 @@ hr{border:1px inset #888;}
     height:24px;
     background:#000;
   }
-  ::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track,::-webkit-scrollbar-corner {
     background:#000;
-    border-top:2px solid #888;
-    border-left:2px solid #888;
-    border-bottom:2px solid #111;
-    border-right:2px solid #111;
+    border:2px solid;
+    border-color:#888 #111 #111 #888;
   }
   ::-webkit-scrollbar-thumb {
     background:#222;
-    border-top:2px solid #888;
-    border-left:2px solid #888;
-    border-bottom:2px solid #111;
-    border-right:2px solid #111;
-  }
-  ::-webkit-scrollbar-corner {
-    background:#000;
-    border-top:2px solid #888;
-    border-left:2px solid #888;
-    border-bottom:2px solid #111;
-    border-right:2px solid #111;
+    border:2px solid;
+    border-color:#888 #111 #111 #888;
   }
 }
 button {
