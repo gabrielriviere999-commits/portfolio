@@ -77,7 +77,7 @@ button {
 button:hover{background:#444;}
 button:active {
   border-color:#111 #888 #888 #111;
-  background:#111;
+  background:#111!important;
 }
 /* --- Barre de navigation --- */
 .navbar {
